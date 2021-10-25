@@ -1,0 +1,47 @@
+[
+    {
+        "quote": "Um goblin distraido é visto a frente e descide tentar atacar. Escolha entre 'Facil|1', 'Medio|2' ou 'Dificil|3'",
+        "1": {
+            "win": "Você joga uma pedra nele, acertando o seu olho e fazendo ele cair sobre a propria espada!",
+            "lose": "Enquanto você se prepara para jogar uma pedra, acaba perdendo o equilibrio e caindo, ao olhar para cima percebe que ele lhe notou e descide correr."
+        },
+        "2": {
+            "win": "Você se aproveita enquanto ele estava distraido para desferir um golpe certeiro e matalo.",
+            "lose": "Você faz muito barulho enquanto se aproxima e leva uma paulada na cabeça e desmaia."
+        },
+        "3": {
+            "win": "Enquanto você se aproxima dele, sua adaga cai, fazendo com que ele lhe note, vocês entram em uma batalha e apos muito suor o goblin finalmente morre.",
+            "lose": "Enquanto você se aproxima dele, sua adaga cai, fazendo com que ele lhe note, vocês entram em uma batalha e apos muita luta, você esta exasto e descide fugir"
+        }
+    },
+    {
+        "quote": "'Enquanto andava, você avista um grupo de {monstro.name} e descide tentar atacar. Escolha entre 'Facil|1', 'Medio|2' ou 'Dificil|3''",
+        "1": {
+            "win": "",
+            "lose":""
+        },
+        "2":{
+            "win": "",
+            "lose":""
+        },
+        "3":{
+            "win": "",
+            "lose":""
+        }
+    },
+    {
+        "quote": "e descide tentar atacar. Escolha entre 'Facil|1', 'Medio|2' ou 'Dificil|3'",
+        "1": {
+            "win": "",
+            "lose":""
+        },
+        "2":{
+            "win": "",
+            "lose":""
+        },
+        "3":{
+            "win": "",
+            "lose":""
+        }
+    }
+]

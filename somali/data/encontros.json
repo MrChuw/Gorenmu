@@ -1,0 +1,32 @@
+[
+    {
+        "quote": "Enquanto andava, você avista um grupo de $monstro$ e descide tentar atacar. Escolha entre 'Facil|1', 'Medio|2' ou 'Dificil|3'",
+        "1": {
+            "win": "Teste1",
+            "lose":"Teste2"
+        },
+        "2":{
+            "win": "Teste3",
+            "lose":"Teste4"
+        },
+        "3":{
+            "win": "Teste5",
+            "lose":"Teste6"
+        }
+    },
+    {
+        "quote": "Enquanto andava, você avista um grupo de $monstro$ e descide tentar atacar. Escolha entre 'Facil|1', 'Medio|2' ou 'Dificil|3'",
+        "1": {
+            "win": "Teste7",
+            "lose":"Teste8"
+        },
+        "2":{
+            "win": "Teste9",
+            "lose":"Teste10"
+        },
+        "3":{
+            "win": "Teste11",
+            "lose":"Teste12 "
+        }
+    }
+]
