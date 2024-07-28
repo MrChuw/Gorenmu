@@ -75,7 +75,7 @@ def str2int(target: Optional[str]) -> Optional[int]:
         return None
 
 
-def str2hexcode(target: Optional[str]) -> Optional[str]:
+def str2hex(target: Optional[str]) -> Optional[str]:
     if not target:
         return None
     if match := re.match(r"#(?:[0-9A-Fa-f]{6})$", target):
@@ -97,7 +97,6 @@ def str2name(target: str, default: Optional[str] = None) -> Optional[str]:
 
 def tpl2str(target: Optional[tuple]) -> str:
     try:
-        # return str(target)
         return json.dumps(target)
     except Exception:
         return ""
@@ -151,25 +150,8 @@ def remove_emoji(string: str) -> str:
     return emoji_pattern.sub(r"", string)
 
 
-def str_to_ascii(value: str) -> str:
-    reference = [("a", "áàâãä"), ("e", "éèêë"), ("i", "íìîï"), ("o", "óòôõö"), ("u", "úùûü"), ("c", "ç"), ]
-    text = ""
-    for char in value:
-        for clear_vowel, possible_accents in reference:
-            if char in possible_accents:
-                text += clear_vowel
-                break
-        else:
-            text += char
-    return text
-
-
 def str_to_hex(value: str) -> str:
     return "".join(x for x in value if x in letters_and_digits).encode().hex()
-
-
-def str_to_int(value: str) -> int:
-    return int(str_to_hex(value), base=16)
 
 
 def json_to_dict(filename: str) -> Union[dict, list]:
