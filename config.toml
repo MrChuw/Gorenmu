@@ -13,6 +13,7 @@ imgur_authorized_ids = [184900613, 411010313]
 [apis]
 site_api_key = "${SITE_API_KEY}"
 shlink_key = "${SHLINK_KEY}"
+shlink_url = "${SHLINK_URL}"
 access_token = "${ACCESS_TOKEN}"
 access_oauth_token = "${ACCESS_OAUTH_TOKEN}"
 refresh_token = "${REFRESH_TOKEN}"
