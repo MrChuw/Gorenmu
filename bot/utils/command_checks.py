@@ -1,33 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import logging
 from datetime import datetime
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING, Union
+
+from tortoise.exceptions import DoesNotExist, MultipleObjectsReturned
 
 from bot.exceptions import (
-    BotOffline, CommandDisabled, ContentHasBanword, DevRequired, GameIsAlreadyRunning, InvalidUsername, ModRequired,
-    OwnerRequired, UserIsNotAllowed,
+    BotOffline, CommandDisabled, ContentHasBanword, DevRequired, GameIsAlreadyRunning, ModRequired, OwnerRequired,
+    SubRequired, UnknownError, UserIsNotAllowed, VipRequired,
 )
-from bot.ext.commands import Context, User
-from bot.models import (
-    LotteryBank, Channel as ChannelModel, Cookies as CookieModel, Lottery, MarkovChannels,
-    MarkovUserChannel, MarkovUsers, User as UserModel,
-)
-
-if TYPE_CHECKING:
-    from bot.models import Channel
-    from bot.bot import Gorenmu
-
+from bot.ext.commands import Context
+from bot.models import (Cookies as CookieModel, LotteryBank, User as UserModel)
 from bot.utils.string_manipulation import str2url
-
-
 
 
 class Role:
     @staticmethod
     def dev(ctx: Context) -> bool:
         if int(ctx.author.id) == ctx.bot.config.BotConfig.dev_userid:
-            return True  # return int(ctx.author.id) == ctx.bot.config.BotConfig.dev_userid
+            return True
         raise DevRequired
 
     @staticmethod
@@ -44,11 +36,15 @@ class Role:
 
     @staticmethod
     def vip(ctx: Context) -> bool:
-        return ctx.author.badges and bool(ctx.author.badges.get("vip"))
+        if ctx.author.badges and ctx.author.badges.get("vip"):
+            return True
+        raise VipRequired
 
     @staticmethod
     def sub(ctx: Context) -> bool:
-        return ctx.author.is_subscriber
+        if ctx.author.is_subscriber:
+            return True
+        raise SubRequired
 
     @staticmethod
     def sponsor(ctx: Context) -> bool:
@@ -56,9 +52,9 @@ class Role:
 
     @staticmethod
     def any(ctx: Context) -> bool:
-        return (
-            Role.sub(ctx) or Role.vip(ctx) or Role.admin(ctx) or Role.owner(ctx) or Role.dev(ctx) or Role.sponsor(ctx)
-        )
+        return (Role.sub(ctx) or Role.vip(ctx) or Role.admin(ctx) or Role.owner(ctx) or Role.dev(ctx) or Role.sponsor(
+            ctx
+            ))
 
 
 class Check:
@@ -93,22 +89,27 @@ class Check:
         return True
 
     @staticmethod
-    async def loterica_seed(ctx: Context) -> bool:
+    async def lottery_seed(ctx: Context) -> bool:
         try:
             await CookieModel.get(id=int(ctx.author.id))
-        except:
+        except DoesNotExist:
             user = await UserModel.get(id=int(ctx.author.id))
             await CookieModel.create(user=user, id=int(ctx.author.id))
+        except MultipleObjectsReturned as e:
+            logging.error(e)
+            await ctx.reply(ctx.translations.Exceptions.LotteryExceptions().lottery_seed)
+            raise UnknownError
         if not await LotteryBank.get_or_none(encerrada=False, acumulado=True):
-            teste = await LotteryBank.create()
-        if ctx.bot.loterica_seed:
-            ctx.bot.loterica_seed = datetime.now().toordinal()
+            await LotteryBank.create()
+        if ctx.bot.lottery_seed:
+            ctx.bot.lottery_seed = datetime.now().toordinal()
         else:
-            ctx.bot.loterica_seed = datetime.now().toordinal()
+            ctx.bot.lottery_seed = datetime.now().toordinal()
         return True
 
+    # COOKIE: Mudar como o bônus dos cookies funciona.
     @staticmethod
-    async def cookie_check(ctx: Context) -> bool:  # COOKIE: Multiplicador e seed.
+    async def cookie_check(ctx: Context) -> bool:
         cookie = CookieModel.get_or_none(id=int(ctx.author.id))
         if not cookie:
             user = await UserModel.get(id=int(ctx.author.id))
@@ -133,17 +134,3 @@ class Check:
         ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "pt-br")
         ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or "pt-br")
         return True
-
-
-
-
-
-
-
-
-
-
-
-
-
-
