@@ -49,25 +49,5 @@ networks:
     external: true
 
 
-# docker exec -it gorenmu-copy-gorenmu_db-1 sh -c 'mariadb-dump --databases gorenmu --user root --password=gorenmuroot' > dump-`date '+%Y_%m_%d__%H_%M_%S'`.sql
-
-# docker exec -i gorenmu-copy-gorenmu_db-1 sh -c 'mariadb --user=root --password=gorenmuroot' < dump-2024_04_30__15_18_19.sql
-
-# docker cp dump-2024_04_30__15_18_19.sql gorenmu-copy-gorenmu_db-1:/dump-2024_04_30__15_18_19.sql
-
-# docker exec -it gorenmu-copy-gorenmu_db-1 mariadb --user=root --password=gorenmuroot
-
-# source dump-2024_04_30__15_18_19.sql
-
-# docker exec -i gorenmu-copy-gorenmu_db-1 sh -c 'mariadb --user=root --password=gorenmuroot source ' < dump-2024_04_30__15_18_19.sql
-
-# docker exec -i gorenmu-copy-gorenmu_db-1 sh -c 'mariadb --user=root --password=gorenmuroot source ' < dump.sql
-
-# ssh obleto "docker exec gorenmu-copy-Gorenmu_db-1 mariadb-dump --databases gorenmu --user root --password=gorenmuroot" > dump-`date '+%Y_%m_%d__%H_%M_%S'`.sql
-
-# ssh obleto "docker exec -it gorenmu-copy-Gorenmu_db-1 sh -c 'mariadb-dump --databases gorenmu --user root --password=gorenmuroot'" > dump-`date '+%Y_%m_%d__%H_%M_%S'`.sql
-
-
-
 
 
