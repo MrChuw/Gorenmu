@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import annotations
 
 
 # TODO: Adicionar os em inglês como "padrao" e adicionar no extras do inglês tbm.

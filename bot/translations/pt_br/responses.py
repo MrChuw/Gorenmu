@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import Any, TYPE_CHECKING
 
 from bot.translations.base import BaseTranslations, Response
-from bot.translations.pt_br.extras.weather import WeatherTools
-from bot.translations.pt_br.extras.pets import from_list_to_pet_list, pets, PetsDict
-from bot.translations.pt_br.extras.games import fight_option
-from bot.translations.pt_br.extras.dungeon import dungeon_rank_dict
-from bot.translations.pt_br.extras.activity import Activity as ActivityExtras
+from bot.translations.pt_br.extras import WeatherTools
+from bot.translations.pt_br.extras import from_list_to_pet_list, pets, PetsDict
+from bot.translations.pt_br.extras import fight_option
+from bot.translations.pt_br.extras import dungeon_rank_dict
+from bot.translations.pt_br.extras import Activity as ActivityExtras
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
