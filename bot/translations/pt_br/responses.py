@@ -10,7 +10,7 @@ from bot.translations.pt_br.extras.dungeon import dungeon_rank_dict
 from bot.translations.pt_br.extras.activity import Activity as ActivityExtras
 
 if TYPE_CHECKING:
-    from ext.commands import Context
+    from bot.ext.commands import Context
 
 
 # TODO: Colocar o pipeble false nos comandos que não podem ir para o pipe.
@@ -18,6 +18,10 @@ if TYPE_CHECKING:
 
 
 class PtBrTranslations:
+    class Exceptions(BaseTranslations.Exceptions):
+        class LotteryExceptions(BaseTranslations.Exceptions.LotteryExceptions):
+            lottery_seed: str = "algo horrível aconteceu, contate \"mr_chuw\" aqui na twitch utilizando whispers."
+
     class Activity(BaseTranslations.Activity):
         afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
@@ -494,8 +498,8 @@ class PtBrTranslations:
     class Cookies(BaseTranslations.Cookies):
         cookie_lines: list[str] = None
 
-        def cookie_file(self):
-            with open("cookies.txt", "r", encoding="utf-8") as file:
+        def cookie_file(self):  # TODO: Ver se funfa.
+            with open("extras/cookies.txt", "r", encoding="utf-8") as file:
                 cookie_lines = file.readlines()
             return cookie_lines
 

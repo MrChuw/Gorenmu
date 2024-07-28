@@ -5,8 +5,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from bot.translations.base.responses import BaseTranslations
-from . import BaseDecorators
-from .base import Response
+from bot.translations import BaseDecorators
+from bot.translations.base import Response
 
 if TYPE_CHECKING:
     pass

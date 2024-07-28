@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from ext.commands import Context
-    from models import User
+    from bot.ext.commands import Context
+    from bot.models import User
 
 
 @dataclass

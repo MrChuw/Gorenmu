@@ -29,3 +29,33 @@ def fight_option(ctx: Context, name: str) -> list[str]:
         f"@{ctx.author.name} vence @{name} em uma luta acirrada!",
         f"@{ctx.author.name} vence @{name} facilmente!",
     ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

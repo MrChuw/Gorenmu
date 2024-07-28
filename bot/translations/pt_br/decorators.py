@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
 from bot.translations.base import BaseDecorators
-
-if TYPE_CHECKING:
-    pass
 
 
 class PtBrDecorators(BaseDecorators):
@@ -35,10 +28,8 @@ class PtBrDecorators(BaseDecorators):
         class AddBot(BaseDecorators.Admin.AddBot):
             helper = "Adiciona um bot"
             usage = "Para usar: {}addbot <nick do bot>"
-            description = (
-                "Usado para retirar os bots de serem comutados pelo Markov de canais. (ja que "
-                "não tem nenhuma forma de eu filtrar o bot sem ter que excluir ele totalmente da tabela.)"
-            )
+            description = ("Usado para retirar os bots de serem comutados pelo Markov de canais. (ja que "
+                           "não tem nenhuma forma de eu filtrar o bot sem ter que excluir ele totalmente da tabela.)")
 
         class AllChannels(BaseDecorators.Admin.AllChannels):
             helper = "Mostra todos os canais que o bot está."
@@ -127,15 +118,11 @@ class PtBrDecorators(BaseDecorators):
             description = "Conta a quantidade de símbolos em um texto."
 
         class HyperTranslate(BaseDecorators.Random.HyperTranslate):
-            helper = (
-                "Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer que "
-                "ele seja traduzido."
-            )
+            helper = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer que "
+                      "ele seja traduzido.")
             usage = "para usar: <prefixo>hypertranslate <quantidade de vezes que vai ser traduzido/número> <texto>"
-            description = (
-                "Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer "
-                "que ele seja traduzido."
-            )
+            description = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer "
+                           "que ele seja traduzido.")
 
         class Imgur(BaseDecorators.Random.Imgur):
             helper = "Envia um link aleatorio do imgur. (Pode vir NSFW)"
@@ -143,15 +130,11 @@ class PtBrDecorators(BaseDecorators):
             description = "Envio um link aleatorio do imgur. (Pode vir NSFW)"
 
         class Imgur7(BaseDecorators.Random.Imgur7):
-            helper = (
-                "Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
-                "(Pode vir NSFW)"
-            )
+            helper = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
+                      "(Pode vir NSFW)")
             usage = "para usar: <prefixo>imgur <quantidade>"
-            description = (
-                "Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
-                "(Pode vir NSFW)"
-            )
+            description = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
+                           "(Pode vir NSFW)")
 
         class ImgurRepeated(BaseDecorators.Random.ImgurRepeated):
             helper = "Verifica a quantidade de imgurs repetidos."
@@ -240,8 +223,7 @@ class PtBrDecorators(BaseDecorators):
         class Gift(BaseDecorators.Cookies.Gift):
             helper = "aposte seu cookie diário para ter a chance de ganhar outros"
             usage = (
-                "Para usar: {}slotmachine <all pode ser usado para apostar todos os cookies não resgatados rapidamente>"
-            )
+                    "Para usar: {}slotmachine <all pode ser usado para apostar todos os cookies não resgatados rapidamente>")
             description = "aposte seu cookie diário para ter a chance de ganhar outros"
 
         class SlotMachine(BaseDecorators.Cookies.SlotMachine):
@@ -523,15 +505,11 @@ class PtBrDecorators(BaseDecorators):
 
     class Reminder(BaseDecorators.Reminder):
         class Remind(BaseDecorators.Reminder.Remind):
-            helper = (
-                'Digite remind pessoa (ou me para você), é a "mensagem", e sera lembrado na proxima vez que '
-                "digitar no chat."
-            )
+            helper = ('Digite remind pessoa (ou me para você), é a "mensagem", e sera lembrado na proxima vez que '
+                      "digitar no chat.")
             usage = "Para usar: {}remind <pessoa> in <tempo> <mensagem>"
-            description = (
-                'Digite remind pessoa (ou me para você), é a "mensagem", '
-                "e sera lembrado na proxima vez que digitar no chat."
-            )
+            description = ('Digite remind pessoa (ou me para você), é a "mensagem", '
+                           "e sera lembrado na proxima vez que digitar no chat.")
 
         class Reminds(BaseDecorators.Reminder.Reminds):
             helper = "Mostra os lembretes que você tem."
@@ -586,15 +564,11 @@ class PtBrDecorators(BaseDecorators):
             description = "Encurta links usando o meu serviço de encurtar links."
 
         class Time(BaseDecorators.Tools.Time):
-            helper = (
-                "Converte unidades de tempo para outras unidades, exemplo dias em horas, segundos em dias, "
-                "etc. Podendo converter para o passado ou para o futuro."
-            )
+            helper = ("Converte unidades de tempo para outras unidades, exemplo dias em horas, segundos em dias, "
+                      "etc. Podendo converter para o passado ou para o futuro.")
             usage = "Para usar: {}tempo <formato para transformar ex: h> <formato que vai a ser transformando ex: 50h>"
-            description = (
-                "Converte unidades de tempo para outras unidades, exemplo dias em horas, segundos em dias, "
-                "etc. Podendo converter para o passado ou para o futuro."
-            )
+            description = ("Converte unidades de tempo para outras unidades, exemplo dias em horas, segundos em dias, "
+                           "etc. Podendo converter para o passado ou para o futuro.")
 
         class UserId(BaseDecorators.Tools.UserId):
             helper = "Pega o user_id de um usuario ou o usuario pelo user_id."

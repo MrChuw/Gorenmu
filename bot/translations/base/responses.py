@@ -9,7 +9,7 @@ from bot.translations.base.extras import (
 )
 
 if TYPE_CHECKING:
-    from ext.commands import Context
+    from bot.ext.commands import Context
 
 
 class BaseTranslations:
@@ -17,6 +17,10 @@ class BaseTranslations:
         class TypeChecking(BaseTranslation):
             response: Response
             pass
+
+    class Exceptions:
+        class LotteryExceptions(BaseTranslation):
+            lottery_seed: str
 
     class Activity:
         afks: dict[str, Status]

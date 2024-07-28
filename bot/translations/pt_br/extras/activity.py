@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import annotations
-
 from dataclasses import dataclass
 
 
@@ -39,7 +37,6 @@ class Activity:
             return self._name
 
 
-    # TODO: Organizer o principal que vai ser em inglês, e so o resto vai ser na linguagem.
     afks = {
         "read": Status("read", "📖", "foi ler", "lendo", "leu", "lendo"),
         "afk": Status("afk", "🏃⌨", "ficou afk", "afk", "voltou", "afk"),
