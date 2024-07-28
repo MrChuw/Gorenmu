@@ -1,0 +1,73 @@
+version: '3'
+services:
+  Gorenmu_db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_LOGIN}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: America/Fortaleza
+    volumes:
+      - ./.db_data:/var/lib/mysql
+    ports:
+      - 3307:3306
+    networks:
+    - grafana-prometheus_monitor-net
+    restart: always
+
+  Gorenmu_cache:
+    image: valkey/valkey:unstable
+    environment:
+      TZ: America/Fortaleza
+    volumes:
+      - ./.redis_data:/data
+    ports:
+      - 6379:6379
+    networks:
+    - grafana-prometheus_monitor-net
+    command: "valkey-server --save 60 1 --loglevel warning"
+    restart: always
+
+  Gorenmu_bot:
+    image: python:3.10
+    working_dir: /app
+    network_mode: host
+    environment:
+      TZ: America/Fortaleza
+    command: >
+      /bin/bash -c "pip install -q -r requirements.txt && python __main__.py"
+    volumes:
+      - .:/app
+    depends_on:
+      - Gorenmu_db
+      - Gorenmu_cache
+    restart: always
+
+networks:
+  grafana-prometheus_monitor-net:
+    external: true
+
+
+# docker exec -it gorenmu-copy-gorenmu_db-1 sh -c 'mariadb-dump --databases gorenmu --user root --password=gorenmuroot' > dump-`date '+%Y_%m_%d__%H_%M_%S'`.sql
+
+# docker exec -i gorenmu-copy-gorenmu_db-1 sh -c 'mariadb --user=root --password=gorenmuroot' < dump-2024_04_30__15_18_19.sql
+
+# docker cp dump-2024_04_30__15_18_19.sql gorenmu-copy-gorenmu_db-1:/dump-2024_04_30__15_18_19.sql
+
+# docker exec -it gorenmu-copy-gorenmu_db-1 mariadb --user=root --password=gorenmuroot
+
+# source dump-2024_04_30__15_18_19.sql
+
+# docker exec -i gorenmu-copy-gorenmu_db-1 sh -c 'mariadb --user=root --password=gorenmuroot source ' < dump-2024_04_30__15_18_19.sql
+
+# docker exec -i gorenmu-copy-gorenmu_db-1 sh -c 'mariadb --user=root --password=gorenmuroot source ' < dump.sql
+
+# ssh obleto "docker exec gorenmu-copy-Gorenmu_db-1 mariadb-dump --databases gorenmu --user root --password=gorenmuroot" > dump-`date '+%Y_%m_%d__%H_%M_%S'`.sql
+
+# ssh obleto "docker exec -it gorenmu-copy-Gorenmu_db-1 sh -c 'mariadb-dump --databases gorenmu --user root --password=gorenmuroot'" > dump-`date '+%Y_%m_%d__%H_%M_%S'`.sql
+
+
+
+
+
