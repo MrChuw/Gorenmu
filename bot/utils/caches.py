@@ -42,24 +42,19 @@ class Cache:
     @staticmethod
     def cache_load(bot: Gorenmu) -> RedisCache | MemcachedCache | SimpleMemoryCache:
         if bot.config.CacheConfig.type in [CacheType.REDIS, CacheType.VALKEY]:
-            bot.cache = Cache(
-                Cache.REDIS,
-                serializer=PickleSerializer(),
-                endpoint=bot.config.CacheConfig.host,
-                port=bot.config.CacheConfig.port,
-                namespace=bot.config.CacheConfig.namespace,
-            )
+            bot.cache = Cache(Cache.REDIS, serializer=PickleSerializer(), endpoint=bot.config.CacheConfig.host,
+                              port=bot.config.CacheConfig.port, namespace=bot.config.CacheConfig.namespace, )
             bot.redis = redis.Redis(host=bot.cache.endpoint, port=bot.cache.port, decode_responses=True)
         elif bot.config.CacheConfig.type == CacheType.MEMCACHED:
-            bot.cache = Cache(
-                Cache.MEMCACHED, serializer=PickleSerializer(), endpoint="localhost", port=11211, namespace="main"
-            )
+            bot.cache = Cache(Cache.MEMCACHED, serializer=PickleSerializer(), endpoint="localhost", port=11211,
+                              namespace="main"
+                              )
         else:
             bot.cache = Cache(Cache.MEMORY, serializer=PickleSerializer(), namespace="main")
         return bot.cache
 
 
-CODE_LIST = (200,201,202,204,301,302,304,400,401,403,404,405,408,409,410,500,501,502,503,504)
+CODE_LIST = (200, 201, 202, 204, 301, 302, 304, 400, 401, 403, 404, 405, 408, 409, 410, 500, 501, 502, 503, 504)
 
 
 class SessionsCaches:
@@ -74,100 +69,77 @@ class SessionsCaches:
     class AdminCachedSession:
         def __init__(self, bot: Gorenmu):
             self.bot = bot
-            self.urls_expire_after = {
-                "*.mrchuw.com.br/": timedelta(days=100),
-                "im.mrchuw.com.br/api/files/*": timedelta(days=100),
-                "static-cdn.jtvnw.net/previews-ttv/*": timedelta(days=1),
-            }
+            self.urls_expire_after = {"*.mrchuw.com.br/": timedelta(days=100),
+                                      "im.mrchuw.com.br/api/files/*": timedelta(days=100),
+                                      "static-cdn.jtvnw.net/previews-ttv/*": timedelta(days=1),
+                                      }
             self.allowed_methods = ("GET", "HEAD", "POST")
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(
-                    cache_name=bot.config.CacheConfig.admin_namespace,
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                )
+                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.admin_namespace,
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods, include_headers=True, )
             else:
-                self.cache: SQLiteBackend = SQLiteBackend(
-                    cache_name=".cache/aiohttp-admin-requests.db",
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                )
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-admin-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods, include_headers=True, )
 
             self.session: CachedSession = CachedSession(cache=self.cache)
 
     class NSFWCachedSession:
         def __init__(self, bot: Gorenmu):
             self.bot = bot
-            self.urls_expire_after = {
-                "https://gelbooru.com/": timedelta(hours=1),
-                "https://rule34.xxx/": timedelta(hours=1),
-                "https://tbib.org/": timedelta(hours=1),
-                "https://safebooru.org/": timedelta(hours=1),
-                "https://xbooru.com/": timedelta(hours=1),
-                "https://realbooru.com/": timedelta(hours=1),
-                "https://hypnohub.net/": timedelta(hours=1),
-                "https://danbooru.donmai.us/": timedelta(hours=1),
-                "https://booru.allthefallen.moe/": timedelta(hours=1),
-                "https://yande.re/": timedelta(hours=1),
-                "https://konachan.com/": timedelta(hours=1),
-                "https://konachan.net/": timedelta(hours=1),
-                "https://lolibooru.moe/": timedelta(hours=1),
-                "https://e621.net/": timedelta(hours=1),
-                "https://e926.net/": timedelta(hours=1),
-                "https://derpibooru.org/": timedelta(hours=1),
-                "https://furbooru.com/": timedelta(hours=1),
-                "http://behoimi.org/": timedelta(hours=1),
-                "https://rule34.paheal.net/": timedelta(hours=1),
-            }
+            self.urls_expire_after = {"https://gelbooru.com/": timedelta(hours=1),
+                                      "https://rule34.xxx/": timedelta(hours=1),
+                                      "https://tbib.org/": timedelta(hours=1),
+                                      "https://safebooru.org/": timedelta(hours=1),
+                                      "https://xbooru.com/": timedelta(hours=1),
+                                      "https://realbooru.com/": timedelta(hours=1),
+                                      "https://hypnohub.net/": timedelta(hours=1),
+                                      "https://danbooru.donmai.us/": timedelta(hours=1),
+                                      "https://booru.allthefallen.moe/": timedelta(hours=1),
+                                      "https://yande.re/": timedelta(hours=1),
+                                      "https://konachan.com/": timedelta(hours=1),
+                                      "https://konachan.net/": timedelta(hours=1),
+                                      "https://lolibooru.moe/": timedelta(hours=1),
+                                      "https://e621.net/": timedelta(hours=1),
+                                      "https://e926.net/": timedelta(hours=1),
+                                      "https://derpibooru.org/": timedelta(hours=1),
+                                      "https://furbooru.com/": timedelta(hours=1),
+                                      "http://behoimi.org/": timedelta(hours=1),
+                                      "https://rule34.paheal.net/": timedelta(hours=1),
+                                      }
             self.allowed_methods = ("GET", "HEAD", "POST")
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(
-                    cache_name=bot.config.CacheConfig.booru_namespace,
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                )
+                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.booru_namespace,
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods, include_headers=True, )
             else:
-                self.cache: SQLiteBackend = SQLiteBackend(
-                    cache_name=".cache/aiohttp-booru-requests.db",
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                )
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-booru-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods, include_headers=True, )
 
             self.session: CachedSession = CachedSession(cache=self.cache)
 
     class RandomCachedSession:
         def __init__(self, bot: Gorenmu):
             self.bot = bot
-            self.urls_expire_after = {
-                "*.imgur.com/*": timedelta(days=200),
-                "scp-wiki.wikidot.com": -1,
-                "https://pt.wikihow.com/Especial:Randomizer": 1,
-                "https://pt.wikipedia.org/wiki/Special:Random": 1,
-            }
+            self.urls_expire_after = {"*.imgur.com/*": timedelta(days=200), "scp-wiki.wikidot.com": -1,
+                                      "https://pt.wikihow.com/Especial:Randomizer": 1,
+                                      "https://pt.wikipedia.org/wiki/Special:Random": 1,
+                                      }
             self.allowed_methods = ("GET", "HEAD", "POST")
             self.allowed_codes = (200, 301, 302)
             self.headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/114.0.0.0 Safari/537.36"
-            }
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                                  "Chrome/114.0.0.0 Safari/537.36"}
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(
-                    cache_name=bot.config.CacheConfig.random_namespace,
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                )
+                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.random_namespace,
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods, include_headers=True, )
             else:
-                self.cache: SQLiteBackend = SQLiteBackend(
-                    cache_name=".cache/aiohttp-aleatorios-requests.db",
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_codes=self.allowed_codes,
-                    headers=self.headers,
-                )
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-random-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_codes=self.allowed_codes, headers=self.headers, )
 
             self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
 
@@ -178,20 +150,14 @@ class SessionsCaches:
             self.allowed_methods = ("GET", "HEAD", "POST")
             self.allowed_codes = CODE_LIST
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(
-                    cache_name=bot.config.CacheConfig.general_namespace,
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    allowed_codes=self.allowed_codes,
-                    include_headers=True,
-                )
+                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.general_namespace,
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods, allowed_codes=self.allowed_codes,
+                                          include_headers=True, )
             else:
-                self.cache: SQLiteBackend = SQLiteBackend(
-                    cache_name=".cache/aiohttp-geral-requests.db",
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                )
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-general-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods, include_headers=True, )
             self.session: CachedSession = CachedSession(cache=self.cache)
 
     class InfoCachedSession:
@@ -200,43 +166,30 @@ class SessionsCaches:
             self.urls_expire_after = {"*.jtvnw.net": timedelta(minutes=30)}
             self.allowed_methods = ("GET", "HEAD", "POST")
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(
-                    cache_name=bot.config.CacheConfig.info_namespace,
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                )
+                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.info_namespace,
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods, include_headers=True, )
             else:
-                self.cache: SQLiteBackend = SQLiteBackend(
-                    cache_name=".cache/aiohttp-geral-requests.db",
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                )
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-info-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods, include_headers=True, )
             self.session: CachedSession = CachedSession(cache=self.cache)
 
     class ToolsCachedSession:
         def __init__(self, bot: Gorenmu):
             self.bot = bot
-            self.urls_expire_after = {
-                "*.mrchuw.com.br/": timedelta(days=100),
-                "nominatim.openstreetmap.org/*": timedelta(days=7),
-                "api.open-meteo.com/v1/forecast": timedelta(minutes=5),
-                "https://api.mathjs.org": timedelta(days=100),
-            }
+            self.urls_expire_after = {"*.mrchuw.com.br/": timedelta(days=100),
+                                      "nominatim.openstreetmap.org/*": timedelta(days=7),
+                                      "api.open-meteo.com/v1/forecast": timedelta(minutes=5),
+                                      "https://api.mathjs.org": timedelta(days=100),
+                                      }
             self.allowed_methods = ("GET", "HEAD", "POST")
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(
-                    cache_name=bot.config.CacheConfig.tools_namespace,
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                )
+                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.tools_namespace,
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods, include_headers=True, )
             else:
-                self.cache: SQLiteBackend = SQLiteBackend(
-                    cache_name=".cache/aiohttp-geral-requests.db",
-                    urls_expire_after=self.urls_expire_after,
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                )
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-tools-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods, include_headers=True, )
             self.session: CachedSession = CachedSession(cache=self.cache)
