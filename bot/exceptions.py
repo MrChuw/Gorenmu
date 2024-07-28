@@ -61,12 +61,25 @@ class ConfRequired(CheckFailure):
 
 
 class UserIsNotAllowed(CheckFailure):
-    pass
+    """ """
 
 
 class ContentHasBanword(CheckFailure):
-    pass
+    """ """
 
 
 class GameIsAlreadyRunning(CheckFailure):
-    pass
+    """ """
+
+
+class VipRequired(CheckFailure):
+    """ """
+
+
+class SubRequired(CheckFailure):
+    """ """
+
+
+class UnknownError(CheckFailure):
+    """ """
+
