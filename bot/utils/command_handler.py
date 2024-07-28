@@ -6,6 +6,7 @@ import pathlib
 import types
 from importlib import import_module, reload
 from typing import TYPE_CHECKING
+
 from loguru import logger
 from twitchio.ext.commands import Bucket, Command
 from twitchio.ext.routines import Routine
@@ -23,11 +24,12 @@ class CommandHandler:
     # TODO: Uma forma de desabilitar os subcomandos do booru.
 
     COMMANDS_TO_DISABLE = {"booru": 411010313, "gelbooru": 411010313, "danbooru": 411010313, "rule34": 411010313,
-            "realbooru": 411010313, "tbib": 411010313, "xbooru": 411010313, "safebooru": 411010313,
-            "yandere": 411010313, "lolibooru": 411010313, "kanachan": 411010313, "kanachan_net": 411010313,
-            "hypnohub": 411010313, "e621": 411010313, "e926": 411010313, "derpibooru": 411010313, "furbooru": 411010313,
-            "atfbooru": 411010313, "behoimi": 411010313, "paheal": 411010313,
-    }
+                           "realbooru": 411010313, "tbib": 411010313, "xbooru": 411010313, "safebooru": 411010313,
+                           "yandere": 411010313, "lolibooru": 411010313, "kanachan": 411010313,
+                           "kanachan_net": 411010313, "hypnohub": 411010313, "e621": 411010313, "e926": 411010313,
+                           "derpibooru": 411010313, "furbooru": 411010313, "atfbooru": 411010313, "behoimi": 411010313,
+                           "paheal": 411010313,
+                           }
 
     DEFAULT_COOLDOWN_PER = 5
     DEFAULT_COOLDOWN_RATE = 2
@@ -71,7 +73,7 @@ class CommandHandler:
 
             except Exception as e:
                 logger.error(f"Command '{filename.name[:-3]}' failed to load: {e} in {filename.joinpath()}",
-                        extra={"locals": locals()}, )
+                             extra={"locals": locals()}, )
 
     @staticmethod
     def load_event_message_listeners(self: Gorenmu, path: pathlib.Path) -> None:
@@ -99,7 +101,8 @@ class CommandHandler:
                 package: str = ".".join(filename.parts)
                 module: types.ModuleType = import_module(name, package=package)
                 routine: Routine = Routine(coro=module.routine, time=getattr(module, "time", None),
-                        delta=getattr(module, "delta", None), wait_first=getattr(module, "wait_first", False), )
+                                           delta=getattr(module, "delta", None),
+                                           wait_first=getattr(module, "wait_first", False), )
                 self.routines.append(routine)
             except Exception as e:
                 logger.error(f"Routine '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
@@ -140,4 +143,3 @@ class CommandHandler:
                 if "routines" in folder.name:
                     CommandHandler.load_routines(self, folder.joinpath())
         CommandHandler.start_routines(self)
-
