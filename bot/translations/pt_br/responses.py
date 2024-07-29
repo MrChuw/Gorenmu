@@ -8,6 +8,7 @@ from bot.translations.pt_br.extras import from_list_to_pet_list, pets, PetsDict
 from bot.translations.pt_br.extras import fight_option
 from bot.translations.pt_br.extras import dungeon_rank_dict
 from bot.translations.pt_br.extras import Activity as ActivityExtras
+from bot.translations.pt_br.extras import TimeTools, Humanize, Timeago
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -18,6 +19,18 @@ if TYPE_CHECKING:
 
 
 class PtBrTranslations:
+
+    class Tools(BaseTranslations.Exceptions):
+        class TimeTools(BaseTranslations.SupportTools.TimeTools):
+            TimeTools: TimeTools = TimeTools
+            Humanize: Humanize = Humanize
+            Timeago: Timeago = Timeago
+
+        class Lottery(BaseTranslations.SupportTools.Lottery):
+            bet_or_consultation: list[str] = ["aposta", "consultar"]
+
+
+
     class Exceptions(BaseTranslations.Exceptions):
         class LotteryExceptions(BaseTranslations.Exceptions.LotteryExceptions):
             lottery_seed: str = "algo horrível aconteceu, contate \"mr_chuw\" aqui na twitch utilizando whispers."

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from twitchio.ext.commands import Command, Context as TwitchioContext
 
 if TYPE_CHECKING:
-    from ext.commands import Context
+    from bot.ext.commands import Context
 
 
 class BaseDecorator:

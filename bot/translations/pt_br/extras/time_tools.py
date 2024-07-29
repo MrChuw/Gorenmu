@@ -77,18 +77,21 @@ class TimeTools:
         \b\s?)?
         """, re.VERBOSE, )
 
-    def birthday(self, target: str) -> Optional[str]:
+    @staticmethod
+    def birthday(target: str) -> Optional[str]:
         if "ano" in target and not any(x in target for x in ["mês", "meses", "semana", "dia"]):
             return " ".join(target.split()[:2])
 
-    def clean(self, target: Union[datetime, timedelta]) -> Union[datetime, str]:
+    @staticmethod
+    def clean(target: Union[datetime, timedelta]) -> Union[datetime, str]:
         if isinstance(target, timedelta):
             return str(target).split(".")[0]
         if isinstance(target, datetime):
             # return target.replace(microsecond=0)
             return target.replace(tzinfo=timezone.utc).replace(microsecond=0)
 
-    def date_in_full(self, delta: timedelta) -> str:
+    @staticmethod
+    def date_in_full(delta: timedelta) -> str:
         y, d = divmod(delta.days, 365)
         M, d = divmod(d, 30)
         m, s = divmod(delta.seconds, 60)

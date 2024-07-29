@@ -10,6 +10,11 @@ from bot.translations.base.extras import PetFuncCallable, PetsDict
 from bot.translations.base.extras import fight_option
 from bot.translations.base.extras import BaseTranslation
 
+from bot.translations.base.extras import TimeTools
+from bot.translations.base.extras import Humanize
+from bot.translations.base.extras import Timeago
+
+
 if TYPE_CHECKING:
     from bot.ext.commands import Context
 
@@ -19,6 +24,16 @@ class BaseTranslations:
         class TypeChecking(BaseTranslation):
             response: Response
             pass
+
+
+    class SupportTools:
+        class TimeTools(BaseTranslation):
+            TimeTools: TimeTools
+            Humanize: Humanize
+            Timeago: Timeago
+
+        class Lottery(BaseTranslation):
+            bet_or_consultation: list[str]
 
     class Exceptions:
         class LotteryExceptions(BaseTranslation):

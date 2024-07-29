@@ -23,7 +23,7 @@ from bot.ext.commands import Bot, Context, Message, routine
 
 from bot.models import Bots_ignore, Channel as ChannelModel, Loterica, User as UserModel
 from translations import TranslationManager
-from .exceptions import (CheckFailure, CommandNotFound, CommandOnCooldown, DevRequired, InvalidArgument, OwnerRequired)
+from bot.exceptions import (CheckFailure, CommandNotFound, CommandOnCooldown, DevRequired, InvalidArgument, OwnerRequired)
 from bot.utils import (
     BooruTools, Check, CommandHandler, Convert, CookieTools, Dicio, LotteryTools, MarkovProcessor, Rand, Role,
     Selenium, TimeTools, ToolsTools, UploadThings,
