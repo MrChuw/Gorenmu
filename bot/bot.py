@@ -24,8 +24,8 @@ from bot.ext.commands import Bot, Context, Message, routine
 from bot.models import Bots_ignore, Channel as ChannelModel, Loterica, User as UserModel
 from translations import TranslationManager
 from .exceptions import (CheckFailure, CommandNotFound, CommandOnCooldown, DevRequired, InvalidArgument, OwnerRequired)
-from .utils import (
-    BooruTools, Check, CommandHandler, Convert, CookieTools, Dicio, LotericaTools, MarkovProcessor, Rand, Role,
+from bot.utils import (
+    BooruTools, Check, CommandHandler, Convert, CookieTools, Dicio, LotteryTools, MarkovProcessor, Rand, Role,
     Selenium, TimeTools, ToolsTools, UploadThings,
 )
 
@@ -65,19 +65,16 @@ class Gorenmu(Bot):
         self.log: Logger = log
         self.config: Config = configs
         self.cache: RedisCache | MemcachedCache | SimpleMemoryCache = Cache.cache_load(self)
-
         self.boot: datetime.datetime = datetime.datetime.utcnow()
         self.timezone: datetime.timezone = datetime.timezone(datetime.timedelta(hours=-3))
         self.config: Config
         self.CommandHandler: CommandHandler = CommandHandler()
         self.SessionsCaches: SessionsCaches = SessionsCaches(self)
         self.MarkovProcessor: MarkovProcessor
-        self.TimeTools: TimeTools = TimeTools()
-        self.Role: Role = Role()
-        self.Check: Check = Check()
         self.UploadThings: UploadThings = UploadThings(self)
         self.ToolsTools: ToolsTools = ToolsTools(self)
-        self.LotericaTools: LotericaTools = LotericaTools(self)
+
+        self.LotteryTools: LotteryTools = LotteryTools(self)
         self.CookieTools: CookieTools = CookieTools(self)
         self.BooruTools: BooruTools = BooruTools(self.SessionsCaches.BooruCachedSession.cache)
         self.Dicio: Dicio = Dicio()
