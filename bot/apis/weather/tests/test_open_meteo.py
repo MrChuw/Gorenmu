@@ -11,6 +11,8 @@ from yarl import URL
 
 import translations.base.extras
 
+import bot.translations.base.extras.response
+
 
 @pytest.mark.asyncio
 async def test_json_request(aresponses):
@@ -19,7 +21,7 @@ async def test_json_request(aresponses):
         "example.com",
         "/api/",
         "GET",
-        translations.base.extra.Response(
+        bot.translations.base.extras.response.Response(
             status=200, headers={"Content-Type": "application/json"}, text='{"status": "ok"}'
         ),
     )
@@ -36,7 +38,7 @@ async def test_internal_session(aresponses):
         "example.com",
         "/api/",
         "GET",
-        translations.base.extra.Response(
+        bot.translations.base.extras.response.Response(
             status=200, headers={"Content-Type": "application/json"}, text='{"status": "ok"}'
         ),
     )
@@ -52,7 +54,7 @@ async def test_timeout(aresponses):
     # Faking a timeout by sleeping
     async def response_handler(_):
         await asyncio.sleep(2)
-        return translations.base.extra.Response(body="Goodmorning!")
+        return bot.translations.base.extras.response.Response(body="Goodmorning!")
 
     aresponses.add("example.com", "/api/", "POST", response_handler)
 
@@ -66,7 +68,7 @@ async def test_timeout(aresponses):
 async def test_http_error400(aresponses):
     """Test HTTP 404 response handling."""
     aresponses.add(
-        "example.com", "/api/", "GET", translations.base.extra.Response(text="OMG PUPPIES!", status=404)
+        "example.com", "/api/", "GET", bot.translations.base.extras.response.Response(text="OMG PUPPIES!", status=404)
     )
 
     async with aiohttp.ClientSession() as session:
@@ -82,7 +84,7 @@ async def test_http_error500(aresponses):
         "example.com",
         "/api/",
         "GET",
-        translations.base.extra.Response(
+        bot.translations.base.extras.response.Response(
             body=b'{"status":"nok"}', status=500, headers={"Content-Type": "application/json"}
         ),
     )

@@ -13,7 +13,7 @@ from twitchio.ext.routines import routine
 
 from bot.models import User as UserModel
 from translations import BaseDecorators
-from bot.translations.base.extras import Response
+from bot.translations.base import Response
 from bot.translations.base.responses import BaseTranslations
 
 if TYPE_CHECKING:

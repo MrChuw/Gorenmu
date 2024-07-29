@@ -3,10 +3,12 @@ from __future__ import annotations
 
 from typing import Any, TYPE_CHECKING
 
-from bot.translations.base import Response
-from bot.translations.base.extras import (
-    BaseTranslation, fight_option, PetFuncCallable, PetsDict, Status, WeatherTools,
-)
+from bot.translations.base.extras import Response
+from bot.translations.base.extras import Status
+from bot.translations.base.extras import WeatherTools
+from bot.translations.base.extras import PetFuncCallable, PetsDict
+from bot.translations.base.extras import fight_option
+from bot.translations.base.extras import BaseTranslation
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
