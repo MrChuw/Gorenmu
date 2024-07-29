@@ -161,3 +161,7 @@ def json_to_dict(filename: str) -> Union[dict, list]:
 
 def str2url(target: str) -> Optional[str]:
     return re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", target)
+
+
+def is_birthday( date: str) -> bool:
+    return "ano" in date and not any(x in date for x in ["mês", "meses", "semana", "dia"])

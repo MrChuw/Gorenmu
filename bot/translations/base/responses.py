@@ -22,6 +22,9 @@ class BaseTranslations:
         class LotteryExceptions(BaseTranslation):
             lottery_seed: str
 
+        class ToolsExceptions(BaseTranslation):
+            announcement: str
+
     class Activity:
         afks: dict[str, Status]
 

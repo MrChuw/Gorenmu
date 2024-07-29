@@ -22,6 +22,9 @@ class PtBrTranslations:
         class LotteryExceptions(BaseTranslations.Exceptions.LotteryExceptions):
             lottery_seed: str = "algo horrível aconteceu, contate \"mr_chuw\" aqui na twitch utilizando whispers."
 
+        class ToolsExceptions(BaseTranslations.Exceptions.ToolsExceptions):
+            announcement: str = "algo de errado com o anuncio. {}"
+
     class Activity(BaseTranslations.Activity):
         afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
