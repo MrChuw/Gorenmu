@@ -73,10 +73,10 @@ class Gorenmu(Bot):
         self.MarkovProcessor: MarkovProcessor
         self.UploadThings: UploadThings = UploadThings(self)
         self.ToolsTools: ToolsTools = ToolsTools(self)
-
         self.LotteryTools: LotteryTools = LotteryTools(self)
         self.CookieTools: CookieTools = CookieTools(self)
         self.BooruTools: BooruTools = BooruTools(self.SessionsCaches.BooruCachedSession.cache)
+
         self.Dicio: Dicio = Dicio()
         self.humanize: humanize = humanize
         self.aposta_lock: asyncio.Lock = asyncio.Lock()
