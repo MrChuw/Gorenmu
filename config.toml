@@ -11,6 +11,7 @@ site_url = "https://gorenmu.vercel.app/"
 imgur_authorized_ids = [184900613, 411010313]
 
 [apis]
+imagem_link_upload_thing_url = "${IMAGEM_LINK_UPLOAD_THING_URL}"
 site_api_key = "${SITE_API_KEY}"
 shlink_key = "${SHLINK_KEY}"
 shlink_url = "${SHLINK_URL}"
@@ -20,6 +21,8 @@ refresh_token = "${REFRESH_TOKEN}"
 client_id = "${CLIENT_ID}"
 api_client_secret = "${API_CLIENT_SECRET}"
 api_client_id = "${API_CLIENT_ID}"
+pastbin_url="https://bin.mrchuw.com.br/documents"
+file_upload_url = "${FILE_UPLOAD_URL}"
 
 [database]
 type = "mariadb"

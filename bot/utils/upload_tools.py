@@ -18,20 +18,20 @@ class UploadThings:  # TODO: Arrumar as funções que estão aqui dentro.
         self.bot = bot
 
     @staticmethod
-    async def pastbin_upload(text: str, cache: SQLiteBackend):
+    async def pastbin_upload(text: str, bot: Gorenmu, cache: SQLiteBackend):
         await asyncio.sleep(0)
         async with CachedSession(cache=cache) as session:
-            async with session.post("https://bin.mrchuw.com.br/documents", data=text.encode("utf-8")) as r:
+            async with session.post(bot.config.BotConfig.pastbin_url, data=text.encode("utf-8")) as r:
                 if r.status != 200:
                     return None
                 return (await r.read()).decode("utf8")
 
     @staticmethod
-    async def mandar_imgur(links: str, bot: Gorenmu, cache: SQLiteBackend):
+    async def send_imgur(links: str, bot: Gorenmu, cache: SQLiteBackend):
         try:
             async with CachedSession(cache=cache, headers={"Authorization": bot.config.ApisConfig.site_api_key}
                                      ) as session:
-                async with session.post("https://im.mrchuw.com.br/api/imgur/", json={"links": links}) as resp:
+                async with session.post(bot.config.BotConfig.imagem_link_upload_thing_url, json={"links": links}) as resp:
                     embed = json.loads(await resp.text())
                     return embed["url"]
         except Exception as e:
@@ -39,7 +39,7 @@ class UploadThings:  # TODO: Arrumar as funções que estão aqui dentro.
             return None
 
     @staticmethod
-    async def encurtar(url: str, bot: Gorenmu, cache: SQLiteBackend):
+    async def shortener(url: str | None, bot: Gorenmu, cache: SQLiteBackend):
         timeout = aiohttp.ClientTimeout(total=20)
         shlink_url = bot.config.ApisConfig.shlink_url
         payload = {"longUrl": url, "forwardQuery": "true", "findIfExists": "true"}
@@ -74,7 +74,7 @@ class UploadThings:  # TODO: Arrumar as funções que estão aqui dentro.
                            "Authorization": bot.config.ApisConfig.site_api_key,
                            }
 
-                async with session.post("https://im.mrchuw.com.br/api/files/", data=body, headers=headers) as resp:
+                async with session.post(bot.config.BotConfig.file_upload_url, data=body, headers=headers) as resp:
                     return json.loads(await resp.text())
 
         except Exception as e:
