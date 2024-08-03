@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import Any, TYPE_CHECKING
 
 from bot.translations.base import BaseTranslations, Response
-from bot.translations.pt_br.extras import WeatherTools
+from bot.translations.pt_br.extras import Humanize, WeatherTools
 from bot.translations.pt_br.extras import from_list_to_pet_list, pets, PetsDict
 from bot.translations.pt_br.extras import fight_option
 from bot.translations.pt_br.extras import dungeon_rank_dict
 from bot.translations.pt_br.extras import Activity as ActivityExtras
-from bot.translations.pt_br.extras import TimeTools, Humanize, Timeago
+from bot.translations.pt_br.extras import TimeTools, Timeago
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -22,11 +22,13 @@ class PtBrTranslations:
     class SupportTools(BaseTranslations.Exceptions):
         class TimeTools(BaseTranslations.SupportTools.TimeTools):
             TimeTools: TimeTools = TimeTools
-            Humanize: Humanize = Humanize
             Timeago: Timeago = Timeago
 
         class Lottery(BaseTranslations.SupportTools.Lottery):
             bet_or_consultation: list[str] = ["aposta", "consultar"]
+
+        class Humanize(BaseTranslations.SupportTools.Lottery):
+            Humanize: Humanize = Humanize
 
     class Exceptions(BaseTranslations.Exceptions):
         class LotteryExceptions(BaseTranslations.Exceptions.LotteryExceptions):
@@ -500,16 +502,14 @@ class PtBrTranslations:
             past: str = "passadas"
             current: str = "atuais"
 
-
-
     class NSFW(BaseTranslations.NSFW):
         class Boru(BaseTranslations.NSFW.Boru):
-            pls_wait = "por favor espera um pouco, estou gerando os links."
+            pls_wait: str = "por favor espera um pouco, estou gerando os links."
             unexpected_error: Response = Response({"success": False, "response": "{}", "is_response": False})
             success: Response = Response({"success": False, "response": "", "is_response": False})
 
         class AllBoorus(BaseTranslations.NSFW.AllBoorus):
-            pls_wait = "por favor espera um pouco, estou gerando os links."
+            pls_wait: str = "por favor espera um pouco, estou gerando os links."
             unexpected_error: Response = Response({"success": False, "response": "{}", "is_response": False})
             too_much_tags: Response = Response(
                 {

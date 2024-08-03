@@ -32,8 +32,8 @@ class Lottery(Base, TimestampMixin):
     # TODO: Arrumar o timetools quando chegar na parte.
 
     def closed_a_time(self, ctx: Context):
-        return ctx.bot.TimeTools.Humanize.precisedelta(datetime.now(pytz.utc) - self.closed_in)
+        return ctx.translations.SupportTools.Humanize().Humanize.precisedelta(datetime.now(pytz.utc) - self.closed_in)
 
 
     def closed_in_str(self, ctx: Context):
-        return ctx.bot.TimeTools.Humanize.precisedelta(datetime.now(pytz.utc) - self.closed_in)
+        return ctx.translations.SupportTools.Humanize().Humanize.precisedelta(datetime.now(pytz.utc) - self.closed_in)

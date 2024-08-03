@@ -29,11 +29,14 @@ class BaseTranslations:
     class SupportTools:
         class TimeTools(BaseTranslation):
             TimeTools: TimeTools
-            Humanize: Humanize
             Timeago: Timeago
 
         class Lottery(BaseTranslation):
             bet_or_consultation: list[str]
+
+        class Humanize(BaseTranslation):
+            Humanize: Humanize
+
 
     class Exceptions:
         class LotteryExceptions(BaseTranslation):

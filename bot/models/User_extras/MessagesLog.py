@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from bot.models.User import User
     from bot.models.Channel import Channel
 
+
 class MessagesLog(Base):
     content = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
@@ -33,7 +34,7 @@ class MessagesLog(Base):
 
 
     def created_a_time(self, ctx: Context):
-        return ctx.bot.TimeTools.Humanize.precisedelta(datetime.now(pytz.utc) - self.created_at)
+        return ctx.translations.SupportTools.Humanize().Humanize.precisedelta(datetime.now(pytz.utc) - self.created_at)
 
     @staticmethod
     async def all_messages_generator(maximum=None, category=None, offset=0, channel_id=None):

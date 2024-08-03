@@ -28,7 +28,7 @@ class LotteryBank(Base, TimestampMixin):
     # TODO: Arrumar o timetools quando chegar na parte. end_at
 
     def end_at(self, ctx: Context):
-        return ctx.bot.TimeTools.Humanize.precisedelta(datetime.now(pytz.utc) - self.closed_in)
+        return ctx.translations.SupportTools.Humanize().Humanize.precisedelta(datetime.now(pytz.utc) - self.closed_in)
 
 
     def end_at_strftime(self):

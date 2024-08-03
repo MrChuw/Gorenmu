@@ -7,7 +7,7 @@ from .pets import PetInfo
 from .pets import PetsDict
 from .reminds import PATTERN_TIME
 from .time_tools import TimeTools
-from .time_tools import Humanize
+from .humanize import Humanize
 from .time_tools import Timeago
 from .weather import WeatherTools
 
