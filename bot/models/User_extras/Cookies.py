@@ -58,7 +58,6 @@ class Cookies(Base, TimestampMixin):
 
     async def reduce_update(self, value: int) -> Cookies:
         self.stocked = self.stocked - value
-        self.total = self.total + value
         await self.save()
         return self
 
@@ -76,5 +75,6 @@ class Cookies(Base, TimestampMixin):
 
     async def lottery_update(self, value: int) -> Cookies:
         self.stocked = self.stocked + value
+        self.total = self.total + value
         await self.save()
         return self

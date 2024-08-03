@@ -19,8 +19,7 @@ if TYPE_CHECKING:
 
 
 class PtBrTranslations:
-
-    class Tools(BaseTranslations.Exceptions):
+    class SupportTools(BaseTranslations.Exceptions):
         class TimeTools(BaseTranslations.SupportTools.TimeTools):
             TimeTools: TimeTools = TimeTools
             Humanize: Humanize = Humanize
@@ -28,8 +27,6 @@ class PtBrTranslations:
 
         class Lottery(BaseTranslations.SupportTools.Lottery):
             bet_or_consultation: list[str] = ["aposta", "consultar"]
-
-
 
     class Exceptions(BaseTranslations.Exceptions):
         class LotteryExceptions(BaseTranslations.Exceptions.LotteryExceptions):
@@ -449,6 +446,7 @@ class PtBrTranslations:
                     "is_response": False,
                 }
             )
+
             timeout: Response = Response(
                 {
                     "success": False,
@@ -456,6 +454,7 @@ class PtBrTranslations:
                     "is_response": False,
                 }
             )
+
             not_enough_cookies: Response = Response(
                 {
                     "success": False,
@@ -479,6 +478,7 @@ class PtBrTranslations:
                     "is_response": False,
                 }
             )
+
             too_much_numbers: Response = Response(
                 {"success": False, "response": "você não pode apostar mais que 15 números.", "is_response": False}
             )
@@ -492,6 +492,15 @@ class PtBrTranslations:
             minimum_bet: Response = Response(
                 {"success": False, "response": "por favor escolha no mínimo 3 números.", "is_response": False}
             )
+
+            bet_message: str = ("agora você precisa escolher ate 6 números de 1 a 60 (para a aposta padrão ou ate 15 "
+                                "para a Aposta Máxima custando 1.294 cookies).")
+
+            consultation_message: str = "você gostaria de consultar apostas passadas ou atuais?"
+            past: str = "passadas"
+            current: str = "atuais"
+
+
 
     class NSFW(BaseTranslations.NSFW):
         class Boru(BaseTranslations.NSFW.Boru):

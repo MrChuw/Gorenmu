@@ -211,6 +211,7 @@ class BaseTranslations:
             duplicate_numbers: Response
             minimum_bet: Response
 
+
         class Lottery(BaseTranslation):
             lottery_lock: Response
             timeout: Response
@@ -226,6 +227,12 @@ class BaseTranslations:
             no_bets_next_lottery: Response
             new_bets: Response
             invalid_option: Response
+
+            bet_message: str
+            consultation_message: str
+            past: str
+            current: str
+
 
     class NSFW:
         class Boru(BaseTranslation):

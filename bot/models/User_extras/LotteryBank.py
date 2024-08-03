@@ -33,3 +33,7 @@ class LotteryBank(Base, TimestampMixin):
 
     def end_at_strftime(self):
         return self.closed_in.strftime("%d/%m/%Y %H:%M:%S")
+
+    async def add(self, value: int):
+        self.quantity += value
+        await self.save()
