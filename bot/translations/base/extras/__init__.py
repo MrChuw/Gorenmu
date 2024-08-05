@@ -7,3 +7,4 @@ from .weather import WeatherTools
 from .time_tools import TimeTools
 from .time_tools import Humanize
 from .time_tools import Timeago
+from .dicio import Dicio

@@ -13,6 +13,7 @@ from bot.translations.base.extras import BaseTranslation
 from bot.translations.base.extras import TimeTools
 from bot.translations.base.extras import Humanize
 from bot.translations.base.extras import Timeago
+from bot.translations.base.extras import Dicio
 
 
 if TYPE_CHECKING:
@@ -36,6 +37,9 @@ class BaseTranslations:
 
         class Humanize(BaseTranslation):
             Humanize: Humanize
+
+        class Dicio(BaseTranslation):
+            Dicio: Dicio
 
 
     class Exceptions:

@@ -9,6 +9,7 @@ from bot.translations.pt_br.extras import fight_option
 from bot.translations.pt_br.extras import dungeon_rank_dict
 from bot.translations.pt_br.extras import Activity as ActivityExtras
 from bot.translations.pt_br.extras import TimeTools, Timeago
+from bot.translations.pt_br.extras import Dicio
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -29,6 +30,9 @@ class PtBrTranslations:
 
         class Humanize(BaseTranslations.SupportTools.Lottery):
             Humanize: Humanize = Humanize
+
+        class Dicio(BaseTranslations.SupportTools.Dicio):
+            ...
 
     class Exceptions(BaseTranslations.Exceptions):
         class LotteryExceptions(BaseTranslations.Exceptions.LotteryExceptions):

@@ -25,8 +25,7 @@ from bot.models import Bots_ignore, Channel as ChannelModel, Loterica, User as U
 from translations import TranslationManager
 from bot.exceptions import (CheckFailure, CommandNotFound, CommandOnCooldown, DevRequired, InvalidArgument, OwnerRequired)
 from bot.utils import (
-    BooruTools, Check, CommandHandler, Convert, CookieTools, Dicio, LotteryTools, MarkovProcessor, Rand, Role,
-    Selenium, TimeTools, ToolsTools, UploadThings,
+    BooruTools, Convert, CookieTools, Dicio, LotteryTools, MarkovProcessor, Rand, ToolsTools, UploadThings,
 )
 
 
@@ -37,12 +36,11 @@ from typing import Any, Callable, Coroutine
 from bot.utils.caches import (Cache, SessionsCaches)
 
 
-import humanize
 from twitchio.ext.routines import Routine
 from bot.ext.config import Config
 from bot.ext.commands import Bot, Context
 from bot.translations import TranslationManager
-from bot.utils.command_handler import  CommandHandler
+from bot.utils.command_handler import CommandHandler
 
 from bot.models import Channel as ChannelModel
 
@@ -76,9 +74,6 @@ class Gorenmu(Bot):
         self.LotteryTools: LotteryTools = LotteryTools(self)
         self.CookieTools: CookieTools = CookieTools(self)
         self.BooruTools: BooruTools = BooruTools(self.SessionsCaches.BooruCachedSession.cache)
-
-        self.Dicio: Dicio = Dicio()
-        self.humanize: humanize = humanize
         self.aposta_lock: asyncio.Lock = asyncio.Lock()
         self.TranslationManager: TranslationManager = TranslationManager()
 

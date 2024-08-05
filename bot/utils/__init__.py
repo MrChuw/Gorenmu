@@ -8,6 +8,7 @@ from .lottery_tools import LotteryTools
 from .cookie_tools import CookieTools
 from .selenium_tool import Selenium
 from .booru_tools import BooruTools
+from .markov_tools import MarkovProcessor
 
 
 
