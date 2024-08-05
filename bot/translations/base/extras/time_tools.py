@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Optional, Union
-
-import humanize
 
 
 class TimeTools:

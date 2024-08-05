@@ -44,8 +44,8 @@ class BaseDecorators:
         return BaseDecorators.get_decorator(source, ctx).helper.format(prefix)
 
     @staticmethod
-    def get_usage(source: Context | Command, ctx: Context, prefix: str) -> str:
-        return BaseDecorators.get_decorator(source, ctx).usage.format(prefix)
+    def get_usage(source: Context | Command, ctx: Context) -> str:
+        return BaseDecorators.get_decorator(source, ctx).usage.format(ctx.prefix)
 
     @staticmethod
     def get_description(source: Context | Command, ctx: Context) -> str:

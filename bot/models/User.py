@@ -1,15 +1,20 @@
 from __future__ import annotations
 
-from typing import Coroutine, List, Union
+from typing import Coroutine, List, Optional, TYPE_CHECKING, Union
 
 from tortoise import fields
+from urlextract import URLExtract
 
 from bot.models.base import (
     Base, BoolFieldBool, CharFieldStr, ContentMixin, DatetimeTzField, TimestampMixin, UserMixin,
 )
-from bot.models.User_extras import (Annotation, Player, Cookies, NickHistory, Pets, Suggest, Bug,
-                                    Status, Reminder, Copypasta, MessagesLog, Lottery, Imgur, ImgurAggregate,
-                                    PlayerTower)
+from bot.models.User_extras import (
+    Annotation, Bug, Cookies, Copypasta, Imgur, ImgurAggregate, MessagesLog, NickHistory, Pets, Player, PlayerTower,
+    Reminder, Status, Suggest,
+)
+
+if TYPE_CHECKING:
+    from bot.ext.commands import Context
 
 
 class User(Base, UserMixin, TimestampMixin, ContentMixin):
@@ -50,3 +55,42 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
 
     def __str__(self) -> str:
         return f"{self.nickname}" if self.sponsor and self.nickname else f"@{self.name}"
+
+    @staticmethod
+    async def create_or_update(ctx: Context, **kwargs) -> Optional[User]:
+        if instance := await User.get_or_none(id=ctx.author.id):
+            attrs = {"name": ctx.author.name, "channel": ctx.channel.name,  # "saved_color": ctx.author.colour,
+                     "content": ctx.message.content.replace("ACTION", "", 1), "timestamp": ctx.message.timestamp,
+                     }
+            update_fields = []
+            if instance.name != ctx.author.name:
+                await NickHistory.create(user=instance, nicks=instance.name)
+
+            message_type = "message_link" if URLExtract().find_urls(text=ctx.message.content) else "message"
+            await MessagesLog.create(user=instance, content=ctx.message.content[:500], type=message_type,
+                                     channel=ctx.bot.channels[ctx.channel.name]
+                                     )
+
+            for attr, value in attrs.items():
+                if attr == "content" and len(value) > 500:
+                    value = value[:500]
+                if getattr(instance, attr) != value:
+                    setattr(instance, attr, value)
+                    update_fields.append(attr)
+            if update_fields:
+                update_fields.append("updated_at")
+                await instance.save(update_fields=update_fields)
+            return instance
+        else:
+            user = {"id": ctx.author.id, "name": ctx.author.name, "channel": ctx.channel.name,
+                    "saved_color": ctx.author.colour, "content": ctx.message.content.replace("ACTION", "", 1),
+                    "timestamp": ctx.message.timestamp, **kwargs,
+                    }
+            user = await User.create(**user)
+            await NickHistory.create(user=user, nicks=user.name)
+            message_type = "message_link" if URLExtract().find_urls(text=ctx.message.content) else "message"
+            await MessagesLog.create(user=user, content=ctx.message.content[:500], type=message_type,
+                                     channel=ctx.bot.channels[ctx.channel.name]
+                                     )
+
+            return user

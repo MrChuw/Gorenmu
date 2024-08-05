@@ -16,9 +16,10 @@ from .Player import Player  # NOQA
 from .PlayerTower import PlayerTower  # NOQA
 from .Reminder import Reminder  # NOQA
 from .Suggest import Suggest  # NOQA
-# from .User import User  # NOQA
 from .Weddings import Wedding  # NOQA
 
 from .MarkovUsers import MarkovUsers
 from .MarkovUserChannel import MarkovUserChannel
 from .MarkovChannels import MarkovChannels
+
+from .BotsIgnore import BotsIgnore

@@ -123,7 +123,7 @@ class Context(TwitchioContext):
 
     # TODO: Fazer logo o novo resposta não se esquecer de adicionar suporte ao response_list.
     #  E tbm caso não tiver response ma tiver response_list
-    async def resposta(self, resposta: Response) -> None | bool:
+    async def response(self, resposta: Response) -> None | bool:
         ctx: Context = resposta.ctx
         handle = None
         response = resposta

@@ -26,7 +26,6 @@ class BaseTranslations:
             response: Response
             pass
 
-
     class SupportTools:
         class TimeTools(BaseTranslation):
             TimeTools: TimeTools
@@ -41,13 +40,21 @@ class BaseTranslations:
         class Dicio(BaseTranslation):
             Dicio: Dicio
 
-
     class Exceptions:
         class LotteryExceptions(BaseTranslation):
             lottery_seed: str
 
         class ToolsExceptions(BaseTranslation):
             announcement: str
+
+        class BotMainLoopExceptions(BaseTranslation):
+            dev_required: str
+            owner_required: str
+            command_on_cooldown: str
+            not_implemented: str
+
+
+            error_not_registered: str
 
     class Activity:
         afks: dict[str, Status]

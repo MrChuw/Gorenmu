@@ -41,6 +41,14 @@ class PtBrTranslations:
         class ToolsExceptions(BaseTranslations.Exceptions.ToolsExceptions):
             announcement: str = "algo de errado com o anuncio. {}"
 
+        class BotMainLoopExceptions(BaseTranslations.Exceptions.BotMainLoopExceptions):
+            dev_required: str = "você precisa ser meu criador para executar esse comando."
+            owner_required: str = "comandos reservados para o dono do bot."
+            command_on_cooldown: str = "para usar o comando de novo volte {}."
+            not_implemented: str = "esse comando está temporariamente desativado."
+
+            error_not_registered: str = "ocorreu um erro inesperado, por favor, reporte o erro para @{}"
+
     class Activity(BaseTranslations.Activity):
         afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
