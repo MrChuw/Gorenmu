@@ -52,9 +52,8 @@ class BaseTranslations:
             owner_required: str
             command_on_cooldown: str
             not_implemented: str
-
-
             error_not_registered: str
+
 
     class Activity:
         afks: dict[str, Status]

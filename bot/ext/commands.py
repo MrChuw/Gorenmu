@@ -5,23 +5,31 @@ import asyncio
 from typing import Callable, TYPE_CHECKING
 
 from twitchio import Channel, Message, User
-from twitchio.cooldowns import RateBucket
 from twitchio.ext.commands import (
     BadArgument, Bot, Bucket, Cog, Command, command, Context as TwitchioContext, cooldown, MissingRequiredArgument,
 )
 from twitchio.ext.routines import routine
 
 from bot.models import User as UserModel
-from translations import BaseDecorators
+from bot.translations import BaseDecorators
 from bot.translations.base import Response
 from bot.translations.base.responses import BaseTranslations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
+max_message_len = 450
+minimum_delay_messages = 0.1
 
-class Bot(Bot):  # NOQA
-    async def invoke(self, context: Context, *, index=0) -> None:
+__all__ = ("Bot", "Bucket", "Channel", "Cog", "Context", "Message", "User", "check", "command", "Command", "cooldown",
+           # "helper",
+           "routine",# "usage",
+        # "base_decorator",
+)
+
+
+class Bot(Bot):
+    async def invoke(self, context: Context, *, index=0) -> None:  # NOQA
         if not context.prefix or not context.is_valid:
             return
         context.bot.run_event("command_invoke", context)
@@ -39,15 +47,14 @@ class Bot(Bot):  # NOQA
                     context.bot.run_event("command_error", context, _e)
 
         try:
-            args, kwargs = await context.command.parse_args(
-                context, context.command._instance, context.view.words, index=index
+            args, kwargs = await context.command.parse_args(context, context.command._instance, context.view.words,
+                    index=index  # NOQA
             )
         except (MissingRequiredArgument, BadArgument) as e:
             if self.event_error:
-                args_ = (
-                    [context.command._instance, context] if context.command._instance else [context]
+                args_ = ([context.command._instance, context] if context.command._instance else [context]  # NOQA
                 )
-                await try_run(self.event_error(*args_, e))
+                await try_run(self.event_error(*args_, e))  # NOQA
 
             context.bot.run_event("command_error", context, e)
             return
@@ -58,55 +65,35 @@ class Bot(Bot):  # NOQA
         if check_result is not True:
             context.bot.run_event("command_error", context, check_result)
             return
-        limited = context.command._run_cooldowns(context)
+        limited = context.command._run_cooldowns(context)  # NOQA
 
         if limited:
             context.bot.run_event("command_error", context, limited[0])
             return
-        instance = context.command._instance
+        instance = context.command._instance  # NOQA
         args = [instance, context] if instance else [context]
         await try_run(context.bot.global_before_invoke(context))
 
-        if context.command._before_invoke:
-            await try_run(context.command._before_invoke(*args), to_command=True)
+        if context.command._before_invoke:  # NOQA
+            await try_run(context.command._before_invoke(*args), to_command=True)  # NOQA
 
         callback_result = None
         try:
-            callback_result = await context.command._callback(
-                *args, *context.args, **context.kwargs
+            callback_result = await context.command._callback(  # NOQA
+                    *args, *context.args, **context.kwargs
             )
         except Exception as e:
             if self.event_error:
-                await try_run(self.event_error(*args, e))
+                await try_run(self.event_error(*args, e))  # NOQA
             context.bot.run_event("command_error", context, e)
         else:
             context.bot.run_event("command_complete", context)
 
-        if context.command._after_invoke:
-            await try_run(context.command._after_invoke(*args), to_command=True)
+        if context.command._after_invoke:  # NOQA
+            await try_run(context.command._after_invoke(*args), to_command=True)  # NOQA
         await try_run(context.bot.global_after_invoke(context))
 
         return callback_result
-
-
-__all__ = (
-    "Bot",
-    "Bucket",
-    "Channel",
-    "Cog",
-    "Context",
-    "Message",
-    "User",
-    "check",
-    "command",
-    "Command",
-    "cooldown",
-    # "helper",
-    "routine",
-    # "usage",
-    # "base_decorator",
-)
-RateBucket.MODLIMIT = 1000
 
 
 class Context(TwitchioContext):
@@ -121,137 +108,115 @@ class Context(TwitchioContext):
         yield "message", self.message.content if self.message and self.message.content else None
         yield "command", self.command.name if self.command and self.command.name else None
 
-    # TODO: Fazer logo o novo resposta não se esquecer de adicionar suporte ao response_list.
-    #  E tbm caso não tiver response ma tiver response_list
-    async def response(self, resposta: Response) -> None | bool:
-        ctx: Context = resposta.ctx
-        handle = None
-        response = resposta
-
-        if not response:
-            await ctx.reply(f"{ctx.user.nickname or ctx.author.name} algo deu muito errado.")
-            return False
-
+    @staticmethod
+    async def extract_response(response: Response):
         if response:
             handle = response.handle
+        else:
+            handle = None
+        if response.response_string:
+            response_str = response.response_string
+        else:
+            response_str = None
+        if response.response_list:
+            response_list = response.response_list
+        else:
+            response_list = None
+        return handle, response_str, response_list, response.success
 
-        # if not handle or not response:
-        #     return
+    @staticmethod
+    async def handle_response(ctx: Context, full_response: str):
+        chunks = []
+        while len(full_response) > max_message_len:
+            index_space = full_response.rfind(" ", 0, max_message_len)
+            if index_space == -1:
+                chunks.append(full_response[:max_message_len])
+                full_response = full_response[max_message_len:]
+            else:
+                chunks.append(full_response[:index_space])
+                full_response = full_response[index_space + 1:]
 
+        chunks.append(full_response)
+
+        for chunk in chunks:
+            await ctx.reply(chunk)
+            await asyncio.sleep(minimum_delay_messages)
+
+    @staticmethod
+    async def handle_echo(ctx: Context, response_str: str):
+        if len(response_str) < max_message_len:
+            return await ctx.reply(f"{response_str}")
+        part1 = response_str[:max_message_len]
+        part2 = response_str[max_message_len:]
+        await ctx.reply(f"{part1}")
+        await asyncio.sleep(0.5)
+        await ctx.reply(f"{part2}")
+
+    @staticmethod
+    async def handle_banwords(ctx: Context, response_str: str):
+        banwords = ctx.bot.channels[ctx.channel.name].banwords
+        user_handler = ctx.user.nickname or ctx.author.name
+        for word in banwords.keys():
+            if word in response_str:
+                tamanho = len(word)
+                asteriscos = "".join("*" for _ in range(tamanho))
+                response_str = response_str.replace(word, asteriscos)
+            if word in ctx.user.nickname:
+                user_handler = ctx.author.name
+        return response_str, user_handler
+
+    async def handle_response_list(self, ctx: Context, response_list: list[str], handle: str | None):
+        for response in response_list:
+            response_str, user_handler = await self.handle_banwords(ctx=ctx, response_str=response)
+            full_response: str = f"{user_handler} {response_str}"
+            if handle == "echo":
+                await self.handle_echo(ctx=ctx, response_str=response_str)
+            else:
+                await self.handle_response(ctx=ctx, full_response=full_response)
+            await asyncio.sleep(minimum_delay_messages)
+
+    async def response(self, response: Response) -> None | bool:  # NOQA
+        ctx: Context = response.ctx
         if ctx.bot.channels[ctx.channel.name].online is False:
             return False
         if ctx.bot.channels[ctx.channel.name].prefix == "ƚ":
             return False
+        handle, response_str, response_list, success = await self.extract_response(response)
+        response_str, user_handler = await self.handle_banwords(ctx, response_str)
 
-        banwords = ctx.bot.channels[ctx.channel.name].banwords
-        for chave in banwords.keys():
-            if chave in resposta:
-                tamanho = len(chave)
-                asteriscos = "".join("*" for _ in range(tamanho))
-                response.response_string = response.response_string.replace(chave, asteriscos)
+        if handle == "echo" and not response_list:
+            await self.handle_echo(ctx=ctx, response_str=response_str)
 
-        if handle == "echo":
-            if len(response.response) < 450:
-                return await ctx.reply(f"{response.response}")
-            parte1 = response.response[:450]
-            parte2 = response.response[450:]
-            await ctx.reply(f"{parte1}")
-            await asyncio.sleep(0.5)
-            return await ctx.reply(f"{parte2}")
+        full_response: str = f"{user_handler} {response_str}"
+        if len(full_response) < max_message_len:
+            return await ctx.reply(full_response)
+        else:
+            await self.handle_response(ctx=ctx, full_response=full_response)
+        if response_list:
+            await self.handle_response_list(ctx, response_list, handle)
 
-        if len(response.response) < 450:
-            return await ctx.reply(f"{ctx.user.nickname or ctx.author.name} {response.response_string}")
-
-        resposta: str = f"{ctx.user.nickname or ctx.author.name} {response.response}"
-
-        tamanho_do_chunk = 450
-
-        chunks = []
-        while len(resposta) > tamanho_do_chunk:
-            # Procura o último espaço antes da posição de tamanho_do_chunk
-            indice_espaco = resposta.rfind(" ", 0, tamanho_do_chunk)
-
-            # Se não houver espaço, divide a string na posição do tamanho do chunk.
-            if indice_espaco == -1:
-                chunks.append(resposta[:tamanho_do_chunk])
-                resposta = resposta[tamanho_do_chunk:]
-            else:
-                # Divide a string no último espaço antes do tamanho do chunk.
-                chunks.append(resposta[:indice_espaco])
-                resposta = resposta[indice_espaco + 1 :]
-
-        chunks.append(resposta)
-
-        for chunk in chunks:
-            await ctx.reply(chunk)
-            if len(chunks) > 5:
-                await asyncio.sleep(0.5)
-            elif len(chunks) > 10:
-                await asyncio.sleep(1)
-            else:
-                await asyncio.sleep(0.12)
-
-    async def simple_response(self, ctx: Context, resposta: str, handle: str = None) -> None | bool:
+    async def simple_response(self, ctx: Context, response: str, handle: str = None) -> None | bool:  # NOQA
         if ctx.bot.channels[ctx.channel.name].online is False:
             return False
         if ctx.bot.channels[ctx.channel.name].prefix == "ƚ":
             return False
-
-        banwords = ctx.bot.channels[ctx.channel.name].banwords
-        for chave in banwords.keys():
-            if chave in resposta:
-                tamanho = len(chave)
-                asteriscos = "".join("*" for _ in range(tamanho))
-                resposta = resposta.replace(chave, asteriscos)
+        response_str = response
+        response_str, user_handler = await self.handle_banwords(ctx, response_str)
 
         if handle == "echo":
-            if len(resposta) < 450:
-                return await ctx.reply(f"{resposta}")
-            parte1 = resposta[:450]
-            parte2 = resposta[450:]
-            await ctx.reply(f"{parte1}")
-            await asyncio.sleep(0.5)
-            return await ctx.reply(f"{parte2}")
+            await self.handle_echo(ctx=ctx, response_str=response_str)
 
-        if len(resposta) < 450:
-            return await ctx.reply(f"{ctx.user.nickname or ctx.author.name} {resposta}")
-
-        resposta = f"{ctx.user.nickname or ctx.author.name} {resposta}"
-
-        tamanho_do_chunk = 450
-
-        chunks = []
-        while len(resposta) > tamanho_do_chunk:
-            # Procura o último espaço antes da posição de tamanho_do_chunk
-            indice_espaco = resposta.rfind(" ", 0, tamanho_do_chunk)
-
-            # Se não houver espaço, divide a string na posição do tamanho do chunk
-            if indice_espaco == -1:
-                chunks.append(resposta[:tamanho_do_chunk])
-                resposta = resposta[tamanho_do_chunk:]
-            else:
-                # Divide a string no último espaço antes do tamanho do chunk
-                chunks.append(resposta[:indice_espaco])
-                resposta = resposta[indice_espaco + 1 :]
-
-        chunks.append(resposta)
-
-        for chunk in chunks:
-            await ctx.reply(chunk)
-            if len(chunks) > 5:
-                await asyncio.sleep(0.5)
-            elif len(chunks) > 10:
-                await asyncio.sleep(1)
-            else:
-                await asyncio.sleep(0.12)
+        full_response: str = f"{user_handler} {response_str}"
+        if len(full_response) < max_message_len:
+            return await ctx.reply(full_response)
+        else:
+            await self.handle_response(ctx=ctx, full_response=full_response)
 
 
-def check(check: list) -> Callable[[Command], Command]:
-    def decorator(command: Command) -> Command:
-        # if type(command) != Command:
-        #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
-        for c in check:
-            command._checks.append(c)
+def check(check_list: list) -> Callable[[Command], Command]:
+    def decorator(command: Command) -> Command:  # NOQA
+        for c in check_list:
+            command._checks.append(c)  # NOQA
         return command
 
     return decorator
@@ -283,31 +248,3 @@ def check(check: list) -> Callable[[Command], Command]:
 #         return command
 #
 #     return decorator
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

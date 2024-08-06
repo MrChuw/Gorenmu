@@ -2,7 +2,7 @@
 from bot.translations.base import BaseDecorators, BaseTranslations
 from bot.translations.en_us import EnUsDecorators, EnUsTranslations
 from bot.translations.pt_br import PtBrDecorators, PtBrTranslations
-
+from .base import Response
 
 class TranslationManager:
     def __init__(self):

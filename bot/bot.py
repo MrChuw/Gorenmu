@@ -21,7 +21,7 @@ from bot.ext.commands import Bot, Context, Message, routine
 from bot.ext.config import Config
 from bot.models import Channel as ChannelModel, User as UserModel
 from bot.models.User_extras import BotsIgnore
-from bot.translations import TranslationManager
+from bot.translations import TranslationManager, Response
 from bot.utils import (
     BooruTools, CookieTools, LotteryTools, MarkovProcessor, ToolsTools, UploadThings,
 )
@@ -30,7 +30,7 @@ from bot.utils.command_handler import CommandHandler
 
 
 class Gorenmu(Bot):
-    event_message_listeners: list[Callable[[Context], Coroutine[Any, Any, bool]]] = []
+    event_message_listeners: list[Callable[[Context], Coroutine[Any, Any, bool | Response]]] = []
     routines: list[Routine] = []
     channels: dict[str, ChannelModel] = {}
 
@@ -56,6 +56,7 @@ class Gorenmu(Bot):
         self.TranslationManager: TranslationManager = TranslationManager()
         self.reconnection_attempts: dict[str, int] = {}
         self.bots_ids: list[int] = []
+        self.dev_name: str = ""
 
     async def fetch_channels(self) -> None:
         for channel in await ChannelModel.filter(removed=False):
@@ -170,6 +171,7 @@ class Gorenmu(Bot):
         if self.restart > 1:
             os.execv(sys.executable, ["python3.10"] + sys.argv)
         # CommandHandler.load_cogs(self)
+        self.dev_name = (await self.fetch_users([self.config.BotConfig.dev_userid]))[0]
         await asyncio.sleep(1)
         self.log.info(
                 f"{self.nick} | #({len(self.connected_channels)}/{len(self.channels)}) | {len(self._prefix)} prefix's, "
@@ -182,7 +184,7 @@ class Gorenmu(Bot):
         if "user" not in ctx.__dict__:
             ctx.user = await UserModel.create_or_update(ctx)
 
-    async def event_command_error(self, ctx: Context, error: Exception) -> None:  # TODO: arrumar as respostas.
+    async def event_command_error(self, ctx: Context, error: Exception) -> None:
         if not self.channels[ctx.channel.name].online:
             return None
         if ctx.prefix != self.channels[ctx.channel.name].prefix:
@@ -205,14 +207,11 @@ class Gorenmu(Bot):
             )
             return await ctx.simple_response(ctx, cooldown_str)
         if isinstance(error, NotImplementedError):
-            return await ctx.simple_response(ctx, "esse comando está temporariamente desativado.")
+            return await ctx.simple_response(ctx, translations.not_implemented)
         if isinstance(error, InvalidArgument) and ctx.command and hasattr(ctx.command, "usage"):
             return await ctx.reply(ctx.decorators.get_usage(ctx, ctx))
         self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
-        return await ctx.simple_response(ctx, translations.error_not_registered.format(
-                self.fetch_users([self.config.BotConfig.dev_userid])[0]
-        )
-                                         )
+        return await ctx.simple_response(ctx, translations.error_not_registered.format(self.dev_name))
 
     async def event_message(self, message: Message) -> None:
         if message.echo or message.author.name == self.nick:
@@ -225,7 +224,7 @@ class Gorenmu(Bot):
             if not ctx.command:
                 await self.MarkovProcessor.put_markov_queue(ctx)
 
-            if not await self.is_online(message):  # Se o bot não estiver online no chat ele retorna.
+            if not await self.is_online(message):
                 return None
             try:
                 channel = self.channels[message.channel.name]
@@ -259,7 +258,7 @@ class Gorenmu(Bot):
                     ctx.user = await UserModel.create_or_update(ctx)
                 for listener in self.event_message_listeners:
                     if response := await listener(ctx):
-                        await ctx.response(ctx)
+                        await ctx.response(response)
 
         if ctx and "WHISPER" in ctx.message.raw_data:  # TODO: Fazer o handler de whisper.
             # await self.invoke(ctx)

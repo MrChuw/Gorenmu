@@ -49,6 +49,7 @@ class PtBrTranslations:
 
             error_not_registered: str = "ocorreu um erro inesperado, por favor, reporte o erro para @{}"
 
+
     class Activity(BaseTranslations.Activity):
         afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
