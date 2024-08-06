@@ -110,8 +110,6 @@ class BotConfig:
         self.imagem_link_upload_thing_url: str = data.get("imagem_link_upload_thing_url", "https://uploadthing.com")
         self.file_upload_url: str = data.get("file_upload_url", "https://upload.exemple.org")
         self.imgur_permitidos: List[int] = data.get("imgur_authorized_ids", [411010313])
-        self.cogs_path: pathlib.Path = pathlib.Path(data.get("cogs_path", "cogs/"))
-        self.cogs = cog_path_generator([], self.cogs_path)
 
 
 class ApisConfig:
@@ -164,7 +162,7 @@ class DatabaseConfig:
                                      f"{self.host}:{self.port}/{self.name}")
 
         self.DB_CONFIG = {"connections": {"default": self.database_uri
-                                          }, "apps": {"models": {"models": ["models"], "default_connection": "default",
+                                          }, "apps": {"models": {"models": ["bot.models"], "default_connection": "default",
                                                                  }
                                                       },
                           }

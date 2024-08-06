@@ -41,12 +41,12 @@ class Gorenmu(Bot):
         self.log: Logger = log
         self.config: Config = configs
         self.cache: RedisCache | MemcachedCache | SimpleMemoryCache = Cache.cache_load(self)
-        self.boot: datetime.datetime = datetime.datetime.now(datetime.UTC)
+        self.boot: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
         self.timezone: datetime.timezone = datetime.timezone(datetime.timedelta(hours=-3))
         self.config: Config
         self.CommandHandler: CommandHandler = CommandHandler()
         self.SessionsCaches: SessionsCaches = SessionsCaches(self)
-        self.MarkovProcessor: MarkovProcessor = MarkovProcessor(self)
+        self.MarkovProcessor: MarkovProcessor | None = None
         self.UploadThings: UploadThings = UploadThings(self)
         self.ToolsTools: ToolsTools = ToolsTools(self)
         self.LotteryTools: LotteryTools = LotteryTools(self)
@@ -57,6 +57,7 @@ class Gorenmu(Bot):
         self.reconnection_attempts: dict[str, int] = {}
         self.bots_ids: list[int] = []
         self.dev_name: str = ""
+        self.restart = 0
 
     async def fetch_channels(self) -> None:
         for channel in await ChannelModel.filter(removed=False):
@@ -126,6 +127,10 @@ class Gorenmu(Bot):
                 else:
                     self.log.info(f"Reconnection attempt {self.reconnection_attempts[channel]} for #{channel}")
 
+        keys_to_remove = [channel for channel in self.reconnection_attempts if channel in connected_channels]
+        for key in keys_to_remove:
+            del self.reconnection_attempts[key]
+
     @routine(seconds=60, wait_first=True)
     async def heart_beat(self):
         if self.config.DevelopmentConfig.development:
@@ -152,7 +157,6 @@ class Gorenmu(Bot):
         ...
 
     def start(self) -> None:
-        CommandHandler.load_cogs(self)
         self.loop.run_until_complete(self.connect_db())
         bot_list = self.loop.run_until_complete(BotsIgnore.filter(active=True).all())
         self.bots_ids = [_id.user_id for _id in bot_list]
@@ -170,9 +174,9 @@ class Gorenmu(Bot):
         self.restart += 1
         if self.restart > 1:
             os.execv(sys.executable, ["python3.10"] + sys.argv)
-        # CommandHandler.load_cogs(self)
-        self.dev_name = (await self.fetch_users([self.config.BotConfig.dev_userid]))[0]
-        self.join_channels([self.dev_name])
+        CommandHandler.load_cogs(self)
+        self.dev_name = (await self.fetch_users(ids=[self.config.BotConfig.dev_userid]))[0].display_name
+        await self.join_channels([self.dev_name])
         await asyncio.sleep(1)
         self.log.info(
                 f"{self.nick} | #({len(self.connected_channels)}/{len(self.channels)}) | {len(self._prefix)} prefix's, "
@@ -235,18 +239,17 @@ class Gorenmu(Bot):
                         channel.online is False and "start" not in message.content or
                         prefix == "ƚ" and channel.online is False):
                     return None
+                response: Response | None = None
                 if prefix == channel.prefix:
                     ctx.prefix = prefix
                     self.log.info(f"#{ctx.channel.name}|| @{ctx.author.name}: {ctx.message.content}")
-                    if " | " not in ctx.message:
+                    if " | " not in ctx.message.content:
                         response = await self.invoke(ctx)
-                    else:
-                        response = await ctx.pipe_handler(message, ctx)
+                    if response:
+                        await ctx.response(response)
+                    if " | " in ctx.message.content:
+                        await ctx.pipe_handler(message, ctx)
 
-                        ...
-                    if response:  # TODO: Fazer o pipe de comandos.
-                        await ctx.response(response)  # TODO: Fazer o suporte para o Response.
-                    ...
 
             except InvalidArgument:
                 if ctx.command and hasattr(ctx.command, "usage"):

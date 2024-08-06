@@ -24,7 +24,7 @@ minimum_delay_messages = 0.1
 
 __all__ = (
         "Bot", "Bucket", "Channel", "Cog", "Context", "Message", "User", "check", "TwitchioCommand", "TwitchioCommand",
-        "cooldown", "routine",)
+        "cooldown", "routine", "base_decorator", "usage", "helper")
 
 
 class Bot(Bot):
@@ -174,6 +174,13 @@ class Context(TwitchioContext):
                 await self.handle_response(ctx=ctx, full_response=full_response)
             await asyncio.sleep(minimum_delay_messages)
 
+    async def send_response(self, ctx: Context, user_handler: str, response_str: str):
+        full_response: str = f"{user_handler} {response_str}"
+        if len(full_response) < max_message_len:
+            return await ctx.reply(full_response)
+        else:
+            await self.handle_response(ctx=ctx, full_response=full_response)
+
     async def response(self, response: Response) -> None | bool:  # NOQA
         ctx: Context = response.ctx
         if ctx.bot.channels[ctx.channel.name].online is False:
@@ -186,11 +193,7 @@ class Context(TwitchioContext):
         if handle == "echo" and not response_list:
             await self.handle_echo(ctx=ctx, response_str=response_str)
 
-        full_response: str = f"{user_handler} {response_str}"
-        if len(full_response) < max_message_len:
-            return await ctx.reply(full_response)
-        else:
-            await self.handle_response(ctx=ctx, full_response=full_response)
+        await self.send_response(ctx, user_handler, response_str)
         if response_list:
             await self.handle_response_list(ctx, response_list, handle)
 
@@ -204,22 +207,21 @@ class Context(TwitchioContext):
 
         if handle == "echo":
             await self.handle_echo(ctx=ctx, response_str=response_str)
-
-        full_response: str = f"{user_handler} {response_str}"
-        if len(full_response) < max_message_len:
-            return await ctx.reply(full_response)
-        else:
-            await self.handle_response(ctx=ctx, full_response=full_response)
+        await self.send_response(ctx, user_handler, response_str)
 
     async def pipe_handler(self, message: Message, external_ctx: Context):
         response_str = ""
-        translation = external_ctx.translations.Exceptions.ResponseExceptions()
+        translations = external_ctx.bot.TranslationManager.get_translations(external_ctx.user.language or "pt-br")
+        translation = translations.Exceptions.ResponseExceptions()
         message.content = message.content.replace(" | ", f" | {external_ctx.prefix}")
-
+        original_message = message
+        response: Response | None = None
         for command in message.content.split(" | "):
-            ctx = await self.bot.get_context(f"{command} {response_str}")
+            message = original_message
+            message.content = f"{command} {response_str}"
+            ctx = await self.bot.get_context(message)
             ctx.user = external_ctx.user
-            response: Response = self.bot.invoke(first_ctx)  # NOQA
+            response: Response = await self.bot.invoke(ctx)  # NOQA
             if not response.success:
                 await self.simple_response(ctx, translation.error_on_command.format(ctx.command.name))
                 await self.simple_response(ctx, translation.pipe_response.format(response_str))
@@ -230,6 +232,8 @@ class Context(TwitchioContext):
                 break
 
             response_str = response.response_string
+        if response:
+            await self.response(response)
 
 
 def check(check_list: list) -> Callable[[TwitchioCommand], TwitchioCommand]:
@@ -240,30 +244,30 @@ def check(check_list: list) -> Callable[[TwitchioCommand], TwitchioCommand]:
 
     return decorator
 
-#
-# def usage(usage: str) -> Callable[[Command], Command]:
-#     def decorator(command: Command) -> Command:
-#         # if type(command) != Command:
-#         #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
-#         command.usage = usage
-#         return command
-#
-#     return decorator
-#
-#
-# def helper(description: str) -> Callable[[Command], Command]:
-#     def decorator(command: Command) -> Command:
-#         # if type(command) != Command:
-#         #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
-#         command.description = description
-#         return command
-#
-#     return decorator
-#
-#
-# def base_decorator(base: BaseDecorator) -> Callable[[Command], Command]:
-#     def decorator(command: Command) -> Command:
-#         command.decorators = base
-#         return command
-#
-#     return decorator
+
+def usage(usage: str) -> Callable[[TwitchioCommand], TwitchioCommand]:
+    def decorator(command: TwitchioCommand) -> TwitchioCommand:
+        # if type(command) != Command:
+        #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
+        command.usage = usage
+        return command
+
+    return decorator
+
+
+def helper(description: str) -> Callable[[TwitchioCommand], TwitchioCommand]:
+    def decorator(command: TwitchioCommand) -> TwitchioCommand:
+        # if type(command) != Command:
+        #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
+        command.description = description
+        return command
+
+    return decorator
+
+
+def base_decorator(base: BaseDecorator) -> Callable[[Command], Command]:
+    def decorator(command: Command) -> Command:
+        command.decorators = base
+        return command
+
+    return decorator
