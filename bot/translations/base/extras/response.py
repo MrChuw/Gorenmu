@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, TYPE_CHECKING, Union, Optional
+from typing import Any, List, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -14,7 +14,6 @@ class Response:
         self.response_list: Optional[List[str]] = data.get("response_list", None)
         self.object: Optional[object] = data.get("object", None)
         self.handle: Optional[str] = data.get("handle", None)
-        self.is_response: bool = data.get("is_response", False)
         self.pipe: bool = data.get("pipe", True)
         self.response_string: str = ""
 
@@ -27,10 +26,6 @@ class Response:
         success = kwargs.pop("success", True)
         response_list = kwargs.pop("response_list", None)
         handle = kwargs.pop("handle", None)
-
-        self.is_response = True
-
-        # Definir valores em response_obj se fornecidos
         self.success = success
         self.response_list = response_list
         self.handle = handle

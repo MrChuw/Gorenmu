@@ -172,6 +172,7 @@ class Gorenmu(Bot):
             os.execv(sys.executable, ["python3.10"] + sys.argv)
         # CommandHandler.load_cogs(self)
         self.dev_name = (await self.fetch_users([self.config.BotConfig.dev_userid]))[0]
+        self.join_channels([self.dev_name])
         await asyncio.sleep(1)
         self.log.info(
                 f"{self.nick} | #({len(self.connected_channels)}/{len(self.channels)}) | {len(self._prefix)} prefix's, "

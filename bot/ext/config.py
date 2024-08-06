@@ -7,10 +7,9 @@ from typing import Dict, List
 import toml
 from dotenv import load_dotenv
 
-# Carrega variáveis de ambiente do .env
 load_dotenv()
 
-# Função para substituir variáveis no TOML
+
 def expand_env_vars(config: dict) -> dict:
     for section, options in config.items():
         if isinstance(options, dict):
@@ -33,7 +32,6 @@ def expand_env_vars(config: dict) -> dict:
     return config
 
 
-# Carrega o arquivo TOML e substitui as variáveis de ambiente
 def load_config(config_path: str) -> Dict[str, dict]:
     with open(config_path, 'r') as f:
         config = toml.load(f)
@@ -124,7 +122,7 @@ class ApisConfig:
         self.access_token: str = data.get("access_token", "api_exemple")
         if not data.get("access_oauth_token"):
             raise Exception(
-                "Missing access oauth token to generate oauth token go to: https://twitchtokengenerator.com/"
+                    "Missing access oauth token to generate oauth token go to: https://twitchtokengenerator.com/"
             )
         self.access_oauth_token: str = data.get("access_oauth_token", "api_exemple")
         self.refresh_token: str = data.get("refresh_token", "api_exemple")
@@ -161,23 +159,15 @@ class DatabaseConfig:
                 self.database_file: str = os.path.join(self.database_dir, "db.sqlite3")
                 self.database_uri: str = f"sqlite://{self.database_file}"
             if self.type.value in ["mysql", "mariadb", "postgres"]:
-                self.database_uri = (
-                    f"{self.database_uri}://"
-                    f"{self.login}:{self.password}@"
-                    f"{self.host}:{self.port}/{self.name}"
-                )
+                self.database_uri = (f"{self.database_uri}://"
+                                     f"{self.login}:{self.password}@"
+                                     f"{self.host}:{self.port}/{self.name}")
 
-        self.DB_CONFIG = {
-            "connections": {
-                "default": self.database_uri
-            },
-            "apps": {
-                "models": {
-                    "models": ["models"],
-                    "default_connection": "default",
-                }
-            },
-        }
+        self.DB_CONFIG = {"connections": {"default": self.database_uri
+                                          }, "apps": {"models": {"models": ["models"], "default_connection": "default",
+                                                                 }
+                                                      },
+                          }
 
 
 class LoggerConfig:
@@ -189,14 +179,10 @@ class LoggerConfig:
         self.enqueue: bool = data.get("enqueue", True)
         self.colorize: bool = data.get("colorize", True)
 
-
     def to_dict(self) -> Dict[str, dict | bool]:
-        return {
-            "version": self.version,
-            "disable_existing_loggers": self.disable_existing_loggers,
-            "format": self.format,
-            "level": self.level,
-        }
+        return {"version": self.version, "disable_existing_loggers": self.disable_existing_loggers,
+                "format": self.format, "level": self.level,
+                }
 
 
 class CacheConfig:
@@ -235,36 +221,3 @@ class Config:
 
 
 imgur_permitidos = ["beyxo_", "mr_chuw"]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

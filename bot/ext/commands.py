@@ -6,7 +6,8 @@ from typing import Callable, TYPE_CHECKING
 
 from twitchio import Channel, Message, User
 from twitchio.ext.commands import (
-    BadArgument, Bot, Bucket, Cog, Command as TwitchioCommand, command as Twitchiocommand, Context as TwitchioContext, cooldown, MissingRequiredArgument,
+    BadArgument, Bot, Bucket, Cog, Command as TwitchioCommand, Context as TwitchioContext, cooldown,
+    MissingRequiredArgument,
 )
 from twitchio.ext.routines import routine
 
@@ -21,14 +22,9 @@ if TYPE_CHECKING:
 max_message_len = 450
 minimum_delay_messages = 0.1
 
-__all__ = ("Bot", "Bucket", "Channel", "Cog",
-           "Context", "Message",
-           "User", "check", "TwitchioCommand",
-           "TwitchioCommand", "cooldown",
-           # "helper",
-           "routine",# "usage",
-        # "base_decorator",
-)
+__all__ = (
+        "Bot", "Bucket", "Channel", "Cog", "Context", "Message", "User", "check", "TwitchioCommand", "TwitchioCommand",
+        "cooldown", "routine",)
 
 
 class Bot(Bot):
@@ -51,12 +47,12 @@ class Bot(Bot):
 
         try:
             args, kwargs = await context.command.parse_args(context, context.command._instance, context.view.words,
-                    index=index  # NOQA
-            )
+                                                            index=index  # NOQA
+                                                            )
         except (MissingRequiredArgument, BadArgument) as e:
             if self.event_error:
                 args_ = ([context.command._instance, context] if context.command._instance else [context]  # NOQA
-                )
+                         )
                 await try_run(self.event_error(*args_, e))  # NOQA
 
             context.bot.run_event("command_error", context, e)
@@ -215,7 +211,6 @@ class Context(TwitchioContext):
         else:
             await self.handle_response(ctx=ctx, full_response=full_response)
 
-
     async def pipe_handler(self, message: Message, external_ctx: Context):
         response_str = ""
         translation = external_ctx.translations.Exceptions.ResponseExceptions()
@@ -235,9 +230,6 @@ class Context(TwitchioContext):
                 break
 
             response_str = response.response_string
-
-
-
 
 
 def check(check_list: list) -> Callable[[TwitchioCommand], TwitchioCommand]:
