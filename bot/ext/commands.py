@@ -6,7 +6,7 @@ from typing import Callable, TYPE_CHECKING
 
 from twitchio import Channel, Message, User
 from twitchio.ext.commands import (
-    BadArgument, Bot, Bucket, Cog, Command, command, Context as TwitchioContext, cooldown, MissingRequiredArgument,
+    BadArgument, Bot, Bucket, Cog, Command as TwitchioCommand, command as Twitchiocommand, Context as TwitchioContext, cooldown, MissingRequiredArgument,
 )
 from twitchio.ext.routines import routine
 
@@ -21,7 +21,10 @@ if TYPE_CHECKING:
 max_message_len = 450
 minimum_delay_messages = 0.1
 
-__all__ = ("Bot", "Bucket", "Channel", "Cog", "Context", "Message", "User", "check", "command", "Command", "cooldown",
+__all__ = ("Bot", "Bucket", "Channel", "Cog",
+           "Context", "Message",
+           "User", "check", "TwitchioCommand",
+           "TwitchioCommand", "cooldown",
            # "helper",
            "routine",# "usage",
         # "base_decorator",
@@ -29,7 +32,7 @@ __all__ = ("Bot", "Bucket", "Channel", "Cog", "Context", "Message", "User", "che
 
 
 class Bot(Bot):
-    async def invoke(self, context: Context, *, index=0) -> None:  # NOQA
+    async def invoke(self, context: Context, *, index=0) -> Response | None:  # NOQA
         if not context.prefix or not context.is_valid:
             return
         context.bot.run_event("command_invoke", context)
@@ -213,8 +216,32 @@ class Context(TwitchioContext):
             await self.handle_response(ctx=ctx, full_response=full_response)
 
 
-def check(check_list: list) -> Callable[[Command], Command]:
-    def decorator(command: Command) -> Command:  # NOQA
+    async def pipe_handler(self, message: Message, external_ctx: Context):
+        response_str = ""
+        translation = external_ctx.translations.Exceptions.ResponseExceptions()
+        message.content = message.content.replace(" | ", f" | {external_ctx.prefix}")
+
+        for command in message.content.split(" | "):
+            ctx = await self.bot.get_context(f"{command} {response_str}")
+            ctx.user = external_ctx.user
+            response: Response = self.bot.invoke(first_ctx)  # NOQA
+            if not response.success:
+                await self.simple_response(ctx, translation.error_on_command.format(ctx.command.name))
+                await self.simple_response(ctx, translation.pipe_response.format(response_str))
+                break
+            if not response.pipe:
+                await self.simple_response(ctx, translation.command_not_pipeble)
+                await self.response(response)
+                break
+
+            response_str = response.response_string
+
+
+
+
+
+def check(check_list: list) -> Callable[[TwitchioCommand], TwitchioCommand]:
+    def decorator(command: TwitchioCommand) -> TwitchioCommand:  # NOQA
         for c in check_list:
             command._checks.append(c)  # NOQA
         return command

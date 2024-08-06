@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from bot.ext.commands import Context
 
 
-# TODO: Colocar o pipeble false nos comandos que não podem ir para o pipe.
+# TODO: Colocar o pipe false nos comandos que não podem ir para o pipe.
 # TODO: adicionar um fallback para o idioma padrão caso não tenha a tradução.
 
 
@@ -49,6 +49,10 @@ class PtBrTranslations:
 
             error_not_registered: str = "ocorreu um erro inesperado, por favor, reporte o erro para @{}"
 
+        class ResponseExceptions(BaseTranslations.Exceptions.ResponseExceptions):
+            error_on_command: str = "um erro aconteceu no comando {}"
+            pipe_response: str = "aqui está a resposta que foi gerada pelo comando anterior: {}"
+            command_not_pipeble: str = "este comando não pôde ser utilizado com o pipe."
 
     class Activity(BaseTranslations.Activity):
         afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks

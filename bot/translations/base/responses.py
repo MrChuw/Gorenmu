@@ -54,6 +54,10 @@ class BaseTranslations:
             not_implemented: str
             error_not_registered: str
 
+        class ResponseExceptions(BaseTranslation):
+            error_on_command: str
+            pipe_response: str
+            command_not_pipeble: str
 
     class Activity:
         afks: dict[str, Status]

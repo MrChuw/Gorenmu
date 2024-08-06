@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from bot.ext.commands import Context
 
 
-# TODO: Colocar o pipeble false nos comandos que não podem ir para o pipe.
+# TODO: Colocar o pipe false nos comandos que não podem ir para o pipe.
 # TODO: adicionar um fallback para o idioma padrão caso não tenha a tradução.
 
 

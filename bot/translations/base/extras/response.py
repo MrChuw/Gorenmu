@@ -15,7 +15,7 @@ class Response:
         self.object: Optional[object] = data.get("object", None)
         self.handle: Optional[str] = data.get("handle", None)
         self.is_response: bool = data.get("is_response", False)
-        self.pipeble: bool = data.get("pipeble", True)
+        self.pipe: bool = data.get("pipe", True)
         self.response_string: str = ""
 
     def format_response(self, ctx: Context, *args: Any, **kwargs: Any) -> Response:

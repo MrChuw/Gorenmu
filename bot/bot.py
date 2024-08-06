@@ -237,7 +237,12 @@ class Gorenmu(Bot):
                 if prefix == channel.prefix:
                     ctx.prefix = prefix
                     self.log.info(f"#{ctx.channel.name}|| @{ctx.author.name}: {ctx.message.content}")
-                    response = await self.invoke(ctx)
+                    if " | " not in ctx.message:
+                        response = await self.invoke(ctx)
+                    else:
+                        response = await ctx.pipe_handler(message, ctx)
+
+                        ...
                     if response:  # TODO: Fazer o pipe de comandos.
                         await ctx.response(response)  # TODO: Fazer o suporte para o Response.
                     ...
