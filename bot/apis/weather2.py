@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
 import requests, pprint, json, bs4
-from apis import aiorequests
+from bot.apis import aiorequests
 import aiohttp
 
 

@@ -2,9 +2,10 @@
 import os
 
 from bot.bot import Gorenmu
-from ext.config import Config
+from bot.ext.config import Config
 
-from bot.logger import log
+# from bot.logger import log
+from loguru import logger
 
 config_yml = os.path.join(os.path.dirname(__file__), "config.toml")
 
@@ -16,7 +17,8 @@ __license__ = ""
 __copyright__ = ""
 __version__ = Configs.version
 
-log = log(Configs.LoggerConfig)  # FIXME: Ver pq o logger não está formatando direito as mensagens.
+# log = log(Configs.LoggerConfig)  # FIXME: Ver pq o logger não está formatando direito as mensagens.
+log = logger
 
 if __name__ == "__main__":
     log.info("Ligando bot", exc_info=True)

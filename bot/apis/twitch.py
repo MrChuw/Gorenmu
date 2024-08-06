@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
 
-from apis import aiorequests
+from bot.apis import aiorequests
 from bot.exceptions import InvalidUsername
 
 import json

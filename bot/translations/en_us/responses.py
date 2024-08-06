@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 # TODO: adicionar um fallback para o idioma padrão caso não tenha a tradução.
 
 
-class PtBrTranslations:
+class EnUsTranslations:
     class Exceptions(BaseTranslations.Exceptions):
         class LotteryExceptions(BaseTranslations.Exceptions.LotteryExceptions):
             lottery_seed: str = "algo horrível aconteceu, contate \"mr_chuw\" aqui na twitch utilizando whispers."

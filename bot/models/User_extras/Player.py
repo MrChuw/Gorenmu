@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from tortoise import fields
 
-from models.base import Base, TimestampMixin, CharFieldStr, CharFieldIntStr, IntFieldInt
+from bot.models.base import Base, TimestampMixin, CharFieldStr, CharFieldIntStr, IntFieldInt
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING, Union
 if TYPE_CHECKING:
-    from models.User.User import User
+    from bot.models.User import User
 
 
 class Player(Base, TimestampMixin):

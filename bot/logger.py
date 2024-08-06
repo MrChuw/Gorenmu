@@ -4,7 +4,7 @@ import sys
 
 from loguru import logger
 
-from ext.config import LoggerConfig
+from bot.ext.config import LoggerConfig
 
 
 def log(Configs: LoggerConfig) -> logger:
@@ -14,7 +14,7 @@ def log(Configs: LoggerConfig) -> logger:
     enqueue = Configs.enqueue
     colorize = Configs.colorize
 
-    logger.add(sys.stderr, level=level, enqueue=enqueue, colorize=colorize)
+    logger.add(sys.stderr, format=format, level=level, enqueue=enqueue, colorize=colorize)
     return logger
 
 class InterceptHandler(logging.Handler):

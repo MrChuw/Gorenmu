@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, TYPE_CHECKING
 
 import redis
-from aiocache import Cache
+from aiocache import Cache as aioCache
 from aiocache.backends.memcached import MemcachedCache
 from aiocache.backends.memory import SimpleMemoryCache
 from aiocache.backends.redis import RedisCache
@@ -42,15 +42,15 @@ class Cache:
     @staticmethod
     def cache_load(bot: Gorenmu) -> RedisCache | MemcachedCache | SimpleMemoryCache:
         if bot.config.CacheConfig.type in [CacheType.REDIS, CacheType.VALKEY]:
-            bot.cache = Cache(Cache.REDIS, serializer=PickleSerializer(), endpoint=bot.config.CacheConfig.host,
+            bot.cache = aioCache(aioCache.REDIS, serializer=PickleSerializer(), endpoint=bot.config.CacheConfig.host,
                               port=bot.config.CacheConfig.port, namespace=bot.config.CacheConfig.namespace, )
             bot.redis = redis.Redis(host=bot.cache.endpoint, port=bot.cache.port, decode_responses=True)
         elif bot.config.CacheConfig.type == CacheType.MEMCACHED:
-            bot.cache = Cache(Cache.MEMCACHED, serializer=PickleSerializer(), endpoint="localhost", port=11211,
+            bot.cache = aioCache(aioCache.MEMCACHED, serializer=PickleSerializer(), endpoint="localhost", port=11211,
                               namespace="main"
                               )
         else:
-            bot.cache = Cache(Cache.MEMORY, serializer=PickleSerializer(), namespace="main")
+            bot.cache = aioCache(aioCache.MEMORY, serializer=PickleSerializer(), namespace="main")
         return bot.cache
 
 

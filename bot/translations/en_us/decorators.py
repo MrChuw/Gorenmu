@@ -2,7 +2,7 @@
 from bot.translations.base import BaseDecorators
 
 
-class PtBrDecorators(BaseDecorators):
+class EnUsDecorators(BaseDecorators):
     class Activity(BaseDecorators.Activity):
         class Afk(BaseDecorators.Activity.Afk):
             helper = "Comando para entrar em um Status."

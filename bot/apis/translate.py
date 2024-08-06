@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from deep_translator import GoogleTranslator
+from .deeptranslator.deep_translator import GoogleTranslator
 
 
 class Translator:

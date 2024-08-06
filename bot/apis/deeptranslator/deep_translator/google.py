@@ -10,14 +10,14 @@ import requests
 import aiohttp
 from bs4 import BeautifulSoup
 
-from apis.deeptranslator.deep_translator.base import BaseTranslator
-from apis.deeptranslator.deep_translator.constants import BASE_URLS
-from apis.deeptranslator.deep_translator.exceptions import (
+from bot.apis.deeptranslator.deep_translator.base import BaseTranslator
+from bot.apis.deeptranslator.deep_translator.constants import BASE_URLS
+from bot.apis.deeptranslator.deep_translator.exceptions import (
     RequestError,
     TooManyRequests,
     TranslationNotFound,
 )
-from apis.deeptranslator.deep_translator.validate import is_empty, is_input_valid, request_failed
+from bot.apis.deeptranslator.deep_translator.validate import is_empty, is_input_valid, request_failed
 
 
 class GoogleTranslator(BaseTranslator):

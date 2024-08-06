@@ -8,14 +8,14 @@ from typing import List, Optional, Union
 
 import requests
 
-from apis.deeptranslator.deep_translator.base import BaseTranslator
-from apis.deeptranslator.deep_translator.constants import BASE_URLS, MY_MEMORY_LANGUAGES_TO_CODES
-from apis.deeptranslator.deep_translator.exceptions import (
+from bot.apis.deeptranslator.deep_translator.base import BaseTranslator
+from bot.apis.deeptranslator.deep_translator.constants import BASE_URLS, MY_MEMORY_LANGUAGES_TO_CODES
+from bot.apis.deeptranslator.deep_translator.exceptions import (
     RequestError,
     TooManyRequests,
     TranslationNotFound,
 )
-from apis.deeptranslator.deep_translator.validate import is_empty, is_input_valid, request_failed
+from bot.apis.deeptranslator.deep_translator.validate import is_empty, is_input_valid, request_failed
 
 
 class MyMemoryTranslator(BaseTranslator):

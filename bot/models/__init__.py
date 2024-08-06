@@ -23,6 +23,7 @@ from .User_extras import Wedding  # NOQA
 from .User_extras import MarkovUsers # NOQA
 from .User_extras import MarkovUserChannel # NOQA
 from .User_extras import MarkovChannels # NOQA
+from .User_extras import BotsIgnore
 
 
 

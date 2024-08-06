@@ -3,9 +3,9 @@ __copyright__ = "Copyright (C) 2020 Nidhal Baccouri"
 import os
 from typing import List, Optional
 
-from apis.deeptranslator.deep_translator.base import BaseTranslator
-from apis.deeptranslator.deep_translator.constants import OPEN_AI_ENV_VAR
-from apis.deeptranslator.deep_translator.exceptions import ApiKeyException
+from bot.apis.deeptranslator.deep_translator.base import BaseTranslator
+from bot.apis.deeptranslator.deep_translator.constants import OPEN_AI_ENV_VAR
+from bot.apis.deeptranslator.deep_translator.exceptions import ApiKeyException
 
 
 class ChatGptTranslator(BaseTranslator):

@@ -1,18 +1,6 @@
-[tool.poetry]
-name = "gorenmu-rewrite"
-version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
 
 
 [tool.black]
@@ -36,4 +24,3 @@ exclude = '''
 skip-string-normalization = false  # Não normaliza aspas (para True, ignora normalização)
 skip-magic-trailing-comma = true  # Não pula a vírgula mágica
 preview = false  # Usar recursos experimentais do Black
-

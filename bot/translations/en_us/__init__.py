@@ -1,4 +1,4 @@
-from .decorators import PtBrDecorators
-from .responses import PtBrTranslations
+from .decorators import EnUsDecorators
+from .responses import EnUsTranslations
 
-__all__ = ("PtBrDecorators", "PtBrTranslations")
+__all__ = ("EnUsDecorators", "EnUsTranslations")

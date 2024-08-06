@@ -108,7 +108,7 @@ class CommandHandler:
                 logger.error(f"Routine '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     @staticmethod
-    def load_cogs(self: Gorenmu, base: str = "cogs") -> None:
+    def load_cogs(self: Gorenmu, base: str = "bot/cogs") -> None:
         global_checks = [Check.online, Check.enabled, Check.banword, Check.language_set]
         [self.check(check) for check in global_checks]
         cogs = pathlib.Path(base)

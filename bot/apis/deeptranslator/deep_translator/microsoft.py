@@ -9,10 +9,10 @@ from typing import List, Optional
 
 import requests
 
-from apis.deeptranslator.deep_translator.base import BaseTranslator
-from apis.deeptranslator.deep_translator.constants import BASE_URLS, MSFT_ENV_VAR
-from apis.deeptranslator.deep_translator.exceptions import ApiKeyException, MicrosoftAPIerror
-from apis.deeptranslator.deep_translator.validate import is_input_valid
+from bot.apis.deeptranslator.deep_translator.base import BaseTranslator
+from bot.apis.deeptranslator.deep_translator.constants import BASE_URLS, MSFT_ENV_VAR
+from bot.apis.deeptranslator.deep_translator.exceptions import ApiKeyException, MicrosoftAPIerror
+from bot.apis.deeptranslator.deep_translator.validate import is_input_valid
 
 
 class MicrosoftTranslator(BaseTranslator):

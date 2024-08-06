@@ -11,20 +11,20 @@ from typing import List, Optional
 
 import requests
 
-from apis.deeptranslator.deep_translator.base import BaseTranslator
-from apis.deeptranslator.deep_translator.constants import (
+from bot.apis.deeptranslator.deep_translator.base import BaseTranslator
+from bot.apis.deeptranslator.deep_translator.constants import (
     BAIDU_APPID_ENV_VAR,
     BAIDU_APPKEY_ENV_VAR,
     BAIDU_LANGUAGE_TO_CODE,
     BASE_URLS,
 )
-from apis.deeptranslator.deep_translator.exceptions import (
+from bot.apis.deeptranslator.deep_translator.exceptions import (
     ApiKeyException,
     BaiduAPIerror,
     ServerException,
     TranslationNotFound,
 )
-from apis.deeptranslator.deep_translator.validate import is_empty, is_input_valid
+from bot.apis.deeptranslator.deep_translator.validate import is_empty, is_input_valid
 
 
 class BaiduTranslator(BaseTranslator):

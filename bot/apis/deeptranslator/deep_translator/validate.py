@@ -2,7 +2,7 @@ __copyright__ = "Copyright (C) 2020 Nidhal Baccouri"
 
 from typing import Optional
 
-from apis.deeptranslator.deep_translator.exceptions import NotValidLength, NotValidPayload
+from bot.apis.deeptranslator.deep_translator.exceptions import NotValidLength, NotValidPayload
 
 
 def is_empty(text: str) -> bool:

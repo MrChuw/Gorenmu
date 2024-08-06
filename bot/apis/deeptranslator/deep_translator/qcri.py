@@ -5,18 +5,18 @@ from typing import List, Optional
 
 import requests
 
-from apis.deeptranslator.deep_translator.base import BaseTranslator
-from apis.deeptranslator.deep_translator.constants import (
+from bot.apis.deeptranslator.deep_translator.base import BaseTranslator
+from bot.apis.deeptranslator.deep_translator.constants import (
     BASE_URLS,
     QCRI_ENV_VAR,
     QCRI_LANGUAGE_TO_CODE,
 )
-from apis.deeptranslator.deep_translator.exceptions import (
+from bot.apis.deeptranslator.deep_translator.exceptions import (
     ApiKeyException,
     ServerException,
     TranslationNotFound,
 )
-from apis.deeptranslator.deep_translator.validate import request_failed
+from bot.apis.deeptranslator.deep_translator.validate import request_failed
 
 
 class QcriTranslator(BaseTranslator):

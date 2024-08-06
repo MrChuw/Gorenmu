@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List
 
-from apis import aiorequests
+from bot.apis import aiorequests
 
 
 @dataclass

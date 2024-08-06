@@ -202,7 +202,7 @@ class PtBrTranslations:
 
         class Nada(BaseTranslations.Admin.Nada):
             nada: Response = Response(
-                {"success": True, "response": "O comando foi executado com sucesso.", "is_response": False}
+                {"success": True, "response": "O comando foi executado com sucesso. {}", "is_response": False}
             )
 
         class Reload(BaseTranslations.Admin.Reload):

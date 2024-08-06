@@ -10,16 +10,16 @@ import requests
 from bs4 import BeautifulSoup
 from requests.utils import requote_uri
 
-from apis.deeptranslator.deep_translator.base import BaseTranslator
-from apis.deeptranslator.deep_translator.constants import BASE_URLS, PONS_CODES_TO_LANGUAGES
-from apis.deeptranslator.deep_translator.exceptions import (
+from bot.apis.deeptranslator.deep_translator.base import BaseTranslator
+from bot.apis.deeptranslator.deep_translator.constants import BASE_URLS, PONS_CODES_TO_LANGUAGES
+from bot.apis.deeptranslator.deep_translator.exceptions import (
     ElementNotFoundInGetRequest,
     NotValidPayload,
     RequestError,
     TooManyRequests,
     TranslationNotFound,
 )
-from apis.deeptranslator.deep_translator.validate import is_empty, is_input_valid, request_failed
+from bot.apis.deeptranslator.deep_translator.validate import is_empty, is_input_valid, request_failed
 
 
 class PonsTranslator(BaseTranslator):

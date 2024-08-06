@@ -6,8 +6,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import List, Optional, Union
 
-from apis.deeptranslator.deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
-from apis.deeptranslator.deep_translator.exceptions import (
+from bot.apis.deeptranslator.deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
+from bot.apis.deeptranslator.deep_translator.exceptions import (
     InvalidSourceOrTargetLanguage,
     LanguageNotSupportedException,
 )
