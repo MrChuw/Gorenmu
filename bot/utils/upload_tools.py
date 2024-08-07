@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 
-class UploadThings:  # TODO: Arrumar as funções que estão aqui dentro.
+class UploadThings:
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
 
@@ -31,7 +31,8 @@ class UploadThings:  # TODO: Arrumar as funções que estão aqui dentro.
         try:
             async with CachedSession(cache=cache, headers={"Authorization": bot.config.ApisConfig.site_api_key}
                                      ) as session:
-                async with session.post(bot.config.BotConfig.imagem_link_upload_thing_url, json={"links": links}) as resp:
+                async with session.post(bot.config.BotConfig.imagem_link_upload_thing_url, json={"links": links}
+                                        ) as resp:
                     embed = json.loads(await resp.text())
                     return embed["url"]
         except Exception as e:

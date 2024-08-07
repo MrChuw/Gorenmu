@@ -6,13 +6,14 @@ import io
 import random
 import re
 from string import ascii_letters, digits
-from typing import Any,  TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
 from aiohttp_client_cache import CachedSession
 from loguru import logger
 from PIL import Image
+
 from bot.apis.deeptranslator.deep_translator import GoogleTranslator
 from bot.ext.commands import Context
 
@@ -25,10 +26,8 @@ class TimeTools:
     def __init__(self, bot):
         self.bot: Gorenmu = bot
 
-
     @staticmethod
     def find_time(content: str, pattern_time: re.Pattern) -> dict[str, int]:
-        # Match cada um dos elementos de content a PATTERN_TIME e adiciona ao match_dict
         match_dict = {}
         for match in pattern_time.finditer(content):
             for k, v in match.groupdict().items():
@@ -37,7 +36,7 @@ class TimeTools:
         return match_dict
 
     @staticmethod
-    def from_match_to_datetime( match_dict: dict) -> pd.Timedelta:
+    def from_match_to_datetime(match_dict: dict) -> pd.Timedelta:
         match_dict = {k: int(v) if v else 0 for k, v in match_dict.items()}
         now = pd.Timestamp.now()
         delta = pd.DateOffset(years=match_dict.get("years", 0), months=match_dict.get("months", 0),
@@ -47,8 +46,7 @@ class TimeTools:
                               microseconds=match_dict.get("microseconds", 0), )
         return now + delta - now
 
-
-    # TODO: Refazer isso.
+    # TODO: redo, time time 10/10/10 22:22:22
     def find_date(self, data: str) -> dict[Any, Any] | None:
         padrao1, padrao2 = (r"\b\d{1,2}/\d{1,2}/\d{2,4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?\b",
                             r"\b(?:\d{1,2}:\d{2}(?::\d{2})?\s+)?\d{1,2}/\d{1,2}/\d{2,4}\b",)
@@ -115,7 +113,7 @@ class TimeTools:
         return pd.Timestamp.now() + delta
 
 
-class ToolsTools:  # TODO: Arrumar as funções que estão aqui dentro.
+class ToolsTools:
     def __init__(self, bot):
         self.bot: Gorenmu = bot
 
@@ -162,8 +160,7 @@ class ToolsTools:  # TODO: Arrumar as funções que estão aqui dentro.
                     return await ctx.bot.get_channel(target_channel).send(content)
             except Exception as e:
                 logger.error(e)
-                return await ctx.simple_response(ctx,
-                                                 ctx.translations.Exceptions.ToolsExceptions.announcement.format(e)
+                return await ctx.simple_response(ctx, ctx.translations.Exceptions.ToolsExceptions.announcement.format(e)
                                                  )
 
     @staticmethod

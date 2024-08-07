@@ -5,16 +5,13 @@ import asyncio
 import time
 
 import numpy as np
-from aiohttp_client_cache import CachedSession, RedisBackend, SQLiteBackend
+from aiohttp_client_cache import RedisBackend, SQLiteBackend
 from bs4 import BeautifulSoup
 from yarl import URL
 
 from bot.apis import booru
 from bot.ext.commands import Context
 from bot.utils import Selenium
-
-
-
 
 
 class BooruTools:
@@ -26,67 +23,23 @@ class BooruTools:
 
     def __init__(self, cache: SQLiteBackend | RedisBackend):
         self.Booru = booru.Booru
-        self.boorus = {
-            0: self.Booru().gelbooru(cache),
-            1: self.Booru().rule34(cache),
-            2: self.Booru().tbib(cache),
-            3: self.Booru().safebooru(cache),
-            4: self.Booru().xbooru(cache),
-            5: self.Booru().realbooru(cache),
-            6: self.Booru().hypnohub(cache),
-            7: self.Booru().danbooru(cache),
-            9: self.Booru().yandere(cache),
-            10: self.Booru().konachan(cache),
-            11: self.Booru().konachan_net(cache),
-            13: self.Booru().e621(cache),
-            14: self.Booru().e926(cache),
-            15: self.Booru().derpibooru(cache),
-            16: self.Booru().furbooru(cache),
-            17: self.Booru().paheal(cache),
-            18: self.Booru().behoimi(cache),
-        }
-        self.tags_permitidas = {
-            "booru": 10,
-            "glbo": 10,
-            "dnbo": 10,
-            "rule34": 10,
-            "rlbo": 10,
-            "tbibo": 10,
-            "xbbo": 10,
-            "sfbo": 10,
-            "ynbo": 10,
-            "Knbo": 10,
-            "hybo": 10,
-            "e621bo": 10,
-            "e926bo": 10,
-            "dpbo": 1,
-            "fubo": 1,
-            "bhbo": 10,
-            "phbo": 3,
-            "knnbo": 6,
-            "atfbo": 20,
-        }
-        self.seconds = {
-            "booru": 15,
-            "glbo": 15,
-            "dnbo": 15,
-            "rule34": 15,
-            "rlbo": 15,
-            "tbibo": 15,
-            "xbbo": 15,
-            "sfbo": 15,
-            "ynbo": 15,
-            "knbo": 15,
-            "hybo": 15,
-            "e621bo": 15,
-            "e926bo": 15,
-            "dpbo": 15,
-            "fubo": 15,
-            "bhbo": 15,
-            "phbo": 15,
-            "knnbo": 15,
-            "atfbo": 15,
-        }
+        self.boorus = {0: self.Booru().gelbooru(cache), 1: self.Booru().rule34(cache), 2: self.Booru().tbib(cache),
+                       3: self.Booru().safebooru(cache), 4: self.Booru().xbooru(cache),
+                       5: self.Booru().realbooru(cache), 6: self.Booru().hypnohub(cache),
+                       7: self.Booru().danbooru(cache), 9: self.Booru().yandere(cache),
+                       10: self.Booru().konachan(cache), 11: self.Booru().konachan_net(cache),
+                       13: self.Booru().e621(cache), 14: self.Booru().e926(cache), 15: self.Booru().derpibooru(cache),
+                       16: self.Booru().furbooru(cache), 17: self.Booru().paheal(cache),
+                       18: self.Booru().behoimi(cache),
+                       }
+        self.tags_permitidas = {"booru": 10, "glbo": 10, "dnbo": 10, "rule34": 10, "rlbo": 10, "tbibo": 10, "xbbo": 10,
+                                "sfbo": 10, "ynbo": 10, "Knbo": 10, "hybo": 10, "e621bo": 10, "e926bo": 10, "dpbo": 1,
+                                "fubo": 1, "bhbo": 10, "phbo": 3, "knnbo": 6, "atfbo": 20,
+                                }
+        self.seconds = {"booru": 15, "glbo": 15, "dnbo": 15, "rule34": 15, "rlbo": 15, "tbibo": 15, "xbbo": 15,
+                        "sfbo": 15, "ynbo": 15, "knbo": 15, "hybo": 15, "e621bo": 15, "e926bo": 15, "dpbo": 15,
+                        "fubo": 15, "bhbo": 15, "phbo": 15, "knnbo": 15, "atfbo": 15,
+                        }
 
     @staticmethod
     async def annoying(url: URL, booru_number: int):
@@ -183,8 +136,8 @@ class BooruTools:
 
         return final_images, previews_finals
 
-    async def selection(self, args: str, booru_number: int, start_time: float, invoke_by: str,
-                        seconds: int, amount: int, ctx: Context,):
+    async def selection(self, args: str, booru_number: int, start_time: float, invoke_by: str, seconds: int,
+                        amount: int, ctx: Context, ):
         image = None
         preview = None
         res: int | dict = 0
@@ -241,52 +194,3 @@ class BooruTools:
             return img, img_preview, response_final + " "
 
         return None, None, False
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

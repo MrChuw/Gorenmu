@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import random
 import re
 from datetime import datetime
@@ -98,7 +99,8 @@ def str2name(target: str, default: Optional[str] = None) -> Optional[str]:
 def tpl2str(target: Optional[tuple]) -> str:
     try:
         return json.dumps(target)
-    except Exception:
+    except Exception as e:
+        logging.warning(e)
         return ""
 
 
@@ -106,7 +108,8 @@ def tpl2str2(target: Optional[tuple]) -> str:
     try:
         # return str(target)
         return json.dumps(target)
-    except Exception:
+    except Exception as e:
+        logging.warning(e)
         return ""
 
 
@@ -163,5 +166,5 @@ def str2url(target: str) -> Optional[str]:
     return re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", target)
 
 
-def is_birthday( date: str) -> bool:
+def is_birthday(date: str) -> bool:
     return "ano" in date and not any(x in date for x in ["mês", "meses", "semana", "dia"])

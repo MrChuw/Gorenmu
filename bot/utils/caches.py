@@ -43,12 +43,12 @@ class Cache:
     def cache_load(bot: Gorenmu) -> RedisCache | MemcachedCache | SimpleMemoryCache:
         if bot.config.CacheConfig.type in [CacheType.REDIS, CacheType.VALKEY]:
             bot.cache = aioCache(aioCache.REDIS, serializer=PickleSerializer(), endpoint=bot.config.CacheConfig.host,
-                              port=bot.config.CacheConfig.port, namespace=bot.config.CacheConfig.namespace, )
+                                 port=bot.config.CacheConfig.port, namespace=bot.config.CacheConfig.namespace, )
             bot.redis = redis.Redis(host=bot.cache.endpoint, port=bot.cache.port, decode_responses=True)
         elif bot.config.CacheConfig.type == CacheType.MEMCACHED:
             bot.cache = aioCache(aioCache.MEMCACHED, serializer=PickleSerializer(), endpoint="localhost", port=11211,
-                              namespace="main"
-                              )
+                                 namespace="main"
+                                 )
         else:
             bot.cache = aioCache(aioCache.MEMORY, serializer=PickleSerializer(), namespace="main")
         return bot.cache
@@ -101,8 +101,7 @@ class SessionsCaches:
                                       "https://konachan.com/": timedelta(hours=1),
                                       "https://konachan.net/": timedelta(hours=1),
                                       "https://lolibooru.moe/": timedelta(hours=1),
-                                      "https://e621.net/": timedelta(hours=1),
-                                      "https://e926.net/": timedelta(hours=1),
+                                      "https://e621.net/": timedelta(hours=1), "https://e926.net/": timedelta(hours=1),
                                       "https://derpibooru.org/": timedelta(hours=1),
                                       "https://furbooru.com/": timedelta(hours=1),
                                       "http://behoimi.org/": timedelta(hours=1),
@@ -131,7 +130,8 @@ class SessionsCaches:
             self.allowed_codes = (200, 301, 302)
             self.headers = {
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                                  "Chrome/114.0.0.0 Safari/537.36"}
+                                  "Chrome/114.0.0.0 Safari/537.36"
+            }
             if "redis" in bot.__dict__:
                 self.cache = RedisBackend(cache_name=bot.config.CacheConfig.random_namespace,
                                           urls_expire_after=self.urls_expire_after,

@@ -69,7 +69,7 @@ class MarkovProcessor:
             logger.error(e)
 
     async def train_and_save_to_database(self, message, channel: ChannelModel, user: User, ngram=3):
-        if has_url := URLExtract().find_urls(text=message):
+        if URLExtract().find_urls(text=message):
             return
 
         words = WhitespaceTokenizer().tokenize(text=message)

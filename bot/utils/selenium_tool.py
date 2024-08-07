@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-
-
 from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
-
 
 
 class Selenium:
@@ -35,9 +32,8 @@ class Selenium:
 
         # Desativar o carregamento de imagens e estilos
         firefox_options.set_preference("permissions.default.image", 2)  # 1: Carregar imagens, 2: Não carregar imagens
-        firefox_options.set_preference(
-            "permissions.default.stylesheet", 2
-        )  # 1: Carregar estilos, 2: Não carregar estilos
+        firefox_options.set_preference("permissions.default.stylesheet", 2
+                                       )  # 1: Carregar estilos, 2: Não carregar estilos
 
         # Outras opções comuns
         firefox_options.add_argument("--no-sandbox")  # Necessário para ambientes sem sandbox
@@ -48,10 +44,3 @@ class Selenium:
         driver = Firefox(options=firefox_options, service=driver_service)
 
         return driver
-
-
-
-
-
-
-

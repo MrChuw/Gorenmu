@@ -83,7 +83,7 @@ class PtBrDecorators(BaseDecorators):
 
         class Nada(BaseDecorators.Admin.Nada):
             helper = "Nada."
-            usage = "Para usar: {}nada"
+            usage = "Para usar: {}nada <texto>"
             description = "Nada."
 
         class Reload(BaseDecorators.Admin.Reload):

@@ -5,16 +5,14 @@ import asyncio
 import random
 from typing import List, TYPE_CHECKING
 
-
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
 
 
 class CookieTools:
     def __init__(self, bot: Gorenmu):
         self.bot: Gorenmu = bot
-        self.seed: int = None
+        self.seed: int | None = None
         self.multiplicador = 1
 
     @staticmethod
@@ -26,9 +24,8 @@ class CookieTools:
             await asyncio.sleep(0)
             current_element = sequencia[index]
             consecutive_count = 1
-            while (
-                index + consecutive_count < len(sequencia) and sequencia[index + consecutive_count] == current_element
-            ):
+            while (index + consecutive_count < len(sequencia) and sequencia[
+                index + consecutive_count] == current_element):
                 consecutive_count += 1
 
             if consecutive_count >= comprimento_sequencia:
@@ -40,12 +37,7 @@ class CookieTools:
 
         return total_recompensa
 
-    async def all_slotmachine(
-        self,
-        frutas: List[str],
-        rewards: dict[tuple[int, str], int],
-        quantidade,
-    ):
+    async def all_slotmachine(self, frutas: List[str], rewards: dict[tuple[int, str], int], quantidade, ):
         sequencias = [random.choices(frutas, k=5) for _ in range(quantidade)]
         recompensas_valores = [await self.calculate_reward(sequencia, rewards, 2) for sequencia in sequencias]
         recompensas = list(zip(sequencias, recompensas_valores))
@@ -60,34 +52,3 @@ class CookieTools:
                 contagem_valores[recompensa] = 1
 
         return soma_total, contagem_valores
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

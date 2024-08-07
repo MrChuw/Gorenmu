@@ -250,7 +250,6 @@ class BaseTranslations:
             past: str
             current: str
 
-
     class NSFW:
         class Boru(BaseTranslation):
             pls_wait: str
@@ -748,7 +747,6 @@ class BaseTranslations:
             no_class_chosen: Response
             player_status: Response
             player_not_found: Response
-
 
 
 

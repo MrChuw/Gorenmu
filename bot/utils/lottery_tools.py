@@ -19,7 +19,7 @@ betting_values: dict = {1: 5, 2: 5, 3: 5, 4: 5, 5: 5, 6: 5, 7: 11, 8: 25, 9: 63,
                         }
 
 
-class LotteryTools:  # TODO: EU TENHO QUE MELHORAR ISSO E MUITO. MUITO LIXO. muitá COISA DESNESSESARIA.
+class LotteryTools:  # TODO: Lottery.
     def __init__(self, bot: Gorenmu):
         self.bot = bot
         self.valor_aposta = 5
@@ -41,7 +41,8 @@ class LotteryTools:  # TODO: EU TENHO QUE MELHORAR ISSO E MUITO. MUITO LIXO. mui
         return False
 
     @staticmethod
-    def check_numbers(message: Message, ctx: Context, translations: BaseTranslations.Lottery.Lottery) -> bool | Tuple[bool, List[int]]:
+    def check_numbers(message: Message, ctx: Context, translations: BaseTranslations.Lottery.Lottery) -> (
+            bool | Tuple[bool, List[int]]):
         if message.echo:
             return False
         if message.channel.name != ctx.channel.name:
@@ -93,8 +94,8 @@ class LotteryTools:  # TODO: EU TENHO QUE MELHORAR ISSO E MUITO. MUITO LIXO. mui
                 if cookies.stocked < self.valor_aposta:
                     return translations.not_enough_cookies.format_response(ctx, success=False)
                 else:
-                    await Lottery.create(user=ctx.user, bet_value=5, numbers=numbers, closed=False,
-                                         earned=0, draw_id=last_bet.id, )
+                    await Lottery.create(user=ctx.user, bet_value=5, numbers=numbers, closed=False, earned=0,
+                                         draw_id=last_bet.id, )
                     await cookies.reduce_update(value=5)
                     await last_bet.add(value=5)
                     return translations.five_numbers_bet.format_response(ctx, response, success=True)
@@ -103,16 +104,17 @@ class LotteryTools:  # TODO: EU TENHO QUE MELHORAR ISSO E MUITO. MUITO LIXO. mui
                     return translations.not_enough_cookies.format_response(ctx, success=False)
                 else:
                     bet_value: int = betting_values[len(numbers)]
-                    await Lottery.create(user=ctx.user, bet_value=bet_value, numbers=numbers, closed=False,
-                                         earned=0, draw_id=last_bet.id, )
+                    await Lottery.create(user=ctx.user, bet_value=bet_value, numbers=numbers, closed=False, earned=0,
+                                         draw_id=last_bet.id, )
                     await cookies.reduce_update(value=bet_value)
                     await last_bet.add(value=bet_value)
-                    return translations.more_than_five_numbers_bet.format_response(ctx, response,
-                                                                                   bet_value, success=True)
+                    return translations.more_than_five_numbers_bet.format_response(ctx, response, bet_value,
+                                                                                   success=True
+                                                                                   )
             else:
                 return translations.too_much_numbers.format_response(ctx, success=False)
 
-    async def consultation(self, ctx: Context, translations: BaseTranslations.Lottery.Lottery ) -> Response:
+    async def consultation(self, ctx: Context, translations: BaseTranslations.Lottery.Lottery) -> Response:
         ids = []
         value = 0
         await ctx.simple_response(ctx, translations.consultation_message)
@@ -121,6 +123,7 @@ class LotteryTools:  # TODO: EU TENHO QUE MELHORAR ISSO E MUITO. MUITO LIXO. mui
         def checkPassadasAtuaisProxy(message: Message):
             # return self.check_passadas_ou_atuais(message, ctx)
             ...
+
         try:
             response = await self.bot.wait_for("message", checkPassadasAtuaisProxy, timeout=30)
         except asyncio.TimeoutError:

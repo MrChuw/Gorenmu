@@ -52,9 +52,9 @@ class Role:
 
     @staticmethod
     def any(ctx: Context) -> bool:
-        return (Role.sub(ctx) or Role.vip(ctx) or Role.admin(ctx) or Role.owner(ctx) or Role.dev(ctx) or Role.sponsor(
-            ctx
-            ))
+        return (Role.sub(ctx) or Role.vip(ctx) or Role.admin(ctx) or Role.owner(ctx) or Role.dev(ctx
+                                                                                                 ) or Role.sponsor(ctx
+                                                                                                                   ))
 
 
 class Check:
@@ -107,7 +107,7 @@ class Check:
             ctx.bot.lottery_seed = datetime.now().toordinal()
         return True
 
-    # COOKIE: Mudar como o bônus dos cookies funciona.
+    # COOKIE
     @staticmethod
     async def cookie_check(ctx: Context) -> bool:
         cookie = CookieModel.get_or_none(id=int(ctx.author.id))
