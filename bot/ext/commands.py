@@ -7,14 +7,15 @@ from typing import Callable, TYPE_CHECKING
 from twitchio import Channel, Message, User
 from twitchio.ext.commands import (
     BadArgument, Bot, Bucket, Cog, Command as TwitchioCommand, Context as TwitchioContext, cooldown,
-    MissingRequiredArgument,
+    MissingRequiredArgument, command
 )
 from twitchio.ext.routines import routine
 
 from bot.models import User as UserModel
-from bot.translations import BaseDecorators
-from bot.translations.base import Response
-from bot.translations.base.responses import BaseTranslations
+from bot.translations import EnUsTranslations
+from bot.translations import EnUsDecorators
+from bot.translations import Response
+from bot.translations.en_us.decorators import BaseDecorator
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -24,7 +25,7 @@ minimum_delay_messages = 0.1
 
 __all__ = (
         "Bot", "Bucket", "Channel", "Cog", "Context", "Message", "User", "check", "TwitchioCommand", "TwitchioCommand",
-        "cooldown", "routine", "base_decorator", "usage", "helper")
+        "cooldown", "routine", "base_decorator", "usage", "helper", "command")
 
 
 class Bot(Bot):
@@ -98,8 +99,8 @@ class Bot(Bot):
 class Context(TwitchioContext):
     user: UserModel
     bot: Gorenmu
-    translations: BaseTranslations
-    decorators: BaseDecorators
+    translations: EnUsTranslations
+    decorators: EnUsDecorators
 
     def __iter__(self):
         yield "author", self.author.name if self.author and self.author.name else None
@@ -265,8 +266,8 @@ def helper(description: str) -> Callable[[TwitchioCommand], TwitchioCommand]:
     return decorator
 
 
-def base_decorator(base: BaseDecorator) -> Callable[[Command], Command]:
-    def decorator(command: Command) -> Command:
+def base_decorator(base: BaseDecorator) -> Callable[[TwitchioCommand], TwitchioCommand]:
+    def decorator(command: TwitchioCommand) -> TwitchioCommand:
         command.decorators = base
         return command
 

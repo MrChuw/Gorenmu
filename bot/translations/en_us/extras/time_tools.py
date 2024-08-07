@@ -6,7 +6,6 @@ from typing import Optional, Union
 
 import humanize
 
-humanize.activate("pt_BR")
 
 
 class TimeTools:
@@ -38,6 +37,18 @@ class TimeTools:
     #     re.VERBOSE,
     # )
 
+    PATTERN_TIME = re.compile(r"""
+            (\b(?P<years>\d+)\s?(?:anos|ano|a|years|year|y)\b\s?)?
+            (\b(?P<months>\d+)\s?(?:meses|mês|mes|months|month|mo)\b\s?)?
+            (\b(?P<weeks>\d+)\s?(?:semanas|semana|weeks|week|w)\b\s?)?
+            (\b(?P<days>\d+)\s?(?:dias|dia|d|days|day)\b\s?)?
+            (\b(?P<hours>\d+)\s?(?:horas|hora|h|hours|hour)\b\s?)?
+            (\b(?P<minutes>\d+)\s?(?:minutos|minuto|min|m|minutes|minute)\b\s?)?
+            (\b(?P<seconds>\d+)\s?(?:segundos|segundo|seg|s|seconds|second|secs|sec)\b\s?)?
+            (\b(?P<milliseconds>\d+)\s?(?:milliseconds|millisecond|millisecs|millisec|milli|milisegundos|milisegundo|miliseconds|milisecond|milisecs|milisec|milis|ms)\b\s?)?
+            (\b(?P<microseconds>\d+)\s?(?:microsegundos|microsegundo|microseconds|microsecond|microsecs|microsec|micro|us)\b\s?)?
+            """, re.VERBOSE, )
+
     pattern_relative_time = re.compile(r"""
         (\b(?P<years>\d+)\s?(?:anos|ano|a|years|year|y)\b\s?)?
         (\b(?P<months>\d+)\s?(?:meses|mês|mes|months|month|mo)\b\s?)?
@@ -65,18 +76,21 @@ class TimeTools:
         \b\s?)?
         """, re.VERBOSE, )
 
-    def birthday(self, target: str) -> Optional[str]:
+    @staticmethod
+    def birthday(target: str) -> Optional[str]:
         if "ano" in target and not any(x in target for x in ["mês", "meses", "semana", "dia"]):
             return " ".join(target.split()[:2])
 
-    def clean(self, target: Union[datetime, timedelta]) -> Union[datetime, str]:
+    @staticmethod
+    def clean(target: Union[datetime, timedelta]) -> Union[datetime, str]:
         if isinstance(target, timedelta):
             return str(target).split(".")[0]
         if isinstance(target, datetime):
             # return target.replace(microsecond=0)
             return target.replace(tzinfo=timezone.utc).replace(microsecond=0)
 
-    def date_in_full(self, delta: timedelta) -> str:
+    @staticmethod
+    def date_in_full(delta: timedelta) -> str:
         y, d = divmod(delta.days, 365)
         M, d = divmod(d, 30)
         m, s = divmod(delta.seconds, 60)
@@ -117,31 +131,6 @@ class TimeTools:
         return delta
 
 
-class Humanize:
-    # TODO: Fazer com que a linguagem to humanize varie de acordo com a língua do usuário.
-
-    @staticmethod
-    def precisedelta(value, minimum_unit="seconds", suppress=(), format="%0.2f") -> str:
-        return humanize.precisedelta(value, minimum_unit=minimum_unit, suppress=suppress, format=format)
-
-    @staticmethod
-    def naturaltime(value, future: bool = False, months: bool = True, minimum_unit: str = "seconds",
-            when: datetime = None, ) -> str:
-        return humanize.naturaltime(value, future=future, months=months, minimum_unit=minimum_unit, when=when)
-
-    @staticmethod
-    def naturaldelta(value, months: bool = True, minimum_unit: str = "seconds") -> str:
-        return humanize.naturaldelta(value, months=months, minimum_unit=minimum_unit)
-
-    @staticmethod
-    def naturaldate(value) -> str:
-        return humanize.naturaldate(value)
-
-    @staticmethod
-    def naturalsize(value, binary: bool = False, gnu: bool = False, format: str = "%.1f") -> str:
-        return humanize.naturalsize(value, binary=binary, gnu=gnu, format=format)
-
-
 class Timeago:
     def __init__(self, target: datetime, *, now: datetime = None, reverse: bool = False) -> None:
         if now is None:
@@ -168,8 +157,10 @@ class Timeago:
     def humanize(self, *, precision: int = 2, minimum: str = "s", short: bool = False) -> str:
         quote = ""
         for value, name, symbol in [(self.years, TimeTools.YEAR, TimeTools.YY),
-                (self.days, TimeTools.DAY, TimeTools.DD), (self.hours, TimeTools.HOUR, TimeTools.HH),
-                (self.minutes, TimeTools.MINUTE, TimeTools.MM), (self.seconds, TimeTools.SECOND, TimeTools.SS), ]:
+                                    (self.days, TimeTools.DAY, TimeTools.DD),
+                                    (self.hours, TimeTools.HOUR, TimeTools.HH),
+                                    (self.minutes, TimeTools.MINUTE, TimeTools.MM),
+                                    (self.seconds, TimeTools.SECOND, TimeTools.SS), ]:
             if value <= 0:
                 continue
             if symbol > minimum:

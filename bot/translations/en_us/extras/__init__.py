@@ -1,3 +1,6 @@
+from .response import Response
+from .translation import BaseTranslation
+
 from .activity import Activity
 from .dungeon import dungeon_rank_dict
 from .games import fight_option
@@ -7,9 +10,10 @@ from .pets import PetInfo
 from .pets import PetsDict
 from .reminds import PATTERN_TIME
 from .time_tools import TimeTools
-from .time_tools import Humanize
+from .humanize import Humanize
 from .time_tools import Timeago
 from .weather import WeatherTools
+from .dicio import Dicio
 
 
 

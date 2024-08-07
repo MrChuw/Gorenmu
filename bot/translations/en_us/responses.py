@@ -2,30 +2,68 @@ from __future__ import annotations
 
 from typing import Any, TYPE_CHECKING
 
-from bot.translations.base import BaseTranslations, Response
-from bot.translations.pt_br.extras import WeatherTools
-from bot.translations.pt_br.extras import from_list_to_pet_list, pets, PetsDict
-from bot.translations.pt_br.extras import fight_option
-from bot.translations.pt_br.extras import dungeon_rank_dict
-from bot.translations.pt_br.extras import Activity as ActivityExtras
+from .extras import WeatherTools
+from .extras import from_list_to_pet_list, pets, PetsDict
+from .extras import fight_option
+from .extras import dungeon_rank_dict
+from .extras import Activity as ActivityExtras
+from .extras import BaseTranslation
+from .extras import Response
+from .extras import Humanize
+from .extras import Timeago
+from .extras import TimeTools
+from .extras import Dicio
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
 
 
-# TODO: Colocar o pipe false nos comandos que não podem ir para o pipe.
-# TODO: adicionar um fallback para o idioma padrão caso não tenha a tradução.
 
 
 class EnUsTranslations:
-    class Exceptions(BaseTranslations.Exceptions):
-        class LotteryExceptions(BaseTranslations.Exceptions.LotteryExceptions):
+    class IDE:
+        class TypeChecking(BaseTranslation):
+            response: Response
+            pass
+
+    class SupportTools:
+        class TimeTools(BaseTranslation):
+            TimeTools: TimeTools = TimeTools
+            Timeago: Timeago = Timeago
+
+        class Lottery(BaseTranslation):
+            bet_or_consultation: list[str] = ["aposta", "consultar"]
+
+        class Humanize(BaseTranslation):
+            Humanize: Humanize = Humanize
+
+        class Dicio(BaseTranslation):
+            Dicio: Dicio = Dicio
+
+    class Exceptions:
+        class LotteryExceptions(BaseTranslation):
             lottery_seed: str = "algo horrível aconteceu, contate \"mr_chuw\" aqui na twitch utilizando whispers."
 
-    class Activity(BaseTranslations.Activity):
+        class ToolsExceptions(BaseTranslation):
+            announcement: str = "algo de errado com o anuncio. {}"
+
+        class BotMainLoopExceptions(BaseTranslation):
+            dev_required: str = "você precisa ser meu criador para executar esse comando."
+            owner_required: str = "comandos reservados para o dono do bot."
+            command_on_cooldown: str = "para usar o comando de novo volte {}."
+            not_implemented: str = "esse comando está temporariamente desativado."
+
+            error_not_registered: str = "ocorreu um erro inesperado, por favor, reporte o erro para @{}"
+
+        class ResponseExceptions(BaseTranslation):
+            error_on_command: str = "um erro aconteceu no comando {}"
+            pipe_response: str = "aqui está a resposta que foi gerada pelo comando anterior: {}"
+            command_not_pipeble: str = "este comando não pôde ser utilizado com o pipe."
+
+    class Activity:
         afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
-        class Afk(BaseTranslations.Activity.Afk):
+        class Afk(BaseTranslation):
             message_too_long: Response = Response(
                 {"success": False, "response": "Esta mensagem é muito longa.", "is_response": False}
             )
@@ -34,7 +72,7 @@ class EnUsTranslations:
                 {"success": True, "response": "{}: {} e deixou uma nota com: {}", "is_response": False}
             )
 
-        class IsAfk(BaseTranslations.Activity.IsAfk):
+        class IsAfk(BaseTranslation):
             bot_nick: Response = Response(
                 {"success": False, "response": "eu sempre estou aqui... observando.", "is_response": False}
             )
@@ -50,7 +88,7 @@ class EnUsTranslations:
             )
             is_not_afk: Response = Response({"success": False, "response": "@{} não está Afk.", "is_response": False})
 
-        class RAfk(BaseTranslations.Activity.RAfk):
+        class RAfk(BaseTranslation):
             time_expired: Response = Response(
                 {"success": False, "response": "O tempo para voltar já passou.", "is_response": False}
             )
@@ -60,14 +98,14 @@ class EnUsTranslations:
             )
             is_not_afk: Response = Response({"success": False, "response": "voce não está afk.", "is_response": False})
 
-        class AfkListeners(BaseTranslations.Activity.AfkListeners):
+        class AfkListeners(BaseTranslation):
             is_afk: Response = Response({"success": False, "response": "{}: {} (ficou {} {})", "is_response": False})
             is_afk_content: Response = Response(
                 {"success": False, "response": "{} {} e deixou um bilhete: {} (ficou {} {})", "is_response": False}
             )
 
-    class Admin(BaseTranslations.Admin):
-        class AddUser(BaseTranslations.Admin.AddUser):
+    class Admin:
+        class AddUser(BaseTranslation):
             user_not_found: Response = Response(
                 {"success": True, "response": "não existe nenhum usuário com nick {}.", "is_response": False}
             )
@@ -80,7 +118,7 @@ class EnUsTranslations:
                 }
             )
 
-        class AddBot(BaseTranslations.Admin.AddBot):
+        class AddBot(BaseTranslation):
             user_not_found: Response = Response(
                 {"success": False, "response": "eu ainda não vi esse bot em nenhum chat.", "is_response": False}
             )
@@ -91,17 +129,17 @@ class EnUsTranslations:
                 {"success": True, "response": "o bot {} foi adicionado aos bots.", "is_response": False}
             )
 
-        class AllChannels(BaseTranslations.Admin.AllChannels):
+        class AllChannels(BaseTranslation):
             channels: Response = Response(
                 {"success": False, "response": "aqui a lista de todos os canais que eu estou: {}", "is_response": False}
             )
 
-        class Announce(BaseTranslations.Admin.Announce):
+        class Announce(BaseTranslation):
             success: Response = Response(
                 {"success": False, "response": "O comando foi executado com sucesso.", "is_response": False}
             )
 
-        class ApiBot(BaseTranslations.Admin.ApiBot):
+        class ApiBot(BaseTranslation):
             added_with_success: Response = Response(
                 {
                     "success": False,
@@ -110,7 +148,7 @@ class EnUsTranslations:
                 }
             )
 
-        class ChannelLog(BaseTranslations.Admin.ChannelLog):
+        class ChannelLog(BaseTranslation):
             channel_already_added: Response = Response(
                 {"success": False, "response": "Ja estou no canal {}.", "is_response": False}
             )
@@ -118,17 +156,17 @@ class EnUsTranslations:
                 {"success": True, "response": "Entrei no canal {}.", "is_response": False}
             )
 
-        class CookieGive(BaseTranslations.Admin.CookieGive):
+        class CookieGive(BaseTranslation):
             cookie_given: Response = Response(
                 {"success": True, "response": "você deu {} para {}.", "is_response": False}
             )
 
-        class CountUser(BaseTranslations.Admin.CountUser):
+        class CountUser(BaseTranslation):
             user_quantity: Response = Response(
                 {"success": True, "response": "têm {} usuários no banco de dados.", "is_response": False}
             )
 
-        class DBGrep(BaseTranslations.Admin.DBGrep):
+        class DBGrep(BaseTranslation):
             user_not_found: Response = Response(
                 {"success": True, "response": "não existe nenhum usuário com nick {}.", "is_response": False}
             )
@@ -144,7 +182,7 @@ class EnUsTranslations:
                 {"success": False, "response": "aqui as infos do canal: {}.", "response_list": [], "is_response": False}
             )
 
-        class DelFromDB(BaseTranslations.Admin.DelFromDB):
+        class DelFromDB(BaseTranslation):
             user_not_found: Response = Response(
                 {"success": True, "response": "não existe nenhum usuário com nome {}.", "is_response": False}
             )
@@ -160,25 +198,25 @@ class EnUsTranslations:
                 }
             )
 
-        class DisableNSFW(BaseTranslations.Admin.DisableNSFW):
+        class DisableNSFW(BaseTranslation):
             commands_disabled: Response = Response(
                 {"success": True, "response": "NSFW foi desabilitado em {} canais.", "is_response": False}
             )
 
-        class LotteryStart(BaseTranslations.Admin.LotteryStart):
+        class LotteryStart(BaseTranslation):
             pass  # TODO: Fazer quando refizer o loterica_start
 
-        class Nada(BaseTranslations.Admin.Nada):
+        class Nada(BaseTranslation):
             nada: Response = Response(
-                {"success": True, "response": "O comando foi executado com sucesso.", "is_response": False}
+                {"success": True, "response": "O comando foi executado com asdfasdfafsadsaf.", "is_response": False}
             )
 
-        class Reload(BaseTranslations.Admin.Reload):
+        class Reload(BaseTranslation):
             commands_reloaded: Response = Response(
                 {"success": True, "response": "Os comandos foram recarregados com sucesso.", "is_response": False}
             )
 
-        class Restart(BaseTranslations.Admin.Restart):
+        class Restart(BaseTranslation):
             success: Response = Response(
                 {"success": True, "response": "O bot foi reiniciado com sucesso.", "is_response": False}
             )
@@ -186,19 +224,19 @@ class EnUsTranslations:
                 {"success": False, "response": "Houve um erro ao reiniciar o bot: {}", "is_response": False}
             )
 
-        class RGit(BaseTranslations.Admin.RGit):
+        class RGit(BaseTranslation):
             git_pulled: Response = Response(
                 {"success": True, "response": "O comando foi executado com sucesso.", "is_response": False}
             )
 
-    class Random(BaseTranslations.Random):
-        class Chance(BaseTranslations.Random.Chance):
+    class Random:
+        class Chance(BaseTranslation):
             random_percentage: Response = Response({"success": False, "response": "{:.2f}%.", "is_response": False})
 
-        class Choice(BaseTranslations.Random.Choice):
+        class Choice(BaseTranslation):
             chosen_option: Response = Response({"success": False, "response": "{}", "is_response": False})
 
-        class Count(BaseTranslations.Random.Count):
+        class Count(BaseTranslation):
             character_count: Response = Response(
                 {
                     "success": False,
@@ -208,7 +246,7 @@ class EnUsTranslations:
                 }
             )
 
-        class HyperTranslate(BaseTranslations.Random.HyperTranslate):
+        class HyperTranslate(BaseTranslation):
             quantity_error: Response = Response(
                 {
                     "success": False,
@@ -226,7 +264,7 @@ class EnUsTranslations:
             )
             translation: Response = Response({"success": False, "response": "{}", "is_response": False})
 
-        class Imgur(BaseTranslations.Random.Imgur):
+        class Imgur(BaseTranslation):
             links: Response = Response({"success": False, "response": "", "response_list": [], "is_response": False})
             timeout: Response = Response(
                 {
@@ -236,7 +274,7 @@ class EnUsTranslations:
                 }
             )
 
-        class Imgur7(BaseTranslations.Random.Imgur7):
+        class Imgur7(BaseTranslation):
             links: Response = Response({"success": False, "response": "", "response_list": [], "is_response": False})
             timeout: Response = Response(
                 {
@@ -246,7 +284,7 @@ class EnUsTranslations:
                 }
             )
 
-        class ImgurRepeated(BaseTranslations.Random.ImgurRepeated):
+        class ImgurRepeated(BaseTranslation):
             links_repeated: Response = Response(
                 {
                     "success": False,
@@ -256,7 +294,7 @@ class EnUsTranslations:
                 }
             )
 
-        class RandomColor(BaseTranslations.Random.RandomColor):
+        class RandomColor(BaseTranslation):
             response: Response = Response(
                 {
                     "success": False,
@@ -269,10 +307,10 @@ class EnUsTranslations:
                 {"success": False, "response": "{} é {}. https://goo.gl/search?%23{} {}", "is_response": False}
             )
 
-        class Reverse(BaseTranslations.Random.Reverse):
+        class Reverse(BaseTranslation):
             reversed_string: Response = Response({"success": False, "response": "{}", "is_response": False})
 
-        class RandomLine(BaseTranslations.Random.RandomLine):
+        class RandomLine(BaseTranslation):
             channel_not_found: Response = Response(
                 {
                     "success": False,
@@ -303,29 +341,29 @@ class EnUsTranslations:
                 {"success": False, "response": "{} (enviada há {} por {} )", "is_response": False}
             )
 
-        class Scp(BaseTranslations.Random.Scp):
+        class Scp(BaseTranslation):
             links: Response = Response({"success": False, "response": "{}", "is_response": False})
             unexpected_error: Response = Response(
                 {"success": False, "response": "Aconteceu algum erro, tente novamente.", "is_response": False}
             )
 
-        class UpSideDown(BaseTranslations.Random.UpSideDown):
+        class UpSideDown(BaseTranslation):
             upsidedown: Response = Response({"success": False, "response": "{}", "is_response": False})
 
-        class Wikihow(BaseTranslations.Random.Wikihow):
+        class Wikihow(BaseTranslation):
             links: Response = Response({"success": False, "response": "{}", "is_response": False})
             unexpected_error: Response = Response(
                 {"success": False, "response": "Aconteceu algum erro, tente novamente.", "is_response": False}
             )
 
-        class Wikipedia(BaseTranslations.Random.Wikihow):
+        class Wikipedia(BaseTranslation):
             links: Response = Response({"success": False, "response": "{}", "is_response": False})
             unexpected_error: Response = Response(
                 {"success": False, "response": "Aconteceu algum erro, tente novamente.", "is_response": False}
             )
 
-    class Annotations(BaseTranslations.Annotations):
-        class Annotation(BaseTranslations.Annotations.Annotation):
+    class Annotations:
+        class Annotation(BaseTranslation):
             no_content_provided: Response = Response(
                 {
                     "success": False,
@@ -347,7 +385,7 @@ class EnUsTranslations:
                 {"success": False, "response": "Anotação criada com sucesso.  📝 (ID: {})", "is_response": False}
             )
 
-        class Annotations(BaseTranslations.Annotations.Annotations):
+        class Annotations(BaseTranslation):
             annotation_content: Response = Response(
                 {"success": False, "response": "sua anotação de id {} é: {}", "is_response": False}
             )
@@ -382,8 +420,8 @@ class EnUsTranslations:
                 {"success": False, "response": "você não tem anotações.", "is_response": False}
             )
 
-    class Lottery(BaseTranslations.Lottery):
-        class Bet(BaseTranslations.Lottery.Bet):
+    class Lottery:
+        class Bet(BaseTranslation):
             lottery_lock: Response = Response(
                 {
                     "success": False,
@@ -425,7 +463,7 @@ class EnUsTranslations:
                 {"success": False, "response": "por favor escolha no mínimo 3 números.", "is_response": False}
             )
 
-        class Lottery(BaseTranslations.Lottery.Lottery):
+        class Lottery(BaseTranslation):
             lottery_lock: Response = Response(
                 {
                     "success": False,
@@ -477,13 +515,13 @@ class EnUsTranslations:
                 {"success": False, "response": "por favor escolha no mínimo 3 números.", "is_response": False}
             )
 
-    class NSFW(BaseTranslations.NSFW):
-        class Boru(BaseTranslations.NSFW.Boru):
+    class NSFW:
+        class Boru(BaseTranslation):
             pls_wait = "por favor espera um pouco, estou gerando os links."
             unexpected_error: Response = Response({"success": False, "response": "{}", "is_response": False})
             success: Response = Response({"success": False, "response": "", "is_response": False})
 
-        class AllBoorus(BaseTranslations.NSFW.AllBoorus):
+        class AllBoorus(BaseTranslation):
             pls_wait = "por favor espera um pouco, estou gerando os links."
             unexpected_error: Response = Response({"success": False, "response": "{}", "is_response": False})
             too_much_tags: Response = Response(
@@ -495,7 +533,7 @@ class EnUsTranslations:
             )
             success: Response = Response({"success": False, "response": "", "is_response": False})
 
-    class Cookies(BaseTranslations.Cookies):
+    class Cookies:
         cookie_lines: list[str] = None
 
         def cookie_file(self):  # TODO: Ver se funfa.
@@ -503,7 +541,7 @@ class EnUsTranslations:
                 cookie_lines = file.readlines()
             return cookie_lines
 
-        class Cookie(BaseTranslations.Cookies.Cookie):
+        class Cookie(BaseTranslation):
             not_eat: Response = Response(
                 {"success": False, "response": "você não comeu nada, uau!", "is_response": False}
             )
@@ -534,7 +572,7 @@ class EnUsTranslations:
                 }
             )
 
-        class CookieCount(BaseTranslations.Cookies.CookieCount):
+        class CookieCount(BaseTranslation):
             bot_nick: Response = Response(
                 {
                     "success": False,
@@ -588,7 +626,7 @@ class EnUsTranslations:
                 self.response_string = response
                 return self
 
-        class Gift(BaseTranslations.Cookies.Gift):
+        class Gift(BaseTranslation):
             invalid_amount: Response = Response(
                 {
                     "success": False,
@@ -628,7 +666,7 @@ class EnUsTranslations:
                 }
             )
 
-        class SlotMachine(BaseTranslations.Cookies.SlotMachine):
+        class SlotMachine(BaseTranslation):
             daily_limit_reached: Response = Response(
                 {
                     "success": False,
@@ -687,7 +725,7 @@ class EnUsTranslations:
                 }
             )
 
-        class Stock(BaseTranslations.Cookies.Stock):
+        class Stock(BaseTranslation):
             invalid_number: Response = Response(
                 {
                     "success": False,
@@ -730,7 +768,7 @@ class EnUsTranslations:
                 }
             )
 
-        class Top(BaseTranslations.Cookies.Top):
+        class Top(BaseTranslation):
             ranks: Response = Response({"success": False, "response": "os ranks são: {}", "is_response": False})
             top10_ish: Response = Response(
                 {
@@ -740,15 +778,15 @@ class EnUsTranslations:
                 }
             )
 
-    class Copy(BaseTranslations.Copy):
-        class Copy(BaseTranslations.Copy.Copy):
+    class Copy:
+        class Copy(BaseTranslation):
             success: Response = Response({"success": False, "response": "o id da copypasta {}", "is_response": False})
             copy: Response = Response({"success": False, "response": "{}", "is_response": False})
             wrong_id: Response = Response(
                 {"success": False, "response": "não existe copypasta com esse id.", "is_response": False}
             )
 
-        class DeleteCopy(BaseTranslations.Copy.DeleteCopy):
+        class DeleteCopy(BaseTranslation):
             deleted: Response = Response(
                 {"success": False, "response": "a copypasta de id {} foi deletada.", "is_response": False}
             )
@@ -759,13 +797,13 @@ class EnUsTranslations:
                 {"success": False, "response": "envie {}delcopy delete {} para deletar.", "is_response": False}
             )
 
-        class RandomCopy(BaseTranslations.Copy.RandomCopy):
+        class RandomCopy(BaseTranslation):
             success: Response = Response({"success": False, "response": "{}", "is_response": False})
 
-    class Dungeons(BaseTranslations.Dungeons):
+    class Dungeons:
         dungeonrank_dict = dungeon_rank_dict
 
-        class DungeonLevel(BaseTranslations.Dungeons.DungeonLevel):
+        class DungeonLevel(BaseTranslation):
             bot_nick: Response = Response(
                 {"success": False, "response": "eu apenas crio as dungeons...", "is_response": False}
             )
@@ -783,7 +821,7 @@ class EnUsTranslations:
                 {"success": False, "response": "{} ainda não entrou em nenhuma dungeon", "is_response": False}
             )
 
-        class DungeonRank(BaseTranslations.Dungeons.DungeonRank):
+        class DungeonRank(BaseTranslation):
             winrate: Response = Response(
                 {
                     "success": False,
@@ -794,7 +832,7 @@ class EnUsTranslations:
             player_rank = "|| Você está na posição {}º no ranking com {} {}."
             normal: Response = Response({"success": False, "response": "top {} {}: {} {}", "is_response": False})
 
-        class DungeonEnter(BaseTranslations.Dungeons.DungeonEnter):
+        class DungeonEnter(BaseTranslation):
             class_rank_up: Response = Response({"success": False, "response": "agora você é {}", "is_response": False})
             class_to_choose: Response = Response(
                 {
@@ -819,7 +857,7 @@ class EnUsTranslations:
                 }
             )
 
-        class DungeonFast(BaseTranslations.Dungeons.DungeonFast):
+        class DungeonFast(BaseTranslation):
             class_to_choose: Response = Response(
                 {
                     "success": False,
@@ -840,8 +878,8 @@ class EnUsTranslations:
                 }
             )
 
-    class General(BaseTranslations.General):
-        class BotInfo(BaseTranslations.General.BotInfo):
+    class General:
+        class BotInfo(BaseTranslation):
             info: Response = Response(
                 {
                     "success": False,
@@ -854,18 +892,18 @@ class EnUsTranslations:
             site: Response = Response({"success": False, "response": "{}", "is_response": False})
             uptime: Response = Response({"success": False, "response": "eu acordei há {}", "is_response": False})
 
-        class Bug(BaseTranslations.General.Bug):
+        class Bug(BaseTranslation):
             bug_id: Response = Response(
                 {"success": False, "response": "seu bug foi reportado 🐛 (ID {})", "is_response": False}
             )
 
-        class Channels(BaseTranslations.General.Channels):
+        class Channels(BaseTranslation):
             quantity: Response = Response(
                 {"success": False, "response": "estou conectado em {quantidade} canais.", "is_response": False}
             )
             names: Response = Response({"success": False, "response": "{}", "is_response": False})
 
-        class Color(BaseTranslations.General.Color):
+        class Color(BaseTranslation):
             user_not_found: Response = Response(
                 {
                     "success": False,
@@ -889,7 +927,7 @@ class EnUsTranslations:
                 {"success": False, "response": "{} é {}. https://goo.gl/search?%23{} {}", "is_response": False}
             )
 
-        class Dict(BaseTranslations.General.Dict):
+        class Dict(BaseTranslation):
             word_not_found: Response = Response(
                 {"success": False, "response": "não encontrei a palavra {} no www.dicio.com.br", "is_response": False}
             )
@@ -897,10 +935,10 @@ class EnUsTranslations:
                 {"success": False, "response": "A palavra '{}' existe em {}", "is_response": False}
             )
 
-        class Echo(BaseTranslations.General.Echo):
+        class Echo(BaseTranslation):
             echo: Response = Response({"success": False, "response": "{}", "is_response": False})
 
-        class Help(BaseTranslations.General.Help):
+        class Help(BaseTranslation):
             command_site: Response = Response(
                 {
                     "success": False,
@@ -915,7 +953,7 @@ class EnUsTranslations:
                 {"success": False, "response": "{}{} ({}): {} | Comando no site: {}", "is_response": False}
             )
 
-        class Join(BaseTranslations.General.Join):
+        class Join(BaseTranslation):
             join_message = (
                 "Opa. Fui convidado a me instalar aqui, caso queira saber meus comandos entre em "
                 '" {} " ou mande {}help. Se o bot cair manda whisper ou mensagem no '
@@ -935,7 +973,7 @@ class EnUsTranslations:
                 {"success": False, "response": "Ja estou no canal {}!", "is_response": False}
             )
 
-        class LastSeen(BaseTranslations.General.LastSeen):
+        class LastSeen(BaseTranslation):
             bot_nick: Response = Response(
                 {"success": False, "response": "eu estou em todos os lugares, a todo momento...", "is_response": False}
             )
@@ -956,13 +994,13 @@ class EnUsTranslations:
                 {"success": False, "response": "@{} foi visto em @{} pela última vez: {} (há {})", "is_response": False}
             )
 
-        class Leave(BaseTranslations.General.Leave):
+        class Leave(BaseTranslation):
             not_in_channel: Response = Response(
                 {"success": False, "response": "Eu não estou no seu canal {}!", "is_response": False}
             )
             left: Response = Response({"success": False, "response": "{} removido com sucesso!", "is_response": False})
 
-        class Nicks(BaseTranslations.General.Nicks):
+        class Nicks(BaseTranslation):
             user_not_found: Response = Response(
                 {
                     "success": False,
@@ -976,23 +1014,23 @@ class EnUsTranslations:
                 {"success": False, "response": "nenhuma mudança de nick registrada ainda.", "is_response": False}
             )
 
-        class Ping(BaseTranslations.General.Ping):
+        class Ping(BaseTranslation):
             ping: Response = Response(
                 {"success": False, "response": "{} || RAM usada {} pelo python || {}", "is_response": False}
             )
 
-        class PopOut(BaseTranslations.General.PopOut):
+        class PopOut(BaseTranslation):
             url: Response = Response(
                 {"success": False, "response": "https://www.twitch.tv/popout/{}/chat?popout=", "is_response": False}
             )
 
-        class Preview(BaseTranslations.General.Preview):
+        class Preview(BaseTranslation):
             no_stream: Response = Response(
                 {"success": False, "response": "este usuário não esta em live.", "is_response": False}
             )
             response: Response = Response({"success": False, "response": "{}", "is_response": False})
 
-        class Spam(BaseTranslations.General.Spam):
+        class Spam(BaseTranslation):
             content_not_valid: Response = Response(
                 {"success": False, "response": "Por favor, digite um conteúdo para o spam.", "is_response": False}
             )
@@ -1001,13 +1039,13 @@ class EnUsTranslations:
             )
             response: Response = Response({"success": False, "response": "", "is_response": False})
 
-        class Suggest(BaseTranslations.General.Suggest):
+        class Suggest(BaseTranslation):
             suggest_id: Response = Response(
                 {"success": False, "response": "sua sugestão foi anotada 📝 (ID {})", "is_response": False}
             )
 
-    class Infos(BaseTranslations.Infos):
-        class AccountAge(BaseTranslations.Infos.AccountAge):
+    class Infos:
+        class AccountAge(BaseTranslation):
             user_not_found: Response = Response(
                 {"success": False, "response": "@{} é um usuário inválido.", "is_response": False}
             )
@@ -1021,7 +1059,7 @@ class EnUsTranslations:
                 {"success": False, "response": "{} criou a conta em {} (há {})", "is_response": False}
             )
 
-        class Avatar(BaseTranslations.Infos.Avatar):
+        class Avatar(BaseTranslation):
             user_not_found: Response = Response(
                 {"success": False, "response": "minha foto de perfil: {} || {}", "is_response": False}
             )
@@ -1035,7 +1073,7 @@ class EnUsTranslations:
                 {"success": False, "response": "foto de perfil de @{}: {} || {}", "is_response": False}
             )
 
-        class FirstFollow(BaseTranslations.Infos.FirstFollow):
+        class FirstFollow(BaseTranslation):
             first_and_follow: Response = Response(
                 {
                     "success": False,
@@ -1061,7 +1099,7 @@ class EnUsTranslations:
                 {"success": False, "response": "{} não segue e não é seguido por ninguém", "is_response": False}
             )
 
-        class FollowAge(BaseTranslations.Infos.FollowAge):
+        class FollowAge(BaseTranslation):
             user_not_found: Response = Response(
                 {"success": False, "response": "@{} é um usuário inválido.", "is_response": False}
             )
@@ -1073,7 +1111,7 @@ class EnUsTranslations:
                 {"success": False, "response": "{} seguiu {} em {} (há {})", "is_response": False}
             )
 
-        class Live(BaseTranslations.Infos.Live):
+        class Live(BaseTranslation):
             bot_nick: Response = Response(
                 {"success": False, "response": "eu sou um bot, não um streamer", "is_response": False}
             )
@@ -1098,7 +1136,7 @@ class EnUsTranslations:
                 }
             )
 
-        class Title(BaseTranslations.Infos.Title):
+        class Title(BaseTranslation):
             bot_nick: Response = Response(
                 {"success": False, "response": "eu sou um bot, não um streamer.", "is_response": False}
             )
@@ -1112,8 +1150,8 @@ class EnUsTranslations:
             title_no_game: Response = Response({"success": False, "response": "{} 📑 {}", "is_response": False})
             full_title: Response = Response({"success": False, "response": "{} 📑 {} | 🎮 {}", "is_response": False})
 
-    class Interactive(BaseTranslations.Interactive):
-        class Fight(BaseTranslations.Interactive.Fight):
+    class Interactive:
+        class Fight(BaseTranslation):
             options: list[str] = fight_option
             bot_nick: Response = Response(
                 {"success": False, "response": "você nunca conseguiria me derrotar...", "is_response": False}
@@ -1132,14 +1170,14 @@ class EnUsTranslations:
                 {"success": False, "response": "@{} não respondeu ao seu desafio a tempo", "is_response": False}
             )
 
-        class Hug(BaseTranslations.Interactive.Hug):
+        class Hug(BaseTranslation):
             bot: Response = Response({"success": False, "response": "🤗", "is_response": False})
             yourself: Response = Response(
                 {"success": False, "response": "você tentou se abraçar...", "is_response": False}
             )
             hug: Response = Response({"success": False, "response": "você abraçou @{} 🤗", "is_response": False})
 
-        class Kiss(BaseTranslations.Interactive.Kiss):
+        class Kiss(BaseTranslation):
             bot: Response = Response({"success": False, "response": "😳", "is_response": False})
             yourself: Response = Response(
                 {"success": False, "response": "você tentou se beijar...", "is_response": False}
@@ -1148,7 +1186,7 @@ class EnUsTranslations:
                 {"success": False, "response": "você deu um beijinho em @{} 😚", "is_response": False}
             )
 
-        class Love(BaseTranslations.Interactive.Love):
+        class Love(BaseTranslation):
             yourself: Response = Response(
                 {"success": False, "response": "uma pessoa não pode ser shipada com ela mesma...", "is_response": False}
             )
@@ -1156,18 +1194,18 @@ class EnUsTranslations:
                 {"success": False, "response": "@{} & @{}: {} com {}% de amor {}", "is_response": False}
             )
 
-        class Pat(BaseTranslations.Interactive.Pat):
+        class Pat(BaseTranslation):
             bot: Response = Response({"success": False, "response": "😊", "is_response": False})
             yourself: Response = Response(
                 {"success": False, "response": "você tentou fazer cafuné em si mesmo...", "is_response": False}
             )
             pat: Response = Response({"success": False, "response": "você fez cafuné em @{} 😊", "is_response": False})
 
-        class Penis(BaseTranslations.Interactive.Penis):
+        class Penis(BaseTranslation):
             bot: Response = Response({"success": False, "response": "eu só tenho pen drive.", "is_response": False})
             penis: Response = Response({"success": False, "response": "{} tem {}cm {}", "is_response": False})
 
-        class Slap(BaseTranslations.Interactive.Slap):
+        class Slap(BaseTranslation):
             bot: Response = Response({"success": False, "response": "vai bater na mãe 😠.", "is_response": False})
             yourself: Response = Response(
                 {"success": False, "response": "você se deu um tapa... 😕.", "is_response": False}
@@ -1176,7 +1214,7 @@ class EnUsTranslations:
                 {"success": False, "response": "você deu um tapa em @{} 👋", "is_response": False}
             )
 
-        class Tuck(BaseTranslations.Interactive.Tuck):
+        class Tuck(BaseTranslation):
             bot: Response = Response({"success": False, "response": "eu não posso dormir agora.", "is_response": False})
             yourself: Response = Response(
                 {"success": False, "response": "você foi para a cama 🛏", "is_response": False}
@@ -1185,8 +1223,8 @@ class EnUsTranslations:
                 {"success": False, "response": "você colocou @{} na cama 🙂👉🛏", "is_response": False}
             )
 
-    class Markov(BaseTranslations.Markov):
-        class Markov(BaseTranslations.Markov.Markov):
+    class Markov:
+        class Markov(BaseTranslation):
             channel_not_found: Response = Response(
                 {"success": False, "response": "@canal não encontrado no meu banco de dados.", "is_response": False}
             )
@@ -1206,8 +1244,8 @@ class EnUsTranslations:
             )
             markov_generated: Response = Response({"success": False, "response": "{}", "is_response": False})
 
-    class Marry(BaseTranslations.Marry):
-        class Marry(BaseTranslations.Marry.Marry):
+    class Marry:
+        class Marry(BaseTranslation):
             bot: Response = Response(
                 {
                     "success": False,
@@ -1299,7 +1337,7 @@ class EnUsTranslations:
                 }
             )
 
-        class Divorce(BaseTranslations.Marry.Divorce):
+        class Divorce(BaseTranslation):
             bot: Response = Response(
                 {"success": False, "response": "eu nunca estaria casado com você.", "is_response": False}
             )
@@ -1332,7 +1370,7 @@ class EnUsTranslations:
                 }
             )
 
-        class MarryAge(BaseTranslations.Marry.MarryAge):
+        class MarryAge(BaseTranslation):
             bot: Response = Response(
                 {"success": False, "response": "nunca me casarei com ninguém.", "is_response": False}
             )
@@ -1350,11 +1388,11 @@ class EnUsTranslations:
             divorced: str = "@{} está separado de @{} há {} e quem pediu o divórcio foi @{}"
             response: Response = Response({"success": False, "response": "", "is_response": False})
 
-    class Pet(BaseTranslations.Pet):
+    class Pet:
         PetsDict: PetsDict = pets
         FromListToPetList = from_list_to_pet_list
 
-        class Pet(BaseTranslations.Pet.Pet):
+        class Pet(BaseTranslation):
             bot: Response = Response(
                 {
                     "success": False,
@@ -1384,7 +1422,7 @@ class EnUsTranslations:
                 {"success": False, "response": "{} não possui nenhum pet.", "is_response": False}
             )
 
-        class PetBuy(BaseTranslations.Pet.PetBuy):
+        class PetBuy(BaseTranslation):
             no_cookies: Response = Response(
                 {
                     "success": False,
@@ -1414,12 +1452,12 @@ class EnUsTranslations:
                 {"success": False, "response": "escolha um dos pets disponíveis hoje ({}petlist)", "is_response": False}
             )
 
-        class PetList(BaseTranslations.Pet.PetList):
+        class PetList(BaseTranslation):
             pet_list: Response = Response(
                 {"success": False, "response": "pets disponíveis (adquira com {}petbuy): {}", "is_response": False}
             )
 
-        class PetName(BaseTranslations.Pet.PetName):
+        class PetName(BaseTranslation):
             no_pets: Response = Response(
                 {"success": False, "response": "Você não tem pets para dar nome.", "is_response": False}
             )
@@ -1434,7 +1472,7 @@ class EnUsTranslations:
                 {"success": False, "response": "o nome do pet foi mudado para {} .", "is_response": False}
             )
 
-        class PetPat(BaseTranslations.Pet.PetPat):
+        class PetPat(BaseTranslation):
             no_pet_name: Response = Response(
                 {"success": False, "response": "você não especificou o nome do pet.", "is_response": False}
             )
@@ -1452,11 +1490,11 @@ class EnUsTranslations:
                 {"success": False, "response": "você não tem um pet com este nome..", "is_response": False}
             )
 
-        class PetSell(BaseTranslations.Pet.PetSell):
+        class PetSell(BaseTranslation):
             pass
 
-    class Profile(BaseTranslations.Profile):
-        class Mention(BaseTranslations.Profile.Mention):
+    class Profile:
+        class Mention(BaseTranslation):
             mention_on: Response = Response(
                 {
                     "success": False,
@@ -1465,7 +1503,7 @@ class EnUsTranslations:
                 }
             )
 
-        class NickName(BaseTranslations.Profile.NickName):
+        class NickName(BaseTranslation):
             nickname_too_large: Response = Response(
                 {
                     "success": False,
@@ -1480,7 +1518,7 @@ class EnUsTranslations:
                 {"success": False, "response": "você alterou seu de apelido para {} com sucesso!", "is_response": False}
             )
 
-        class SaveCity(BaseTranslations.Profile.SaveCity):
+        class SaveCity(BaseTranslation):
             city_removed: Response = Response(
                 {"success": False, "response": "Cidade foi removida com sucesso!.", "is_response": False}
             )
@@ -1492,7 +1530,7 @@ class EnUsTranslations:
                 }
             )
 
-        class SaveColor(BaseTranslations.Profile.SaveColor):
+        class SaveColor(BaseTranslation):
             color_removed: Response = Response(
                 {"success": False, "response": "a cor foi removida com sucesso!", "is_response": False}
             )
@@ -1504,7 +1542,7 @@ class EnUsTranslations:
                 }
             )
 
-        class UnMention(BaseTranslations.Profile.UnMention):
+        class UnMention(BaseTranslation):
             mention_off: Response = Response(
                 {
                     "success": False,
@@ -1513,8 +1551,8 @@ class EnUsTranslations:
                 }
             )
 
-    class Reminder(BaseTranslations.Reminder):
-        class Remind(BaseTranslations.Reminder.Remind):
+    class Reminder:
+        class Remind(BaseTranslation):
             bot: Response = Response(
                 {
                     "success": False,
@@ -1562,7 +1600,7 @@ class EnUsTranslations:
                 {"success": False, "response": "{} será lembrado disso em {}. ⏲️(ID {})", "is_response": False}
             )
 
-        class Reminds(BaseTranslations.Reminder.Reminds):
+        class Reminds(BaseTranslation):
             remind_for: Response = Response(
                 {"success": False, "response": "esse lembrete é para {}: {}.", "is_response": False}
             )
@@ -1592,7 +1630,7 @@ class EnUsTranslations:
                 {"success": False, "response": "você não tem lembretes pendentes.", "is_response": False}
             )
 
-        class RemindListener(BaseTranslations.Reminder.RemindListener):
+        class RemindListener(BaseTranslation):
             remind_timed_with_content: Response = Response(
                 {"success": False, "response": "{} deixou um lembrete: {} (há {})", "is_response": False}
             )
@@ -1600,8 +1638,8 @@ class EnUsTranslations:
                 {"success": False, "response": "{} deixou um lembrete em branco (há {})", "is_response": False}
             )
 
-    class Settings(BaseTranslations.Settings):
-        class BanWord(BaseTranslations.Settings.BanWord):
+    class Settings:
+        class BanWord(BaseTranslation):
             word_added: Response = Response(
                 {"success": False, "response": "esse já é um termo banido.", "is_response": False}
             )
@@ -1613,7 +1651,7 @@ class EnUsTranslations:
                 }
             )
 
-        class Disable(BaseTranslations.Settings.Disable):
+        class Disable(BaseTranslation):
             command_dont_exist: Response = Response(
                 {"success": False, "response": "esse comando não existe.", "is_response": False}
             )
@@ -1627,7 +1665,7 @@ class EnUsTranslations:
                 {"success": False, "response": '"{}" foi desativado.', "is_response": False}
             )
 
-        class Enable(BaseTranslations.Settings.Enable):
+        class Enable(BaseTranslation):
             command_dont_exist: Response = Response(
                 {"success": False, "response": "esse comando não existe.", "is_response": False}
             )
@@ -1638,7 +1676,7 @@ class EnUsTranslations:
                 {"success": False, "response": '"{}" já está ativado.', "is_response": False}
             )
 
-        class Prefix(BaseTranslations.Settings.Prefix):
+        class Prefix(BaseTranslation):
             prefix_invalid: Response = Response(
                 {"success": False, "response": "este prefixo {prefixo} é invalido", "is_response": False}
             )
@@ -1660,14 +1698,14 @@ class EnUsTranslations:
                 }
             )
 
-        class Start(BaseTranslations.Settings.Start):
+        class Start(BaseTranslation):
             already_on: Response = Response({"success": False, "response": "já estou ligado ☕", "is_response": False})
             started: Response = Response({"success": False, "response": "você me ligou ☕", "is_response": False})
 
-        class Stop(BaseTranslations.Settings.Stop):
+        class Stop(BaseTranslation):
             stopped: Response = Response({"success": False, "response": "você me desligou 💤", "is_response": False})
 
-        class UnBanWord(BaseTranslations.Settings.UnBanWord):
+        class UnBanWord(BaseTranslation):
             word_removed: Response = Response(
                 {"success": False, "response": '"{}" foi removido dos termos banidos.', "is_response": False}
             )
@@ -1675,8 +1713,8 @@ class EnUsTranslations:
                 {"success": False, "response": '"{}" não é um termo banidos.', "is_response": False}
             )
 
-    class Tools(BaseTranslations.Tools):
-        class Math(BaseTranslations.Tools.Math):
+    class Tools:
+        class Math(BaseTranslation):
             result: Response = Response({"success": False, "response": "{}", "is_response": False})
             error: Response = Response(
                 {
@@ -1687,7 +1725,7 @@ class EnUsTranslations:
                 }
             )
 
-        class Shorten(BaseTranslations.Tools.Shorten):
+        class Shorten(BaseTranslation):
             no_links_found: Response = Response(
                 {"success": False, "response": "Use: `{}encurta <link>`", "is_response": False}
             )
@@ -1701,7 +1739,7 @@ class EnUsTranslations:
                 {"success": False, "response": "Não foi possível encurtar o link.", "is_response": False}
             )
 
-        class Time(BaseTranslations.Tools.Time):
+        class Time(BaseTranslation):
             time: Response = Response({"success": False, "response": "{}", "is_response": False})
             future_time: Response = Response({"success": False, "response": "em {}", "is_response": False})
             past_time: Response = Response({"success": False, "response": "há {}", "is_response": False})
@@ -1717,13 +1755,13 @@ class EnUsTranslations:
                 {"success": False, "response": "tempo de mais para converter.", "is_response": False}
             )
 
-        class UserId(BaseTranslations.Tools.UserId):
+        class UserId(BaseTranslation):
             user_not_found: Response = Response(
                 {"success": False, "response": "não achei nenhum usuário com esse id.", "is_response": False}
             )
             id_or_name: Response = Response({"success": False, "response": "{}", "is_response": False})
 
-        class Weather(BaseTranslations.Tools.Weather, WeatherTools):
+        class Weather(BaseTranslation, WeatherTools):
             city_not_passed: Response = Response(
                 {
                     "success": False,
@@ -1792,8 +1830,8 @@ class EnUsTranslations:
                 )
                 return self
 
-    class Tower(BaseTranslations.Tower):
-        class EnterTower(BaseTranslations.Tower.EnterTower):
+    class Tower:
+        class EnterTower(BaseTranslation):
             class_rank_up: Response = Response({"success": False, "response": "agora você é {}", "is_response": False})
             class_to_choose: Response = Response(
                 {
@@ -1817,7 +1855,7 @@ class EnUsTranslations:
                 }
             )
 
-        class FastTower(BaseTranslations.Tower.FastTower):
+        class FastTower(BaseTranslation):
             class_to_choose: Response = Response(
                 {
                     "success": False,
@@ -1837,7 +1875,7 @@ class EnUsTranslations:
                 }
             )
 
-        class TowerLevel(BaseTranslations.Tower.TowerLevel):
+        class TowerLevel(BaseTranslation):
             bot_nick: Response = Response(
                 {"success": False, "response": "Eu apenas conto as historias dos encontros.", "is_response": False}
             )

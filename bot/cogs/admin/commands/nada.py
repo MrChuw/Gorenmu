@@ -5,13 +5,12 @@ from bot.bot import Gorenmu
 from bot.models import User, Channel
 from bot.utils import Check, Role
 from typing import Dict, Any, List, Tuple, Optional, Coroutine, Callable
-from bot.translations.base import BaseDecorators, BaseTranslations
-from bot.ext.commands import Bucket, check, Context, cooldown, base_decorator, helper, usage
-from bot.translations import BaseTranslations, BaseDecorators, Response
-from twitchio.ext.commands import command
+from bot.ext.commands import Bucket, check, Context, cooldown, base_decorator, helper, usage, command
+from bot.translations import EnUsTranslations, EnUsDecorators, Response
 
 
-@base_decorator(BaseDecorators.Admin.Nada())
+
+@base_decorator(EnUsDecorators.Admin.Nada())
 @helper("")
 @usage("")
 @cooldown(rate=3, per=10, bucket=Bucket.user)

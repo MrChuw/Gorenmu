@@ -131,6 +131,6 @@ class Check:
 
     @staticmethod
     async def language_set(ctx: Context) -> bool:
-        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "pt-br")
-        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or "pt-br")
+        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "en-us")
+        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or "en-us")
         return True
