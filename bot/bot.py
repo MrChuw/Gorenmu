@@ -194,8 +194,11 @@ class Gorenmu(Bot):
             return None
         if ctx.prefix != self.channels[ctx.channel.name].prefix:
             return None
-        if self.config.DevelopmentConfig.development:
-            return None
+        # TODO: Ativar de novo o develop.
+        # if self.config.DevelopmentConfig.development:
+        #     return None
+        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "pt-br")
+        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or "pt-br")
         translations = ctx.translations.Exceptions.BotMainLoopExceptions()
         if isinstance(error, CommandNotFound):
             return None
@@ -249,7 +252,6 @@ class Gorenmu(Bot):
                         await ctx.response(response)
                     if " | " in ctx.message.content:
                         await ctx.pipe_handler(message, ctx)
-
 
             except InvalidArgument:
                 if ctx.command and hasattr(ctx.command, "usage"):
