@@ -21,7 +21,7 @@ from bot.ext.commands import Bot, Context, Message, routine
 from bot.ext.config import Config
 from bot.models import Channel as ChannelModel, User as UserModel
 from bot.models.User_extras import BotsIgnore
-from bot.translations import TranslationManager, Response
+from bot.translations import Response, TranslationManager
 from bot.utils import (
     BooruTools, CookieTools, LotteryTools, MarkovProcessor, ToolsTools, UploadThings,
 )
@@ -65,9 +65,9 @@ class Gorenmu(Bot):
 
     async def is_online(self, message: Message) -> bool:
         await self.fetch_channels()
-        return (self.channels[message.channel.name].online or message.content.startswith(
-                f"{self.channels[message.channel.name].prefix}start"
-        ))
+
+        return (message.content.startswith(f"{self.channels[message.channel.name].prefix}start") or self.channels[
+            message.channel.name].online)
 
     def is_enabled(self, ctx: Context, command: str = "") -> bool:
         if ".tmi.twitch.tv WHISPER" in ctx.message.raw_data:
@@ -86,9 +86,9 @@ class Gorenmu(Bot):
         connected_channels = [channel.name for channel in self.connected_channels]
         disconnected_channels = [channel for channel in self.channels.keys() if channel not in connected_channels]
         if disconnected_channels:
-            self.log.warning(
-                    f"channels={len(connected_channels)}/{len(self.channels)} "
-                    f"disconnected_channels={disconnected_channels}")
+            self.log.warning(f"channels={len(connected_channels)}/{len(self.channels)} "
+                             f"disconnected_channels={disconnected_channels}"
+                             )
             try:
                 users = await self.fetch_users(disconnected_channels)
                 for user in users:
@@ -238,9 +238,8 @@ class Gorenmu(Bot):
                 channel = self.channels[message.channel.name]
                 prefix = message.content[0] if len(channel.prefix) != 2 else message.content[:2]
 
-                if (
-                        channel.online is False and "start" not in message.content or
-                        prefix == "ƚ" and channel.online is False):
+                if (channel.online is False and "start" not in message.content or prefix == "ƚ"
+                        and channel.online is False):
                     return None
                 response: Response | None = None
                 if prefix == channel.prefix:
@@ -257,13 +256,12 @@ class Gorenmu(Bot):
                 if ctx.command and hasattr(ctx.command, "usage"):
                     return await ctx.reply(ctx.decorators.get_usage(ctx, ctx))
                 return await ctx.simple_response(ctx,
-                                                 ctx.translations.Exceptions.BotMainLoopExceptions.
-                                                 error_not_registered.format(self.fetch_users(
-                                                 [self.config.BotConfig.dev_userid])[0]))
+                                                 ctx.translations.Exceptions.BotMainLoopExceptions.error_not_registered
+                                                 .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))
             except Exception as error:
                 self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
             else:
-                # TODO: Talvez mudar os checks dos listernes para ca ou tentar criar o
+                # TODO: Talvez mudar os checks dos listeners para ca ou tentar criar o
                 #  próprio sistema de check igual comandos.
                 if not ctx.user:
                     ctx.user = await UserModel.create_or_update(ctx)
@@ -280,21 +278,14 @@ class Gorenmu(Bot):
                 self.log.info(f"whispers || @{ctx.author.name}: {ctx.message.content}")
                 if " | " not in ctx.message.content:
                     await self.invoke(ctx)
-                # TODO: Need a method of responding to whispers
-                # if response:
-                #     await ctx.response(response)
-                # if " | " in ctx.message.content:
-                #     await ctx.pipe_handler(message, ctx)
+                    # TODO: Need a method of responding to whispers
 
             except InvalidArgument:
                 if ctx.command and hasattr(ctx.command, "usage"):
                     return await ctx.reply(ctx.decorators.get_usage(ctx, ctx))
                 return await ctx.simple_response(ctx,
-                                                 ctx.translations.Exceptions.BotMainLoopExceptions.
-                                                 error_not_registered.format(self.fetch_users(
-                                                 [self.config.BotConfig.dev_userid])[0]))
+                                                 ctx.translations.Exceptions.BotMainLoopExceptions.error_not_registered
+                                                 .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))
             except Exception as error:
                 self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
 
-            # '@badges=;color=#00FFFF;display-name=Mr_Chuw;emotes=;message-id=101;thread-id=411010313_707980467;turbo=0;user-id=411010313;user-type= :mr_chuw!mr_chuw@mr_chuw.tmi.twitch.tv WHISPER gorenmu :+nada teste'
-            ...
