@@ -70,7 +70,7 @@ class Gorenmu(Bot):
         ))
 
     def is_enabled(self, ctx: Context, command: str = "") -> bool:
-        if "WHISPER" in ctx.message.raw_data:
+        if ".tmi.twitch.tv WHISPER" in ctx.message.raw_data:
             return True
         return (command or ctx.command.name.lower()) not in self.channels[ctx.channel.name].disabled
 
@@ -87,8 +87,8 @@ class Gorenmu(Bot):
         disconnected_channels = [channel for channel in self.channels.keys() if channel not in connected_channels]
         if disconnected_channels:
             self.log.warning(
-                    f"channels={len(connected_channels)}/{len(self.channels)} disconnected_channels={disconnected_channels}"
-            )
+                    f"channels={len(connected_channels)}/{len(self.channels)} "
+                    f"disconnected_channels={disconnected_channels}")
             try:
                 users = await self.fetch_users(disconnected_channels)
                 for user in users:
@@ -271,10 +271,30 @@ class Gorenmu(Bot):
                     if response := await listener(ctx):
                         await ctx.response(response)
 
-        if ctx and "WHISPER" in ctx.message.raw_data:  # TODO: Fazer o handler de whisper.
-            # await self.invoke(ctx)
-            #
-            #   Criar uma implementacao para lidar com os whispers, utilizando cooldown e custom parser para o get_context.
-            #   Caso a versão 3 do twitchio não ja tenha resolvido.
-            #
+        if ctx and ".tmi.twitch.tv WHISPER" in ctx.message.raw_data:
+            ctx.author.id = ctx.message.tags["user-id"]
+            ctx.user = await UserModel.get(id=ctx.author.id)
+            try:
+                # response: Response | None = None
+                ctx.prefix = "+"
+                self.log.info(f"whispers || @{ctx.author.name}: {ctx.message.content}")
+                if " | " not in ctx.message.content:
+                    await self.invoke(ctx)
+                # TODO: Need a method of responding to whispers
+                # if response:
+                #     await ctx.response(response)
+                # if " | " in ctx.message.content:
+                #     await ctx.pipe_handler(message, ctx)
+
+            except InvalidArgument:
+                if ctx.command and hasattr(ctx.command, "usage"):
+                    return await ctx.reply(ctx.decorators.get_usage(ctx, ctx))
+                return await ctx.simple_response(ctx,
+                                                 ctx.translations.Exceptions.BotMainLoopExceptions.
+                                                 error_not_registered.format(self.fetch_users(
+                                                 [self.config.BotConfig.dev_userid])[0]))
+            except Exception as error:
+                self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
+
+            # '@badges=;color=#00FFFF;display-name=Mr_Chuw;emotes=;message-id=101;thread-id=411010313_707980467;turbo=0;user-id=411010313;user-type= :mr_chuw!mr_chuw@mr_chuw.tmi.twitch.tv WHISPER gorenmu :+nada teste'
             ...

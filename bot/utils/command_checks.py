@@ -66,12 +66,16 @@ class Check:
 
     @staticmethod
     def banword(ctx: Context) -> bool:
+        if ".tmi.twitch.tv WHISPER" in ctx.message.raw_data:
+            return True
         if any(word in ctx.message.content for word in ctx.bot.channels[ctx.channel.name].banwords):
             raise ContentHasBanword()
         return True
 
     @staticmethod
     def enabled(ctx: Context) -> bool:
+        if ".tmi.twitch.tv WHISPER" in ctx.message.raw_data:
+            return True
         if ctx.command.name in ctx.bot.channels[ctx.channel.name].disabled:
             raise CommandDisabled()
         return True
@@ -84,6 +88,8 @@ class Check:
 
     @staticmethod
     def online(ctx: Context) -> bool:
+        if ".tmi.twitch.tv WHISPER" in ctx.message.raw_data:
+            return True
         if not ctx.bot.channels[ctx.channel.name].online:
             raise BotOffline()
         return True

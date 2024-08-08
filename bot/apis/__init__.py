@@ -8,4 +8,3 @@ from .math import Math  # NOQA
 from .translate import Translator  # NOQA
 from .twitch import Twitch  # NOQA
 from .wit import Wit  # NOQA
-from .manga_pelo_nome import Manga
