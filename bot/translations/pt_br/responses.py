@@ -51,7 +51,7 @@ class PtBrTranslations:
             error_not_registered: str = "ocorreu um erro inesperado, por favor, reporte o erro para @{}"
 
         class ResponseExceptions(EnUsTranslations.Exceptions.ResponseExceptions):
-            error_on_command: str = "um erro aconteceu no comando {}"
+            error_on_command: str = "um erro aconteceu no comando \"{}\""
             pipe_response: str = "aqui está a resposta que foi gerada pelo comando anterior: {}"
             command_not_pipeble: str = "este comando não pôde ser utilizado com o pipe."
 

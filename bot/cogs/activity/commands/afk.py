@@ -33,13 +33,13 @@ async def command(ctx: Context, *, content: str = "") -> Response:
 async def afk(ctx: Context, content: str, invoke_by: str) -> Response:
     translations = ctx.translations.Activity.Afk.Afk()
     if len(content) >= 450:
-        return translations.message_too_long.format_response(ctx, success=False)
+        return translations.message_too_long.format_response(ctx, success=False, pipe=False)
     afk = ctx.translations.Activity.Afk.afks.get(invoke_by)  # NOQA
     await go_afk(afk, content, ctx)
     if not content:
-        return translations.afk_response.format_response(ctx, afk.leave, afk.emoji)
+        return translations.afk_response.format_response(ctx, afk.leave, afk.emoji, pipe=False)
     else:
-        return translations.afk_content_response.format_response(ctx, afk.leave, afk.emoji, content)
+        return translations.afk_content_response.format_response(ctx, afk.leave, afk.emoji, content, pipe=False)
 
 
 async def rafk(ctx: Context) -> Response:
@@ -68,7 +68,7 @@ async def isafk(ctx: Context, content: str) -> Response:
     if name in actions:
         return actions[name]
     else:
-        user = await User.get_or_none(nome=name)
+        user = await User.get_or_none(name=name)
         if not user:
             return translations.IsAfk().never_seen.format_response(ctx, name)
         await user.fetch_related("status")

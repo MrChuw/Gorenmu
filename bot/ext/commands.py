@@ -217,11 +217,12 @@ class Context(TwitchioContext):
         message.content = message.content.replace(" | ", f" | {external_ctx.prefix}")
         original_message = message
         response: Response | None = None
-        for command in message.content.split(" | "):
+        for command in message.content.split(" | "):  # NOQA
             message = original_message
-            message.content = f"{command} {response_str}"
+            message.content = f"{command} {response_str}"  # NOQA
             ctx = await self.bot.get_context(message)
             ctx.user = external_ctx.user
+            ctx.bot.CommandHandler.load_language(ctx)
             response: Response = await self.bot.invoke(ctx)  # NOQA
             if not response.success:
                 await self.simple_response(ctx, translation.error_on_command.format(ctx.command.name))
@@ -229,8 +230,7 @@ class Context(TwitchioContext):
                 break
             if not response.pipe:
                 await self.simple_response(ctx, translation.command_not_pipeble)
-                await self.response(response)
-                break
+                return await self.response(response)
 
             response_str = response.response_string
         if response:

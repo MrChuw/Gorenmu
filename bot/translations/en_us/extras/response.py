@@ -23,12 +23,10 @@ class Response:
         if self is ctx.translations.Tools.Weather.weather:
             return ctx.translations.Tools.Weather.format_weather(self, ctx, *args, **kwargs)
         self.ctx = ctx
-        success = kwargs.pop("success", True)
-        response_list = kwargs.pop("response_list", None)
-        handle = kwargs.pop("handle", None)
-        self.success = success
-        self.response_list = response_list
-        self.handle = handle
+        self.success = kwargs.pop("success", True)
+        self.response_list = kwargs.pop("response_list", None)
+        self.handle = kwargs.pop("handle", None)
+        self.pipe = kwargs.pop("pipe", True)
 
         if args:
             self.response_string = self.response.format(*args, **kwargs)
