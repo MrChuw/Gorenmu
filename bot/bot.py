@@ -216,7 +216,7 @@ class Gorenmu(Bot):
             return await ctx.simple_response(ctx, cooldown_str)
         if isinstance(error, NotImplementedError):
             return await ctx.simple_response(ctx, translations.not_implemented)
-        if isinstance(error, InvalidArgument) and ctx.command and hasattr(ctx.command, "usage"):
+        if isinstance(error, InvalidArgument) and ctx.command and hasattr(ctx.command.decorators, "usage"):
             return await ctx.reply(ctx.decorators.get_usage(ctx, ctx))
         self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
         return await ctx.simple_response(ctx, translations.error_not_registered.format(self.dev_name))
@@ -237,7 +237,7 @@ class Gorenmu(Bot):
             try:
                 channel = self.channels[message.channel.name]
                 prefix = message.content[0] if len(channel.prefix) != 2 else message.content[:2]
-
+                self.CommandHandler.load_language(ctx)
                 if (channel.online is False and "start" not in message.content or prefix == "ƚ"
                         and channel.online is False):
                     return None

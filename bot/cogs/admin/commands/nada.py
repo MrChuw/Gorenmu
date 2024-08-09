@@ -11,12 +11,11 @@ from bot.translations import EnUsTranslations, EnUsDecorators, Response
 
 
 @base_decorator(EnUsDecorators.Admin.Nada())
-@helper("")
-@usage("")
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([Check.banword])
-@command(name='nada', aliases=[''])
+@command(name='nada', aliases=[])
 async def command(ctx: Context, *, args, ) -> Response:
     translations = ctx.translations.Admin.Nada()
+    teste = datetime.datetime.now(datetime.timezone.utc)
 
     return translations.nada.format_response(ctx, args, success=True, handle=None, response_list=[])

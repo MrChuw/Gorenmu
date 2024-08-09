@@ -8,12 +8,7 @@ from twitchio.ext.commands.errors import (  # NOQA
     TwitchCommandError,
     InvalidCogMethod,
     InvalidCog,
-    MissingRequiredArgument,
-    BadArgument,
     ArgumentParsingFailed,
-    CommandNotFound,
-    CommandOnCooldown,
-    CheckFailure,
 )
 
 # TODO: Limpar os erros.

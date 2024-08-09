@@ -9,6 +9,7 @@ from .cookie_tools import CookieTools
 from .selenium_tool import Selenium
 from .booru_tools import BooruTools
 from .markov_tools import MarkovProcessor
+from .string_manipulation import StringTools
 
 
 

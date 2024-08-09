@@ -13,6 +13,7 @@ from twitchio.ext.routines import Routine
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+    from bot.ext import Context
 
 from bot.utils.command_checks import Check
 
@@ -49,7 +50,7 @@ class CommandHandler:
             logger.error(e)
 
     @staticmethod
-    def load_commands(self: Gorenmu, path: pathlib.Path) -> None:
+    def load_commands(bot: Gorenmu, path: pathlib.Path) -> None:
         for filename in path.iterdir():
             if not filename.suffix == ".py" or filename.name.startswith("__"):
                 continue
@@ -63,20 +64,20 @@ class CommandHandler:
                 command: Command = module.command
                 if "disabled" in module.__dict__:
                     continue
-                if command.name not in self.commands:
-                    self.add_command(command)
+                if command.name not in bot.commands:
+                    bot.add_command(command)
                 else:
                     module = reload(module)
                     command: Command = module.command
-                    self.remove_command(command.name)
-                    self.add_command(command)
+                    bot.remove_command(command.name)
+                    bot.add_command(command)
 
             except Exception as e:
                 logger.error(f"Command '{filename.name[:-3]}' failed to load: {e} in {filename.joinpath()}",
                              extra={"locals": locals()}, )
 
     @staticmethod
-    def load_event_message_listeners(self: Gorenmu, path: pathlib.Path) -> None:
+    def load_event_message_listeners(bot: Gorenmu, path: pathlib.Path) -> None:
         for filename in path.iterdir():
             if not filename.suffix == ".py" or filename.name.startswith("__"):
                 continue
@@ -85,13 +86,13 @@ class CommandHandler:
                 name: str = local[:-3].replace("/", ".")
                 package: str = ".".join(filename.parts)
                 module: types.ModuleType = import_module(name, package=package)
-                self.event_message_listeners.append(module.listener)
+                bot.event_message_listeners.append(module.listener)
             except Exception as e:
                 logger.error(f"Listener '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     @staticmethod
-    def load_routines(self: Gorenmu, path: pathlib.Path) -> None:
-        self.routines = []
+    def load_routines(bot: Gorenmu, path: pathlib.Path) -> None:
+        bot.routines = []
         for filename in path.iterdir():
             if not filename.suffix == ".py" or filename.name.startswith("__"):
                 continue
@@ -103,14 +104,14 @@ class CommandHandler:
                 routine: Routine = Routine(coro=module.routine, time=getattr(module, "time", None),
                                            delta=getattr(module, "delta", None),
                                            wait_first=getattr(module, "wait_first", False), )
-                self.routines.append(routine)
+                bot.routines.append(routine)
             except Exception as e:
                 logger.error(f"Routine '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     @staticmethod
-    def load_cogs(self: Gorenmu, base: str = "bot/cogs") -> None:
-        global_checks = [Check.online, Check.enabled, Check.banword, Check.language_set]
-        [self.check(check) for check in global_checks]
+    def load_cogs(bot: Gorenmu, base: str = "bot/cogs") -> None:
+        global_checks = [Check.online, Check.enabled, Check.banword]
+        [bot.check(check) for check in global_checks]
         cogs = pathlib.Path(base)
         # TODO: os listeners ainda não estão recarregando.
         try:
@@ -119,27 +120,32 @@ class CommandHandler:
                     if folder.name == "__pycache__" or folder.name == "data":
                         continue
                     if "commands" in folder.name:
-                        CommandHandler.load_commands(self, folder.joinpath())
+                        CommandHandler.load_commands(bot, folder.joinpath())
                     if "event_message_listeners" in folder.name:
-                        CommandHandler.load_event_message_listeners(self, folder.joinpath())
+                        CommandHandler.load_event_message_listeners(bot, folder.joinpath())
                     if "routines" in folder.name:
-                        CommandHandler.load_routines(self, folder.joinpath())
-            CommandHandler.start_routines(self)
+                        CommandHandler.load_routines(bot, folder.joinpath())
+            CommandHandler.start_routines(bot)
         except Exception as e:
             logger.error(e)
 
     @staticmethod
-    def reload_cogs(self: Gorenmu, base: str = "cogs") -> None:
-        CommandHandler.stop_routines(self)
+    def reload_cogs(bot: Gorenmu, base: str = "bot/cogs") -> None:
+        CommandHandler.stop_routines(bot)
         cogs = pathlib.Path(base)
         for cog in cogs.iterdir():
             for folder in cog.iterdir():
                 if folder.name == "__pycache__" or folder.name == "data":
                     continue
                 if "commands" in folder.name:
-                    CommandHandler.load_commands(self, folder.joinpath())
+                    CommandHandler.load_commands(bot, folder.joinpath())
                 if "event_message_listeners" in folder.name:
-                    CommandHandler.load_event_message_listeners(self, folder.joinpath())
+                    CommandHandler.load_event_message_listeners(bot, folder.joinpath())
                 if "routines" in folder.name:
-                    CommandHandler.load_routines(self, folder.joinpath())
-        CommandHandler.start_routines(self)
+                    CommandHandler.load_routines(bot, folder.joinpath())
+        CommandHandler.start_routines(bot)
+
+    @staticmethod
+    def load_language(ctx: Context):
+        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "en-us")
+        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or "en-us")

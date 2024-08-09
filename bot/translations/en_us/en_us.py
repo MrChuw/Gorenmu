@@ -49,8 +49,9 @@ class Status:
         return self._emoji
 
 
-afks = {"read": Status("read", "📖", "went to read", "reading", "read", "reading"),
+afks = {
         "afk": Status("afk", "🏃⌨", "went afk", "afk", "came back", "afk"),
+        "read": Status("read", "📖", "went to read", "reading", "read", "reading"),
         "brb": Status("brb", "🏃⌨", "coming back soon", "away", "came back", "away"),
         "eat": Status("food", "🍽", "went to eat", "eating", "ate", "eating"),
         "food": Status("food", "🍽", "went to eat", "eating", "ate", "eating"),

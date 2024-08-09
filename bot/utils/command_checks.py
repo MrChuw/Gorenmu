@@ -12,7 +12,7 @@ from bot.exceptions import (
 )
 from bot.ext.commands import Context
 from bot.models import (Cookies as CookieModel, LotteryBank, User as UserModel)
-from bot.utils.string_manipulation import str2url
+from bot.utils.string_manipulation import StringTools
 
 
 class Role:
@@ -60,7 +60,7 @@ class Role:
 class Check:
     @staticmethod
     def allowed(ctx: Context) -> bool:
-        if not Role.any(ctx) and str2url(ctx.message.content) is not None:
+        if not Role.any(ctx) and StringTools.str2url(ctx.message.content) is not None:
             raise UserIsNotAllowed()
         return True
 
@@ -133,10 +133,4 @@ class Check:
             ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
         if len(ctx.args) > 1 and isinstance(ctx.args[1], str):
             ctx.args[1] = ctx.args[1].lstrip("@").rstrip(",").lower()
-        return True
-
-    @staticmethod
-    async def language_set(ctx: Context) -> bool:
-        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "en-us")
-        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or "en-us")
         return True
