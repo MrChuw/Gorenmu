@@ -10,7 +10,7 @@ from bot.translations import EnUsTranslations, EnUsDecorators, Response
 
 
 
-@base_decorator(EnUsDecorators.Admin.Nada())
+@base_decorator(EnUsDecorators.Admin.Nada)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([Check.banword])
 @command(name='nada', aliases=[])

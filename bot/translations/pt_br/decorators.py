@@ -1,23 +1,31 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 from bot.translations import EnUsDecorators
+
+if TYPE_CHECKING:
+    from bot.ext.commands import Context
+
 
 
 class PtBrDecorators(EnUsDecorators):
-    class Activity(EnUsDecorators.Activity):
-        class Afk(EnUsDecorators.Activity.Afk):
+
+    class Afk(EnUsDecorators.Afk):
+        class Afk(EnUsDecorators.Afk.Afk):
             helper = "Comando para entrar em um Status."
             usage = "Para usar: {}Afk <mensagem>"
             description = "Este comando define seu status como AFK."
 
-        class IsAfk(EnUsDecorators.Activity.IsAfk):
+        class IsAfk(EnUsDecorators.Afk.IsAfk):
             helper = "Digite o comando e o nome do usuário para saber se ele está AFK"
             usage = "Para usar: {}IsAfk <nome do usuário>"
             description = "Este comando define se um usuário está AFK ou não."
 
-        class RAfk(EnUsDecorators.Activity.RAfk):
-            helper = "Retorna a ficar AFK"
-            usage = "Para usar: {}rafk"
-            description = "Este comando é usado para retornar a ficar AFK."
+        class RAfk(EnUsDecorators.Afk.RAfk):
+                helper = "Retorna a ficar AFK"
+                usage = "Para usar: {}rafk"
+                description = "Este comando é usado para retornar a ficar AFK."
 
     class Admin(EnUsDecorators.Admin):
         class AddUser(EnUsDecorators.Admin.AddUser):

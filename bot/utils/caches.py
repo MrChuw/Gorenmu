@@ -53,6 +53,11 @@ class Cache:
             bot.cache = aioCache(aioCache.MEMORY, serializer=PickleSerializer(), namespace="main")
         return bot.cache
 
+    @staticmethod
+    def create_cache() -> RedisCache | MemcachedCache | SimpleMemoryCache:
+        cache = aioCache(aioCache.MEMORY, serializer=PickleSerializer(), namespace="main")
+        return cache
+
 
 CODE_LIST = (200, 201, 202, 204, 301, 302, 304, 400, 401, 403, 404, 405, 408, 409, 410, 500, 501, 502, 503, 504)
 

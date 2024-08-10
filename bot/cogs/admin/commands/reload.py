@@ -3,7 +3,7 @@ from bot.ext.commands import base_decorator, Bucket, check, command, Context, co
 from bot.translations import EnUsDecorators, Response
 
 
-@base_decorator(EnUsDecorators.Admin.Reload())
+@base_decorator(EnUsDecorators.Admin.Reload)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name='reload', aliases=[])

@@ -16,7 +16,9 @@ from bot.translations import EnUsTranslations
 from bot.translations import EnUsDecorators
 from bot.translations import Response
 from bot.translations.en_us.decorators import BaseDecorator
+from typing import Type, TypeVar
 
+T = TypeVar('T')
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
@@ -266,7 +268,7 @@ def helper(description: str) -> Callable[[TwitchioCommand], TwitchioCommand]:
     return decorator
 
 
-def base_decorator(base: BaseDecorator) -> Callable[[TwitchioCommand], TwitchioCommand]:
+def base_decorator(base: BaseDecorator | Type[T]) -> Callable[[TwitchioCommand], TwitchioCommand]:
     def decorator(command: TwitchioCommand) -> TwitchioCommand:
         command.decorators = base
         return command

@@ -60,8 +60,8 @@ class EnUsTranslations:
             pipe_response: str = "aqui está a resposta que foi gerada pelo comando anterior: {}"
             command_not_pipeble: str = "este comando não pôde ser utilizado com o pipe."
 
-    class Activity:
-        class Afk(BaseTranslation):
+
+    class Afk(BaseTranslation):
             afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
             class Afk(BaseTranslation):

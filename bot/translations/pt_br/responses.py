@@ -55,43 +55,41 @@ class PtBrTranslations:
             pipe_response: str = "aqui está a resposta que foi gerada pelo comando anterior: {}"
             command_not_pipeble: str = "este comando não pôde ser utilizado com o pipe."
 
-    class Activity(EnUsTranslations.Activity):
+    class Afk(EnUsTranslations.Afk):
+        afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
-        class Afk(EnUsTranslations.Activity.Afk):
-            afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
+        class Afk(EnUsTranslations.Afk.Afk):
+            message_too_long: Response = Response(
+                {"success": False, "response": "Esta mensagem é muito longa."}
+            )
+            afk_response: Response = Response({"success": True, "response": "{}: {}"})
+            afk_content_response: Response = Response(
+                {"success": True, "response": "{}: {} e deixou uma nota com: {}"}
+            )
 
-            class Afk(EnUsTranslations.Activity.Afk.Afk):
-                message_too_long: Response = Response(
-                    {"success": False, "response": "Esta mensagem é muito longa."}
-                )
-                afk_response: Response = Response({"success": True, "response": "{}: {}"})
-                afk_content_response: Response = Response(
-                    {"success": True, "response": "{}: {} e deixou uma nota com: {}"}
-                )
+        class IsAfk(EnUsTranslations.Afk.IsAfk):
+            bot_nick: Response = Response(
+                {"success": False, "response": "eu sempre estou aqui... observando."}
+            )
+            author_nick: Response = Response(
+                {"success": False, "response": "você não está trabalhando... obviamente"}
+            )
+            never_seen: Response = Response(
+                {"success": False, "response": "não lembro de ja ter visto nenhum {}."}
+            )
+            is_afk: Response = Response({"success": False, "response": "@{} {}: {}"})
+            is_afk_content: Response = Response(
+                {"success": False, "response": "@{} {} e deixou um bilhete: {}"}
+            )
+            is_not_afk: Response = Response({"success": False, "response": "@{} não está Afk."})
 
-            class IsAfk(EnUsTranslations.Activity.Afk.IsAfk):
-                bot_nick: Response = Response(
-                    {"success": False, "response": "eu sempre estou aqui... observando."}
-                )
-                author_nick: Response = Response(
-                    {"success": False, "response": "você não está trabalhando... obviamente"}
-                )
-                never_seen: Response = Response(
-                    {"success": False, "response": "não lembro de ja ter visto nenhum {}."}
-                )
-                is_afk: Response = Response({"success": False, "response": "@{} {}: {}"})
-                is_afk_content: Response = Response(
-                    {"success": False, "response": "@{} {} e deixou um bilhete: {}"}
-                )
-                is_not_afk: Response = Response({"success": False, "response": "@{} não está Afk."})
+        class RAfk(EnUsTranslations.Afk.RAfk):
+            time_expired: Response = Response({"success": False, "response": "O tempo para voltar já passou."})
+            is_afk: Response = Response({"success": False, "response": "{}: {}"})
+            is_afk_content: Response = Response({"success": False, "response": "{} {} e deixou um bilhete: {}"})
+            is_not_afk: Response = Response({"success": False, "response": "voce não está afk."})
 
-            class RAfk(EnUsTranslations.Activity.Afk.RAfk):
-                time_expired: Response = Response({"success": False, "response": "O tempo para voltar já passou."})
-                is_afk: Response = Response({"success": False, "response": "{}: {}"})
-                is_afk_content: Response = Response({"success": False, "response": "{} {} e deixou um bilhete: {}"})
-                is_not_afk: Response = Response({"success": False, "response": "voce não está afk."})
-
-            class AfkListeners(EnUsTranslations.Activity.Afk.AfkListeners):
+        class AfkListeners(EnUsTranslations.Afk.AfkListeners):
                 is_afk: Response = Response({"success": False, "response": "{}: {} (ficou {} {})"})
                 is_afk_content: Response = Response(
                         {"success": False, "response": "{} {} e deixou um bilhete: {} (ficou {} {})"})

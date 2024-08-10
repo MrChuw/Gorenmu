@@ -58,6 +58,7 @@ class Gorenmu(Bot):
         self.bots_ids: list[int] = []
         self.dev_name: str = ""
         self.restart = 0
+        self.alias_cache: SimpleMemoryCache = Cache.create_cache()
 
     async def fetch_channels(self) -> None:
         for channel in await ChannelModel.filter(removed=False):
@@ -197,8 +198,8 @@ class Gorenmu(Bot):
         # TODO: Ativar de novo o develop.
         # if self.config.DevelopmentConfig.development:
         #     return None
-        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "pt-br")
-        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or "pt-br")
+        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "en-us")
+        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or "en-us")
         translations = ctx.translations.Exceptions.BotMainLoopExceptions()
         if isinstance(error, CommandNotFound):
             return None
@@ -216,8 +217,8 @@ class Gorenmu(Bot):
             return await ctx.simple_response(ctx, cooldown_str)
         if isinstance(error, NotImplementedError):
             return await ctx.simple_response(ctx, translations.not_implemented)
-        if isinstance(error, InvalidArgument) and ctx.command and hasattr(ctx.command.decorators, "usage"):
-            return await ctx.reply(ctx.decorators.get_usage(ctx, ctx))
+        if isinstance(error, InvalidArgument) and ctx.command:
+            return await ctx.reply(ctx.command.decorators.get_usage(ctx))
         self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
         return await ctx.simple_response(ctx, translations.error_not_registered.format(self.dev_name))
 

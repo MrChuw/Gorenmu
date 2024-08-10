@@ -16,7 +16,7 @@ rafk_alias = ["rafk"] + [f"r{s}" for s in Activity.afks if s != "afk"]
 aliasas = afk_alias + rafk_alias + ["isafk"]
 
 
-@base_decorator(EnUsDecorators.Activity.Afk())
+@base_decorator(EnUsDecorators.Afk)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name="afk", aliases=aliasas)
@@ -31,7 +31,7 @@ async def command(ctx: Context, *, content: str = "") -> Response:
 
 
 async def afk(ctx: Context, content: str, invoke_by: str) -> Response:
-    translations = ctx.translations.Activity.Afk.Afk()
+    translations = ctx.translations.Afk.Afk()
     if len(content) >= 450:
         return translations.message_too_long.format_response(ctx, success=False, pipe=False)
     afk = ctx.translations.Activity.Afk.afks.get(invoke_by)  # NOQA
@@ -43,7 +43,7 @@ async def afk(ctx: Context, content: str, invoke_by: str) -> Response:
 
 
 async def rafk(ctx: Context) -> Response:
-    translations = ctx.translations.Activity.Afk
+    translations = ctx.translations.Afk
     afk = await ctx.bot.cache.get(f"{ctx.author.id}", namespace="status")  # NOQA
     if afk is None:
         return translations.RAfk().time_expired.format_response(ctx, success=False)
@@ -60,7 +60,7 @@ async def rafk(ctx: Context) -> Response:
 
 
 async def isafk(ctx: Context, content: str) -> Response:
-    translations = ctx.translations.Activity.Afk
+    translations = ctx.translations.Afk
     name = StringTools.str2name(content.split()[0])
     actions = {
         ctx.bot.nick: translations.IsAfk().bot_nick.format_response(ctx, success=False),
