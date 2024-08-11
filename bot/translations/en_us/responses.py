@@ -60,8 +60,7 @@ class EnUsTranslations:
             pipe_response: str = "aqui está a resposta que foi gerada pelo comando anterior: {}"
             command_not_pipeble: str = "este comando não pôde ser utilizado com o pipe."
 
-
-    class Afk(BaseTranslation):
+    class Afk:
             afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
             class Afk(BaseTranslation):
@@ -100,6 +99,88 @@ class EnUsTranslations:
                 is_afk: Response = Response({"success": False, "response": "{}: {} (was away for {} {})"})
                 is_afk_content: Response = Response(
                         {"success": False, "response": "{} {} and left a note: {} (was away for {} {})"})
+
+
+    class Alias(BaseTranslation):
+        user_not_found: Response = Response({
+            "success": False,
+            "response": "there is no user with nickname {}."})
+
+        # Add alias
+        no_command_to_add: Response = Response({
+            "success": False,
+            "response": "You didn't send a command! Usage: {}alias add (name) (command) (...arguments)"})
+
+        alias_invalid_name: Response = Response({
+            "success": False,
+            "response": "Your alias name is not valid! "
+                        "Your alias should only contain letters, numbers and be 2-30 characters long."})
+
+        alias_name_conflict: Response = Response({
+            "success": False,
+            "response": "Cannot add alias \"{}\" - you already have one! "
+                        "You can either \"edit\" its definition, \"rename\" it or \"remove\" it."})
+
+        command_dont_exist: Response = Response({
+            "success": False,
+            "response": "Cannot create alias! The command \"{}\" does not exist."})
+
+        alias_crated: Response = Response({
+            "success": False,
+            "response": "Your alias \"{}\" has been created successfully."})
+
+        # Check alias
+        user_alias_list: Response = Response({
+            "success": False,
+            "response": "List of your aliases: {}"})
+
+        no_alias_found: Response = Response({
+            "success": False,
+            "response": "Could not find {} in {} aliases or any of your aliases!"})
+
+        list_of_alias_of: Response = Response({
+            "success": False,
+            "response": "List of {} aliases: {}"})
+
+        list_of_special_case: Response = Response({
+            "success": False,
+            "response": "Special case!\n"
+                        "Your alias \"{0}\": {1}\n"
+                        "List of {0}'s aliases: {2}"})
+
+        alias_not_found: Response = Response({
+            "success": False,
+            "response": "{} don't have the \"{}\" alias!"})
+
+        appendix: str = "This alias is a link to \"{}\" made by {}."
+
+        alias_deleted: Response = Response({
+            "success": False,
+            "response": "{} alias is a link to a different alias, but the original has been deleted."})
+
+        message: str = "{} {} alias \"{}\" has this definition: {} {} "
+
+        final_message: Response = Response({
+            "success": False,
+            "response": "{} {}"})
+
+        # Copy alias
+        user_not_provided: Response = Response({
+            "success": False,
+            "response": "No target user provided!"})
+
+        alias_not_provided: Response = Response({
+            "success": False,
+            "response": "No target alias provided!"})
+
+        target_alias_invalid_name: Response = Response({
+            "success": False,
+            "response": "The copied alias's name is not valid and therefore can't be copied!"})
+
+        link_to_a_link: Response = Response({
+            "success": False,
+            "response": 'You cannot copy links to other aliases. Instead, use !alias link {} {}'})
+
 
     class Admin:
         class AddUser(BaseTranslation):

@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 # TODO: adicionar um fallback para o idioma padrão caso não tenha a tradução.
 
 
-class PtBrTranslations:
+class PtBrTranslations(EnUsTranslations):
     class SupportTools(EnUsTranslations.Exceptions):
         class TimeTools(EnUsTranslations.SupportTools.TimeTools):
             TimeTools: TimeTools = TimeTools
@@ -93,6 +93,10 @@ class PtBrTranslations:
                 is_afk: Response = Response({"success": False, "response": "{}: {} (ficou {} {})"})
                 is_afk_content: Response = Response(
                         {"success": False, "response": "{} {} e deixou um bilhete: {} (ficou {} {})"})
+
+
+
+
 
     class Admin(EnUsTranslations.Admin):
         class AddUser(EnUsTranslations.Admin.AddUser):

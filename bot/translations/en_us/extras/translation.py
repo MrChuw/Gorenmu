@@ -6,7 +6,8 @@ if TYPE_CHECKING:
     from bot.ext.commands import Context
     from bot.models import User
 
-mention_dict = {"en-us": "you", "pt-br": "você"}
+mention_dict = {"en-us": "you",
+                "pt-br": "você"}
 
 class BaseTranslation:
     ctx: Context
