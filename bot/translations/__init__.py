@@ -1,7 +1,8 @@
 # translations/__init__.py
 from bot.translations.en_us import EnUsDecorators, EnUsTranslations
 from bot.translations.pt_br import PtBrDecorators, PtBrTranslations
-from .en_us import Response
+from bot.translations.en_us import Response
+from bot.translations.en_us import BaseClass
 
 class TranslationManager:
     def __init__(self):

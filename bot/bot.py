@@ -255,15 +255,13 @@ class Gorenmu(Bot):
 
             except InvalidArgument:
                 if ctx.command and hasattr(ctx.command, "usage"):
-                    return await ctx.reply(ctx.decorators.get_usage(ctx, ctx))
+                    return await ctx.reply(ctx.decorators.get_usage(ctx))
                 return await ctx.simple_response(ctx,
                                                  ctx.translations.Exceptions.BotMainLoopExceptions.error_not_registered
                                                  .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))
             except Exception as error:
                 self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
             else:
-                # TODO: Talvez mudar os checks dos listeners para ca ou tentar criar o
-                #  próprio sistema de check igual comandos.
                 if not ctx.user:
                     ctx.user = await UserModel.create_or_update(ctx)
                 for listener in self.event_message_listeners:

@@ -6,14 +6,14 @@ from typing import Callable, TYPE_CHECKING
 
 from twitchio import Channel, Message, User
 from twitchio.ext.commands import (
-    BadArgument, Bot, Bucket, Cog, Command as TwitchioCommand, Context as TwitchioContext, cooldown,
+    BadArgument, Bot, Bucket, Cog, Command, Context as TwitchioContext, cooldown,
     MissingRequiredArgument, command
 )
 from twitchio.ext.routines import routine
 
 from bot.models import User as UserModel
 from bot.translations import EnUsTranslations
-from bot.translations import EnUsDecorators
+from bot.translations import EnUsDecorators, BaseClass
 from bot.translations import Response
 from bot.translations.en_us.decorators import BaseDecorator
 from typing import Type, TypeVar
@@ -26,8 +26,12 @@ max_message_len = 450
 minimum_delay_messages = 0.1
 
 __all__ = (
-        "Bot", "Bucket", "Channel", "Cog", "Context", "Message", "User", "check", "TwitchioCommand", "TwitchioCommand",
+        "Bot", "Bucket", "Channel", "Cog", "Context", "Message", "User", "check", "Command",
         "cooldown", "routine", "base_decorator", "usage", "helper", "command")
+
+
+class Command(Command):
+    decorators: EnUsDecorators | BaseClass
 
 
 class Bot(Bot):
@@ -102,7 +106,8 @@ class Context(TwitchioContext):
     user: UserModel
     bot: Gorenmu
     translations: EnUsTranslations
-    decorators: EnUsDecorators
+    decorators: EnUsDecorators | BaseClass
+    command: Command
 
     def __iter__(self):
         yield "author", self.author.name if self.author and self.author.name else None
@@ -239,8 +244,8 @@ class Context(TwitchioContext):
             await self.response(response)
 
 
-def check(check_list: list) -> Callable[[TwitchioCommand], TwitchioCommand]:
-    def decorator(command: TwitchioCommand) -> TwitchioCommand:  # NOQA
+def check(check_list: list) -> Callable[[Command], Command]:
+    def decorator(command: Command) -> Command:  # NOQA
         for c in check_list:
             command._checks.append(c)  # NOQA
         return command
@@ -248,8 +253,8 @@ def check(check_list: list) -> Callable[[TwitchioCommand], TwitchioCommand]:
     return decorator
 
 
-def usage(usage: str) -> Callable[[TwitchioCommand], TwitchioCommand]:
-    def decorator(command: TwitchioCommand) -> TwitchioCommand:
+def usage(usage: str) -> Callable[[Command], Command]:
+    def decorator(command: Command) -> Command:
         # if type(command) != Command:
         #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
         command.usage = usage
@@ -258,8 +263,8 @@ def usage(usage: str) -> Callable[[TwitchioCommand], TwitchioCommand]:
     return decorator
 
 
-def helper(description: str) -> Callable[[TwitchioCommand], TwitchioCommand]:
-    def decorator(command: TwitchioCommand) -> TwitchioCommand:
+def helper(description: str) -> Callable[[Command], Command]:
+    def decorator(command: Command) -> Command:
         # if type(command) != Command:
         #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
         command.description = description
@@ -268,8 +273,8 @@ def helper(description: str) -> Callable[[TwitchioCommand], TwitchioCommand]:
     return decorator
 
 
-def base_decorator(base: BaseDecorator | Type[T]) -> Callable[[TwitchioCommand], TwitchioCommand]:
-    def decorator(command: TwitchioCommand) -> TwitchioCommand:
+def base_decorator(base: BaseDecorator | Type[T]) -> Callable[[Command], Command]:
+    def decorator(command: Command) -> Command:
         command.decorators = base
         return command
 
