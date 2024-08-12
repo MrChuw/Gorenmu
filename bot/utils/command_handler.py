@@ -8,14 +8,42 @@ from importlib import import_module, reload
 from typing import TYPE_CHECKING
 
 from loguru import logger
-from twitchio.ext.commands import Bucket, Command
+from twitchio.ext.commands import Bucket
 from twitchio.ext.routines import Routine
+from bot.translations import TranslationManager
+import inspect
+from bot.translations.en_us.decorators import BaseDecorator
+import copy
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context
+    from bot.ext import Context, Command
 
 from bot.utils.command_checks import Check
+
+
+def get_translations(command: Command):
+    translations = TranslationManager()
+    translations_decorators = {}
+    for lang in translations.languages:
+        translation = translations.languages[lang][0]
+        for name, obj in inspect.getmembers(translation):
+            if name.startswith("__"):
+                continue
+            for sub in dir(obj):
+                if sub in ["usage", "helper", "description"]:
+                    continue
+                if sub.startswith("__") or sub.startswith("get_"):
+                    continue
+                attr = getattr(obj, sub)
+                if issubclass(attr, command.decorators) or issubclass(command.decorators, attr):
+                    translations_decorators[lang] = attr
+                    break
+            if issubclass(obj, command.decorators) or issubclass(command.decorators, obj):
+                translations_decorators[lang] = obj
+                break
+    command.decorators = translations_decorators
+    return command
 
 
 class CommandHandler:
@@ -62,6 +90,7 @@ class CommandHandler:
                 package: str = ".".join(filename.parts)
                 module: types.ModuleType = import_module(name, package=package)
                 command: Command = module.command
+                command = get_translations(command)
                 if "disabled" in module.__dict__:
                     continue
                 if command.name not in bot.commands:

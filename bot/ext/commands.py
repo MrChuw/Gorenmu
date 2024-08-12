@@ -31,7 +31,7 @@ __all__ = (
 
 
 class Command(Command):
-    decorators: EnUsDecorators | BaseClass
+    decorators: dict[str, EnUsDecorators | BaseClass]
 
 
 class Bot(Bot):

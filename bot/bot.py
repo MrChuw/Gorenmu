@@ -218,7 +218,8 @@ class Gorenmu(Bot):
         if isinstance(error, NotImplementedError):
             return await ctx.simple_response(ctx, translations.not_implemented)
         if isinstance(error, InvalidArgument) and ctx.command:
-            return await ctx.reply(ctx.command.decorators.get_usage(ctx))
+            decorator = ctx.command.decorators[ctx.user.language]
+            return await ctx.reply(decorator.get_usage(ctx))
         self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
         return await ctx.simple_response(ctx, translations.error_not_registered.format(self.dev_name))
 

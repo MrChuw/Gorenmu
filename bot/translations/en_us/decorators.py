@@ -18,27 +18,14 @@ class BaseDecorator:
 class BaseClass:
     @classmethod
     def get_decorator(cls, ctx: Context) -> BaseDecorator | None:
-        source = ctx.command.decorators
-        decorators = ctx.decorators
-        for classe in dir(decorators):
-            for attr_name in dir(getattr(decorators, classe)):
-                if attr_name.startswith("_") or attr_name.startswith("get_"):
-                    continue
-                attr = getattr(getattr(decorators, classe), attr_name)
-                if issubclass(attr, source):
-                    decorator_class = getattr(decorators, classe, None,)
-                    if decorator_class:
-                        decorator_class = getattr(decorator_class, attr_name)
-                        return decorator_class()
-            attr = getattr(decorators, classe)
-            if issubclass(attr, source):
-                decorator_class = getattr(decorators, classe, None,)
-                if decorator_class:
-                    invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
-                    decorator_dir = dir(ctx.command.decorators)
-                    for element in decorator_dir:
-                        if invoke_by == element.lower():
-                            return getattr(ctx.command.decorators, element)
+        if "usage" in dir(cls):
+            return cls  # NOQA
+        decorator = ctx.command.decorators[ctx.user.language]
+        for classe in dir(decorator):
+            invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
+            if invoke_by == classe.lower():
+                return getattr(decorator, classe)
+
 
     @classmethod
     def get_helper(cls, ctx: Context) -> str:
@@ -60,19 +47,25 @@ class EnUsDecorators:
 
     class Afk(BaseClass):
         class Afk(BaseDecorator, BaseClass):
-            helper = "Comando para entrar em um Status."
-            usage = "Para usar: {}Afk <mensagem>"
-            description = "Este comando define seu status como AFK."
+            helper = "Command to set your status."
+            usage = "To use: {}Afk <message>"
+            description = "This command sets your status to AFK."
 
         class IsAfk(BaseDecorator, BaseClass):
-            helper = "Digite o comando e o nome do usuário para saber se ele está AFK"
-            usage = "Para usar: {}IsAfk <nome do usuário>"
-            description = "Este comando define se um usuário está AFK ou não."
+            helper = "Type the command and the username to check if they are AFK."
+            usage = "To use: {}IsAfk <username>"
+            description = "This command checks if a user is AFK or not."
 
         class RAfk(BaseDecorator, BaseClass):
-            helper = "Retorna a ficar AFK"
-            usage = "Para usar: {}rafk"
-            description = "Este comando é usado para retornar a ficar AFK."
+            helper = "Return to AFK status."
+            usage = "To use: {}rafk"
+            description = "This command is used to return to AFK status."
+
+    class Alias(BaseDecorator, BaseClass):
+        helper = "Command used to manage aliases."
+        usage = "To use: {}alias add|check|copy|describe|edit|link|remove|rename <options>"
+        description = "Command used to manage aliases."
+
 
     class Admin(BaseClass):
         class AddUser(BaseDecorator, BaseClass):

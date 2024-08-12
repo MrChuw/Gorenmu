@@ -16,10 +16,8 @@ ALIAS_NAME_REGEX = re.compile(
         r'^[-\w\u00a9\u00ae\u2000-\u3300\ud83c\ud000-\udfff\ud83d\ud000-\udfff\ud83e\ud000-\udfff]{2,30}$'
 )
 
-NESTED_ALIAS_LIMIT = 10
 
-
-@base_decorator(EnUsDecorators.Afk)
+@base_decorator(EnUsDecorators.Alias)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name='alias', aliases=[''])
@@ -191,7 +189,6 @@ async def describe_alias(ctx: Context, args: tuple):  # NOQA
         return translations.Describe.description_updated.format_response(ctx, name)
 
 
-
 async def edit_alias(ctx: Context, args: tuple):
     translations = ctx.translations.Alias
     if len(args) < 2:
@@ -243,7 +240,7 @@ async def link_alias(ctx: Context, args: tuple):
 
     if not target_alias:
         return translations.Link.user_dont_has_alias.format_response(ctx, name, success=False)
-    elif target_alias.command is None and target_alias.parent_id is not None:   # NOQA
+    elif target_alias.command is None and target_alias.parent_id is not None:  # NOQA
         # Se o alias já é um link, usa o alias original
         # target_alias = await Alias.get_or_none(id=target_alias.parent)
         target_alias: Alias = await target_alias.parent

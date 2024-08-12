@@ -10,7 +10,6 @@ if TYPE_CHECKING:
 
 
 class PtBrDecorators(EnUsDecorators):
-
     class Afk(EnUsDecorators.Afk):
         class Afk(EnUsDecorators.Afk.Afk):
             helper = "Comando para entrar em um Status."
@@ -26,6 +25,11 @@ class PtBrDecorators(EnUsDecorators):
                 helper = "Retorna a ficar AFK"
                 usage = "Para usar: {}rafk"
                 description = "Este comando é usado para retornar a ficar AFK."
+
+    class Alias(EnUsDecorators.Alias):
+        helper = "Comando usado para gerenciar os alias."
+        usage = "Para usar: {}alias add|check|copy|describe|edit|link|remove|rename <opções>"
+        description = "Comando usado para gerenciar os alias."
 
     class Admin(EnUsDecorators.Admin):
         class AddUser(EnUsDecorators.Admin.AddUser):
