@@ -60,11 +60,10 @@ class PtBrTranslations(EnUsTranslations):
 
         class Afk(EnUsTranslations.Afk.Afk):
             message_too_long: Response = Response(
-                {"success": False, "response": "Esta mensagem é muito longa."}
-            )
-            afk_response: Response = Response({"success": True, "response": "{}: {}"})
+                {"success": False, "response": "Esta mensagem é muito longa.", "pipe": False})
+            afk_response: Response = Response({"success": True, "response": "{}: {}", "pipe": False})
             afk_content_response: Response = Response(
-                {"success": True, "response": "{}: {} e deixou uma nota com: {}"}
+                {"success": True, "response": "{}: {} e deixou uma nota com: {}", "pipe": False}
             )
 
         class IsAfk(EnUsTranslations.Afk.IsAfk):
@@ -84,15 +83,227 @@ class PtBrTranslations(EnUsTranslations):
             is_not_afk: Response = Response({"success": False, "response": "@{} não está Afk."})
 
         class RAfk(EnUsTranslations.Afk.RAfk):
-            time_expired: Response = Response({"success": False, "response": "O tempo para voltar já passou."})
-            is_afk: Response = Response({"success": False, "response": "{}: {}"})
-            is_afk_content: Response = Response({"success": False, "response": "{} {} e deixou um bilhete: {}"})
-            is_not_afk: Response = Response({"success": False, "response": "voce não está afk."})
+            time_expired: Response = Response({
+                    "success": False,
+                    "response": "O tempo para voltar já passou.",
+                    "pipe": False})
+            is_afk: Response = Response({"success": False, "response": "{}: {}", "pipe": False})
+            is_afk_content: Response = Response({
+                    "success": False,
+                    "response": "{} {} e deixou um bilhete: {}",
+                    "pipe": False})
+            is_not_afk: Response = Response({"success": False, "response": "voce não está afk.", "pipe": False})
 
         class AfkListeners(EnUsTranslations.Afk.AfkListeners):
                 is_afk: Response = Response({"success": False, "response": "{}: {} (ficou {} {})"})
                 is_afk_content: Response = Response(
                         {"success": False, "response": "{} {} e deixou um bilhete: {} (ficou {} {})"})
+
+    class Alias(EnUsTranslations.Alias):
+        user_not_found: Response = Response({
+            "success": False,
+            "response": "não há usuário com nome de {}.",
+            "pipe": False})
+
+        dont_have_alias: Response = Response({
+                "success": False,
+                "response": "Você não tem alias com nome de \"{}\"", "pipe": False})
+
+        alias_invalid_name: Response = Response({
+                "success": False,
+                "response": "O nome do seu aliás não é valido. "
+                            "Seu alias deve conter apenas letras, números e ter de 2 a 30 caracteres.",
+                "pipe": False})
+
+        class Add(EnUsTranslations.Alias.Add):
+            no_command_to_add: Response = Response({
+                "success": False,
+                "response": "Você não enviou um comando! Uso: {}alias add (name) (command) (...arguments)",
+                "pipe": False})
+
+            alias_name_conflict: Response = Response({
+                "success": False,
+                "response": "Não é possível adicionar o alias \"{}\" - você já tem um!"
+                            "Você pode \"edit\" sua definição, \"rename\" ou \"remove\".",
+                "pipe": False})
+
+            alias_crated: Response = Response({
+                "success": False,
+                "response": "Seu alias \"{}\" foi criado com sucesso.",
+                "pipe": False})
+
+            command_dont_exist: Response = Response({
+                    "success": False,
+                    "response": "Não é possível criar o alias! O comando \"{}\" não existe.", "pipe": False}
+            )
+
+        class Check(EnUsTranslations.Alias.Check):
+            user_alias_list: Response = Response({
+                "success": False,
+                "response": "Sua lista de alias: {}",
+                "pipe": False})
+
+            no_alias_found: Response = Response({
+                "success": False,
+                "response": "Não consegui encontrar {} no do usuário {} ou em qualquer um dos seus aliases!",
+                "pipe": False})
+
+            list_of_alias_of: Response = Response({
+                "success": False,
+                "response": "Lista de alias do {}: {}",
+                "pipe": False})
+
+            list_of_special_case: Response = Response({
+                "success": False,
+                "response": "Caso Especial!\n"
+                            "Seu alias \"{0}\": {1}\n"
+                            "Lista de alias de {0}: {2}",
+                "pipe": False})
+
+            alias_not_found: Response = Response({
+                "success": False,
+                "response": "{} não tem o alias \"{}\"",
+                "pipe": False})
+
+            appendix: str = "Este alias é um link para \"{}\" feito por {}."
+
+            alias_deleted: Response = Response({
+                "success": False,
+                "response": "{} alias é um link para um alias diferente, mas o original foi excluído.",
+                "pipe": False})
+
+            message: str = "{} {} alias \"{}\" tem esta definição: {} {} "
+
+            final_message: Response = Response({
+                "success": False,
+                "response": "{} {}",
+                "pipe": False})
+
+        class Copy(EnUsTranslations.Alias.Copy):
+            user_not_provided: Response = Response({
+                "success": False,
+                "response": "Nenhum usuário foi fornecido!",
+                "pipe": False})
+
+            alias_not_provided: Response = Response({
+                "success": False,
+                "response": "Nenhum alias de destino fornecido!",
+                "pipe": False})
+
+            target_alias_invalid_name: Response = Response({
+                "success": False,
+                "response": "O nome do alias copiado não é válido e portanto não pode ser copiado!",
+                "pipe": False})
+
+            link_to_a_link: Response = Response({
+                "success": False,
+                "response": 'Você não pode copiar links para outros aliases. '
+                            'Em vez disso, use o link {}alias copy {} {}',
+                "pipe": False})
+
+            copy_success: Response = Response({
+                "success": False,
+                "response": "Alias \"{}\" copiado com sucesso.",
+                "pipe": False})
+
+        class Describe(EnUsTranslations.Alias.Describe):
+            no_args_to_parse: Response = Response({
+                "success": False,
+                "response": "You didn't provide a name, or a command! Use: {}alias describe (name) (...description)",
+                "pipe": False})
+
+            description_updated: Response = Response({
+                "success": False,
+                "response": "A descrição do seu alias \"{}\" foi atualizada com sucesso.",
+                "pipe": False})
+
+            description_reseted: Response = Response({
+                "success": False,
+                "response": "A descrição do seu alias \"{}\" foi resetada com sucesso.",
+                "pipe": False})
+
+        class Edit(EnUsTranslations.Alias.Edit):
+            no_args_provided: Response = Response(
+                    {"success": False, "response": "Nenhum alias ou nome de comando fornecido!", "pipe": False}
+            )
+
+            edit_link: Response = Response(
+                    {"success": False, "response": "Você não pode editar links para outros aliases!", "pipe": False}
+            )
+
+            edit_success: Response = Response(
+                    {"success": False, "response": 'Seu alias "{}" foi editado com sucesso.', "pipe": False}
+            )
+
+            command_dont_exist: Response = Response({
+                    "success": False,
+                    "response": 'Não é possível editar o alias! O comando "{}" não existe.',
+                    "pipe": False}
+            )
+
+        class Link(EnUsTranslations.Alias.Link):
+            link_no_args: Response = Response({
+                    "success": False,
+                    "response": "Você não forneceu um usuário ou o nome do alias! "
+                                "Use: {}alias link (usuário) (nome do alias)",
+                    "pipe": False}
+            )
+
+            alias_name_already_exists: Response = Response({
+                    "success": False,
+                    "response": "Não é possível vincular um novo alias - você já tem um alias com esse nome!",
+                    "pipe": False}
+            )
+
+            user_dont_has_alias: Response = Response({
+                    "success": False,
+                    "response": 'O usuário fornecido não tem o alias "{}"!',
+                    "pipe": False}
+            )
+
+            appendix_link: str = ('Você tentou criar um link a partir de um alias já vinculado (alias {} por {}), '
+                                  'então usei o original como seu modelo.')
+
+            link_with_invalid_name: Response = Response({
+                    "success": False,
+                    "response": 'O nome do alias vinculado não é válido! {}',
+                    "pipe": False}
+            )
+
+            link_name_string: str = ', com um nome personalizado "{}"'
+
+            link_success: Response = Response({
+                    "success": False,
+                    "response": 'Alias vinculado com sucesso{}. '
+                                'Quando o original mudar, o seu também mudará. {}',
+                    "pipe": False}
+            )
+
+        class Remove(EnUsTranslations.Alias.Remove):
+            no_alias_name_provided: Response = Response(
+                    {"success": False, "response": "Nenhum nome de alias fornecido!", "pipe": False}
+            )
+
+            alias_removed: Response = Response(
+                    {"success": False, "response": 'Seu alias "{}" foi removido com sucesso.', "pipe": False}
+            )
+
+        class Rename(EnUsTranslations.Alias.Rename):
+            no_name_provided: Response = Response({
+                    "success": False,
+                    "response": "Você deve fornecer tanto o nome atual do alias quanto o novo!",
+                    "pipe": False}
+            )
+
+            alias_already_exists: Response = Response({
+                    "success": False,
+                    "response": 'Você já tem o alias "{}"!'})
+
+            alias_renamed: Response = Response({
+                    "success": False,
+                    "response": 'Seu alias "{}" foi renomeado com sucesso para "{}".',
+                    "pipe": False}
+            )
 
 
 

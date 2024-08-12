@@ -25,9 +25,8 @@ class Alias(Model, TimestampMixin):
     invocation = fields.CharField(max_length=50)
     arguments = fields.JSONField(null=True)
     description = fields.TextField(null=True)
-    # isso é para linkar os alias
     parent = fields.ForeignKeyField('models.Alias', related_name='children', null=True, on_delete=fields.SET_NULL)
-
+    deleted = fields.BooleanField(default=False)
 
     class Meta:
         table = 'command_alias'

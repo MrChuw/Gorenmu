@@ -67,8 +67,7 @@ async def add_alias(ctx: Context, args: tuple):
 
     command_check = parse_command_by_name(ctx, command_)
     if not command_check:
-        verb = translations.created_edited[0]
-        return translations.command_dont_exist.format_response(ctx, verb, command_, success=False)
+        return translations.Add.command_dont_exist.format_response(ctx,  command_, success=False)
 
     alias = await Alias.save_alias(ctx, name, command_check, command_, rest)
     return translations.Add.alias_crated.format_response(ctx, alias.name)
@@ -131,7 +130,7 @@ async def check_alias(ctx: Context, args: tuple):
     message = f"{alias.invocation} {' '.join(alias.arguments)}"
     if alias.arguments:
         message = translations.Check.message.format(appendix, mention, alias_name,
-                                              alias.invocation, ' '.join(alias.arguments))
+                                                    alias.invocation, ' '.join(alias.arguments))
     # TODO: Here the case is if some one has the same name as a alias.
     url = "TODO"
 
@@ -156,7 +155,7 @@ async def copy_alias(ctx: Context, args: tuple):
     target_alias = await Alias.filter(channel__isnull=True, user=target_user, name=target_alias_name).first()
     if target_alias.command is None:  # NOQA
         # TODO: See if this is point to the right user.
-        return translations.Copy.link_to_a_link.format_response(ctx, target_user.name, target_alias_name, success=False)
+        return translations.Copy.link_to_a_link.format_response(ctx, ctx.prefix, target_user.name, target_alias_name, success=False)
 
     new_alias = await Alias.create(
             user_id=ctx.author.id,
@@ -184,13 +183,13 @@ async def describe_alias(ctx: Context, args: tuple):  # NOQA
     description = " ".join(rest).strip()
     if not description or description.lower() == "none":
         alias.description = None
-        verb = translations.reset_updated[0]
+        await alias.save()
+        return translations.Describe.description_reseted.format_response(ctx, name)
     else:
         alias.description = description
-        verb = translations.reset_updated[1]
+        await alias.save()
+        return translations.Describe.description_updated.format_response(ctx, name)
 
-    await alias.save()
-    return translations.Describe.description_updated.format_response(ctx, name, verb)
 
 
 async def edit_alias(ctx: Context, args: tuple):
@@ -202,8 +201,7 @@ async def edit_alias(ctx: Context, args: tuple):
     command_check = parse_command_by_name(ctx, command_)
 
     if not command_check:
-        verb = translations.created_edited[1]
-        return translations.command_dont_exist.format_response(ctx, verb, command_, success=False)
+        return translations.Edit.command_dont_exist.format_response(ctx, command_, success=False)
 
     alias = await Alias.filter(user=ctx.user, name=name).first()
     if not alias:
@@ -275,7 +273,8 @@ async def remove_alias(ctx: Context, args: tuple):
     alias = await Alias.get_or_none(user=ctx.user, name=name)
     if not alias:
         return translations.dont_have_alias.format_response(ctx, name, success=False)
-    await alias.delete()
+    alias.deleted = True
+    await alias.save()
     return translations.Remove.alias_removed.format_response(ctx, name)
 
 

@@ -61,62 +61,65 @@ class EnUsTranslations:
             command_not_pipeble: str = "este comando não pôde ser utilizado com o pipe."
 
     class Afk:
-            afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
+        afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
-            class Afk(BaseTranslation):
-                message_too_long: Response = Response({
-                        "success": False,
-                        "response": "This message is too long.",
-                        "pipe": False})
-                afk_response: Response = Response({
-                        "success": True,
-                        "response": "{}: {}",
-                        "pipe": False})
-                afk_content_response: Response = Response({
-                        "success": True, "response": "{}: {} and left a note with: {}",
-                        "pipe": False})
+        class Afk(BaseTranslation):
+            message_too_long: Response = Response({
+                    "success": False,
+                    "response": "This message is too long.",
+                    "pipe": False})
+            afk_response: Response = Response({
+                    "success": True,
+                    "response": "{}: {}",
+                    "pipe": False})
+            afk_content_response: Response = Response({
+                    "success": True, "response": "{}: {} and left a note with: {}",
+                    "pipe": False})
 
-            class IsAfk(BaseTranslation):
-                bot_nick: Response = Response(
-                        {"success": False, "response": "I'm always here... watching."}
-                )
-                author_nick: Response = Response(
-                        {"success": False, "response": "you're not working... obviously"}
-                )
-                never_seen: Response = Response(
-                        {"success": False, "response": "I don't remember ever seeing any {}."}
-                )
-                is_afk: Response = Response({"success": False, "response": "@{} {}: {}"})
-                is_afk_content: Response = Response(
-                        {"success": False, "response": "@{} {} and left a note: {}"}
-                )
-                is_not_afk: Response = Response({"success": False, "response": "@{} is not AFK."})
+        class IsAfk(BaseTranslation):
+            bot_nick: Response = Response(
+                    {"success": False, "response": "I'm always here... watching."}
+            )
+            author_nick: Response = Response(
+                    {"success": False, "response": "you're not working... obviously"}
+            )
+            never_seen: Response = Response(
+                    {"success": False, "response": "I don't remember ever seeing any {}."}
+            )
+            is_afk: Response = Response({"success": False, "response": "@{} {}: {}"})
+            is_afk_content: Response = Response(
+                    {"success": False, "response": "@{} {} and left a note: {}"}
+            )
+            is_not_afk: Response = Response({"success": False, "response": "@{} is not AFK."})
 
-            class RAfk(BaseTranslation):
-                time_expired: Response = Response(
-                        {"success": False, "response": "The time to return has already passed."})
-                is_afk: Response = Response({"success": False, "response": "{}: {}"})
-                is_afk_content: Response = Response({"success": False, "response": "{} {} and left a note: {}"})
-                is_not_afk: Response = Response({"success": False, "response": "you are not AFK."})
+        class RAfk(BaseTranslation):
+            time_expired: Response = Response({
+                    "success": False,
+                    "response": "The time to return has already passed.",
+                    "pipe": False})
+            is_afk: Response = Response({
+                    "success": False,
+                    "response": "{}: {}",
+                    "pipe": False})
+            is_afk_content: Response = Response({
+                    "success": False,
+                    "response": "{} {} and left a note: {}",
+                    "pipe": False})
+            is_not_afk: Response = Response({
+                    "success": False,
+                    "response": "you are not AFK.",
+                    "pipe": False})
 
-            class AfkListeners(BaseTranslation):
-                is_afk: Response = Response({"success": False, "response": "{}: {} (was away for {} {})"})
-                is_afk_content: Response = Response(
-                        {"success": False, "response": "{} {} and left a note: {} (was away for {} {})"})
+        class AfkListeners(BaseTranslation):
+            is_afk: Response = Response({"success": False, "response": "{}: {} (was away for {} {})"})
+            is_afk_content: Response = Response(
+                    {"success": False, "response": "{} {} and left a note: {} (was away for {} {})"})
 
 
     class Alias(BaseTranslation):
         user_not_found: Response = Response({
             "success": False,
             "response": "there is no user with nickname {}.",
-            "pipe": False})
-
-        created_edited: list[str] = ["create", "edit"]
-        reset_updated: list[str] = ["reset", "updated"]
-
-        command_dont_exist: Response = Response({
-            "success": False,
-            "response": "Cannot {} alias! The command \"{}\" does not exist.",
             "pipe": False})
 
         dont_have_alias: Response = Response({
@@ -145,6 +148,11 @@ class EnUsTranslations:
                 "success": False,
                 "response": "Your alias \"{}\" has been created successfully.",
                 "pipe": False})
+
+            command_dont_exist: Response = Response({
+                    "success": False,
+                    "response": "Cannot create alias! The command \"{}\" does not exist.", "pipe": False}
+            )
 
         class Check(BaseTranslation):
             user_alias_list: Response = Response({
@@ -206,7 +214,7 @@ class EnUsTranslations:
 
             link_to_a_link: Response = Response({
                 "success": False,
-                "response": 'You cannot copy links to other aliases. Instead, use !alias link {} {}',
+                "response": 'You cannot copy links to other aliases. Instead, use {}alias copy {} {}',
                 "pipe": False})
 
             copy_success: Response = Response({
@@ -222,13 +230,18 @@ class EnUsTranslations:
 
             description_updated: Response = Response({
                 "success": False,
-                "response": "The description of your alias \"{}\" has been {} successfully.",
+                "response": "The description of your alias \"{}\" has been updated successfully.",
+                "pipe": False})
+
+            description_reseted: Response = Response({
+                "success": False,
+                "response": "The description of your alias \"{}\" has been reset successfully.",
                 "pipe": False})
 
         class Edit(BaseTranslation):
             no_args_provided: Response = Response({
                 "success": False,
-                "response": "No aliás or command name provided!",
+                "response": "No alias or command name provided!",
                 "pipe": False})
 
             edit_link: Response = Response({
@@ -241,10 +254,16 @@ class EnUsTranslations:
                 "response": 'Your alias "{}" has been successfully edited.',
                 "pipe": False})
 
+            command_dont_exist: Response = Response({
+                "success": False,
+                "response": "Cannot edit alias! The command \"{}\" does not exist.",
+                "pipe": False})
+
         class Link(BaseTranslation):
             link_no_args: Response = Response({
                 "success": False,
-                "response": "You didn't provide a user, or the alias name! Use: {}alias link (user) (alias name)",
+                "response": "You didn't provide a user, or the alias name! "
+                            "Use: {}alias link (user) (alias name)",
                 "pipe": False})
 
             alias_name_already_exists: Response = Response({
