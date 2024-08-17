@@ -60,11 +60,10 @@ class PtBrTranslations(EnUsTranslations):
 
         class Afk(EnUsTranslations.Afk.Afk):
             message_too_long: Response = Response(
-                {"success": False, "response": "Esta mensagem é muito longa.", "pipe": False})
-            afk_response: Response = Response({"success": True, "response": "{}: {}", "pipe": False})
+                {"success": False, "response": "Esta mensagem é muito longa."})
+            afk_response: Response = Response({"success": True, "response": "{}: {}"})
             afk_content_response: Response = Response(
-                {"success": True, "response": "{}: {} e deixou uma nota com: {}", "pipe": False}
-            )
+                {"success": True, "response": "{}: {} e deixou uma nota com: {}"})
 
         class IsAfk(EnUsTranslations.Afk.IsAfk):
             bot_nick: Response = Response(
@@ -87,12 +86,11 @@ class PtBrTranslations(EnUsTranslations):
                     "success": False,
                     "response": "O tempo para voltar já passou.",
                     "pipe": False})
-            is_afk: Response = Response({"success": False, "response": "{}: {}", "pipe": False})
+            is_afk: Response = Response({"success": False, "response": "{}: {}"})
             is_afk_content: Response = Response({
                     "success": False,
-                    "response": "{} {} e deixou um bilhete: {}",
-                    "pipe": False})
-            is_not_afk: Response = Response({"success": False, "response": "voce não está afk.", "pipe": False})
+                    "response": "{} {} e deixou um bilhete: {}"})
+            is_not_afk: Response = Response({"success": False, "response": "voce não está afk."})
 
         class AfkListeners(EnUsTranslations.Afk.AfkListeners):
                 is_afk: Response = Response({"success": False, "response": "{}: {} (ficou {} {})"})
@@ -123,7 +121,7 @@ class PtBrTranslations(EnUsTranslations):
 
             alias_name_conflict: Response = Response({
                 "success": False,
-                "response": "Não é possível adicionar o alias \"{}\" - você já tem um!"
+                "response": "Não é possível adicionar o alias \"{}\" - você já tem um! "
                             "Você pode \"edit\" sua definição, \"rename\" ou \"remove\".",
                 "pipe": False})
 
@@ -304,7 +302,6 @@ class PtBrTranslations(EnUsTranslations):
                     "response": 'Seu alias "{}" foi renomeado com sucesso para "{}".',
                     "pipe": False}
             )
-
 
 
 

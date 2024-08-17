@@ -33,7 +33,7 @@ class Alias(Model, TimestampMixin):
         unique_together = ('user', 'channel', 'name')
         verbose_name = 'Custom Command Alias'
         verbose_name_plural = 'Custom Command Aliases'
-    indexes = [("user_alias", "channel", "name"), ("channel",), ("command",), ("parent",)]
+    indexes = [("user", "channel", "name"), ("channel",), ("command",), ("parent",)]
 
     @staticmethod
     async def save_alias(ctx: Context, name: str,

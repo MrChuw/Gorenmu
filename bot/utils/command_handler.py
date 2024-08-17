@@ -36,10 +36,10 @@ def get_translations(command: Command):
                 if sub.startswith("__") or sub.startswith("get_"):
                     continue
                 attr = getattr(obj, sub)
-                if issubclass(attr, command.decorators) or issubclass(command.decorators, attr):
+                if issubclass(attr, command.decorators_original) or issubclass(command.decorators_original, attr):
                     translations_decorators[lang] = attr
                     break
-            if issubclass(obj, command.decorators) or issubclass(command.decorators, obj):
+            if issubclass(obj, command.decorators_original) or issubclass(command.decorators_original, obj):
                 translations_decorators[lang] = obj
                 break
     command.decorators = translations_decorators
@@ -176,5 +176,7 @@ class CommandHandler:
 
     @staticmethod
     def load_language(ctx: Context):
-        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "en-us")
-        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or "en-us")
+        channel = ctx.channel.name
+        channel = ctx.bot.channels[channel]
+        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or channel.language or "en-us")
+        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or channel.language or "en-us")

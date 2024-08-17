@@ -223,7 +223,15 @@ class Gorenmu(Bot):
         self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
         return await ctx.simple_response(ctx, translations.error_not_registered.format(self.dev_name))
 
+    async def listeners(self, ctx):
+        if not ctx.user:
+            ctx.user = await UserModel.create_or_update(ctx)
+        for listener in self.event_message_listeners:
+            if response := await listener(ctx):
+                await ctx.response(response)
+
     async def event_message(self, message: Message) -> None:
+        message.content = message.content.replace("\x01ACTION ", "").replace("\x01", "")
         if message.echo or message.author.name == self.nick:
             return None
         with contextlib.suppress(IndexError, CommandNotFound):
@@ -240,6 +248,7 @@ class Gorenmu(Bot):
                 channel = self.channels[message.channel.name]
                 prefix = message.content[0] if len(channel.prefix) != 2 else message.content[:2]
                 self.CommandHandler.load_language(ctx)
+                await self.listeners(ctx)
                 if (channel.online is False and "start" not in message.content or prefix == "ƚ"
                         and channel.online is False):
                     return None
@@ -247,12 +256,15 @@ class Gorenmu(Bot):
                 if prefix == channel.prefix:
                     ctx.prefix = prefix
                     self.log.info(f"#{ctx.channel.name}|| @{ctx.author.name}: {ctx.message.content}")
-                    if " | " not in ctx.message.content:
+
+                    if f"{ctx.prefix}{ctx.prefix}" in ctx.message.content:
+                        response = await ctx.alias_handler(ctx, message)
+                    elif " | " not in ctx.message.content or f"{ctx.prefix}alias" in ctx.message.content:
                         response = await self.invoke(ctx)
+                    elif " | " in ctx.message.content and f"{ctx.prefix}alias" not in ctx.message.content:
+                        await ctx.pipe_handler(ctx, message)
                     if response:
                         await ctx.response(response)
-                    if " | " in ctx.message.content:
-                        await ctx.pipe_handler(message, ctx)
 
             except InvalidArgument:
                 if ctx.command and hasattr(ctx.command, "usage"):
@@ -262,12 +274,7 @@ class Gorenmu(Bot):
                                                  .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))
             except Exception as error:
                 self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
-            else:
-                if not ctx.user:
-                    ctx.user = await UserModel.create_or_update(ctx)
-                for listener in self.event_message_listeners:
-                    if response := await listener(ctx):
-                        await ctx.response(response)
+
 
         if ctx and ".tmi.twitch.tv WHISPER" in ctx.message.raw_data:
             ctx.author.id = ctx.message.tags["user-id"]
@@ -288,4 +295,6 @@ class Gorenmu(Bot):
                                                  .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))
             except Exception as error:
                 self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
+
+
 

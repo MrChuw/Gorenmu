@@ -31,15 +31,15 @@ async def command(ctx: Context, *, content: str = "") -> Response:
 
 
 async def afk(ctx: Context, content: str, invoke_by: str) -> Response:
-    translations = ctx.translations.Afk.Afk()
+    translations = ctx.translations.Afk
     if len(content) >= 450:
-        return translations.message_too_long.format_response(ctx, success=False)
-    afk = ctx.translations.Activity.Afk.afks.get(invoke_by)  # NOQA
+        return translations.Afk.message_too_long.format_response(ctx, success=False, pipe=False)
+    afk = translations.afks.get(invoke_by)  # NOQA
     await go_afk(afk, content, ctx)
     if not content:
-        return translations.afk_response.format_response(ctx, afk.leave, afk.emoji)
+        return translations.Afk.afk_response.format_response(ctx, afk.leave, afk.emoji, pipe=False)
     else:
-        return translations.afk_content_response.format_response(ctx, afk.leave, afk.emoji, content)
+        return translations.Afk.afk_content_response.format_response(ctx, afk.leave, afk.emoji, content, pipe=False)
 
 
 async def rafk(ctx: Context) -> Response:
@@ -52,11 +52,11 @@ async def rafk(ctx: Context) -> Response:
         await ctx.bot.cache.delete(f"Afk-{ctx.author.id}")
         await go_rafk(afk, ctx)
         if afk["content"] == "":
-            return translations.RAfk().is_afk.format_response(ctx, status.leave_again, status.emoji)
+            return translations.RAfk().is_afk.format_response(ctx, status.leave_again, status.emoji, pipe=False)
         else:
-            return translations.RAfk().is_afk.format_response(ctx, status.leave_again, status.emoji, afk["content"])
+            return translations.RAfk().is_afk.format_response(ctx, status.leave_again, status.emoji, afk["content"], pipe=False)
     else:
-        return translations.RAfk().is_not_afk.format_response(ctx, success=False)
+        return translations.RAfk().is_not_afk.format_response(ctx, success=False, pipe=False)
 
 
 async def isafk(ctx: Context, content: str) -> Response:

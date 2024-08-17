@@ -11,7 +11,7 @@ from twitchio.ext.commands import (
 )
 from twitchio.ext.routines import routine
 
-from bot.models import User as UserModel
+from bot.models import User as UserModel, Alias
 from bot.translations import EnUsTranslations
 from bot.translations import EnUsDecorators, BaseClass
 from bot.translations import Response
@@ -32,6 +32,7 @@ __all__ = (
 
 class Command(Command):
     decorators: dict[str, EnUsDecorators | BaseClass]
+    decorators_original: EnUsDecorators | BaseClass
 
 
 class Bot(Bot):
@@ -217,9 +218,9 @@ class Context(TwitchioContext):
             await self.handle_echo(ctx=ctx, response_str=response_str)
         await self.send_response(ctx, user_handler, response_str)
 
-    async def pipe_handler(self, message: Message, external_ctx: Context):
+    async def pipe_handler(self, external_ctx: Context, message: Message ):
         response_str = ""
-        translations = external_ctx.bot.TranslationManager.get_translations(external_ctx.user.language or "pt-br")
+        translations = external_ctx.bot.TranslationManager.get_translations(external_ctx.user.language or "en-us")
         translation = translations.Exceptions.ResponseExceptions()
         message.content = message.content.replace(" | ", f" | {external_ctx.prefix}")
         original_message = message
@@ -242,6 +243,29 @@ class Context(TwitchioContext):
             response_str = response.response_string
         if response:
             await self.response(response)
+
+    async def alias_handler(self, external_ctx: Context, message: Message):
+        args: list[str] = message.content.replace(f"{external_ctx.prefix}{external_ctx.prefix}", f"").split()
+        name: str = args.pop(0)
+        alias = await Alias.get_or_none(user=external_ctx.user, name=name)
+        if not alias:
+            return None
+        message.content = f"{external_ctx.prefix}{alias.invocation} {' '.join(alias.arguments)}"
+
+        if "{channel}" in message.content:
+            message.content = message.content.replace("{channel}", external_ctx.channel.name)
+        if "{user}" in message.content:
+            message.content = message.content.replace("{user}", external_ctx.user.name)
+        if args:
+            message.content = message.content.format(*args)
+        if " | " in message.content:
+            return await self.pipe_handler(external_ctx, message)
+        else:
+            ctx = await self.bot.get_context(message)
+            ctx.user = external_ctx.user
+            ctx.bot.CommandHandler.load_language(ctx)
+            return await self.bot.invoke(ctx)
+
 
 
 def check(check_list: list) -> Callable[[Command], Command]:
@@ -275,7 +299,28 @@ def helper(description: str) -> Callable[[Command], Command]:
 
 def base_decorator(base: BaseDecorator | Type[T]) -> Callable[[Command], Command]:
     def decorator(command: Command) -> Command:
-        command.decorators = base
+        command.decorators_original = base
         return command
 
     return decorator
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

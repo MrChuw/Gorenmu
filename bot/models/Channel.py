@@ -6,6 +6,7 @@ from tortoise import fields
 from tortoise.models import Model
 
 # Local
+from bot.models.base import BoolFieldBool, CharFieldStr, ContentMixin, DatetimeTzField
 
 
 class Base(Model):
@@ -61,6 +62,7 @@ class Channel(Base, TimestampMixin):
     online = fields.BooleanField(default=True)
     prefix = fields.CharField(max_length=2, default="+")
     removed = fields.BooleanField(default=False)
+    language: CharFieldStr = fields.CharField(max_length=32, null=True)
 
     messages = fields.ReverseRelation["MessagesLog"]
 

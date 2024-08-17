@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
-import asyncio
-import datetime
-from bot.bot import Gorenmu
-from bot.models import User, Channel, Alias
-from bot.utils import Check, Role
-from typing import Dict, Any, List, Tuple, Optional, Coroutine, Callable
-from bot.ext.commands import Bucket, check, Context, cooldown, base_decorator, helper, usage, command
-from bot.translations import EnUsTranslations, EnUsDecorators, Response
-from twitchio.ext.commands import Command
 import re
 from itertools import chain, repeat
-from urllib.parse import quote
+
+from twitchio.ext.commands import Command
+
+from bot.ext.commands import base_decorator, Bucket, check, command, Context, cooldown
+from bot.models import Alias, User
+from bot.translations import EnUsDecorators, Response
 
 ALIAS_NAME_REGEX = re.compile(
         r'^[-\w\u00a9\u00ae\u2000-\u3300\ud83c\ud000-\udfff\ud83d\ud000-\udfff\ud83e\ud000-\udfff]{2,30}$'
@@ -24,7 +20,7 @@ ALIAS_NAME_REGEX = re.compile(
 async def command(ctx: Context, action: str, *args, ) -> Response:
     if action.lower() in ["add"]:
         return await add_alias(ctx, args)
-    elif action.lower() in ["check"]:
+    elif action.lower() in ["check", "list"]:
         return await check_alias(ctx, args)
     elif action.lower() in ["copy"]:
         return await copy_alias(ctx, args)
@@ -38,7 +34,6 @@ async def command(ctx: Context, action: str, *args, ) -> Response:
         return await remove_alias(ctx, args)
     elif action.lower() in ["rename"]:
         return await rename_alias(ctx, args)
-
 
 
 def parse_command_by_name(ctx: Context, string: str) -> Command:
@@ -61,11 +56,13 @@ async def add_alias(ctx: Context, args: tuple):
     alias = await Alias.get_or_none(user=ctx.user, name=name)
 
     if alias:
-        return translations.Add.alias_name_conflict.format_response(ctx, args, success=False)
+        return translations.Add.alias_name_conflict.format_response(ctx, name, success=False)
 
     command_check = parse_command_by_name(ctx, command_)
     if not command_check:
-        return translations.Add.command_dont_exist.format_response(ctx,  command_, success=False)
+        return translations.Add.command_dont_exist.format_response(ctx, command_, success=False)
+
+    rest = [arg for arg in rest if arg]
 
     alias = await Alias.save_alias(ctx, name, command_check, command_, rest)
     return translations.Add.alias_crated.format_response(ctx, alias.name)
@@ -127,8 +124,9 @@ async def check_alias(ctx: Context, args: tuple):
 
     message = f"{alias.invocation} {' '.join(alias.arguments)}"
     if alias.arguments:
-        message = translations.Check.message.format(appendix, mention, alias_name,
-                                                    alias.invocation, ' '.join(alias.arguments))
+        message = translations.Check.message.format(appendix, mention, alias_name, alias.invocation,
+                                                    ' '.join(alias.arguments)
+                                                    )
     # TODO: Here the case is if some one has the same name as a alias.
     url = "TODO"
 
@@ -153,16 +151,13 @@ async def copy_alias(ctx: Context, args: tuple):
     target_alias = await Alias.filter(channel__isnull=True, user=target_user, name=target_alias_name).first()
     if target_alias.command is None:  # NOQA
         # TODO: See if this is point to the right user.
-        return translations.Copy.link_to_a_link.format_response(ctx, ctx.prefix, target_user.name, target_alias_name, success=False)
+        return translations.Copy.link_to_a_link.format_response(ctx, ctx.prefix, target_user.name, target_alias_name,
+                                                                success=False
+                                                                )
 
-    new_alias = await Alias.create(
-            user_id=ctx.author.id,
-            channel_id=None,
-            name=target_alias_name,
+    new_alias = await Alias.create(user_id=ctx.author.id, channel_id=None, name=target_alias_name,
             command=target_alias.command,  # NOQA
-            invocation=target_alias.invocation,
-            arguments=target_alias.arguments,
-            parent_id=target_alias.id,)
+            invocation=target_alias.invocation, arguments=target_alias.arguments, parent_id=target_alias.id, )
 
     return translations.Copy.copy_success.format_response(ctx, new_alias.name)
 
@@ -223,8 +218,6 @@ async def link_alias(ctx: Context, args: tuple):
     user_name, alias_name, custom_link_name, *rest = chain(args, repeat(None, 2))
     name = custom_link_name or alias_name
 
-
-
     existing_alias = await Alias.filter(user=ctx.user, name=name).first()
 
     if existing_alias:
@@ -234,8 +227,8 @@ async def link_alias(ctx: Context, args: tuple):
     if not target_user_data:
         return translations.user_not_found.format_response(ctx, user_name, success=False)
 
-    target_alias = await (Alias.filter(channel__isnull=True, user=target_user_data, name=name)
-                          .first().prefetch_related("parent"))
+    target_alias = await (
+        Alias.filter(channel__isnull=True, user=target_user_data, name=name).first().prefetch_related("parent"))
     appendix = ""
 
     if not target_alias:
@@ -251,10 +244,13 @@ async def link_alias(ctx: Context, args: tuple):
         target_alias.name = alias_name
 
     elif not ALIAS_NAME_REGEX.match(target_alias.name):
-        return translations.Link.link_with_invalid_name.format_response(ctx, translations.alias_invalid_name, success=False)
+        return translations.Link.link_with_invalid_name.format_response(ctx, translations.alias_invalid_name,
+                                                                        success=False
+                                                                        )
 
     await Alias.create(user=ctx.user, channel=None, name=name, command=None, invocation=None, arguments=None,
-                       description=target_alias.description, parent=target_alias)
+                       description=target_alias.description, parent=target_alias
+                       )
 
     name_string = translations.Link.link_name_string.format(custom_link_name) if (
             custom_link_name and custom_link_name != target_alias.name) else ""
@@ -293,20 +289,3 @@ async def rename_alias(ctx: Context, args: tuple):
     old_alias.name = new_alias_name
     await old_alias.save()
     return translations.Rename.alias_renamed.format_response(ctx, old_alias_name, new_alias_name)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
