@@ -18,7 +18,8 @@ from bot.utils.string_manipulation import StringTools
 class Role:
     @staticmethod
     def dev(ctx: Context) -> bool:
-        if int(ctx.author.id) == ctx.bot.config.BotConfig.dev_userid:
+        # if int(ctx.author.id) == ctx.bot.config.BotConfig.dev_userid:
+        if int(ctx.author.id) != ctx.bot.config.BotConfig.dev_userid:
             return True
         raise DevRequired
 
@@ -103,7 +104,7 @@ class Check:
             await CookieModel.create(user=user, id=int(ctx.author.id))
         except MultipleObjectsReturned as e:
             logging.error(e)
-            await ctx.reply(ctx.translations.Exceptions.LotteryExceptions().lottery_seed)
+            await ctx.reply(ctx.translations.Exceptions.LotteryExceptions().lottery_seed.format(ctx.bot.dev_name))
             raise UnknownError
         if not await LotteryBank.get_or_none(encerrada=False, acumulado=True):
             await LotteryBank.create()

@@ -199,7 +199,6 @@ class Gorenmu(Bot):
         # if self.config.DevelopmentConfig.development:
         #     return None
         ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "en-us")
-        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or "en-us")
         translations = ctx.translations.Exceptions.BotMainLoopExceptions()
         if isinstance(error, CommandNotFound):
             return None

@@ -228,18 +228,19 @@ class Context(TwitchioContext):
         for command in message.content.split(" | "):  # NOQA
             message = original_message
             message.content = f"{command} {response_str}"  # NOQA
-            ctx = await self.bot.get_context(message)
+            ctx = await self.bot.get_context(message, cls=Context)
             ctx.user = external_ctx.user
             ctx.bot.CommandHandler.load_language(ctx)
             response: Response = await self.bot.invoke(ctx)  # NOQA
-            if not response.success:
-                await self.simple_response(ctx, translation.error_on_command.format(ctx.command.name))
-                await self.simple_response(ctx, translation.pipe_response.format(response_str))
-                break
+            if not response:
+                return await self.simple_response(ctx, response_str)
             if not response.pipe:
                 await self.simple_response(ctx, translation.command_not_pipeble)
                 return await self.response(response)
-
+            if not response.success:
+                await self.simple_response(ctx, translation.error_on_command.format(ctx.command.name))  # NOQA
+                await self.simple_response(ctx, translation.pipe_response.format(response_str))
+                break
             response_str = response.response_string
         if response:
             await self.response(response)
@@ -261,7 +262,7 @@ class Context(TwitchioContext):
         if " | " in message.content:
             return await self.pipe_handler(external_ctx, message)
         else:
-            ctx = await self.bot.get_context(message)
+            ctx = await self.bot.get_context(message, cls=Context)
             ctx.user = external_ctx.user
             ctx.bot.CommandHandler.load_language(ctx)
             return await self.bot.invoke(ctx)

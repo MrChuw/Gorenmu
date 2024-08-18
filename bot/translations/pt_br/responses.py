@@ -37,7 +37,7 @@ class PtBrTranslations(EnUsTranslations):
 
     class Exceptions(EnUsTranslations.Exceptions):
         class LotteryExceptions(EnUsTranslations.Exceptions.LotteryExceptions):
-            lottery_seed: str = "algo horrível aconteceu, contate \"mr_chuw\" aqui na twitch utilizando whispers."
+            lottery_seed: str = "algo horrível aconteceu, contate \"@{}\" aqui na twitch utilizando whispers."
 
         class ToolsExceptions(EnUsTranslations.Exceptions.ToolsExceptions):
             announcement: str = "algo de errado com o anuncio. {}"

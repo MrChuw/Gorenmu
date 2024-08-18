@@ -12,7 +12,7 @@ from bot.translations import EnUsTranslations, EnUsDecorators, Response
 
 @base_decorator(EnUsDecorators.Admin.Nada)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
-@check([Check.banword])
+@check([Role.dev])
 @command(name='nada', aliases=[])
 async def command(ctx: Context, *, args, ) -> Response:
     translations = ctx.translations.Admin.Nada()
