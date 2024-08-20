@@ -18,8 +18,7 @@ from bot.utils.string_manipulation import StringTools
 class Role:
     @staticmethod
     def dev(ctx: Context) -> bool:
-        # if int(ctx.author.id) == ctx.bot.config.BotConfig.dev_userid:
-        if int(ctx.author.id) != ctx.bot.config.BotConfig.dev_userid:
+        if int(ctx.author.id) == ctx.bot.config.BotConfig.dev_userid:
             return True
         raise DevRequired
 

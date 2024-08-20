@@ -142,17 +142,18 @@ class CommandHandler:
         global_checks = [Check.online, Check.enabled, Check.banword]
         [bot.check(check) for check in global_checks]
         cogs = pathlib.Path(base)
-        # TODO: os listeners ainda não estão recarregando.
         try:
             for cog in cogs.iterdir():
+                if ".example" in cog.name:
+                    continue
                 for folder in cog.iterdir():
                     if folder.name == "__pycache__" or folder.name == "data":
                         continue
-                    if "commands" in folder.name:
+                    if "commands" in folder.name or "command" in folder.name:
                         CommandHandler.load_commands(bot, folder.joinpath())
-                    if "event_message_listeners" in folder.name:
+                    elif "event_message_listeners" in folder.name:
                         CommandHandler.load_event_message_listeners(bot, folder.joinpath())
-                    if "routines" in folder.name:
+                    elif "routines" in folder.name:
                         CommandHandler.load_routines(bot, folder.joinpath())
             CommandHandler.start_routines(bot)
         except Exception as e:
@@ -166,7 +167,7 @@ class CommandHandler:
             for folder in cog.iterdir():
                 if folder.name == "__pycache__" or folder.name == "data":
                     continue
-                if "commands" in folder.name:
+                if "commands" is folder.name or "command" is folder.name:
                     CommandHandler.load_commands(bot, folder.joinpath())
                 if "event_message_listeners" in folder.name:
                     CommandHandler.load_event_message_listeners(bot, folder.joinpath())

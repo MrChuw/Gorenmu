@@ -17,6 +17,8 @@ from bot.translations import EnUsDecorators, BaseClass
 from bot.translations import Response
 from bot.translations.en_us.decorators import BaseDecorator
 from typing import Type, TypeVar
+from twitchio.ext.commands.stringparser import StringParser
+from twitchio.ext.commands.errors import CommandNotFound
 
 T = TypeVar('T')
 if TYPE_CHECKING:
@@ -102,6 +104,65 @@ class Bot(Bot):
 
         return callback_result
 
+    async def get_prefix(self: Gorenmu, message: Message):
+        return self.channels[message.channel.name].prefix
+
+    async def get_context(self, message, *, cls=None):
+        """Get a Context object from a message.
+
+        Parameters
+        ----------
+        message: :class:`.Message`
+            The message object to get context for.
+        cls
+            The class to return. Defaults to Context. Its constructor must take message, prefix, valid, and bot
+            as arguments.
+
+        Returns
+        ---------
+        An instance of cls.
+
+        Raises
+        ---------
+        :class:`.CommandNotFound` No valid command was passed
+        """
+        if "\x01ACTION " in message.content:
+            message.content = message.content.replace("\x01ACTION ", "").replace("\x01", "")
+        if not cls:
+            cls = Context
+        prefix = await self.get_prefix(message)
+        if not prefix:
+            return cls(message=message, prefix=prefix, valid=False, bot=self)
+        content = message.content
+        if "reply-parent-msg-id" in message.tags:  # Remove @username from reply message
+            content = content.split(" ", 1)[1]
+        content = content[len(prefix)::].lstrip()  # Strip prefix and remainder whitespace
+        view = StringParser()
+        parsed = view.process_string(content)  # Return the string as a dict view
+
+        try:
+            command_ = parsed.pop(0)
+        except KeyError:
+            context = cls(message=message, bot=self, prefix=prefix, command=None, valid=False, view=view)
+            error = CommandNotFound("No valid command was passed.", "")
+
+            self.run_event("command_error", context, error)
+            return context
+        try:
+            command_ = self._command_aliases[command_]
+        except KeyError:
+            pass
+        if command_ in self.commands:
+            command_ = self.commands[command_]
+        else:
+            context = cls(message=message, bot=self, prefix=prefix, command=None, valid=False, view=view)
+            error = CommandNotFound(f'No command "{command_}" was found.', command_)
+
+            self.run_event("command_error", context, error)
+            return context
+        context = cls(message=message, bot=self, prefix=prefix, command=command_, valid=True, view=view)
+
+        return context
 
 class Context(TwitchioContext):
     user: UserModel
