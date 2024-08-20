@@ -230,11 +230,10 @@ class Gorenmu(Bot):
                 await ctx.response(response)
 
     async def event_message(self, message: Message) -> None:
-        message.content = message.content.replace("\x01ACTION ", "").replace("\x01", "")
         if message.echo or message.author.name == self.nick:
             return None
-        with contextlib.suppress(IndexError, CommandNotFound):
-            ctx: Context | None = await self.get_context(message, cls=Context)
+        # with contextlib.suppress(IndexError, CommandNotFound):
+        ctx: Context | None = await self.get_context(message, cls=Context)
         if ctx and "WHISPER" not in ctx.message.raw_data:
             await self.cache.set(f"{ctx.author.id}", Cache.UserCache(ctx), namespace="UserCache")
             ctx.user = await UserModel.create_or_update(ctx)
@@ -245,25 +244,22 @@ class Gorenmu(Bot):
                 return None
             try:
                 channel = self.channels[message.channel.name]
-                prefix = message.content[0] if len(channel.prefix) != 2 else message.content[:2]
                 self.CommandHandler.load_language(ctx)
                 await self.listeners(ctx)
-                if (channel.online is False and "start" not in message.content or prefix == "ƚ"
+                if (channel.online is False and "start" not in message.content or ctx.prefix == "ƚ"
                         and channel.online is False):
                     return None
                 response: Response | None = None
-                if prefix == channel.prefix:
-                    ctx.prefix = prefix
-                    self.log.info(f"#{ctx.channel.name}|| @{ctx.author.name}: {ctx.message.content}")
+                self.log.info(f"#{ctx.channel.name}|| @{ctx.author.name}: {ctx.message.content}")
 
-                    if f"{ctx.prefix}{ctx.prefix}" in ctx.message.content:
-                        response = await ctx.alias_handler(ctx, message)
-                    elif " | " not in ctx.message.content or f"{ctx.prefix}alias" in ctx.message.content:
-                        response = await self.invoke(ctx)
-                    elif " | " in ctx.message.content and f"{ctx.prefix}alias" not in ctx.message.content:
-                        await ctx.pipe_handler(ctx, message)
-                    if response:
-                        await ctx.response(response)
+                if f"{ctx.prefix}{ctx.prefix}" in ctx.message.content:
+                    response = await ctx.alias_handler(ctx, message)
+                elif " | " not in ctx.message.content or f"{ctx.prefix}alias" in ctx.message.content:
+                    response = await self.invoke(ctx)
+                elif " | " in ctx.message.content and f"{ctx.prefix}alias" not in ctx.message.content:
+                    await ctx.pipe_handler(ctx, message)
+                if response:
+                    await ctx.response(response)
 
             except InvalidArgument:
                 if ctx.command and hasattr(ctx.command, "usage"):
