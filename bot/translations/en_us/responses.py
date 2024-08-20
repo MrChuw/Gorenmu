@@ -278,260 +278,136 @@ class EnUsTranslations:
                 "success": False,
                 "response": 'Your alias "{}" has been successfully renamed to "{}".'})
 
+    class Chance(BaseTranslation):
+        random_percentage: Response = Response({"success": False, "response": "{:.2f}%."})
 
-    class Admin:
-        class AddUser(BaseTranslation):
-            user_not_found: Response = Response(
-                {"success": True, "response": "não existe nenhum usuário com nick {}."}
-            )
-            user_response: Response = Response(
-                {
-                    "success": False,
-                    "response": "as infos de {} foram adicionadas.",
-                    "response_list": [],
-                    "is_response": False,
-                }
-            )
+    class Choice(BaseTranslation):
+        choice_separators: list[str] = ["or", ",", " "]
+        chosen_option: Response = Response({"success": False, "response": "{}"})
 
-        class AddBot(BaseTranslation):
-            user_not_found: Response = Response(
-                {"success": False, "response": "eu ainda não vi esse bot em nenhum chat."}
-            )
-            user_already_added: Response = Response(
-                {"success": False, "response": "o bot {} ja esta registrado."}
-            )
-            user_added: Response = Response(
-                {"success": True, "response": "o bot {} foi adicionado aos bots."}
-            )
 
-        class AllChannels(BaseTranslation):
-            channels: Response = Response(
-                {"success": False, "response": "aqui a lista de todos os canais que eu estou: {}"}
-            )
 
-        class Announce(BaseTranslation):
-            success: Response = Response(
-                {"success": False, "response": "O comando foi executado com sucesso."}
-            )
+    class Count(BaseTranslation):
+        character_count: Response = Response(
+            {
+                "success": False,
+                "response": "Com um total de {} caracteres. Onde {} são caracteres especiais.",
+                "response_list": [],
+                "is_response": False,
+            }
+        )
 
-        class ApiBot(BaseTranslation):
-            added_with_success: Response = Response(
-                {
-                    "success": False,
-                    "response": "O comando foi executado com sucesso. Com {} bots adicionados.",
-                    "is_response": False,
-                }
-            )
+    class HyperTranslate(BaseTranslation):
+        quantity_error: Response = Response(
+            {
+                "success": False,
+                "response": "Você deve informar a quantidade de vezes que vai ser traduzido. Como exemplo: "
+                "`{}hypertranslate 10 <texto>`",
+                "is_response": False,
+            }
+        )
+        starter_string: str = "Estou traduzindo o texto..."
+        api_error: Response = Response(
+            {"success": False, "response": "Ocorreu um erro com a api de tradução."}
+        )
+        unexpected_error: Response = Response(
+            {"success": False, "response": "Não foi possível traduzir o texto."}
+        )
+        translation: Response = Response({"success": False, "response": "{}"})
 
-        class ChannelLog(BaseTranslation):
-            channel_already_added: Response = Response(
-                {"success": False, "response": "Ja estou no canal {}."}
-            )
-            channel_added: Response = Response(
-                {"success": True, "response": "Entrei no canal {}."}
-            )
+    class Imgur(BaseTranslation):
+        links: Response = Response({"success": False, "response": "", "response_list": []})
+        timeout: Response = Response(
+            {
+                "success": False,
+                "response": "100 segundos se passaram e eu não consegui gerar, espera um pouco e tente novamente.",
+                "is_response": False,
+            }
+        )
 
-        class CookieGive(BaseTranslation):
-            cookie_given: Response = Response(
-                {"success": True, "response": "você deu {} para {}."}
-            )
+    class Imgur7(BaseTranslation):
+        links: Response = Response({"success": False, "response": "", "response_list": []})
+        timeout: Response = Response(
+            {
+                "success": False,
+                "response": "100 segundos se passaram e eu não consegui gerar, espera um pouco e tente novamente.",
+                "is_response": False,
+            }
+        )
 
-        class CountUser(BaseTranslation):
-            user_quantity: Response = Response(
-                {"success": True, "response": "têm {} usuários no banco de dados."}
-            )
+    class ImgurRepeated(BaseTranslation):
+        links_repeated: Response = Response(
+            {
+                "success": False,
+                "response": "Quantidade total de imagens repetidas: {}",
+                "response_list": [],
+                "is_response": False,
+            }
+        )
 
-        class DBGrep(BaseTranslation):
-            user_not_found: Response = Response(
-                {"success": True, "response": "não existe nenhum usuário com nick {}."}
-            )
-            user_info: Response = Response(
-                {
-                    "success": False,
-                    "response": "aqui as infos do usuário: {}.",
-                    "response_list": [],
-                    "is_response": False,
-                }
-            )
-            channel_info: Response = Response(
-                {"success": False, "response": "aqui as infos do canal: {}.", "response_list": []}
-            )
+    class RandomColor(BaseTranslation):
+        response: Response = Response(
+            {
+                "success": False,
+                "response": "aqui está uma cor aleatória: #{} https://goo.gl/search?%23{}",
+                "is_response": False,
+            }
+        )
 
-        class DelFromDB(BaseTranslation):
-            user_not_found: Response = Response(
-                {"success": True, "response": "não existe nenhum usuário com nome {}."}
-            )
-            user_deleted: Response = Response(
-                {"success": True, "response": "o usuário {} foi deletado do banco de dados."}
-            )
-            users_deleted: Response = Response(
-                {
-                    "success": True,
-                    "response": "foi deletado {} usuários do canal {}.",
-                    "response_list": [],
-                    "is_response": False,
-                }
-            )
+        response_url: Response = Response(
+            {"success": False, "response": "{} é {}. https://goo.gl/search?%23{} {}"}
+        )
 
-        class DisableNSFW(BaseTranslation):
-            commands_disabled: Response = Response(
-                {"success": True, "response": "NSFW foi desabilitado em {} canais."}
-            )
+    class Reverse(BaseTranslation):
+        reversed_string: Response = Response({"success": False, "response": "{}"})
 
-        class LotteryStart(BaseTranslation):
-            pass  # TODO: Fazer quando refizer o loterica_start
+    class RandomLine(BaseTranslation):
+        channel_not_found: Response = Response(
+            {
+                "success": False,
+                "response": "Não achei nenhum canal com nome {} no banco de dados.",
+                "is_response": False,
+            }
+        )
+        user_not_found: Response = Response(
+            {
+                "success": False,
+                "response": "Não achei nenhum usuário com nome {} no banco de dados.",
+                "is_response": False,
+            }
+        )
+        no_message_found: Response = Response(
+            {"success": False, "response": "Não foi possível encontrar uma mensagem."}
+        )
+        no_option_found: Response = Response(
+            {
+                "success": False,
+                "response": "informe se você que uma mensagem de um canal ou de um usuario no canal. Exemplo: "
+                "`{0}rl <nome do canal>` ou `{0}rl <nome do usuario>` ou `{0}rl <nome do canal> "
+                "<nome do usuário>`",
+                "is_response": False,
+            }
+        )
+        random_line: Response = Response(
+            {"success": False, "response": "{} (enviada há {} por {} )"}
+        )
 
-        class Nada(BaseTranslation):
-            nada: Response = Response(
-                {"success": True, "response": "O comando foi executado com asdfasdfafsadsaf."}
-            )
+    class Scp(BaseTranslation):
+        links: Response = Response({"success": False, "response": "{}"})
+        unexpected_error: Response = Response(
+            {"success": False, "response": "Aconteceu algum erro, tente novamente."}
+        )
 
-        class Reload(BaseTranslation):
-            commands_reloaded: Response = Response(
-                {"success": True, "response": "Os comandos foram recarregados com sucesso."}
-            )
+    class UpSideDown(BaseTranslation):
+        upsidedown: Response = Response({"success": False, "response": "{}"})
 
-        class Restart(BaseTranslation):
-            success: Response = Response(
-                {"success": True, "response": "O bot foi reiniciado com sucesso."}
-            )
-            unexpected_error: Response = Response(
-                {"success": False, "response": "Houve um erro ao reiniciar o bot: {}"}
-            )
+    class Wikihow(BaseTranslation):
+        links: Response = Response({"success": False, "response": "{}"})
+        unexpected_error: Response = Response(
+            {"success": False, "response": "Aconteceu algum erro, tente novamente."}
+        )
 
-        class RGit(BaseTranslation):
-            git_pulled: Response = Response(
-                {"success": True, "response": "O comando foi executado com sucesso."}
-            )
-
-    class Random:
-        class Chance(BaseTranslation):
-            random_percentage: Response = Response({"success": False, "response": "{:.2f}%."})
-
-        class Choice(BaseTranslation):
-            chosen_option: Response = Response({"success": False, "response": "{}"})
-
-        class Count(BaseTranslation):
-            character_count: Response = Response(
-                {
-                    "success": False,
-                    "response": "Com um total de {} caracteres. Onde {} são caracteres especiais.",
-                    "response_list": [],
-                    "is_response": False,
-                }
-            )
-
-        class HyperTranslate(BaseTranslation):
-            quantity_error: Response = Response(
-                {
-                    "success": False,
-                    "response": "Você deve informar a quantidade de vezes que vai ser traduzido. Como exemplo: "
-                    "`{}hypertranslate 10 <texto>`",
-                    "is_response": False,
-                }
-            )
-            starter_string: str = "Estou traduzindo o texto..."
-            api_error: Response = Response(
-                {"success": False, "response": "Ocorreu um erro com a api de tradução."}
-            )
-            unexpected_error: Response = Response(
-                {"success": False, "response": "Não foi possível traduzir o texto."}
-            )
-            translation: Response = Response({"success": False, "response": "{}"})
-
-        class Imgur(BaseTranslation):
-            links: Response = Response({"success": False, "response": "", "response_list": []})
-            timeout: Response = Response(
-                {
-                    "success": False,
-                    "response": "100 segundos se passaram e eu não consegui gerar, espera um pouco e tente novamente.",
-                    "is_response": False,
-                }
-            )
-
-        class Imgur7(BaseTranslation):
-            links: Response = Response({"success": False, "response": "", "response_list": []})
-            timeout: Response = Response(
-                {
-                    "success": False,
-                    "response": "100 segundos se passaram e eu não consegui gerar, espera um pouco e tente novamente.",
-                    "is_response": False,
-                }
-            )
-
-        class ImgurRepeated(BaseTranslation):
-            links_repeated: Response = Response(
-                {
-                    "success": False,
-                    "response": "Quantidade total de imagens repetidas: {}",
-                    "response_list": [],
-                    "is_response": False,
-                }
-            )
-
-        class RandomColor(BaseTranslation):
-            response: Response = Response(
-                {
-                    "success": False,
-                    "response": "aqui está uma cor aleatória: #{} https://goo.gl/search?%23{}",
-                    "is_response": False,
-                }
-            )
-
-            response_url: Response = Response(
-                {"success": False, "response": "{} é {}. https://goo.gl/search?%23{} {}"}
-            )
-
-        class Reverse(BaseTranslation):
-            reversed_string: Response = Response({"success": False, "response": "{}"})
-
-        class RandomLine(BaseTranslation):
-            channel_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "Não achei nenhum canal com nome {} no banco de dados.",
-                    "is_response": False,
-                }
-            )
-            user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "Não achei nenhum usuário com nome {} no banco de dados.",
-                    "is_response": False,
-                }
-            )
-            no_message_found: Response = Response(
-                {"success": False, "response": "Não foi possível encontrar uma mensagem."}
-            )
-            no_option_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "informe se você que uma mensagem de um canal ou de um usuario no canal. Exemplo: "
-                    "`{0}rl <nome do canal>` ou `{0}rl <nome do usuario>` ou `{0}rl <nome do canal> "
-                    "<nome do usuário>`",
-                    "is_response": False,
-                }
-            )
-            random_line: Response = Response(
-                {"success": False, "response": "{} (enviada há {} por {} )"}
-            )
-
-        class Scp(BaseTranslation):
-            links: Response = Response({"success": False, "response": "{}"})
-            unexpected_error: Response = Response(
-                {"success": False, "response": "Aconteceu algum erro, tente novamente."}
-            )
-
-        class UpSideDown(BaseTranslation):
-            upsidedown: Response = Response({"success": False, "response": "{}"})
-
-        class Wikihow(BaseTranslation):
-            links: Response = Response({"success": False, "response": "{}"})
-            unexpected_error: Response = Response(
-                {"success": False, "response": "Aconteceu algum erro, tente novamente."}
-            )
-
-        class Wikipedia(BaseTranslation):
+    class Wikipedia(BaseTranslation):
             links: Response = Response({"success": False, "response": "{}"})
             unexpected_error: Response = Response(
                 {"success": False, "response": "Aconteceu algum erro, tente novamente."}
@@ -2066,3 +1942,130 @@ class EnUsTranslations:
                 }
             )
             player_not_found: Response = Response({"success": False, "response": ""})
+
+
+
+    class Admin:
+        class AddUser(BaseTranslation):
+            user_not_found: Response = Response(
+                {"success": True, "response": "não existe nenhum usuário com nick {}."}
+            )
+            user_response: Response = Response(
+                {
+                    "success": False,
+                    "response": "as infos de {} foram adicionadas.",
+                    "response_list": [],
+                    "is_response": False,
+                }
+            )
+
+        class AddBot(BaseTranslation):
+            user_not_found: Response = Response(
+                {"success": False, "response": "eu ainda não vi esse bot em nenhum chat."}
+            )
+            user_already_added: Response = Response(
+                {"success": False, "response": "o bot {} ja esta registrado."}
+            )
+            user_added: Response = Response(
+                {"success": True, "response": "o bot {} foi adicionado aos bots."}
+            )
+
+        class AllChannels(BaseTranslation):
+            channels: Response = Response(
+                {"success": False, "response": "aqui a lista de todos os canais que eu estou: {}"}
+            )
+
+        class Announce(BaseTranslation):
+            success: Response = Response(
+                {"success": False, "response": "O comando foi executado com sucesso."}
+            )
+
+        class ApiBot(BaseTranslation):
+            added_with_success: Response = Response(
+                {
+                    "success": False,
+                    "response": "O comando foi executado com sucesso. Com {} bots adicionados.",
+                    "is_response": False,
+                }
+            )
+
+        class ChannelLog(BaseTranslation):
+            channel_already_added: Response = Response(
+                {"success": False, "response": "Ja estou no canal {}."}
+            )
+            channel_added: Response = Response(
+                {"success": True, "response": "Entrei no canal {}."}
+            )
+
+        class CookieGive(BaseTranslation):
+            cookie_given: Response = Response(
+                {"success": True, "response": "você deu {} para {}."}
+            )
+
+        class CountUser(BaseTranslation):
+            user_quantity: Response = Response(
+                {"success": True, "response": "têm {} usuários no banco de dados."}
+            )
+
+        class DBGrep(BaseTranslation):
+            user_not_found: Response = Response(
+                {"success": True, "response": "não existe nenhum usuário com nick {}."}
+            )
+            user_info: Response = Response(
+                {
+                    "success": False,
+                    "response": "aqui as infos do usuário: {}.",
+                    "response_list": [],
+                    "is_response": False,
+                }
+            )
+            channel_info: Response = Response(
+                {"success": False, "response": "aqui as infos do canal: {}.", "response_list": []}
+            )
+
+        class DelFromDB(BaseTranslation):
+            user_not_found: Response = Response(
+                {"success": True, "response": "não existe nenhum usuário com nome {}."}
+            )
+            user_deleted: Response = Response(
+                {"success": True, "response": "o usuário {} foi deletado do banco de dados."}
+            )
+            users_deleted: Response = Response(
+                {
+                    "success": True,
+                    "response": "foi deletado {} usuários do canal {}.",
+                    "response_list": [],
+                    "is_response": False,
+                }
+            )
+
+        class DisableNSFW(BaseTranslation):
+            commands_disabled: Response = Response(
+                {"success": True, "response": "NSFW foi desabilitado em {} canais."}
+            )
+
+        class LotteryStart(BaseTranslation):
+            pass  # TODO: Fazer quando refizer o loterica_start
+
+        class Nada(BaseTranslation):
+            nada: Response = Response(
+                {"success": True, "response": "O comando foi executado com asdfasdfafsadsaf."}
+            )
+
+        class Reload(BaseTranslation):
+            commands_reloaded: Response = Response(
+                {"success": True, "response": "Os comandos foram recarregados com sucesso."}
+            )
+
+        class Restart(BaseTranslation):
+            success: Response = Response(
+                {"success": True, "response": "O bot foi reiniciado com sucesso."}
+            )
+            unexpected_error: Response = Response(
+                {"success": False, "response": "Houve um erro ao reiniciar o bot: {}"}
+            )
+
+        class RGit(BaseTranslation):
+            git_pulled: Response = Response(
+                {"success": True, "response": "O comando foi executado com sucesso."}
+            )

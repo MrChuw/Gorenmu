@@ -164,10 +164,12 @@ class CommandHandler:
         CommandHandler.stop_routines(bot)
         cogs = pathlib.Path(base)
         for cog in cogs.iterdir():
+            if ".example" in cog.name:
+                continue
             for folder in cog.iterdir():
                 if folder.name == "__pycache__" or folder.name == "data":
                     continue
-                if "commands" is folder.name or "command" is folder.name:
+                if "commands" in folder.name or "command" in folder.name:
                     CommandHandler.load_commands(bot, folder.joinpath())
                 if "event_message_listeners" in folder.name:
                     CommandHandler.load_event_message_listeners(bot, folder.joinpath())

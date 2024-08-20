@@ -31,159 +31,78 @@ class PtBrDecorators(EnUsDecorators):
         usage = "Para usar: {}alias add|check|copy|describe|edit|link|remove|rename <opções>"
         description = "Comando usado para gerenciar os alias."
 
-    class Admin(EnUsDecorators.Admin):
-        class AddUser(EnUsDecorators.Admin.AddUser):
-            helper = "Adiciona um usuário"
-            usage = "Para usar: {}add_user <nome do usuário>"
-            description = "Este comando adiciona um usuário no banco de dados."
+    class Chance(EnUsDecorators.Chance):
+        helper = "Retorna uma percentagem aleatória."
+        usage = "Para usar: {}chance"
+        description = "Retorna uma percentagem aleatória."
 
-        class AddBot(EnUsDecorators.Admin.AddBot):
-            helper = "Adiciona um bot"
-            usage = "Para usar: {}addbot <nick do bot>"
-            description = ("Usado para retirar os bots de serem comutados pelo Markov de canais. (ja que "
-                           "não tem nenhuma forma de eu filtrar o bot sem ter que excluir ele totalmente da tabela.)")
 
-        class AllChannels(EnUsDecorators.Admin.AllChannels):
-            helper = "Mostra todos os canais que o bot está."
-            usage = "Para usar: {}all_channels"
-            description = "Mostra todos os canais que o bot está."
 
-        class Announce(EnUsDecorators.Admin.Announce):
-            helper = "Anuncia em todos os canais ou em um canal especifico."
-            usage = "Para usar: {}anunciar <all ou nome do canal> <conteudo>"
-            description = "Anuncia em todos os canais ou em um canal especifico."
+    class Choice(EnUsDecorators.Choice):
+        helper = "Escolhe uma opção das opções passadas pelo usuário"
+        usage = "Para usar: {}choice <opção1> ou <opção2>"
+        description = "Escolhe uma opção das opções passadas pelo usuário."
 
-        class ApiBot(EnUsDecorators.Admin.ApiBot):
-            helper = "Adiciona bots de uma api que eu achei por ai."
-            usage = "Para usar: {}apibot"
-            description = "Adiciona bots de uma api que eu achei por ai."
+    class Count(EnUsDecorators.Count):
+        helper = "Conta a quantidade de símbolos em um texto."
+        usage = "Para usar: {}count <texto>"
+        description = "Conta a quantidade de símbolos em um texto."
 
-        class ChannelLog(EnUsDecorators.Admin.ChannelLog):
-            helper = "Faz o bot entrar em um canal para dar log nas mensagens."
-            usage = "Para usar: {}channel_log <nome do canal> <entrar ou sair>"
-            description = "Faz o bot entrar em um canal para dar log nas mensagens."
+    class HyperTranslate(EnUsDecorators.HyperTranslate):
+        helper = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer que "
+                  "ele seja traduzido.")
+        usage = "para usar: <prefixo>hypertranslate <quantidade de vezes que vai ser traduzido/número> <texto>"
+        description = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer "
+                       "que ele seja traduzido.")
 
-        class CookieGive(EnUsDecorators.Admin.CookieGive):
-            helper = "Permite alguém que têm role de developer dar cookies para alguém."
-            usage = "Para usar: {}cookie_give <nome do usuário> <quantidade>"
-            description = "Permite alguém que têm role de developer dar cookies para alguém."
+    class Imgur(EnUsDecorators.Imgur):
+        helper = "Envia um link aleatorio do imgur. (Pode vir NSFW)"
+        usage = "para usar: <prefixo>imgur <quantidade>"
+        description = "Envio um link aleatorio do imgur. (Pode vir NSFW)"
 
-        class CountUser(EnUsDecorators.Admin.CountUser):
-            helper = "Conta quantos usuários tem no banco de dados."
-            usage = "Para usar: {}count_user"
-            description = "Conta quantos usuários tem no banco de dados."
+    class Imgur7(EnUsDecorators.Imgur7):
+        helper = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
+                  "(Pode vir NSFW)")
+        usage = "para usar: <prefixo>imgur <quantidade>"
+        description = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
+                       "(Pode vir NSFW)")
 
-        class DBGrep(EnUsDecorators.Admin.DBGrep):
-            helper = "Pegá as infos de um usuário ou canal."
-            usage = "Para usar: {}dbgrep <texto>"
-            description = "Pegá as infos de um usuário ou canal."
+    class ImgurRepeated(EnUsDecorators.ImgurRepeated):
+        helper = "Verifica a quantidade de imgurs repetidos."
+        usage = "Para usar: {}imgur_repetidos"
+        description = "Verifica a quantidade de imgurs repetidos."
 
-        class DelFromDB(EnUsDecorators.Admin.DelFromDB):
-            helper = "Deleta um usuário ou todos os usuários de um canal."
-            usage = "Para usar: {}del_from_db <user ou users_canal> <nome do usuário>"
-            description = "Deleta um usuário ou todos os usuários de um canal."
+    class RandomColor(EnUsDecorators.RandomColor):
+        helper = "Envia uma cor aleatória."
+        usage = "Para usar: {}random_color"
+        description = "Envia uma cor aleatória."
 
-        class DisableNSFW(EnUsDecorators.Admin.DisableNSFW):
-            helper = "Desabilita o NSFW em todos os canais."
-            usage = "Para usar: {}disable_nsfw"
-            description = "Desabilita o NSFW em todos os canais."
+    class Reverse(EnUsDecorators.Reverse):
+        helper = "Reverte um texto."
+        usage = "Para usar: {}reverse <texto>"
+        description = "Reverte um texto."
 
-        class LotteryStart(EnUsDecorators.Admin.LotteryStart):
-            helper = "Inicia um sorteio."
-            usage = "Para usar: {}lottery_start <tempo ate o final da loteria> <quantidade que a casa vai colocar>"
-            description = "Inicia um sorteio."
+    class RandomLine(EnUsDecorators.RandomLine):
+        helper = "Pega uma mensagem aleatória do canal ou do usuário no canal."
+        usage = "para usar: `{0}rl --canal:<nome do canal>` ou `{0}rl --user:<nome do usuario>` ou `{0}rl`"
+        description = "Pega uma mensagem aleatória do canal ou do usuário no canal."
 
-        class Nada(EnUsDecorators.Admin.Nada):
-            helper = "Nada."
-            usage = "Para usar: {}nada <texto>"
-            description = "Nada."
+    class Scp(EnUsDecorators.Scp):
+        helper = "Envia um scp aleatório."
+        usage = "Para usar: {}scp <quantidade>"
+        description = "Envia um scp aleatório."
 
-        class Reload(EnUsDecorators.Admin.Reload):
-            helper = "Recarrega os comandos."
-            usage = "Para usar: {}reload"
-            description = "Recarrega os comandos."
+    class UpSideDown(EnUsDecorators.UpSideDown):
+        helper = "Coloca o texto de cabeça para baixo."
+        usage = "Para usar: {}upsidedown <texto>"
+        description = "Coloca o texto de cabeça para baixo."
 
-        class Restart(EnUsDecorators.Admin.Restart):
-            helper = "Reinicia o bot."
-            usage = "Para usar: {}restart"
-            description = "Reinicia o bot."
+    class Wikihow(EnUsDecorators.Wikihow):
+        helper = "Envia um link do wikihow aleatório."
+        usage = "Para usar: {}wikihow <quantidade>"
+        description = "Envia um link do wikihow aleatório."
 
-        class RGit(EnUsDecorators.Admin.RGit):
-            helper = "Puxa do git."
-            usage = "Para usar: {}rgit"
-            description = "Puxa do git."
-
-    class Random(EnUsDecorators.Random):
-        class Chance(EnUsDecorators.Random.Chance):
-            helper = "Chance."
-            usage = "Para usar: {}chance"
-            description = "Chance."
-
-        class Choice(EnUsDecorators.Random.Choice):
-            helper = "Escolhe uma opção das opções passadas pelo usuário"
-            usage = "Para usar: {}choice <opção1> ou <opção2>"
-            description = "Escolhe uma opção das opções passadas pelo usuário."
-
-        class Count(EnUsDecorators.Random.Count):
-            helper = "Conta a quantidade de símbolos em um texto."
-            usage = "Para usar: {}count <texto>"
-            description = "Conta a quantidade de símbolos em um texto."
-
-        class HyperTranslate(EnUsDecorators.Random.HyperTranslate):
-            helper = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer que "
-                      "ele seja traduzido.")
-            usage = "para usar: <prefixo>hypertranslate <quantidade de vezes que vai ser traduzido/número> <texto>"
-            description = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer "
-                           "que ele seja traduzido.")
-
-        class Imgur(EnUsDecorators.Random.Imgur):
-            helper = "Envia um link aleatorio do imgur. (Pode vir NSFW)"
-            usage = "para usar: <prefixo>imgur <quantidade>"
-            description = "Envio um link aleatorio do imgur. (Pode vir NSFW)"
-
-        class Imgur7(EnUsDecorators.Random.Imgur7):
-            helper = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
-                      "(Pode vir NSFW)")
-            usage = "para usar: <prefixo>imgur <quantidade>"
-            description = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
-                           "(Pode vir NSFW)")
-
-        class ImgurRepeated(EnUsDecorators.Random.ImgurRepeated):
-            helper = "Verifica a quantidade de imgurs repetidos."
-            usage = "Para usar: {}imgur_repetidos"
-            description = "Verifica a quantidade de imgurs repetidos."
-
-        class RandomColor(EnUsDecorators.Random.RandomColor):
-            helper = "Envia uma cor aleatória."
-            usage = "Para usar: {}random_color"
-            description = "Envia uma cor aleatória."
-
-        class Reverse(EnUsDecorators.Random.Reverse):
-            helper = "Reverte um texto."
-            usage = "Para usar: {}reverse <texto>"
-            description = "Reverte um texto."
-
-        class RandomLine(EnUsDecorators.Random.RandomLine):
-            helper = "Pega uma mensagem aleatória do canal ou do usuário no canal."
-            usage = "para usar: `{0}rl --canal:<nome do canal>` ou `{0}rl --user:<nome do usuario>` ou `{0}rl`"
-            description = "Pega uma mensagem aleatória do canal ou do usuário no canal."
-
-        class Scp(EnUsDecorators.Random.Scp):
-            helper = "Envia um scp aleatório."
-            usage = "Para usar: {}scp <quantidade>"
-            description = "Envia um scp aleatório."
-
-        class UpSideDown(EnUsDecorators.Random.UpSideDown):
-            helper = "Coloca o texto de cabeça para baixo."
-            usage = "Para usar: {}upsidedown <texto>"
-            description = "Coloca o texto de cabeça para baixo."
-
-        class Wikihow(EnUsDecorators.Random.Wikihow):
-            helper = "Envia um link do wikihow aleatório."
-            usage = "Para usar: {}wikihow <quantidade>"
-            description = "Envia um link do wikihow aleatório."
-
-        class Wikipedia(EnUsDecorators.Random.Wikipedia):
+    class Wikipedia(EnUsDecorators.Wikipedia):
             helper = "Envia um link da wikipedia aleatório."
             usage = "Para usar: {}wikipedia <quantidade>"
             description = "Envia um link da wikipedia aleatório."
@@ -607,3 +526,87 @@ class PtBrDecorators(EnUsDecorators):
             helper = "Mostra o nível atual da torre."
             usage = "Para usar: {}towerlevel"
             description = "Mostra o nível atual da torre."
+
+
+
+    class Admin(EnUsDecorators.Admin):
+        class AddUser(EnUsDecorators.Admin.AddUser):
+            helper = "Adiciona um usuário"
+            usage = "Para usar: {}add_user <nome do usuário>"
+            description = "Este comando adiciona um usuário no banco de dados."
+
+        class AddBot(EnUsDecorators.Admin.AddBot):
+            helper = "Adiciona um bot"
+            usage = "Para usar: {}addbot <nick do bot>"
+            description = ("Usado para retirar os bots de serem comutados pelo Markov de canais. (ja que "
+                           "não tem nenhuma forma de eu filtrar o bot sem ter que excluir ele totalmente da tabela.)")
+
+        class AllChannels(EnUsDecorators.Admin.AllChannels):
+            helper = "Mostra todos os canais que o bot está."
+            usage = "Para usar: {}all_channels"
+            description = "Mostra todos os canais que o bot está."
+
+        class Announce(EnUsDecorators.Admin.Announce):
+            helper = "Anuncia em todos os canais ou em um canal especifico."
+            usage = "Para usar: {}anunciar <all ou nome do canal> <conteudo>"
+            description = "Anuncia em todos os canais ou em um canal especifico."
+
+        class ApiBot(EnUsDecorators.Admin.ApiBot):
+            helper = "Adiciona bots de uma api que eu achei por ai."
+            usage = "Para usar: {}apibot"
+            description = "Adiciona bots de uma api que eu achei por ai."
+
+        class ChannelLog(EnUsDecorators.Admin.ChannelLog):
+            helper = "Faz o bot entrar em um canal para dar log nas mensagens."
+            usage = "Para usar: {}channel_log <nome do canal> <entrar ou sair>"
+            description = "Faz o bot entrar em um canal para dar log nas mensagens."
+
+        class CookieGive(EnUsDecorators.Admin.CookieGive):
+            helper = "Permite alguém que têm role de developer dar cookies para alguém."
+            usage = "Para usar: {}cookie_give <nome do usuário> <quantidade>"
+            description = "Permite alguém que têm role de developer dar cookies para alguém."
+
+        class CountUser(EnUsDecorators.Admin.CountUser):
+            helper = "Conta quantos usuários tem no banco de dados."
+            usage = "Para usar: {}count_user"
+            description = "Conta quantos usuários tem no banco de dados."
+
+        class DBGrep(EnUsDecorators.Admin.DBGrep):
+            helper = "Pegá as infos de um usuário ou canal."
+            usage = "Para usar: {}dbgrep <texto>"
+            description = "Pegá as infos de um usuário ou canal."
+
+        class DelFromDB(EnUsDecorators.Admin.DelFromDB):
+            helper = "Deleta um usuário ou todos os usuários de um canal."
+            usage = "Para usar: {}del_from_db <user ou users_canal> <nome do usuário>"
+            description = "Deleta um usuário ou todos os usuários de um canal."
+
+        class DisableNSFW(EnUsDecorators.Admin.DisableNSFW):
+            helper = "Desabilita o NSFW em todos os canais."
+            usage = "Para usar: {}disable_nsfw"
+            description = "Desabilita o NSFW em todos os canais."
+
+        class LotteryStart(EnUsDecorators.Admin.LotteryStart):
+            helper = "Inicia um sorteio."
+            usage = "Para usar: {}lottery_start <tempo ate o final da loteria> <quantidade que a casa vai colocar>"
+            description = "Inicia um sorteio."
+
+        class Nada(EnUsDecorators.Admin.Nada):
+            helper = "Nada."
+            usage = "Para usar: {}nada <texto>"
+            description = "Nada."
+
+        class Reload(EnUsDecorators.Admin.Reload):
+            helper = "Recarrega os comandos."
+            usage = "Para usar: {}reload"
+            description = "Recarrega os comandos."
+
+        class Restart(EnUsDecorators.Admin.Restart):
+            helper = "Reinicia o bot."
+            usage = "Para usar: {}restart"
+            description = "Reinicia o bot."
+
+        class RGit(EnUsDecorators.Admin.RGit):
+            helper = "Puxa do git."
+            usage = "Para usar: {}rgit"
+            description = "Puxa do git."

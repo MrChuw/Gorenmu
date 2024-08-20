@@ -66,160 +66,79 @@ class EnUsDecorators:
         usage = "To use: {}alias add|check|copy|describe|edit|link|remove|rename <options>"
         description = "Command used to manage aliases."
 
+    class Chance(BaseDecorator, BaseClass):
+        helper = "Returns a random percentage."
+        usage = "To use: {}chance"
+        description = "Returns a random percentage."
 
-    class Admin(BaseClass):
-        class AddUser(BaseDecorator, BaseClass):
-            helper = "Adiciona um usuário"
-            usage = "Para usar: {}add_user <nome do usuário>"
-            description = "Este comando adiciona um usuário no banco de dados."
+    class Choice(BaseDecorator, BaseClass):
+        helper = "Chooses an option from the options provided by the user."
+        usage = "To use: {}choice <option1> or <option2>"
+        description = "Chooses an option from the options provided by the user."
 
-        class AddBot(BaseDecorator, BaseClass):
-            helper = "Adiciona um bot"
-            usage = "Para usar: {}addbot <nick do bot>"
-            description = ("Usado para retirar os bots de serem comutados pelo Markov de canais. (ja que "
-                           "não tem nenhuma forma de eu filtrar o bot sem ter que excluir ele totalmente da tabela.)")
 
-        class AllChannels(BaseDecorator, BaseClass):
-            helper = "Mostra todos os canais que o bot está."
-            usage = "Para usar: {}all_channels"
-            description = "Mostra todos os canais que o bot está."
 
-        class Announce(BaseDecorator, BaseClass):
-            helper = "Anuncia em todos os canais ou em um canal especifico."
-            usage = "Para usar: {}anunciar <all ou nome do canal> <conteudo>"
-            description = "Anuncia em todos os canais ou em um canal especifico."
 
-        class ApiBot(BaseDecorator, BaseClass):
-            helper = "Adiciona bots de uma api que eu achei por ai."
-            usage = "Para usar: {}apibot"
-            description = "Adiciona bots de uma api que eu achei por ai."
+    class Count(BaseDecorator, BaseClass):
+        helper = "Conta a quantidade de símbolos em um texto."
+        usage = "Para usar: {}count <texto>"
+        description = "Conta a quantidade de símbolos em um texto."
 
-        class ChannelLog(BaseDecorator, BaseClass):
-            helper = "Faz o bot entrar em um canal para dar log nas mensagens."
-            usage = "Para usar: {}channel_log <nome do canal> <entrar ou sair>"
-            description = "Faz o bot entrar em um canal para dar log nas mensagens."
+    class HyperTranslate(BaseDecorator, BaseClass):
+        helper = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer que "
+                  "ele seja traduzido.")
+        usage = "para usar: <prefixo>hypertranslate <quantidade de vezes que vai ser traduzido/número> <texto>"
+        description = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer "
+                       "que ele seja traduzido.")
 
-        class CookieGive(BaseDecorator, BaseClass):
-            helper = "Permite alguém que têm role de developer dar cookies para alguém."
-            usage = "Para usar: {}cookie_give <nome do usuário> <quantidade>"
-            description = "Permite alguém que têm role de developer dar cookies para alguém."
+    class Imgur(BaseDecorator, BaseClass):
+        helper = "Envia um link aleatorio do imgur. (Pode vir NSFW)"
+        usage = "para usar: <prefixo>imgur <quantidade>"
+        description = "Envio um link aleatorio do imgur. (Pode vir NSFW)"
 
-        class CountUser(BaseDecorator, BaseClass):
-            helper = "Conta quantos usuários tem no banco de dados."
-            usage = "Para usar: {}count_user"
-            description = "Conta quantos usuários tem no banco de dados."
+    class Imgur7(BaseDecorator, BaseClass):
+        helper = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
+                  "(Pode vir NSFW)")
+        usage = "para usar: <prefixo>imgur <quantidade>"
+        description = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
+                       "(Pode vir NSFW)")
 
-        class DBGrep(BaseDecorator, BaseClass):
-            helper = "Pegá as infos de um usuário ou canal."
-            usage = "Para usar: {}dbgrep <texto>"
-            description = "Pegá as infos de um usuário ou canal."
+    class ImgurRepeated(BaseDecorator, BaseClass):
+        helper = "Verifica a quantidade de imgurs repetidos."
+        usage = "Para usar: {}imgur_repetidos"
+        description = "Verifica a quantidade de imgurs repetidos."
 
-        class DelFromDB(BaseDecorator, BaseClass):
-            helper = "Deleta um usuário ou todos os usuários de um canal."
-            usage = "Para usar: {}del_from_db <user ou users_canal> <nome do usuário>"
-            description = "Deleta um usuário ou todos os usuários de um canal."
+    class RandomColor(BaseDecorator, BaseClass):
+        helper = "Envia uma cor aleatória."
+        usage = "Para usar: {}random_color"
+        description = "Envia uma cor aleatória."
 
-        class DisableNSFW(BaseDecorator, BaseClass):
-            helper = "Desabilita o NSFW em todos os canais."
-            usage = "Para usar: {}disable_nsfw"
-            description = "Desabilita o NSFW em todos os canais."
+    class Reverse(BaseDecorator, BaseClass):
+        helper = "Reverte um texto."
+        usage = "Para usar: {}reverse <texto>"
+        description = "Reverte um texto."
 
-        class LotteryStart(BaseDecorator, BaseClass):
-            helper = "Inicia um sorteio."
-            usage = "Para usar: {}lottery_start <tempo ate o final da loteria> <quantidade que a casa vai colocar>"
-            description = "Inicia um sorteio."
+    class RandomLine(BaseDecorator, BaseClass):
+        helper = "Pega uma mensagem aleatória do canal ou do usuário no canal."
+        usage = "para usar: `{0}rl --canal:<nome do canal>` ou `{0}rl --user:<nome do usuario>` ou `{0}rl`"
+        description = "Pega uma mensagem aleatória do canal ou do usuário no canal."
 
-        class Nada(BaseDecorator, BaseClass):
-            helper = "Nada."
-            usage = "Para usar: {}nada asfasfasfasfasdfasf"
-            description = "Nada."
+    class Scp(BaseDecorator, BaseClass):
+        helper = "Envia um scp aleatório."
+        usage = "Para usar: {}scp <quantidade>"
+        description = "Envia um scp aleatório."
 
-        class Reload(BaseDecorator, BaseClass):
-            helper = "Recarrega os comandos."
-            usage = "Para usar: {}reload"
-            description = "Recarrega os comandos."
+    class UpSideDown(BaseDecorator, BaseClass):
+        helper = "Coloca o texto de cabeça para baixo."
+        usage = "Para usar: {}upsidedown <texto>"
+        description = "Coloca o texto de cabeça para baixo."
 
-        class Restart(BaseDecorator, BaseClass):
-            helper = "Reinicia o bot."
-            usage = "Para usar: {}restart"
-            description = "Reinicia o bot."
+    class Wikihow(BaseDecorator, BaseClass):
+        helper = "Envia um link do wikihow aleatório."
+        usage = "Para usar: {}wikihow <quantidade>"
+        description = "Envia um link do wikihow aleatório."
 
-        class RGit(BaseDecorator, BaseClass):
-            helper = "Puxa do git."
-            usage = "Para usar: {}rgit"
-            description = "Puxa do git."
-
-    class Random(BaseClass):
-        class Chance(BaseDecorator, BaseClass):
-            helper = "Chance."
-            usage = "Para usar: {}chance"
-            description = "Chance."
-
-        class Choice(BaseDecorator, BaseClass):
-            helper = "Escolhe uma opção das opções passadas pelo usuário"
-            usage = "Para usar: {}choice <opção1> ou <opção2>"
-            description = "Escolhe uma opção das opções passadas pelo usuário."
-
-        class Count(BaseDecorator, BaseClass):
-            helper = "Conta a quantidade de símbolos em um texto."
-            usage = "Para usar: {}count <texto>"
-            description = "Conta a quantidade de símbolos em um texto."
-
-        class HyperTranslate(BaseDecorator, BaseClass):
-            helper = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer que "
-                      "ele seja traduzido.")
-            usage = "para usar: <prefixo>hypertranslate <quantidade de vezes que vai ser traduzido/número> <texto>"
-            description = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer "
-                           "que ele seja traduzido.")
-
-        class Imgur(BaseDecorator, BaseClass):
-            helper = "Envia um link aleatorio do imgur. (Pode vir NSFW)"
-            usage = "para usar: <prefixo>imgur <quantidade>"
-            description = "Envio um link aleatorio do imgur. (Pode vir NSFW)"
-
-        class Imgur7(BaseDecorator, BaseClass):
-            helper = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
-                      "(Pode vir NSFW)")
-            usage = "para usar: <prefixo>imgur <quantidade>"
-            description = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
-                           "(Pode vir NSFW)")
-
-        class ImgurRepeated(BaseDecorator, BaseClass):
-            helper = "Verifica a quantidade de imgurs repetidos."
-            usage = "Para usar: {}imgur_repetidos"
-            description = "Verifica a quantidade de imgurs repetidos."
-
-        class RandomColor(BaseDecorator, BaseClass):
-            helper = "Envia uma cor aleatória."
-            usage = "Para usar: {}random_color"
-            description = "Envia uma cor aleatória."
-
-        class Reverse(BaseDecorator, BaseClass):
-            helper = "Reverte um texto."
-            usage = "Para usar: {}reverse <texto>"
-            description = "Reverte um texto."
-
-        class RandomLine(BaseDecorator, BaseClass):
-            helper = "Pega uma mensagem aleatória do canal ou do usuário no canal."
-            usage = "para usar: `{0}rl --canal:<nome do canal>` ou `{0}rl --user:<nome do usuario>` ou `{0}rl`"
-            description = "Pega uma mensagem aleatória do canal ou do usuário no canal."
-
-        class Scp(BaseDecorator, BaseClass):
-            helper = "Envia um scp aleatório."
-            usage = "Para usar: {}scp <quantidade>"
-            description = "Envia um scp aleatório."
-
-        class UpSideDown(BaseDecorator, BaseClass):
-            helper = "Coloca o texto de cabeça para baixo."
-            usage = "Para usar: {}upsidedown <texto>"
-            description = "Coloca o texto de cabeça para baixo."
-
-        class Wikihow(BaseDecorator, BaseClass):
-            helper = "Envia um link do wikihow aleatório."
-            usage = "Para usar: {}wikihow <quantidade>"
-            description = "Envia um link do wikihow aleatório."
-
-        class Wikipedia(BaseDecorator, BaseClass):
+    class Wikipedia(BaseDecorator, BaseClass):
             helper = "Envia um link da wikipedia aleatório."
             usage = "Para usar: {}wikipedia <quantidade>"
             description = "Envia um link da wikipedia aleatório."
@@ -643,3 +562,87 @@ class EnUsDecorators:
             helper = "Mostra o nível atual da torre."
             usage = "Para usar: {}towerlevel"
             description = "Mostra o nível atual da torre."
+
+
+
+    class Admin(BaseClass):
+        class AddUser(BaseDecorator, BaseClass):
+            helper = "Adiciona um usuário"
+            usage = "Para usar: {}add_user <nome do usuário>"
+            description = "Este comando adiciona um usuário no banco de dados."
+
+        class AddBot(BaseDecorator, BaseClass):
+            helper = "Adiciona um bot"
+            usage = "Para usar: {}addbot <nick do bot>"
+            description = ("Usado para retirar os bots de serem comutados pelo Markov de canais. (ja que "
+                           "não tem nenhuma forma de eu filtrar o bot sem ter que excluir ele totalmente da tabela.)")
+
+        class AllChannels(BaseDecorator, BaseClass):
+            helper = "Mostra todos os canais que o bot está."
+            usage = "Para usar: {}all_channels"
+            description = "Mostra todos os canais que o bot está."
+
+        class Announce(BaseDecorator, BaseClass):
+            helper = "Anuncia em todos os canais ou em um canal especifico."
+            usage = "Para usar: {}anunciar <all ou nome do canal> <conteudo>"
+            description = "Anuncia em todos os canais ou em um canal especifico."
+
+        class ApiBot(BaseDecorator, BaseClass):
+            helper = "Adiciona bots de uma api que eu achei por ai."
+            usage = "Para usar: {}apibot"
+            description = "Adiciona bots de uma api que eu achei por ai."
+
+        class ChannelLog(BaseDecorator, BaseClass):
+            helper = "Faz o bot entrar em um canal para dar log nas mensagens."
+            usage = "Para usar: {}channel_log <nome do canal> <entrar ou sair>"
+            description = "Faz o bot entrar em um canal para dar log nas mensagens."
+
+        class CookieGive(BaseDecorator, BaseClass):
+            helper = "Permite alguém que têm role de developer dar cookies para alguém."
+            usage = "Para usar: {}cookie_give <nome do usuário> <quantidade>"
+            description = "Permite alguém que têm role de developer dar cookies para alguém."
+
+        class CountUser(BaseDecorator, BaseClass):
+            helper = "Conta quantos usuários tem no banco de dados."
+            usage = "Para usar: {}count_user"
+            description = "Conta quantos usuários tem no banco de dados."
+
+        class DBGrep(BaseDecorator, BaseClass):
+            helper = "Pegá as infos de um usuário ou canal."
+            usage = "Para usar: {}dbgrep <texto>"
+            description = "Pegá as infos de um usuário ou canal."
+
+        class DelFromDB(BaseDecorator, BaseClass):
+            helper = "Deleta um usuário ou todos os usuários de um canal."
+            usage = "Para usar: {}del_from_db <user ou users_canal> <nome do usuário>"
+            description = "Deleta um usuário ou todos os usuários de um canal."
+
+        class DisableNSFW(BaseDecorator, BaseClass):
+            helper = "Desabilita o NSFW em todos os canais."
+            usage = "Para usar: {}disable_nsfw"
+            description = "Desabilita o NSFW em todos os canais."
+
+        class LotteryStart(BaseDecorator, BaseClass):
+            helper = "Inicia um sorteio."
+            usage = "Para usar: {}lottery_start <tempo ate o final da loteria> <quantidade que a casa vai colocar>"
+            description = "Inicia um sorteio."
+
+        class Nada(BaseDecorator, BaseClass):
+            helper = "Nada."
+            usage = "Para usar: {}nada asfasfasfasfasdfasf"
+            description = "Nada."
+
+        class Reload(BaseDecorator, BaseClass):
+            helper = "Recarrega os comandos."
+            usage = "Para usar: {}reload"
+            description = "Recarrega os comandos."
+
+        class Restart(BaseDecorator, BaseClass):
+            helper = "Reinicia o bot."
+            usage = "Para usar: {}restart"
+            description = "Reinicia o bot."
+
+        class RGit(BaseDecorator, BaseClass):
+            helper = "Puxa do git."
+            usage = "Para usar: {}rgit"
+            description = "Puxa do git."
