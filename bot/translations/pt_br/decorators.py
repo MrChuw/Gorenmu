@@ -36,16 +36,14 @@ class PtBrDecorators(EnUsDecorators):
         usage = "Para usar: {}chance"
         description = "Retorna uma percentagem aleatória."
 
-
-
     class Choice(EnUsDecorators.Choice):
         helper = "Escolhe uma opção das opções passadas pelo usuário"
         usage = "Para usar: {}choice <opção1> ou <opção2>"
         description = "Escolhe uma opção das opções passadas pelo usuário."
 
     class Count(EnUsDecorators.Count):
-        helper = "Conta a quantidade de símbolos em um texto."
-        usage = "Para usar: {}count <texto>"
+        helper = "Conta a quantidade de símbolos em um texto ou em uma URL."
+        usage = "Como usar: {}count <texto> ou type:url <quantas URLs quiser>"
         description = "Conta a quantidade de símbolos em um texto."
 
     class HyperTranslate(EnUsDecorators.HyperTranslate):

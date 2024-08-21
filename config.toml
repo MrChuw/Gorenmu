@@ -52,6 +52,8 @@ namespace_general = "${REDIS_NAMESPACE}-general_requests"
 namespace_info = "${REDIS_NAMESPACE}-info_requests"
 [cache.tools_requests]
 namespace_tools = "${REDIS_NAMESPACE}-tools_requests"
+[cache.miscellaneous_requests]
+namespace_miscellaneous = "${REDIS_NAMESPACE}-miscellaneous_requests"
 
 [logger]
 format = "{time:YYYY-MM-DD HH:mm:ss} [{level}] {name} {module}.py:{line} {message}"

@@ -282,20 +282,16 @@ class EnUsTranslations:
         random_percentage: Response = Response({"success": False, "response": "{:.2f}%."})
 
     class Choice(BaseTranslation):
-        choice_separators: list[str] = ["or", ",", " "]
+        base_separators: list[str] = [",", " "]
+        choice_separators: list[str] = base_separators + ["or"]
         chosen_option: Response = Response({"success": False, "response": "{}"})
 
-
-
     class Count(BaseTranslation):
-        character_count: Response = Response(
-            {
+        character_count: Response = Response({
                 "success": False,
-                "response": "Com um total de {} caracteres. Onde {} são caracteres especiais.",
-                "response_list": [],
-                "is_response": False,
-            }
-        )
+                "response": "There is a total of {} characters. "
+                            "Of these, {} are punctuation marks, {} are uppercase letters, and {} are special characters.",
+            })
 
     class HyperTranslate(BaseTranslation):
         quantity_error: Response = Response(

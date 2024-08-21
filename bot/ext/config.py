@@ -202,6 +202,7 @@ class CacheConfig:
         self.general_namespace: str = data.get("general_requests", "main-general_requests")
         self.info_namespace: str = data.get("info_requests", "main-info_requests")
         self.tools_namespace: str = data.get("tools_requests", "main-tools_requests")
+        self.miscellaneous_namespace: str = data.get("tools_requests", "main-miscellaneous_requests")
 
 
 class Config:

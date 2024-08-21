@@ -76,13 +76,10 @@ class EnUsDecorators:
         usage = "To use: {}choice <option1> or <option2>"
         description = "Chooses an option from the options provided by the user."
 
-
-
-
     class Count(BaseDecorator, BaseClass):
-        helper = "Conta a quantidade de símbolos em um texto."
-        usage = "Para usar: {}count <texto>"
-        description = "Conta a quantidade de símbolos em um texto."
+        helper = "Counts the number of symbols in a text or a URL."
+        usage = "To use: {}count <text> or type:url <as many URLs as you want>"
+        description = "Counts the number of symbols in a text."
 
     class HyperTranslate(BaseDecorator, BaseClass):
         helper = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer que "

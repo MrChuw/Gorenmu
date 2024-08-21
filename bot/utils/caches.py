@@ -70,6 +70,7 @@ class SessionsCaches:
         self.GeneralCachedSession: SessionsCaches.GeneralCachedSession = self.GeneralCachedSession(bot)
         self.InfoCachedSession: SessionsCaches.InfoCachedSession = self.InfoCachedSession(bot)
         self.ToolsCachedSession: SessionsCaches.ToolsCachedSession = self.ToolsCachedSession(bot)
+        self.Miscellaneous: SessionsCaches.Miscellaneous = self.Miscellaneous(bot)
 
     class AdminCachedSession:
         def __init__(self, bot: Gorenmu):
@@ -198,3 +199,22 @@ class SessionsCaches:
                                                           urls_expire_after=self.urls_expire_after,
                                                           allowed_methods=self.allowed_methods, include_headers=True, )
             self.session: CachedSession = CachedSession(cache=self.cache)
+
+    class Miscellaneous:
+        def __init__(self, bot: Gorenmu):
+            self.bot = bot
+            self.urls_expire_after = {"*/*": timedelta(minutes=30)}
+            self.allowed_methods = ("GET", "HEAD", "POST")
+            if "redis" in bot.__dict__:
+                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.miscellaneous_namespace,
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods, include_headers=True)
+            else:
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-miscellaneous-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods, include_headers=True, )
+            self.session: CachedSession = CachedSession(cache=self.cache)
+
+
+
+

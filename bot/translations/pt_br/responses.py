@@ -307,20 +307,15 @@ class PtBrTranslations(EnUsTranslations):
         random_percentage: Response = Response({"success": False, "response": "{:.2f}%."})
 
     class Choice(EnUsTranslations.Choice):
-        choice_separators: list[str] = ["ou", ",", " "]
+        choice_separators: list[str] = EnUsTranslations.Choice.base_separators + ["ou"]
         chosen_option: Response = Response({"success": False, "response": "{}"})
 
-
-
     class Count(EnUsTranslations.Count):
-        character_count: Response = Response(
-            {
+        character_count: Response = Response({
                 "success": False,
-                "response": "Com um total de {} caracteres. Onde {} são caracteres especiais.",
-                "response_list": [],
-                "is_response": False,
-            }
-        )
+                "response": "Há um total de {} caracteres. "
+                            "Dentre eles, {} são pontuações, {} são letras maiúsculas e {} são caracteres especiais.",
+            })
 
     class HyperTranslate(EnUsTranslations.HyperTranslate):
         quantity_error: Response = Response(
