@@ -104,7 +104,11 @@ class BotConfig:
     def __init__(self, data: Dict[str, dict]) -> None:
         self.color: str = data.get("color", "#000000")
         self.dev_userid: str = data.get("dev_userid", "Exemple")
-        self.prefix: List[str] = prefix_generator(data.get("prefix_list", "+"))
+        self.prefix: List[str] = [data.get("default_prefix", "+")]
+        allowed_prefix: str | None = data.get("allowed_prefix_list", None)
+        if allowed_prefix:
+            self.prefix = prefix_generator(str(self.prefix) + allowed_prefix)
+        self.allowed_prefix_size: int = data.get("allowed_prefix_size", 1)
         self.site_url: str = data.get("site_url", "https://exemple.org")
         self.pastbin_url: str = data.get('pastbin_url', "https://bit.exemple.org")
         self.imagem_link_upload_thing_url: str = data.get("imagem_link_upload_thing_url", "https://uploadthing.com")

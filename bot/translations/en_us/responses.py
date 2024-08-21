@@ -71,7 +71,8 @@ class EnUsTranslations:
                     "success": True,
                     "response": "{}: {}"})
             afk_content_response: Response = Response({
-                    "success": True, "response": "{}: {} and left a note with: {}"})
+                    "success": True,
+                    "response": "{}: {} and left a note with: {}"})
 
         class IsAfk(BaseTranslation):
             bot_nick: Response = Response(

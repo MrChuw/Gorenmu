@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 mention_dict = {"en-us": "you",
                 "pt-br": "você"}
 
+
 class BaseTranslation:
     ctx: Context
 
@@ -36,3 +37,27 @@ class BaseTranslation:
                 else mention_dict[user.language]
             )
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

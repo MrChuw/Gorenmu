@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from twitchio.ext.commands import Command, Context as TwitchioContext
+from twitchio.ext.commands import Bucket
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -13,6 +13,7 @@ class BaseDecorator:
     helper: str
     usage: str
     description: str
+    dynamic_description: dict[str, str]
 
 
 class BaseClass:
@@ -36,11 +37,37 @@ class BaseClass:
         return cls.get_decorator(ctx).usage.format(ctx.prefix)
 
     @classmethod
-    def get_description(cls, ctx: Context) -> str:
+    def get_dynamic_description(cls, ctx: Context | BaseDecorator):
+        return cls.get_decorator(ctx).dynamic_description
+
+    @classmethod
+    def get_description(cls, ctx: Context | BaseDecorator) -> str:
         return cls.get_decorator(ctx).description
 
 
 class EnUsDecorators:
+    @staticmethod
+    def get_bucket_type(bucket):
+        bucket_type = "geral"
+        if bucket == Bucket.default:
+            bucket_type = "all user in all channels"
+
+        if bucket == Bucket.channel:
+            bucket_type = "all user per channel"
+
+        if bucket == Bucket.member:
+            bucket_type = "member"
+
+        if bucket == Bucket.user:
+            bucket_type = "user"
+
+        if bucket == Bucket.subscriber:
+            bucket_type = "subscriber"
+
+        if bucket == Bucket.mod:
+            bucket_type = "mod"
+        return bucket_type
+
     class IDE:
         class TypeChecking(BaseDecorator, BaseClass):
             pass
@@ -48,8 +75,18 @@ class EnUsDecorators:
     class Afk(BaseClass):
         class Afk(BaseDecorator, BaseClass):
             helper = "Command to set your status."
-            usage = "To use: {}Afk <message>"
+            usage = "How to use: {}Afk <message>"
             description = "This command sets your status to AFK."
+            dynamic_description = {
+                    "title_part1": "This command can be used",
+                    "title_part2": "again after the cooldown of",
+                    "title_part3": "for",
+                    "usage_title": "Usages:",
+                    "response_afk": "User, you went AFK: 🏃 ⌨️",
+                    "usage_title_content": "Using with text.",
+                    "usage_content": "Text you want to leave for when you return or that people will see when they use {}isafk.",
+                    "usage_response_afk_with_content": "User, you went AFK: 🏃 ⌨️ and left a note with: "
+            }
 
         class IsAfk(BaseDecorator, BaseClass):
             helper = "Type the command and the username to check if they are AFK."

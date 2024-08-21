@@ -28,10 +28,10 @@ def get_translations(command: Command):
     for lang in translations.languages:
         translation = translations.languages[lang][0]
         for name, obj in inspect.getmembers(translation):
-            if name.startswith("__"):
+            if name.startswith("__") or name in ["get_bucket_type"]:
                 continue
             for sub in dir(obj):
-                if sub in ["usage", "helper", "description"]:
+                if sub in ["usage", "helper", "description", "get_bucket_type"]:
                     continue
                 if sub.startswith("__") or sub.startswith("get_"):
                     continue
@@ -91,6 +91,9 @@ class CommandHandler:
                 module: types.ModuleType = import_module(name, package=package)
                 command: Command = module.command
                 command = get_translations(command)
+                if "afk" in filename.name:  # TODO: Delete
+                    teste = module.dynamic_description(bot, command)
+                    ...
                 if "disabled" in module.__dict__:
                     continue
                 if command.name not in bot.commands:

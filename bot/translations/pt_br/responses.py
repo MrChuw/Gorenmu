@@ -59,8 +59,9 @@ class PtBrTranslations(EnUsTranslations):
         afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
         class Afk(EnUsTranslations.Afk.Afk):
-            message_too_long: Response = Response(
-                {"success": False, "response": "Esta mensagem é muito longa."})
+            message_too_long: Response = Response({
+                    "success": False,
+                    "response": "Esta mensagem é muito longa."})
             afk_response: Response = Response({"success": True, "response": "{}: {}"})
             afk_content_response: Response = Response(
                 {"success": True, "response": "{}: {} e deixou uma nota com: {}"})

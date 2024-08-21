@@ -167,15 +167,14 @@ class Gorenmu(Bot):
         self.loop.create_task(self.connect(), name="IRC connect")
         self.loop.create_task(self.MarkovProcessor.process_message(), name="process_message")
         self.loop.run_until_complete(self.after_connect())
+        CommandHandler.load_cogs(self)
 
-    def stop(self) -> None:
-        ...
+
 
     async def event_ready(self) -> None:  # Load de comando está desativado.
         self.restart += 1
         if self.restart > 1:
             os.execv(sys.executable, ["python3.10"] + sys.argv)
-        CommandHandler.load_cogs(self)
         self.dev_name = (await self.fetch_users(ids=[self.config.BotConfig.dev_userid]))[0].display_name
         await self.join_channels([self.dev_name])
         await asyncio.sleep(1)

@@ -6,7 +6,9 @@ development = true
 [bot]
 color = 0x9147FF
 dev_userid = 411010313
-prefix_list = "!\"#$%&'()*+,-./:;<=>?@[]^_`{|}~"
+default_prefix = "+"
+allowed_prefix_list = false
+allowed_prefix_size = 10
 site_url = "https://gorenmu.vercel.app/"
 imgur_authorized_ids = [184900613, 411010313]
 

@@ -7,7 +7,7 @@ from typing import Callable, TYPE_CHECKING
 from twitchio import Channel, Message, User
 from twitchio.ext.commands import (
     BadArgument, Bot, Bucket, Cog, Command, Context as TwitchioContext, cooldown,
-    MissingRequiredArgument, command
+    MissingRequiredArgument, command, Cooldown
 )
 from twitchio.ext.routines import routine
 
@@ -33,8 +33,9 @@ __all__ = (
 
 
 class Command(Command):
-    decorators: dict[str, EnUsDecorators | BaseClass]
+    decorators: dict[str, EnUsDecorators | BaseClass | BaseDecorator]
     decorators_original: EnUsDecorators | BaseClass
+    _cooldowns: Cooldown
 
 
 class Bot(Bot):
@@ -163,6 +164,7 @@ class Bot(Bot):
         context = cls(message=message, bot=self, prefix=prefix, command=command_, valid=True, view=view)
 
         return context
+
 
 class Context(TwitchioContext):
     user: UserModel

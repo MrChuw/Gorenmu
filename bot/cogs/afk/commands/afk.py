@@ -5,7 +5,7 @@ from bot.bot import Gorenmu
 from bot.models import User, Channel, Status
 from bot.utils import Check, Role
 from typing import Dict, Any, List, Tuple, Optional, Coroutine, Callable
-from bot.ext.commands import Bucket, check, Context, cooldown, base_decorator, helper, usage, command
+from bot.ext.commands import Bucket, check, Context, cooldown, base_decorator, helper, usage, command, Command
 from bot.translations import EnUsTranslations, EnUsDecorators, Response
 from bot.translations.en_us.extras import Activity
 from bot.utils import StringTools
@@ -97,3 +97,66 @@ async def go_rafk(afk, ctx):
     user_status.message = afk["content"]
     user_status.updated_at = datetime.datetime.fromisoformat(afk["updated_at"])
     await user_status.save()
+
+
+def get_value_or_fallback(description: dict, fallback: dict, key: str):
+    return description.get(key, fallback.get(key))
+
+
+def dynamic_description(bot: Gorenmu, command_: Command):
+    respostas: dict[str, str] = {}
+    cooldown_ = command_._cooldowns[0]  # NOQA
+    per = cooldown_._per  # NOQA
+    rate = cooldown_._rate  # NOQA
+    prefix = bot.config.BotConfig.prefix[0]
+    decorator_fallback = command_.decorators["en-us"]
+    dynamic_description_fallback = decorator_fallback.Afk.get_dynamic_description(decorator_fallback)
+    for lang in command_.decorators:
+        decorator = command_.decorators[lang]
+        description = decorator.Afk.get_description(decorator)
+        base_decorators = bot.TranslationManager.get_decorator(lang)
+        cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
+        dynamic_description = decorator.Afk.get_dynamic_description(decorator)
+        ...
+        # TODO: maybe make as a class so has a native fallback to en-us,
+        #  but making this way i have to maintain more 2 class of translations.
+        title_part1 = get_value_or_fallback(dynamic_description, dynamic_description_fallback, "title_part1")
+        title_part2 = get_value_or_fallback(dynamic_description, dynamic_description_fallback, "title_part2")
+        title_part3 = get_value_or_fallback(dynamic_description, dynamic_description_fallback, "title_part3")
+        usage_title = get_value_or_fallback(dynamic_description, dynamic_description_fallback, "usage_title")
+        response_afk = get_value_or_fallback(dynamic_description, dynamic_description_fallback, "response_afk")
+        usage_title_content = "Usando com conteúdo." "{}afk " + f'{"a" * 451}'
+        usage_content = "Texto que vc quer deixar para quando voltar"
+        usage_response_afk_with_content = f"user você ficou ausente: 🏃 ⌨️ e deixou uma nota com: "
+        template_afk = f"""
+        # {title_part1} {rate}x {title_part2} {per} {title_part3} {cooldown_type}
+
+        {description}
+
+        {usage_title}
+        ```text
+        user: {prefix}afk
+
+        bot: {response_afk}
+        ```
+        {usage_title_content}
+        ```text
+        user: {prefix}afk {usage_content}
+
+        bot: {usage_response_afk_with_content} {usage_content}
+        ```
+        """
+        respostas['afk'] = template_afk
+    ...
+
+
+
+
+
+
+
+
+
+
+
+

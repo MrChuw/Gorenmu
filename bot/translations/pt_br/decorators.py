@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 from bot.translations import EnUsDecorators
+from twitchio.ext.commands import Bucket
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -10,11 +11,43 @@ if TYPE_CHECKING:
 
 
 class PtBrDecorators(EnUsDecorators):
+    @staticmethod
+    def get_bucket_type(bucket):
+        bucket_type = "geral"
+        if bucket == Bucket.default:
+            bucket_type = "all user in all channels"
+
+        if bucket == Bucket.channel:
+            bucket_type = "all user per channel"
+
+        if bucket == Bucket.member:
+            bucket_type = "member"
+
+        if bucket == Bucket.user:
+            bucket_type = "user"
+
+        if bucket == Bucket.subscriber:
+            bucket_type = "subscriber"
+
+        if bucket == Bucket.mod:
+            bucket_type = "mod"
+        return bucket_type
+
     class Afk(EnUsDecorators.Afk):
         class Afk(EnUsDecorators.Afk.Afk):
-            helper = "Comando para entrar em um Status."
-            usage = "Para usar: {}Afk <mensagem>"
+            helper = "Comando para entrar em um status."
+            usage = "Como usar: {}Afk <mensagem>"
             description = "Este comando define seu status como AFK."
+            dynamic_description = {
+                    "title_part1": "Este comando pode ser usado",
+                    "title_part2": "em seguida com o cooldown de",
+                    "title_part3": "por",
+                    "usage_title": "Usagens:",
+                    "response_afk": "Usuário, você ficou ausente: 🏃 ⌨️",
+                    "usage_title_content": "Usando com texto.",
+                    "usage_content": "Texto que você quer deixar para quando voltar ou que as pessoas verão ao usar o {}isafk.",
+                    "usage_response_afk_with_content": "Usuário, você ficou ausente: 🏃 ⌨️ e deixou uma nota com: "
+            }
 
         class IsAfk(EnUsDecorators.Afk.IsAfk):
             helper = "Digite o comando e o nome do usuário para saber se ele está AFK"
