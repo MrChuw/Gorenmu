@@ -135,7 +135,7 @@ class ApisConfig:
 
 
 class DatabaseConfig:
-    def __init__(self, data: Dict[str, dict]) -> None:
+    def __init__(self, data: Dict[str, dict], mock: bool) -> None:
         db_type = data.get("type", "sqlite")
         try:
             self.type: DatabaseType = DatabaseType(db_type)
@@ -152,21 +152,22 @@ class DatabaseConfig:
             self.database_dir: str = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
             self.database_file: str = os.path.join(self.database_dir, "db.sqlite3")
             self.database_uri: str = f"sqlite://{self.database_file}"
-        if self.type is DatabaseType.MEMORY:
-            self.database_uri: str = "sqlite://:memory:"
+        elif self.type is (DatabaseType.MARIA_DB or DatabaseType.MYSQL):
+            self.database_uri = "mysql"
+        elif self.type is DatabaseType.POSTGRESQL:
+            self.database_uri = "asyncpg"
         else:
-            if self.type.value in ["mysql", "mariadb"]:
-                self.database_uri = "mysql"
-            elif self.type is DatabaseType.POSTGRESQL:
-                self.database_uri = "asyncpg"
-            else:
-                self.database_dir: str = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-                self.database_file: str = os.path.join(self.database_dir, "db.sqlite3")
-                self.database_uri: str = f"sqlite://{self.database_file}"
-            if self.type.value in ["mysql", "mariadb", "postgres"]:
-                self.database_uri = (f"{self.database_uri}://"
-                                     f"{self.login}:{self.password}@"
-                                     f"{self.host}:{self.port}/{self.name}")
+            self.database_dir: str = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+            self.database_file: str = os.path.join(self.database_dir, "db.sqlite3")
+            self.database_uri: str = f"sqlite://{self.database_file}"
+
+        if self.type in [DatabaseType.POSTGRESQL, DatabaseType.MARIA_DB, DatabaseType.MYSQL]:
+            self.database_uri = (f"{self.database_uri}://"
+                                 f"{self.login}:{self.password}@"
+                                 f"{self.host}:{self.port}/{self.name}")
+
+        if self.type is DatabaseType.MEMORY or mock:
+            self.database_uri: str = "sqlite://:memory:"
 
         self.DB_CONFIG = {"connections": {"default": self.database_uri
                                           }, "apps": {"models": {"models": ["bot.models"], "default_connection": "default",
@@ -213,12 +214,12 @@ class CacheConfig:
 
 
 class Config:
-    def __init__(self, config) -> None:
+    def __init__(self, config, mock: bool = False) -> None:
         config = load_config(config)
         self.stage = config.get("stage", "dev")
         self.version = config.get("version", "1.0.0")
         self.BotConfig = BotConfig(config["bot"])
-        self.DatabaseConfig = DatabaseConfig(config["database"])
+        self.DatabaseConfig = DatabaseConfig(config["database"], mock)
         self.LoggerConfig = LoggerConfig(config["logger"])
         self.ApisConfig = ApisConfig(config["apis"])
         self.CacheConfig = CacheConfig(config["cache"])

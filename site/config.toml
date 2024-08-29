@@ -1,0 +1,64 @@
+version = "2.0.0"
+
+[development]
+development = true
+
+[bot]
+color = 0x9147FF
+dev_userid = 411010313
+default_prefix = "+"
+allowed_prefix_list = false
+allowed_prefix_size = 10
+site_url = "https://gorenmu.vercel.app/"
+imgur_authorized_ids = [184900613, 411010313]
+
+[apis]
+imagem_link_upload_thing_url = "${IMAGEM_LINK_UPLOAD_THING_URL}"
+site_api_key = "${SITE_API_KEY}"
+shlink_key = "${SHLINK_KEY}"
+shlink_url = "${SHLINK_URL}"
+access_token = "${ACCESS_TOKEN}"
+access_oauth_token = "${ACCESS_OAUTH_TOKEN}"
+refresh_token = "${REFRESH_TOKEN}"
+client_id = "${CLIENT_ID}"
+api_client_secret = "${API_CLIENT_SECRET}"
+api_client_id = "${API_CLIENT_ID}"
+pastbin_url="https://bin.mrchuw.com.br/documents"
+file_upload_url = "${FILE_UPLOAD_URL}"
+
+[database]
+type = "memory"
+login = "${DB_LOGIN}"
+password = "${DB_PASSWORD}"
+host = "127.0.0.1"
+port = 3307
+name = "${DB_NAME}"
+
+[cache]
+type = "valkey"
+host = "${REDIS_HOST}"
+port = "${REDIS_PORT}"
+password = "${REDIS_PASSWORD}"
+namespace = "${REDIS_NAMESPACE}"
+db = "${REDIS_DB}"
+
+[cache.admin_requests]
+namespace_admin = "${REDIS_NAMESPACE}-admin_requests"
+[cache.booru_requests]
+namespace_booru = "${REDIS_NAMESPACE}-booru_requests"
+[cache.random_requests]
+namespace_random = "${REDIS_NAMESPACE}-random_requests"
+[cache.general_requests]
+namespace_general = "${REDIS_NAMESPACE}-general_requests"
+[cache.info_requests]
+namespace_info = "${REDIS_NAMESPACE}-info_requests"
+[cache.tools_requests]
+namespace_tools = "${REDIS_NAMESPACE}-tools_requests"
+[cache.count_requests]
+namespace_miscellaneous = "${REDIS_NAMESPACE}-count_requests"
+
+[logger]
+format = "{time:YYYY-MM-DD HH:mm:ss} [{level}] {name} {module}.py:{line} {message}"
+level = "INFO"
+enqueue = true
+colorize = true

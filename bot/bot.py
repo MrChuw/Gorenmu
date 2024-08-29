@@ -37,7 +37,7 @@ class Gorenmu(Bot):
     def __init__(self, configs: Config, case_insensitive: bool, retain_cache: bool, log: logger) -> None:
         super().__init__(token=configs.ApisConfig.access_token, client_id=configs.ApisConfig.client_id,
                          client_secret=configs.ApisConfig.api_client_secret, prefix=configs.BotConfig.prefix,
-                         case_insensitive=case_insensitive, retain_cache=retain_cache, )
+                         case_insensitive=case_insensitive, retain_cache=retain_cache)
         self.log: Logger = log
         self.config: Config = configs
         self.cache: RedisCache | MemcachedCache | SimpleMemoryCache = Cache.cache_load(self)
