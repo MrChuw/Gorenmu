@@ -6,8 +6,8 @@ if TYPE_CHECKING:
     from bot.ext.commands import Context
     from bot.models import User
 
-mention_dict = {"en-us": "you",
-                "pt-br": "você"}
+mention_dict = {"en": "you",
+                "pt_br": "você"}
 
 
 class BaseTranslation:
@@ -21,7 +21,7 @@ class BaseTranslation:
             mention_dict[user.language] if user.name == ctx.author.name else f"@{name}"
         )
         # if user.language is not None:
-        #     pass  # if user.language == "pt-br":
+        #     pass  # if user.language == "pt_br":
         #     return "você" if user.name == ctx.author.name else f"@{name}"
         # if user.language == "en-us":
         #     return "you" if user.name == ctx.author.name else f"@{name}"

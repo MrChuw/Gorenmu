@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from twitchio.ext.commands import Bucket
+from textwrap import dedent
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -13,7 +14,7 @@ class BaseDecorator:
     helper: str
     usage: str
     description: str
-    dynamic_description: dict[str, str]
+    template: str
 
 
 class BaseClass:
@@ -45,7 +46,7 @@ class BaseClass:
         return cls.get_decorator(ctx).description
 
 
-class EnUsDecorators:
+class EnDecorators:
     @staticmethod
     def get_bucket_type(bucket):
         bucket_type = "geral"
@@ -68,55 +69,301 @@ class EnUsDecorators:
             bucket_type = "mod"
         return bucket_type
 
-    class IDE:
-        class TypeChecking(BaseDecorator, BaseClass):
-            pass
+    class TypeChecking(BaseDecorator, BaseClass):
+        pass
+
+    class Admin(BaseClass):
+        class Nada(BaseDecorator, BaseClass):
+            helper = "This command is used for testing."
+            usage = "How to use: {}nada <text>"
+            description = "This command is used for testing."
+            extras = ""
+            template = dedent("""
+            # {command_title}
+            
+            # This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
+            
+            {description}
+               
+            ## The way to use this command are always changing.
+            
+            """)  # NOQA
+
+        class Reload(BaseDecorator, BaseClass):
+            helper = "Reloads the commands."
+            usage = "How to use: {}reload"
+            description = ("This command is used to reload all bot commands. "
+                           "If any have been updated and don't require a full restart.")
+            extras = ""
+            template = dedent("""
+            # {command_title}
+        
+            # This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
+        
+            {description}
+        
+            ## The way to use this command is:
+        
+            Just the command:
+            ```text
+            user: {prefix}{command_name}
+        
+            bot: User, the commands have been successfully reloaded.
+            ```
+            """)  # NOQA
+
 
     class Afk(BaseClass):
         class Afk(BaseDecorator, BaseClass):
             helper = "Command to set your status."
             usage = "How to use: {}Afk <message>"
             description = "This command sets your status to AFK."
-            dynamic_description = {
-                    "title_part1": "This command can be used",
-                    "title_part2": "again after the cooldown of",
-                    "title_part3": "for",
-                    "usage_title": "Usages:",
-                    "response_afk": "User, you went AFK: 🏃 ⌨️",
-                    "usage_title_content": "Using with text.",
-                    "usage_content": "Text you want to leave for when you return or that people will see when they use {}isafk.",
-                    "usage_response_afk_with_content": "User, you went AFK: 🏃 ⌨️ and left a note with: "
-            }
+            extras = ""
+            template: str = dedent("""
+            # {command_title}
+
+            ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
+            
+            {description}
+            
+            ## All the alias available for AFK are:
+                - {aliases}
+            
+            ## The ways to use this command are:
+            Only the command:
+            ```text
+            user: {prefix}{command_name}
+    
+            bot: User, you went AFK: 🏃 ⌨️
+            ```
+            Command with a message:
+            ```text
+            user: {prefix}{command_name} Text you want to leave for when you return or that people will see when they use {prefix}isafk.
+    
+            bot: User, you went AFK: 🏃 ⌨️ and left a note with: Text you want to leave for when you return or that people will see when they use {prefix}isafk.
+            ```
+            !!! warning "Maximum length!"
+
+                The message could not be longer than 450 characters, if it is longer, an error will be returned.
+            """)  # NOQA
 
         class IsAfk(BaseDecorator, BaseClass):
-            helper = "Type the command and the username to check if they are AFK."
-            usage = "To use: {}IsAfk <username>"
+            helper = "Type the command and the user's name to see if they are AFK."
+            usage = "How to use: {}IsAfk <username>"
             description = "This command checks if a user is AFK or not."
+            extras = ""
+            template = dedent("""
+            # {command_title}
+        
+            ## This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
+            
+            {description}
+            
+            ## The ways to use this command are:
+            
+            ```text
+            user: {prefix}{command_name} user2
+        
+            bot: User, @user2 is not AFK.
+            ```
+
+            ```text
+            user: {prefix}{command_name} user3
+        
+            bot: User, @user3 is AFK.
+            ```
+
+            ```text
+            user: {prefix}{command_name} user4
+        
+            bot: User, @user4 is AFK and left a note: <message>
+            ```
+            """)  # NOQA
 
         class RAfk(BaseDecorator, BaseClass):
             helper = "Return to AFK status."
             usage = "To use: {}rafk"
             description = "This command is used to return to AFK status."
+            extras = ""
+            template = dedent("""
+            # {command_title}
+            
+            ## This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
+            
+            {description}
+            
+            ## All available aliases for {command_name} are:
+                - {aliases}
+            
+            ## The ways to use this command are:
+            
+            Just the command:
+            ```text
+            user: {prefix}{command_name}
+            
+            bot: User, @user2 you remained AFK: 🏃 ⌨️
+            ```
+        
+            Command with a message:
+            ```text
+            user: {prefix}{command_name} <message>
+            
+            bot: User, @user2 you remained AFK: 🏃 ⌨️ and left a note: <message>
+            ```
+            
+            !!! warning "Maximum Length!"
+            
+                From the moment you send a message in the chat, you have 2 minutes to return to AFK status. 
+            """)  # NOQA
 
     class Alias(BaseDecorator, BaseClass):
         helper = "Command used to manage aliases."
         usage = "To use: {}alias add|check|copy|describe|edit|link|remove|rename <options>"
-        description = "Command used to manage aliases."
+        description = dedent("""
+        This command manages custom aliases for commands. With it, you can:
+
+         - Add a new alias for an existing command.
+         - Check or list existing aliases.
+         - Copy aliases from another user.
+         - Describe an alias with a custom description.
+         - Edit an existing alias, updating the associated command.
+         - Link an alias to another alias or create an alias based on an existing alias.
+         - Remove an alias.
+         - Rename an alias.
+        
+        Use the command followed by an action (add, check, copy, describe, edit, link, remove, rename) to perform the desired task.
+        """)  # NOQA # TODO: Fazer o templeta do alias
+        extras = ""
+        template: str = dedent("""
+        # {command_title}
+        
+        ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
+        
+        {description}
+        
+        ## The ways to use this command are:
+
+        ```text
+        user: {prefix}{command_name}
+        
+        bot: User, 
+        ```
+        !!! warning "Maximum length!"
+        
+            The message could not be longer than 450 characters, if it is longer, an error will be returned.
+        """)  # NOQA
 
     class Chance(BaseDecorator, BaseClass):
         helper = "Returns a random percentage."
         usage = "To use: {}chance"
-        description = "Returns a random percentage."
+        description = ("This command generates and returns a random percentage, "
+                       "representing a chance between 0% and 100%.")
+        extras = ""
+        template: str = dedent("""
+        # {command_title}
+        
+        ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
+        
+        {description}
+        
+        ## All the alias available for AFK are:
+            - {aliases}
+        
+        ## The ways to use this command are:
+
+        ```text
+        user: {prefix}{command_name}
+        
+        bot: User, 34%
+        """)  # NOQA
 
     class Choice(BaseDecorator, BaseClass):
         helper = "Chooses an option from the options provided by the user."
         usage = "To use: {}choice <option1> or <option2>"
         description = "Chooses an option from the options provided by the user."
+        extras = ""
+        template: str = dedent("""
+        # {command_title}
+        
+        ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
+        
+        {description}
+        
+        ## All the alias available for AFK are:
+            - {aliases}
+        
+        ## The ways to use this command are:
+        
+        ```text
+        user: {prefix}{command_name} dice or house or coin
+        
+        bot: User, house
+        ```
+        ```text
+        user: {prefix}{command_name} dice house coin
+        
+        bot: User, dice
+        ```
+        ```text
+        user: {prefix}{command_name} dice, house, coin
+        
+        bot: User, coin
+        ```
+        """)  # NOQA
 
     class Count(BaseDecorator, BaseClass):
         helper = "Counts the number of symbols in a text or a URL."
         usage = "To use: {}count <text> or type:url <as many URLs as you want>"
-        description = "Counts the number of symbols in a text."
+        description = ("This command can count the number of characters, uppercase letters, punctuation marks, "
+                       "and special characters in a text or the content of a URL. "
+                       "If you provide a link and the tag `type:url`, the command fetches the page's "
+                       "content and performs the count based on what it finds. "
+                       "And it will cache the page content for 30 minutes (thirty minutes).")
+        extras = ""
+        template: str = dedent("""
+        # {command_title}
+        
+        ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
+        
+        {description}
+        
+        ## The ways to use this command are:
+        ```text
+        user: {prefix}{command_name} some nice text! with some 😄 caracteres, spacial!
+        
+        bot: User, There is a total of 48 characters. Of these, 3 are punctuation marks, 0 are uppercase letters, and 1 are special characters.
+        ```
+        ```text
+        user: {prefix}{command_name} https://example.com/
+        
+        bot: User, There is a total of 20 characters. Of these, 5 are punctuation marks, 0 are uppercase letters, and 0 are special characters.
+        ```
+        This command can also be used to calculate the number of characters in the content of one or more links:
+        
+        ```text
+        user: {prefix}{command_name} type:url https://example.com/
+        
+        bot: User, There is a total of 1257 characters. Of these, 188 are punctuation marks, 21 are uppercase letters, and 0 are special characters.
+        ```
+        ```text
+        user: {prefix}{command_name} type:url https://example.com/ https://example.org/
+        
+        bot: User, There is a total of 2514 characters. Of these, 376 are punctuation marks, 42 are uppercase letters, and 0 are special characters.
+        ```
+        """)  # NOQA
+
+    decorators = {
+            'afk': Afk,
+            'isafk': Afk,
+            'rafk': Afk,
+            'alias': Alias,
+            'chance': Chance,
+            'choice': Choice,
+            'count': Count,
+
+            'nada': Admin.Nada,
+            'reload': Admin.Reload,
+    }
 
     class HyperTranslate(BaseDecorator, BaseClass):
         helper = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer que "
@@ -599,7 +846,7 @@ class EnUsDecorators:
 
 
 
-    class Admin(BaseClass):
+    class AdminOld(BaseClass):
         class AddUser(BaseDecorator, BaseClass):
             helper = "Adiciona um usuário"
             usage = "Para usar: {}add_user <nome do usuário>"
@@ -660,16 +907,6 @@ class EnUsDecorators:
             helper = "Inicia um sorteio."
             usage = "Para usar: {}lottery_start <tempo ate o final da loteria> <quantidade que a casa vai colocar>"
             description = "Inicia um sorteio."
-
-        class Nada(BaseDecorator, BaseClass):
-            helper = "Nada."
-            usage = "Para usar: {}nada asfasfasfasfasdfasf"
-            description = "Nada."
-
-        class Reload(BaseDecorator, BaseClass):
-            helper = "Recarrega os comandos."
-            usage = "Para usar: {}reload"
-            description = "Recarrega os comandos."
 
         class Restart(BaseDecorator, BaseClass):
             helper = "Reinicia o bot."

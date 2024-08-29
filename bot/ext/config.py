@@ -75,6 +75,7 @@ class DatabaseType(Enum):
     MYSQL = "mysql"
     MARIA_DB = "mariadb"
     POSTGRESQL = "postgres"
+    MEMORY = "memory"
 
 
 class CacheType(Enum):
@@ -147,14 +148,16 @@ class DatabaseConfig:
         self.port: int = data.get("port", 3306)
         self.name: str = data.get("name", "gorenmu")
 
-        if self.type == "sqlite":
+        if self.type is DatabaseType.SQLITE:
             self.database_dir: str = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
             self.database_file: str = os.path.join(self.database_dir, "db.sqlite3")
             self.database_uri: str = f"sqlite://{self.database_file}"
+        if self.type is DatabaseType.MEMORY:
+            self.database_uri: str = "sqlite://:memory:"
         else:
             if self.type.value in ["mysql", "mariadb"]:
                 self.database_uri = "mysql"
-            elif self.type.value == "postgres":
+            elif self.type is DatabaseType.POSTGRESQL:
                 self.database_uri = "asyncpg"
             else:
                 self.database_dir: str = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -199,20 +202,19 @@ class CacheConfig:
         self.port: int = data.get("port", 6379)
         self.password: str = data.get("password", "root")
         self.namespace: str = data.get("namespace", "gorenmu")
-
+        # TODO: Mudar como o namespace funciona
         self.admin_namespace: str = data.get("admin_requests", "main-admin_requests")
         self.booru_namespace: str = data.get("booru_requests", "main-booru_requests")
         self.random_namespace: str = data.get("random_requests", "main-random_requests")
         self.general_namespace: str = data.get("general_requests", "main-general_requests")
         self.info_namespace: str = data.get("info_requests", "main-info_requests")
         self.tools_namespace: str = data.get("tools_requests", "main-tools_requests")
-        self.miscellaneous_namespace: str = data.get("tools_requests", "main-miscellaneous_requests")
+        self.miscellaneous_namespace: str = data.get("tools_requests", "main-count_requests")
 
 
 class Config:
     def __init__(self, config) -> None:
-        with open(config) as f:
-            config = load_config('config.toml')
+        config = load_config(config)
         self.stage = config.get("stage", "dev")
         self.version = config.get("version", "1.0.0")
         self.BotConfig = BotConfig(config["bot"])

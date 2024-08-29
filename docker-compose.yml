@@ -13,7 +13,7 @@ services:
     ports:
       - 3307:3306
     networks:
-    - grafana-prometheus_monitor-net
+      - grafana-prometheus_monitor-net
     restart: always
 
   Gorenmu_cache:

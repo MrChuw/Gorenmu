@@ -100,10 +100,10 @@ class Gorenmu(Bot):
                         users[users.index(user_db.name)] = user_db.name
 
                 await self.join_channels(disconnected_channels)
+                await asyncio.sleep(1)
             except Exception as e:
                 self.log.error(e)
 
-            await asyncio.sleep(1)
             disconnected_channels = [channel for channel in self.channels.keys() if channel not in connected_channels]
             for channel in disconnected_channels:
                 await asyncio.sleep(0.5)
@@ -116,6 +116,11 @@ class Gorenmu(Bot):
                     self.reconnection_attempts[channel] += 1
                 else:
                     self.reconnection_attempts[channel] = 1
+
+                if self.reconnection_attempts[channel] == 9:
+                    self.log.warning(f"last attempt to try to connect to the #{channel} channel.")
+                    user = await self.fetch_users(names=[channel])
+                    await self.join_channels(channels=[user.name])
 
                 if self.reconnection_attempts[channel] >= 10:
                     self.log.warning(f"Failed to connect to #{channel} after {self.max_attempts} attempts. "
@@ -151,6 +156,9 @@ class Gorenmu(Bot):
         await Tortoise.init(config=self.config.DatabaseConfig.DB_CONFIG)
         await Tortoise.generate_schemas()
 
+    async  def close_db(self) -> None:
+        await Tortoise.close_connections()
+
     async def before_close(self) -> None:
         self.check_channels.stop()
 
@@ -167,7 +175,12 @@ class Gorenmu(Bot):
         self.loop.create_task(self.connect(), name="IRC connect")
         self.loop.create_task(self.MarkovProcessor.process_message(), name="process_message")
         self.loop.run_until_complete(self.after_connect())
-        CommandHandler.load_cogs(self)
+        CommandHandler.load_cogs(self, "bot/cogs")
+
+    def stop(self) -> None:
+        self.loop.run_until_complete(self.close_db())
+        self.loop.run_until_complete(self.before_close())
+        self.loop.run_until_complete(self.SessionsCaches.close_all_sessions())
 
 
 
@@ -197,7 +210,7 @@ class Gorenmu(Bot):
         # TODO: Ativar de novo o develop.
         # if self.config.DevelopmentConfig.development:
         #     return None
-        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "en-us")
+        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "en")
         translations = ctx.translations.Exceptions.BotMainLoopExceptions()
         if isinstance(error, CommandNotFound):
             return None
@@ -289,6 +302,42 @@ class Gorenmu(Bot):
                                                  .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))
             except Exception as error:
                 self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
+
+
+    async def event_error(self, error: Exception, data: str = None) -> None:
+        # Erros a partir do twitchio.
+        if data is not None:
+            self.log.error(data, exc_info=error)
+        self.log.error(error.args, exc_info=error)
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

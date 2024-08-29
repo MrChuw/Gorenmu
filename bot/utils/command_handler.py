@@ -11,9 +11,7 @@ from loguru import logger
 from twitchio.ext.commands import Bucket
 from twitchio.ext.routines import Routine
 from bot.translations import TranslationManager
-import inspect
-from bot.translations.en_us.decorators import BaseDecorator
-import copy
+from bot.translations.en.decorators import BaseDecorator
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -27,21 +25,10 @@ def get_translations(command: Command):
     translations_decorators = {}
     for lang in translations.languages:
         translation = translations.languages[lang][0]
-        for name, obj in inspect.getmembers(translation):
-            if name.startswith("__") or name in ["get_bucket_type"]:
-                continue
-            for sub in dir(obj):
-                if sub in ["usage", "helper", "description", "get_bucket_type"]:
-                    continue
-                if sub.startswith("__") or sub.startswith("get_"):
-                    continue
-                attr = getattr(obj, sub)
-                if issubclass(attr, command.decorators_original) or issubclass(command.decorators_original, attr):
-                    translations_decorators[lang] = attr
-                    break
-            if issubclass(obj, command.decorators_original) or issubclass(command.decorators_original, obj):
-                translations_decorators[lang] = obj
-                break
+        if command.name.lower() in translation.decorators:
+            translations_decorators[lang] = translation.decorators[command.name.lower()]
+        else:
+            translations_decorators[lang] = translations.languages["en"][0].decorators[command.name.lower()]
     command.decorators = translations_decorators
     return command
 
@@ -91,9 +78,7 @@ class CommandHandler:
                 module: types.ModuleType = import_module(name, package=package)
                 command: Command = module.command
                 command = get_translations(command)
-                if "afk" in filename.name:  # TODO: Delete
-                    teste = module.dynamic_description(bot, command)
-                    ...
+                command.docs = module.dynamic_description(command, bot)
                 if "disabled" in module.__dict__:
                     continue
                 if command.name not in bot.commands:
@@ -141,7 +126,7 @@ class CommandHandler:
                 logger.error(f"Routine '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     @staticmethod
-    def load_cogs(bot: Gorenmu, base: str = "bot/cogs") -> None:
+    def load_cogs(bot: Gorenmu, base: str) -> None:
         global_checks = [Check.online, Check.enabled, Check.banword]
         [bot.check(check) for check in global_checks]
         cogs = pathlib.Path(base)
@@ -184,5 +169,5 @@ class CommandHandler:
     def load_language(ctx: Context):
         channel = ctx.channel.name
         channel = ctx.bot.channels[channel]
-        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or channel.language or "en-us")
-        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or channel.language or "en-us")
+        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or channel.language or "en")
+        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or channel.language or "en")

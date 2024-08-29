@@ -1,25 +1,25 @@
 # translations/__init__.py
-from bot.translations.en_us import EnUsDecorators, EnUsTranslations, Response, BaseClass
+from bot.translations.en import EnDecorators, EnTranslations, Response, BaseClass
 from bot.translations.pt_br import PtBrDecorators, PtBrTranslations
 
 
 class TranslationManager:
     def __init__(self):
         self.languages = {
-            "en-us": (EnUsDecorators, EnUsTranslations),
-            "pt-br": (PtBrDecorators, PtBrTranslations),
+            "en": (EnDecorators, EnTranslations),
+            "pt_br": (PtBrDecorators, PtBrTranslations),
         }
-        self.default_language = "en-us"
+        self.default_language = "en"
 
-    def get_decorators(self, language: str) -> EnUsDecorators:
+    def get_decorators(self, language: str) -> EnDecorators:
         return self.languages.get(language, self.languages[self.default_language])[0]
 
-    def get_translation(self, language: str, key: str) -> EnUsTranslations:
+    def get_translation(self, language: str, key: str) -> EnTranslations:
         translation_class = self.languages.get(language, self.languages[self.default_language])[1]
         return getattr(translation_class, key, key)
 
-    def get_decorator(self, language: str) -> EnUsDecorators:
+    def get_decorator(self, language: str) -> EnDecorators:
         return self.get_decorators(language)
 
-    def get_translations(self, language: str) -> EnUsTranslations:
+    def get_translations(self, language: str) -> EnTranslations:
         return self.languages.get(language, self.languages[self.default_language])[1]

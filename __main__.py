@@ -17,7 +17,6 @@ __license__ = ""
 __copyright__ = ""
 __version__ = Configs.version
 
-# log = log(Configs.LoggerConfig)  # FIXME: Ver pq o logger não está formatando direito as mensagens.
 log = logger
 
 if __name__ == "__main__":

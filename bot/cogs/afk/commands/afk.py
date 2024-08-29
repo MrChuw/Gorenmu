@@ -6,17 +6,17 @@ from bot.models import User, Channel, Status
 from bot.utils import Check, Role
 from typing import Dict, Any, List, Tuple, Optional, Coroutine, Callable
 from bot.ext.commands import Bucket, check, Context, cooldown, base_decorator, helper, usage, command, Command
-from bot.translations import EnUsTranslations, EnUsDecorators, Response
-from bot.translations.en_us.extras import Activity
+from bot.translations import EnTranslations, EnDecorators, Response
+from bot.translations.en.extras import Activity
 from bot.utils import StringTools
-
+from textwrap import dedent
 
 afk_alias = [s for s in Activity().afks if s != "afk"]
 rafk_alias = ["rafk"] + [f"r{s}" for s in Activity.afks if s != "afk"]
 aliasas = afk_alias + rafk_alias + ["isafk"]
 
 
-@base_decorator(EnUsDecorators.Afk)
+@base_decorator(EnDecorators.Afk)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name="afk", aliases=aliasas)
@@ -99,55 +99,60 @@ async def go_rafk(afk, ctx):
     await user_status.save()
 
 
-def get_value_or_fallback(description: dict, fallback: dict, key: str):
-    return description.get(key, fallback.get(key))
-
-
-def dynamic_description(bot: Gorenmu, command_: Command):
-    respostas: dict[str, str] = {}
+def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) -> dict[str, dict[str, str]]:
+    responses: dict[str, dict[str, str]] = {}
     cooldown_ = command_._cooldowns[0]  # NOQA
     per = cooldown_._per  # NOQA
     rate = cooldown_._rate  # NOQA
-    prefix = bot.config.BotConfig.prefix[0]
-    decorator_fallback = command_.decorators["en-us"]
-    dynamic_description_fallback = decorator_fallback.Afk.get_dynamic_description(decorator_fallback)
+    prefix = ctx.prefix if ctx else bot.config.BotConfig.prefix[0]
     for lang in command_.decorators:
-        decorator = command_.decorators[lang]
-        description = decorator.Afk.get_description(decorator)
+        if lang not in responses:
+            responses[lang] = {}
+        decorator: EnDecorators.Afk = command_.decorators[lang]
+        description = decorator.Afk.get_description(decorator)  # NOQA
         base_decorators = bot.TranslationManager.get_decorator(lang)
         cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
-        dynamic_description = decorator.Afk.get_dynamic_description(decorator)
-        ...
-        # TODO: maybe make as a class so has a native fallback to en-us,
-        #  but making this way i have to maintain more 2 class of translations.
-        title_part1 = get_value_or_fallback(dynamic_description, dynamic_description_fallback, "title_part1")
-        title_part2 = get_value_or_fallback(dynamic_description, dynamic_description_fallback, "title_part2")
-        title_part3 = get_value_or_fallback(dynamic_description, dynamic_description_fallback, "title_part3")
-        usage_title = get_value_or_fallback(dynamic_description, dynamic_description_fallback, "usage_title")
-        response_afk = get_value_or_fallback(dynamic_description, dynamic_description_fallback, "response_afk")
-        usage_title_content = "Usando com conteúdo." "{}afk " + f'{"a" * 451}'
-        usage_content = "Texto que vc quer deixar para quando voltar"
-        usage_response_afk_with_content = f"user você ficou ausente: 🏃 ⌨️ e deixou uma nota com: "
-        template_afk = f"""
-        # {title_part1} {rate}x {title_part2} {per} {title_part3} {cooldown_type}
+        afk_template = getattr(decorator.Afk, 'template', EnDecorators.Afk.Afk.template).format(
+                rate=rate,
+                per=per,
+                cooldown_type=cooldown_type,
+                description=description,
+                command_title="Afk",
+                command_name="afk",
+                prefix=prefix,
+                aliases=", ".join(afk_alias))
 
-        {description}
+        responses[lang]['afk'] = afk_template
 
-        {usage_title}
-        ```text
-        user: {prefix}afk
+        description = decorator.IsAfk.get_description(decorator)  # NOQA
+        isafk_template = getattr(decorator.IsAfk, 'template', EnDecorators.Afk.IsAfk.template).format(
+                rate=rate,
+                per=per,
+                cooldown_type=cooldown_type,
+                description=description,
+                command_title="IsAfk",
+                command_name="isafk",
+                prefix=prefix,
+        )
 
-        bot: {response_afk}
-        ```
-        {usage_title_content}
-        ```text
-        user: {prefix}afk {usage_content}
+        responses[lang]['isafk'] = isafk_template
 
-        bot: {usage_response_afk_with_content} {usage_content}
-        ```
-        """
-        respostas['afk'] = template_afk
-    ...
+        description = decorator.RAfk.get_description(decorator)  # NOQA
+        isafk_template = getattr(decorator.RAfk, 'template', EnDecorators.Afk.RAfk.template).format(
+                rate=rate,
+                per=per,
+                cooldown_type=cooldown_type,
+                description=description,
+                command_title="RAfk",
+                command_name="rafk",
+                prefix=prefix,
+                aliases=", ".join(rafk_alias)
+        )
+
+        responses[lang]['rafk'] = isafk_template
+
+    return responses
+
 
 
 

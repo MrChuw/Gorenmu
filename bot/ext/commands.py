@@ -12,10 +12,10 @@ from twitchio.ext.commands import (
 from twitchio.ext.routines import routine
 
 from bot.models import User as UserModel, Alias
-from bot.translations import EnUsTranslations
-from bot.translations import EnUsDecorators, BaseClass
+from bot.translations import EnTranslations
+from bot.translations import EnDecorators, BaseClass
 from bot.translations import Response
-from bot.translations.en_us.decorators import BaseDecorator
+from bot.translations.en.decorators import BaseDecorator
 from typing import Type, TypeVar
 from twitchio.ext.commands.stringparser import StringParser
 from twitchio.ext.commands.errors import CommandNotFound
@@ -33,9 +33,10 @@ __all__ = (
 
 
 class Command(Command):
-    decorators: dict[str, EnUsDecorators | BaseClass | BaseDecorator]
-    decorators_original: EnUsDecorators | BaseClass
+    # decorators: dict[str, EnDecorators | BaseClass | BaseDecorator]
+    decorators_original: EnDecorators | BaseClass
     _cooldowns: Cooldown
+    docs: dict[str, dict[str, str]]
 
 
 class Bot(Bot):
@@ -169,8 +170,8 @@ class Bot(Bot):
 class Context(TwitchioContext):
     user: UserModel
     bot: Gorenmu
-    translations: EnUsTranslations
-    decorators: EnUsDecorators | BaseClass
+    translations: EnTranslations
+    decorators: EnDecorators | BaseClass
     command: Command
 
     def __iter__(self):
@@ -283,7 +284,7 @@ class Context(TwitchioContext):
 
     async def pipe_handler(self, external_ctx: Context, message: Message ):
         response_str = ""
-        translations = external_ctx.bot.TranslationManager.get_translations(external_ctx.user.language or "en-us")
+        translations = external_ctx.bot.TranslationManager.get_translations(external_ctx.user.language or "en")
         translation = translations.Exceptions.ResponseExceptions()
         message.content = message.content.replace(" | ", f" | {external_ctx.prefix}")
         original_message = message
