@@ -307,9 +307,9 @@ class Gorenmu(Bot):
     async def event_error(self, error: Exception, data: str = None) -> None:
         # Erros a partir do twitchio.
         if data is not None:
-            self.log.error(data, exc_info=error)
-        self.log.error(error.args, exc_info=error)
-        pass
+            self.log.error(str(data.args), exc_info=error)
+        # self.log.error(str(error.args), exc_info=data)
+
 
 
 

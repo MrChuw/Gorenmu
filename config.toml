@@ -42,20 +42,6 @@ password = "${REDIS_PASSWORD}"
 namespace = "${REDIS_NAMESPACE}"
 db = "${REDIS_DB}"
 
-[cache.admin_requests]
-namespace_admin = "${REDIS_NAMESPACE}-admin_requests"
-[cache.booru_requests]
-namespace_booru = "${REDIS_NAMESPACE}-booru_requests"
-[cache.random_requests]
-namespace_random = "${REDIS_NAMESPACE}-random_requests"
-[cache.general_requests]
-namespace_general = "${REDIS_NAMESPACE}-general_requests"
-[cache.info_requests]
-namespace_info = "${REDIS_NAMESPACE}-info_requests"
-[cache.tools_requests]
-namespace_tools = "${REDIS_NAMESPACE}-tools_requests"
-[cache.count_requests]
-namespace_miscellaneous = "${REDIS_NAMESPACE}-count_requests"
 
 [logger]
 format = "{time:YYYY-MM-DD HH:mm:ss} [{level}] {name} {module}.py:{line} {message}"

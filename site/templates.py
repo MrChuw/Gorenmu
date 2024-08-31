@@ -42,6 +42,7 @@ home_index_template: dict[str, str] = {'en': dedent("""
                                         # Ainda não sei oque colocar aqui.
 
                                         [Os comandos estão aqui](comandos/index.md)
+                                        
                                         """)}
 
 mkdocs_configs_path: pathlib.Path = pathlib.Path("./site/config")

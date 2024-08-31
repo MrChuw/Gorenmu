@@ -88,7 +88,7 @@ class SessionsCaches:
                                       }
             self.allowed_methods = ("GET", "HEAD", "POST")
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.admin_namespace,
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Admin_requests",
                                           urls_expire_after=self.urls_expire_after,
                                           allowed_methods=self.allowed_methods, include_headers=True, )
             else:
@@ -122,7 +122,7 @@ class SessionsCaches:
                                       }
             self.allowed_methods = ("GET", "HEAD", "POST")
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.booru_namespace,
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-NSFW_requests",
                                           urls_expire_after=self.urls_expire_after,
                                           allowed_methods=self.allowed_methods, include_headers=True, )
             else:
@@ -146,7 +146,7 @@ class SessionsCaches:
                                   "Chrome/114.0.0.0 Safari/537.36"
             }
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.random_namespace,
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Random_requests",
                                           urls_expire_after=self.urls_expire_after,
                                           allowed_methods=self.allowed_methods, include_headers=True, )
             else:
@@ -163,7 +163,7 @@ class SessionsCaches:
             self.allowed_methods = ("GET", "HEAD", "POST")
             self.allowed_codes = CODE_LIST
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.general_namespace,
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-General_requests",
                                           urls_expire_after=self.urls_expire_after,
                                           allowed_methods=self.allowed_methods, allowed_codes=self.allowed_codes,
                                           include_headers=True, )
@@ -179,7 +179,7 @@ class SessionsCaches:
             self.urls_expire_after = {"*.jtvnw.net": timedelta(minutes=30)}
             self.allowed_methods = ("GET", "HEAD", "POST")
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.info_namespace,
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Info_requests",
                                           urls_expire_after=self.urls_expire_after,
                                           allowed_methods=self.allowed_methods, include_headers=True, )
             else:
@@ -198,7 +198,7 @@ class SessionsCaches:
                                       }
             self.allowed_methods = ("GET", "HEAD", "POST")
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.tools_namespace,
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Tools_requests",
                                           urls_expire_after=self.urls_expire_after,
                                           allowed_methods=self.allowed_methods, include_headers=True, )
             else:
@@ -211,10 +211,10 @@ class SessionsCaches:
     class AliasCachedSession:
         def __init__(self, bot: Gorenmu):
             self.bot = bot
-            self.urls_expire_after = {"*/*": timedelta(minutes=30)}
+            self.urls_expire_after = {"*/*": timedelta(hours=1000)}
             self.allowed_methods = ("GET", "HEAD", "POST")
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.miscellaneous_namespace,
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Alias_requests",
                                           urls_expire_after=self.urls_expire_after,
                                           allowed_methods=self.allowed_methods, include_headers=True)
             else:
@@ -229,7 +229,7 @@ class SessionsCaches:
             self.urls_expire_after = {"*/*": timedelta(minutes=30)}
             self.allowed_methods = ("GET", "HEAD", "POST")
             if "redis" in bot.__dict__:
-                self.cache = RedisBackend(cache_name=bot.config.CacheConfig.miscellaneous_namespace,
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Count_requests",
                                           urls_expire_after=self.urls_expire_after,
                                           allowed_methods=self.allowed_methods, include_headers=True)
             else:

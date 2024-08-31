@@ -203,14 +203,6 @@ class CacheConfig:
         self.port: int = data.get("port", 6379)
         self.password: str = data.get("password", "root")
         self.namespace: str = data.get("namespace", "gorenmu")
-        # TODO: Mudar como o namespace funciona
-        self.admin_namespace: str = data.get("admin_requests", "main-admin_requests")
-        self.booru_namespace: str = data.get("booru_requests", "main-booru_requests")
-        self.random_namespace: str = data.get("random_requests", "main-random_requests")
-        self.general_namespace: str = data.get("general_requests", "main-general_requests")
-        self.info_namespace: str = data.get("info_requests", "main-info_requests")
-        self.tools_namespace: str = data.get("tools_requests", "main-tools_requests")
-        self.miscellaneous_namespace: str = data.get("tools_requests", "main-count_requests")
 
 
 class Config:

@@ -20,9 +20,9 @@ class Alias(Model, TimestampMixin):
     id = fields.IntField(pk=True, index=True)
     user: User = fields.ForeignKeyField("models.User", related_name="Alias", null=True, on_delete=fields.SET_NULL)
     channel: Channel = fields.ForeignKeyField("models.Channel", related_name="Alias", null=True, on_delete=fields.SET_NULL)
-    name = fields.CharField(max_length=50, unique=True, index=True)
+    name = fields.CharField(max_length=50, index=True)
     command = fields.CharField(max_length=50, null=True)
-    invocation = fields.CharField(max_length=50)
+    invocation = fields.CharField(max_length=50, null=True)
     arguments = fields.JSONField(null=True)
     description = fields.TextField(null=True)
     parent = fields.ForeignKeyField('models.Alias', related_name='children', null=True, on_delete=fields.SET_NULL)
@@ -49,6 +49,13 @@ class Alias(Model, TimestampMixin):
         return alias
 
 
+
+
+    @staticmethod
+    async def link_alias(user: User, name: str, parent: Alias):
+        alias = Alias(user=user, name=name, description=parent.description, parent=parent)
+        await alias.save()
+        return alias
 
 
 
