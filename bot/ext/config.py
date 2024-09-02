@@ -120,7 +120,7 @@ class BotConfig:
 class ApisConfig:
     def __init__(self, data: Dict[str, dict]) -> None:
         self.site_api_key: str = data.get("site_api_key", "api_exemple")
-        self.shlink_url: str = data.get("site", "https://shlink.exemple.com/rest/v3/short-urls")
+        self.shlink_url: str = data.get("shlink_url", "https://shlink.exemple.org/rest/v3/short-urls")
         self.shlink_key: str = data.get("shlink_key", "api_exemple")
         self.access_token: str = data.get("access_token", "api_exemple")
         if not data.get("access_oauth_token"):
