@@ -40,8 +40,7 @@ class UploadThings:
             return None
 
     @staticmethod
-    async def shortener(url: str | None, bot: Gorenmu, cache: SQLiteBackend):
-        timeout = aiohttp.ClientTimeout(total=20)
+    async def shortener(url: str | None, bot: Gorenmu, session: CachedSession):
         shlink_url = bot.config.ApisConfig.shlink_url
         payload = {"longUrl": url, "forwardQuery": "true", "findIfExists": "true"}
         headers = {"accept": "application/json", "Content-Type": "application/json",
@@ -50,14 +49,12 @@ class UploadThings:
         if url is None:
             return None
         try:
-            async with CachedSession(cache=cache, timeout=timeout) as session:
-                async with session.post(shlink_url, json=payload, headers=headers) as resp:
-                    response = json.loads(await resp.text())
-                    resp.close()
-                    if "status" in response:
-                        return None
-                    else:
-                        return response["shortUrl"]
+            response = await session.post(shlink_url, json=payload, headers=headers)
+            response = await response.json()
+            if "status" in response:
+                return None
+            else:
+                return response["shortUrl"]
         except Exception as e:
             logger.error(e)
             return None
