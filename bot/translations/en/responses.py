@@ -28,6 +28,8 @@ class EnTranslations:
         class TimeTools(BaseTranslation):
             TimeTools: TimeTools = TimeTools
             Timeago: Timeago = Timeago
+            strftime: str = "%m/%d/%Y %I:%M %p"
+
 
         class Lottery(BaseTranslation):
             bet_or_consultation: list[str] = ["aposta", "consultar"]
@@ -122,107 +124,87 @@ class EnTranslations:
                     {"success": False, "response": "{} {} and left a note: {} (was away for {} {})"})
 
     class Alias(BaseTranslation):
-        user_not_found: Response = Response({
-            "success": False,
-            "response": "there is no user with nickname {}.",
-            "pipe": False})
+        user_not_found: Response = Response({"response": "there is no user with nickname {}."})
 
-        dont_have_alias: Response = Response({
-                "success": False,
-                "response": "You don't have the \"{}\" alias!"})
+        dont_have_alias: Response = Response({"response": "You don't have the \"{}\" alias!"})
 
-        alias_invalid_name: Response = Response({
-                "success": False,
-                "response": "Your alias name is not valid! "
-                            "Your alias should only contain letters, numbers and be 2-30 characters long."})
+        alias_invalid_name: Response = Response({"response": "Your alias name is not valid! "
+                                                             "Your alias should only contain letters, numbers and "
+                                                             "be 2-30 characters long."})
+
+        user_has_no_alias: Response = Response({"response": "User {} has no registered aliases."})
+
+        alias_table_headers: list[str] = [
+                "Alias Name", "Description", "Invokes", "Arguments", "Links to", "Updated", "Created"]
+
+        alias_table_replaces: list[str] = ["No description", "No arguments", "None", ]
+
+        alias_table_name: str = "{} aliases"
 
         class Add(BaseTranslation):
-            no_command_to_add: Response = Response({
-                "success": False,
-                "response": "You didn't send a command! Usage: {}alias add (name) (command) (...arguments)"})
+            no_command_to_add: Response = Response({"response": "You didn't send a command! "
+                                                                "Usage: {}alias add (name) (command) (...arguments)"})
 
-            alias_name_conflict: Response = Response({
-                "success": False,
-                "response": "Cannot add alias \"{}\" - you already have one! "
-                            "You can either \"edit\" its definition, \"rename\" it or \"remove\" it."})
+            alias_name_conflict: Response = Response({"response": "Cannot add alias \"{}\" - you already have one! "
+                                                                  "You can either \"edit\" its definition, \"rename\" "
+                                                                  "it or \"remove\" it."})
 
-            alias_crated: Response = Response({
-                "success": False,
-                "response": "Your alias \"{}\" has been created successfully."})
+            alias_crated: Response = Response({"response": "Your alias \"{}\" has been created successfully."})
 
-            command_dont_exist: Response = Response({
-                    "success": False,
-                    "response": "Cannot create alias! The command \"{}\" does not exist."}
-            )
+            command_dont_exist: Response = Response({"response": "Cannot create alias! "
+                                                                 "The command \"{}\" does not exist."})
 
         class Check(BaseTranslation):
-            user_alias_list: Response = Response({
-                "success": False,
-                "response": "List of your aliases: {} | Detailed list: {}"})
+            user_alias_list: Response = Response({"response": "List of your aliases: {} | Detailed list: {}"})
 
-            no_alias_found: Response = Response({
-                "success": False,
-                "response": "Could not find {} in {} aliases or any of your aliases!"})
+            no_alias_found: Response = Response({"response": "Could not find {} in {} aliases or any of your aliases!"})
 
-            list_of_alias_of: Response = Response({
-                "success": False,
-                "response": "List of {} aliases: {}"})
+            list_of_alias_of: Response = Response({"response": "List of {} aliases: {}"})
 
-            list_of_special_case: Response = Response({
-                "success": False,
-                "response": "Special case!\n"
-                            "Your alias \"{0}\": {1}\n"
-                            "List of {0}'s aliases: {2}"})
+            list_of_special_case: Response = Response({"response": "Special case!\n "
+                                                                   "Your alias \"{0}\": {1}\n "
+                                                                   "List of {0}'s aliases: {2}"})
 
-            alias_not_found: Response = Response({
-                "success": False,
-                "response": "{} don't have the \"{}\" alias!"})
+            alias_not_found: Response = Response({"response": "{} don't have the \"{}\" alias!"})
 
             appendix: str = "This alias is a link to \"{}\" made by {}."
 
-            alias_deleted: Response = Response({
-                "success": False,
-                "response": "{} alias is a link to a different alias, but the original has been deleted."})
+            alias_deleted: Response = Response({"response": "{} alias is a link to a different alias, "
+                                                            "but the original has been deleted."})
 
-            message: str = "{} {} alias \"{}\" has this definition: {} {} "
+            appendix_message: Response
 
-            final_message: Response = Response({
-                "success": False,
-                "response": "{} {}"})
+            message: str = "{} alias \"{}\" have the arguments: {} {}"
+
+            normal_message: Response = Response({"response": "{} || Link: {}"})
 
         class Copy(BaseTranslation):
-            user_not_provided: Response = Response({
-                "success": False,
-                "response": "No target user provided!"})
+            user_not_provided: Response = Response({"response": "No target user provided!"})
 
-            alias_not_provided: Response = Response({
-                "success": False,
-                "response": "No target alias provided!"})
+            alias_not_provided: Response = Response({"response": "No target alias provided!"})
 
-            target_alias_invalid_name: Response = Response({
-                "success": False,
-                "response": "The copied alias's name is not valid and therefore can't be copied!"})
+            target_alias_invalid_name: Response = Response({"response": "The copied alias's name is not "
+                                                                        "valid and therefore can't be copied!"})
 
-            link_to_a_link: Response = Response({
-                "success": False,
-                "response": 'You cannot copy links to other aliases. Instead, use {}alias copy {} {}'})
+            no_alias_found: Response = Response({"response": "I couldn't find {} in user {}!"})
 
-            copy_success: Response = Response({
-                "success": False,
-                "response": "Alias \"{}\" copied successfully."})
+            link_to_a_link: Response = Response({"response": 'You cannot copy links to other aliases. '
+                                                             'Instead, use {}alias copy {} {}'})
+
+            copy_success: Response = Response({"response": "Alias \"{}\" copied successfully."})
+
+            copy_with_name_of: Response = Response({"response": "Alias \"{}\" copied successfully. "
+                                                                "With the name \"{}\"."})
 
         class Describe(BaseTranslation):
-            no_args_to_parse: Response = Response({
-                "success": False,
-                "response": "You didn't provide a name, or a command! Use: {}alias describe (name) (...description)"})
+            no_args_to_parse: Response = Response({"response": "You didn't provide a alias or description! "
+                                                               "Use: {}alias describe (name) (...description)"})
 
-            description_updated: Response = Response({
-                "success": False,
-                "response": "The description of your alias \"{}\" has been updated successfully."})
+            description_updated: Response = Response({"response": "The description of alias \"{}\" "
+                                                                  "has been updated successfully."})
 
-            description_reseted: Response = Response({
-                "success": False,
-                "response": "The description of your alias \"{}\" has been reset successfully."})
+            description_reverted: Response = Response({"response": "The description of alias \"{}\" "
+                                                                   "has been reset successfully."})
 
         class Edit(BaseTranslation):
             no_args_provided: Response = Response({

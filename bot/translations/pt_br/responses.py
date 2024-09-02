@@ -11,13 +11,10 @@ from bot.translations.pt_br.extras import dungeon_rank_dict
 from bot.translations.pt_br.extras import Activity as ActivityExtras
 from bot.translations.pt_br.extras import TimeTools, Timeago
 from bot.translations.pt_br.extras import Dicio
+from textwrap import dedent
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
-
-
-# TODO: Colocar o pipe false nos comandos que não podem ir para o pipe.
-# TODO: adicionar um fallback para o idioma padrão caso não tenha a tradução.
 
 
 class PtBrTranslations(EnTranslations):
@@ -25,6 +22,7 @@ class PtBrTranslations(EnTranslations):
         class TimeTools(EnTranslations.SupportTools.TimeTools):
             TimeTools: TimeTools = TimeTools
             Timeago: Timeago = Timeago
+            strftime: str = "%H:%M:%S %d-%m-%Y"
 
         class Lottery(EnTranslations.SupportTools.Lottery):
             bet_or_consultation: list[str] = ["aposta", "consultar"]
@@ -111,146 +109,96 @@ class PtBrTranslations(EnTranslations):
                         {"success": False, "response": "{} {} e deixou um nota: {} (ficou {} {})"})
 
     class Alias(EnTranslations.Alias):
-        user_not_found: Response = Response({
-            "success": False,
-            "response": "não há usuário com nome de {}.",
-            "pipe": False})
+        user_not_found: Response = Response({"response": "não há usuário com nome de {}."})
 
-        dont_have_alias: Response = Response({
-                "success": False,
-                "response": "Você não tem alias com nome de \"{}\"", "pipe": False})
+        dont_have_alias: Response = Response({"response": "Você não tem alias com nome de \"{}\""})
 
-        alias_invalid_name: Response = Response({
-                "success": False,
-                "response": "O nome do seu aliás não é valido. "
-                            "Seu alias deve conter apenas letras, números e ter de 2 a 30 caracteres.",
-                "pipe": False})
+        alias_invalid_name: Response = Response({"response": "O nome do seu aliás não é valido. "
+                                                             "Seu alias deve conter apenas letras, "
+                                                             "números e ter de 2 a 30 caracteres."})
+
+        user_has_no_alias: Response = Response({"response": "O usuário {} não têm nenhum aliás registrado."})
+
+        alias_table_headers: list[str] = [
+                "Nome do alias", "Descrição", "Invoca", "Argumentos", "Link para", "Atualizado", "Criado"
+        ]
+
+        alias_table_replaces: list[str] = ["Sem descrição", "Sem argumentos", "Nenhum"]
+
+        alias_table_name: str = "Aliases de {}"
 
         class Add(EnTranslations.Alias.Add):
-            no_command_to_add: Response = Response({
-                "success": False,
-                "response": "Você não enviou um comando! Uso: {}alias add (name) (command) (...arguments)",
-                "pipe": False})
+            no_command_to_add: Response = Response({"response": "Você não enviou um comando! "
+                                                                "Uso: {}alias add (name) (command) (...arguments)"})
 
-            alias_name_conflict: Response = Response({
-                "success": False,
-                "response": "Não é possível adicionar o alias \"{}\" - você já tem um! "
-                            "Você pode \"edit\" sua definição, \"rename\" ou \"remove\".",
-                "pipe": False})
+            alias_name_conflict: Response = Response({"response": "Não é possível adicionar o alias \"{}\" - "
+                                                                  "você já tem um com este nome! Você pode \"edit\" "
+                                                                  "sua definição, \"rename\" ou \"remove\"."})
 
-            alias_crated: Response = Response({
-                "success": False,
-                "response": "Seu alias \"{}\" foi criado com sucesso.",
-                "pipe": False})
+            alias_crated: Response = Response({"response": "Seu alias \"{}\" foi criado com sucesso."})
 
-            command_dont_exist: Response = Response({
-                    "success": False,
-                    "response": "Não é possível criar o alias! O comando \"{}\" não existe.", "pipe": False}
-            )
+            command_dont_exist: Response = Response({"response": "Não é possível criar o alias! "
+                                                                 "O comando \"{}\" não existe."})
 
         class Check(EnTranslations.Alias.Check):
-            user_alias_list: Response = Response({
-                "success": False,
-                "response": "Sua lista de alias: {} | Lista detalhada: {}",
-                "pipe": False})
+            user_alias_list: Response = Response({"response": "Sua lista de alias: {} | Lista detalhada: {}"})
 
-            no_alias_found: Response = Response({
-                "success": False,
-                "response": "Não consegui encontrar {} no do usuário {} ou em qualquer um dos seus aliases!",
-                "pipe": False})
+            no_alias_found: Response = Response({"response": "Não consegui encontrar {} no do usuário {} "
+                                                             "ou em qualquer um dos seus aliases!"})
 
-            list_of_alias_of: Response = Response({
-                "success": False,
-                "response": "Lista de alias do {}: {}",
-                "pipe": False})
+            list_of_alias_of: Response = Response({"response": "Lista de alias do {}: {}"})
 
             list_of_special_case: Response = Response({
-                "success": False,
-                "response": "Caso Especial!\n"
+                "response": "Caso Especial! \n"
                             "Seu alias \"{0}\": {1}\n"
-                            "Lista de alias de {0}: {2}",
-                "pipe": False})
+                            "Lista de alias de {0}: {2}"})
 
-            alias_not_found: Response = Response({
-                "success": False,
-                "response": "{} não tem o alias \"{}\"",
-                "pipe": False})
+            alias_not_found: Response = Response({"response": "{} não tem o alias \"{}\""})
 
-            appendix: str = "Este alias é um link para \"{}\" feito por {}."
+            alias_deleted: Response = Response({"response": "O alias \"{}\" é um link para um alias diferente, "
+                                                            "mas o original foi excluído."})
 
-            alias_deleted: Response = Response({
-                "success": False,
-                "response": "{} alias é um link para um alias diferente, mas o original foi excluído.",
-                "pipe": False})
+            appendix_message: Response = Response({"response": "Este alias é um link para \"{}\" feito por {}. "
+                                                               "O alias \"{}\" tem os argumentos: {} || Link: {}"})
 
-            message: str = "{} {} alias \"{}\" tem esta definição: {} {} "
-
-            final_message: Response = Response({
-                "success": False,
-                "response": "{} {}",
-                "pipe": False})
+            normal_message: Response = Response({"response": "O alias \"{}\" tem os argumentos: {} || Link: {}"})
 
         class Copy(EnTranslations.Alias.Copy):
-            user_not_provided: Response = Response({
-                "success": False,
-                "response": "Nenhum usuário foi fornecido!",
-                "pipe": False})
+            user_not_provided: Response = Response({"response": "Nenhum usuário foi fornecido!"})
 
-            alias_not_provided: Response = Response({
-                "success": False,
-                "response": "Nenhum alias de destino fornecido!",
-                "pipe": False})
+            alias_not_provided: Response = Response({"response": "Nenhum alias de destino fornecido!"})
 
-            target_alias_invalid_name: Response = Response({
-                "success": False,
-                "response": "O nome do alias copiado não é válido e portanto não pode ser copiado!",
-                "pipe": False})
+            target_alias_invalid_name: Response = Response({"response": "O nome do alias a ser copiado não é válido e, "
+                                                                        "portanto, não pode ser copiado!"})
 
-            link_to_a_link: Response = Response({
-                "success": False,
-                "response": 'Você não pode copiar links para outros aliases. '
-                            'Em vez disso, use o link {}alias copy {} {}',
-                "pipe": False})
+            no_alias_found: Response = Response({"response": "Não consegui encontrar {} no usuário {}!"})
 
-            copy_success: Response = Response({
-                "success": False,
-                "response": "Alias \"{}\" copiado com sucesso.",
-                "pipe": False})
+            link_to_a_link: Response = Response({"response": 'Você não pode copiar links para outros aliases. '
+                                                             'Em vez disso, use o link {}alias copy {} {}'})
+
+            copy_success: Response = Response({"response": "Alias \"{}\" copiado com sucesso."})
+
+            copy_with_name_of: Response = Response({"response": "Alias \"{}\" copiado com sucesso. "
+                                                                "Com o nome de \"{}\"."})
 
         class Describe(EnTranslations.Alias.Describe):
-            no_args_to_parse: Response = Response({
-                "success": False,
-                "response": "You didn't provide a name, or a command! Use: {}alias describe (name) (...description)",
-                "pipe": False})
+            no_args_to_parse: Response = Response({"response": "Você não forneceu um alias ou descrição! "
+                                                               "Use: {}alias describe <alias> <descrição>"})
 
-            description_updated: Response = Response({
-                "success": False,
-                "response": "A descrição do seu alias \"{}\" foi atualizada com sucesso.",
-                "pipe": False})
+            description_updated: Response = Response({"response": "A descrição do alias \"{}\" "
+                                                                  "foi atualizada com sucesso."})
 
-            description_reseted: Response = Response({
-                "success": False,
-                "response": "A descrição do seu alias \"{}\" foi resetada com sucesso.",
-                "pipe": False})
+            description_reverted: Response = Response({"response": "A descrição do alias \"{}\" "
+                                                                  "foi redefinida com sucesso."})
 
         class Edit(EnTranslations.Alias.Edit):
-            no_args_provided: Response = Response(
-                    {"success": False, "response": "Nenhum alias ou nome de comando fornecido!", "pipe": False}
-            )
+            no_args_provided: Response = Response({"response": "Nenhum alias ou nome de comando fornecido!"})
 
-            edit_link: Response = Response(
-                    {"success": False, "response": "Você não pode editar links para outros aliases!", "pipe": False}
-            )
+            edit_link: Response = Response({"response": "Você não pode editar links para outros aliases!"})
 
-            edit_success: Response = Response(
-                    {"success": False, "response": 'Seu alias "{}" foi editado com sucesso.', "pipe": False}
-            )
+            edit_success: Response = Response({"response": 'O alias "{}" foi editado com sucesso.'})
 
-            command_dont_exist: Response = Response({
-                    "success": False,
-                    "response": 'Não é possível editar o alias! O comando "{}" não existe.',
-                    "pipe": False}
-            )
+            command_dont_exist: Response = Response({"response": 'Não é possível editar o alias! O comando "{}" não existe.'})
 
         class Link(EnTranslations.Alias.Link):
             link_no_args: Response = Response({

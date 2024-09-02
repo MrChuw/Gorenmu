@@ -198,18 +198,83 @@ class PtBrDecorators(EnDecorators):
         
         # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
         
+        !!! warning "Restricoes para os nomes dos alias!"
+
+            - Devem ter entre 2 e 30 caracteres.
+            - Podem conter letras, números, traços, subtraços e uma ampla variedade de caracteres Unicode, incluindo emojis.
+            
+        
+        !!! warning "Cooldown para os alias criados!"
+
+            Ao criar um alias, o cooldown do aliás será o cooldown dos comandos utilizado no alias, logo se um comando so pôde ser usando 1x a cada 5 segundos e outro 3x a cada 10 segundos o cooldown do aliás será 1x a cada 5 segundos.
+        
         {description}
         
-        ## As formas de utilizar este comando são:
+        ## Como criar um alias:
+            - O exemplo a seguir faz uso de [pipe](pipe.md) para colocar a resposta de um comando para outro.
 
         ```text
-        user: {prefix}{command_name}
+        user: {prefix}{command_name} add nome_legal choice 1234 123456 | count
         
-        bot: Usuário, 
+        bot: Usuário, Seu alias "nome_legal" foi criado com sucesso.
         ```
-        !!! warning "Tamanho Máximo!"
         
-            A mensagem não pode ter mais que 450 caracteres; caso seja maior, retornará um erro.
+        Com o exemplo acima nós criamos um alias com nome de `nome_legal`. E o alias ira invocar o comando `choice` com os argumentos "1234" e "123456" em seguida o resultado de choice será enviado para o comando `count`.
+        
+        ## Para usar o aliás:
+        
+        ```text
+        user: {prefix}{prefix}nome_legal
+        
+        bot: Usuário, Há um total de 4 caracteres. Dentre eles, 0 são pontuações, 0 são letras maiúsculas e 0 são caracteres especiais.
+        ou
+        bot: Usuário, Há um total de 6 caracteres. Dentre eles, 0 são pontuações, 0 são letras maiúsculas e 0 são caracteres especiais.
+        ```
+        
+        Para usar o alias, basta usar `{prefix}{prefix}` e o nome do aliás ({prefix} é o prefixo padrão do bot, 
+        se o prefixo do chat que você esta for diferente basta repetir ele 2(duas) vezes e então o nome do alias)
+        
+        ## Como verificar alias:
+        
+        ```text
+        user: {prefix}{command_name} check nome_legal 
+        
+        bot: Usuário, O alias "nome_legal" tem os argumentos: choice 1234 123456 | count || Link: <url>
+        ```
+
+        ## Como copiar um alias:
+        
+        ```text
+        user: {prefix}{command_name} copy <nome do usuario> nome_legal 
+        
+        bot: Usuário, Alias "nome_legal" copiado com sucesso.
+        ```
+        
+        Para copiar um aliás você so precisa do nome do usuário e o nome do alias.
+        
+        ## Como adicionar uma descrição para um alias:
+        
+        ```text
+        user: {prefix}{command_name} copy <nome do usuario> nome_legal 
+        
+        bot: Usuário, A descrição do alias "nome_legal" foi atualizada com sucesso.
+        ```
+        
+        ## Como editar o comando/argumentos de um alias:
+        
+        ```text
+        user: {prefix}{command_name} edit nome_legal choice 123 1234 12345 | count
+        
+        bot: Usuário, O alias "nome_legal" foi editado com sucesso.
+        ```
+        
+        No exemplo a cima a edição do comando foi nós argumentos, mudando de `1234 123456` para `123 1234 12345` 
+        para fazer update você têm que mandar o comando completo e mudar somente a parte que você deseja atualizar.
+        
+        
+        
+        
+        
         """) # NOQA
 
     class Chance(EnDecorators.Chance):
