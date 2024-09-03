@@ -12,16 +12,16 @@ class PtBrDecorators(EnDecorators):
     def get_bucket_type(bucket):
         bucket_type = "geral"
         if bucket == Bucket.default:
-            bucket_type = "all user in all channels"
+            bucket_type = "dont know"
 
         if bucket == Bucket.channel:
-            bucket_type = "all user per channel"
+            bucket_type = "todos os usuários no canal"
 
         if bucket == Bucket.member:
-            bucket_type = "member"
+            bucket_type = "usuário por canal"
 
         if bucket == Bucket.user:
-            bucket_type = "user"
+            bucket_type = "usuário independente do canal"
 
         if bucket == Bucket.subscriber:
             bucket_type = "subscriber"
@@ -271,8 +271,46 @@ class PtBrDecorators(EnDecorators):
         No exemplo a cima a edição do comando foi nós argumentos, mudando de `1234 123456` para `123 1234 12345` 
         para fazer update você têm que mandar o comando completo e mudar somente a parte que você deseja atualizar.
         
+        ## Como linkar um alias:
         
+        ```text
+        user: {prefix}{command_name} link <usuário> nome_legal
         
+        bot: Usuário, Alias vinculado com sucesso. Quando o original mudar, o seu também mudará.
+        ```
+        Também é possível criar um link e mudar o nome do alias.
+        
+        ```text
+        user: {prefix}{command_name} link <usuário> nome_legal outro_nome_legal
+        
+        bot: Usuário, Alias vinculado com sucesso, com um nome personalizado "outro_nome_legal". Quando o original mudar, o seu também mudará.
+        ```
+        
+        E caso seja um link para um link.
+        
+        ```text
+        user: {prefix}{command_name} link <usuário> nome_legal
+        
+        bot: Usuário, Você tentou criar um link a partir de um alias já vinculado (alias nome_legal por <usuário>), então usei o original como seu modelo. Quando o original mudar, o seu também mudará.
+        ```
+        
+        ## Para remover um alias.
+        
+        ```text
+        user: {prefix}{command_name} remove nome_legal
+        
+        bot: Usuário, Seu alias "nome_legal" foi removido com sucesso.
+        ```
+        
+        Ao deletar um alias, os links para este aliás vão continuar existindo e funcionando.
+        
+        ## Para remover um alias.
+        
+        ```text
+        user: {prefix}{command_name} rename nome_legal outro_nome_legal
+        
+        bot: Usuário, Seu alias "nome_legal" foi renomeado com sucesso para "outro_nome_legal".
+        ```
         
         
         """) # NOQA

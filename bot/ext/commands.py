@@ -312,7 +312,9 @@ class Context(TwitchioContext):
     async def alias_handler(self, external_ctx: Context, message: Message):
         args: list[str] = message.content.replace(f"{external_ctx.prefix}{external_ctx.prefix}", f"").split()
         name: str = args.pop(0)
-        alias = await Alias.get_or_none(user=external_ctx.user, name=name)
+        alias = await Alias.get_or_none(user=external_ctx.user, name=name, deleted=False)
+        if not alias.command:  # NOQA
+            alias = await alias.parent
         if not alias:
             return None
         message.content = f"{external_ctx.prefix}{alias.invocation} {' '.join(alias.arguments)}"

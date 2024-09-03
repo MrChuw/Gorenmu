@@ -182,8 +182,6 @@ class Gorenmu(Bot):
         self.loop.run_until_complete(self.before_close())
         self.loop.run_until_complete(self.SessionsCaches.close_all_sessions())
 
-
-
     async def event_ready(self) -> None:  # Load de comando está desativado.
         self.restart += 1
         if self.restart > 1:
@@ -302,7 +300,6 @@ class Gorenmu(Bot):
                                                  .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))
             except Exception as error:
                 self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
-
 
     async def event_error(self, error: Exception, data: str = None) -> None:
         # Erros a partir do twitchio.

@@ -30,7 +30,6 @@ class Alias(Model, TimestampMixin):
 
     class Meta:
         table = 'command_alias'
-        unique_together = ('user', 'channel', 'name')
         verbose_name = 'Custom Command Alias'
         verbose_name_plural = 'Custom Command Aliases'
     indexes = [("user", "channel", "name"), ("channel",), ("command",), ("parent",)]

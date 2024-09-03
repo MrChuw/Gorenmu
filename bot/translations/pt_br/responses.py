@@ -201,42 +201,24 @@ class PtBrTranslations(EnTranslations):
             command_dont_exist: Response = Response({"response": 'Não é possível editar o alias! O comando "{}" não existe.'})
 
         class Link(EnTranslations.Alias.Link):
-            link_no_args: Response = Response({
-                    "success": False,
-                    "response": "Você não forneceu um usuário ou o nome do alias! "
-                                "Use: {}alias link (usuário) (nome do alias)",
-                    "pipe": False}
-            )
+            link_no_args: Response = Response({"response": "Você não forneceu um usuário ou o nome do alias! "
+                                                           "Use: {}alias link (usuário) (nome do alias)"})
 
-            alias_name_already_exists: Response = Response({
-                    "success": False,
-                    "response": "Não é possível vincular um novo alias - você já tem um alias com esse nome!",
-                    "pipe": False}
-            )
+            alias_name_already_exists: Response = Response({"response": "Não é possível vincular um novo alias - "
+                                                                        "você já tem um alias com esse nome!"})
 
-            user_dont_has_alias: Response = Response({
-                    "success": False,
-                    "response": 'O usuário fornecido não tem o alias "{}"!',
-                    "pipe": False}
-            )
+            user_dont_has_alias: Response = Response({"response": 'O usuário fornecido não tem o alias "{}"!'})
 
-            appendix_link: str = ('Você tentou criar um link a partir de um alias já vinculado (alias {} por {}), '
-                                  'então usei o original como seu modelo.')
+            link_with_invalid_name: Response = Response({"response": 'O nome do alias vinculado não é válido! {}'})
 
-            link_with_invalid_name: Response = Response({
-                    "success": False,
-                    "response": 'O nome do alias vinculado não é válido! {}',
-                    "pipe": False}
-            )
+            link_name_string: str = ', com um nome personalizado de "{}". '
 
-            link_name_string: str = ', com um nome personalizado "{}"'
+            link_to_link: Response = Response({"response": "Você tentou criar um link a partir de um alias link"
+                                                           " (alias \"{}\" por {}), então usei o original como seu "
+                                                           "modelo{} Quando o original mudar, o seu também mudará. "})
 
-            link_success: Response = Response({
-                    "success": False,
-                    "response": 'Alias vinculado com sucesso{}. '
-                                'Quando o original mudar, o seu também mudará. {}',
-                    "pipe": False}
-            )
+            link_success: Response = Response({"response": 'Alias vinculado com sucesso{} '
+                                                           'Quando o original mudar, o seu também mudará.'})
 
         class Remove(EnTranslations.Alias.Remove):
             no_alias_name_provided: Response = Response(

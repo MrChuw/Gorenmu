@@ -224,32 +224,24 @@ class EnTranslations:
                 "response": "Cannot edit alias! The command \"{}\" does not exist."})
 
         class Link(BaseTranslation):
-            link_no_args: Response = Response({
-                "success": False,
-                "response": "You didn't provide a user, or the alias name! "
-                            "Use: {}alias link (user) (alias name)"})
+            link_no_args: Response = Response({"response": "You didn't provide a user or alias name! "
+                                                           "Use: {}alias link (user) (alias name)"})
 
-            alias_name_already_exists: Response = Response({
-                "success": False,
-                "response": "Cannot link a new alias - you already have an alias with this name!"})
+            alias_name_already_exists: Response = Response({"response": "Cannot link a new alias - "
+                                                                        "you already have an alias with that name!"})
 
-            user_dont_has_alias: Response = Response({
-                "success": False,
-                "response": 'Provided user does not have the "{}" alias!'})
+            user_dont_has_alias: Response = Response({"response": 'The provided user does not have the alias "{}"!'})
 
-            appendix_link: str = ('You tried to create a link out of an already linked alias (alias {} by {}), '
-                                  'so I used the original as your template.')
+            link_with_invalid_name: Response = Response({"response": 'The linked alias name is not valid! {}'})
 
-            link_with_invalid_name: Response = Response({
-                "success": False,
-                "response": 'Linked alias name is not valid! {}'})
+            link_name_string: str = ', with a custom name of "{}".'
 
-            link_name_string: str = ', with a custom name "{}"'
+            link_to_link: Response = Response({"response": "You tried to create a link from a linked alias "
+                                                           "(alias {} by {}), so I used the original as your "
+                                                           "template. When the original changes, yours will too."})
 
-            link_success: Response = Response({
-                "success": False,
-                "response": 'Successfully linked alias{}. '
-                            'When the original changes, so will yours. {}'})
+            link_success: Response = Response({"response": 'Alias successfully linked{} '
+                                                           'When the original changes, yours will too.'})
 
         class Remove(BaseTranslation):
             no_alias_name_provided: Response = Response({

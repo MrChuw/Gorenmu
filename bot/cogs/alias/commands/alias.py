@@ -19,7 +19,8 @@ ALIAS_NAME_REGEX = re.compile(
 @check([])
 @command(name='alias', aliases=[''])
 async def command(ctx: Context, action: str, *args, ) -> Response:
-    if action.lower() in ["add"]:  # TODO: Checar se cada um está funcionando direito
+    # TODO: Verificar se o disabled está direito nas funções.
+    if action.lower() in ["add"]:
         return await add_alias(ctx, args)
     elif action.lower() in ["check", "list"]:
         return await check_alias(ctx, args)
@@ -30,7 +31,7 @@ async def command(ctx: Context, action: str, *args, ) -> Response:
     elif action.lower() in ["edit"]:
         return await edit_alias(ctx, args)
     elif action.lower() in ["link"]:
-        return await link_alias(ctx, args)  # TODO: Parei aqui
+        return await link_alias(ctx, args)
     elif action.lower() in ["remove"]:
         return await remove_alias(ctx, args)
     elif action.lower() in ["rename"]:
@@ -104,7 +105,7 @@ async def add_alias(ctx: Context, args: tuple):
 
     if not ALIAS_NAME_REGEX.match(name):
         return translations.alias_invalid_name.format_response(ctx, success=False, pipe=False)
-    alias = await Alias.get_or_none(user=ctx.user, name=name)
+    alias = await Alias.get_or_none(user=ctx.user, name=name, disebled=False)
     if alias:
         return translations.Add.alias_name_conflict.format_response(ctx, name, success=False, pipe=False)
 
@@ -120,14 +121,14 @@ async def check_alias(ctx: Context, args: tuple):  # TODO: test check a link ali
     translations = ctx.translations.Alias
     first_name, second_name, *rest = chain(args, repeat(None, 2))
     if not first_name and not second_name:
-        aliases = await Alias.filter(channel=None, user=ctx.user).prefetch_related("parent")
+        aliases = await Alias.filter(channel=None, user=ctx.user, disebled=False).prefetch_related("parent")
         aliases_flat = [alias.name for alias in aliases]
         url = await upload_alias(ctx, aliases, translations.alias_table_name.format(ctx.author.display_name))
         return translations.Check.user_alias_list.format_response(ctx, ", ".join(aliases_flat), url, success=False,
                                                                   pipe=False)
 
     target_aliases_flat = []
-    aliases = await Alias.filter(channel=None, user=ctx.user).prefetch_related("parent")
+    aliases = await Alias.filter(channel=None, user=ctx.user, disebled=False).prefetch_related("parent")
     aliases_flat = [alias.name for alias in aliases]
 
     target_user = await User.get_or_none(name=first_name)
@@ -158,7 +159,7 @@ async def check_alias(ctx: Context, args: tuple):  # TODO: test check a link ali
         alias_name = second_name
         mention = translations.mention(ctx, user, ctx.author.name)
 
-    alias = await Alias.filter(user_id=user.id, name=alias_name).first().prefetch_related("parent")  # NOQA
+    alias = await Alias.filter(user_id=user.id, name=alias_name, disebled=False).first().prefetch_related("parent")  # NOQA
 
     if not alias:
         return translations.Check.alias_not_found.format_response(ctx, mention, alias_name, success=False, pipe=False)  # NOQA
@@ -169,7 +170,7 @@ async def check_alias(ctx: Context, args: tuple):  # TODO: test check a link ali
     url = await upload_alias(ctx, [alias], translations.alias_table_name.format(user.name))
     invocation = f"{alias.invocation} {' '.join(alias.arguments)}"
     if not alias.command and alias.parent:  # NOQA
-        alias = await Alias.get(id=alias.parent.id)
+        alias = await Alias.get(id=alias.parent.id, disebled=False)
         original_user = await User.get(id=alias.user.id)
         return translations.Check.appendix_message.format_response(ctx, alias.name, original_user.name, alias.name,
                                                                    alias.name, invocation, url, pipe=False)
@@ -191,11 +192,15 @@ async def copy_alias(ctx: Context, args: tuple):
     if not ALIAS_NAME_REGEX.match(target_alias_name):
         return translations.Copy.target_alias_invalid_name.format_response(ctx, success=False, pipe=False)
 
+    alias = await Alias.filter(user=ctx.user, name=target_alias_name, disebled=False).first()
+    if alias:
+        return translations.Add.alias_name_conflict.format_response(ctx, target_alias_name, success=False, pipe=False)
+
     target_user = await User.get_or_none(name=target_user_name)
     if not target_user:
         return translations.user_not_found.format_response(ctx, target_user_name, success=False, pipe=False)
 
-    target_alias = await Alias.filter(channel=None, user=target_user, name=target_alias_name).first()
+    target_alias = await Alias.filter(channel=None, user=target_user, name=target_alias_name, disebled=False).first()
     if target_alias is None:
         return translations.Copy.no_alias_found.format_response(ctx, target_alias_name,
                                                                 target_user.name,
@@ -225,7 +230,7 @@ async def describe_alias(ctx: Context, args: tuple):  # NOQA
 
     name, *rest = chain(args, repeat(None, 2))
     rest = [arg for arg in rest if arg]
-    alias = await Alias.filter(user=ctx.user, name=name).first()
+    alias = await Alias.filter(user=ctx.user, name=name, disebled=False).first()
 
     if not alias:
         return translations.dont_have_alias.format_response(ctx, name, success=False, pipe=False)
@@ -253,7 +258,7 @@ async def edit_alias(ctx: Context, args: tuple):
     if not command_check:
         return translations.Edit.command_dont_exist.format_response(ctx, command_, success=False, pipe=False)
 
-    alias = await Alias.filter(user=ctx.user, name=name).first()
+    alias = await Alias.filter(user=ctx.user, name=name, disebled=False).first()
     if not alias:
         return translations.dont_have_alias.format_response(ctx, name, success=False, pipe=False)
 
@@ -270,6 +275,7 @@ async def edit_alias(ctx: Context, args: tuple):
 
 async def link_alias(ctx: Context, args: tuple):
     translations = ctx.translations.Alias
+    link_to_link = False
     if len(args) < 2:
         return translations.Link.link_no_args.format_response(ctx, success=False, pipe=False)
 
@@ -277,30 +283,26 @@ async def link_alias(ctx: Context, args: tuple):
     rest = [arg for arg in rest if arg]
     name = custom_link_name or alias_name
 
-    existing_alias = await Alias.filter(user=ctx.user, name=name).first()
+    existing_alias = await Alias.filter(user=ctx.user, name=name, disebled=False).first()
 
-    if existing_alias:
-        return translations.Link.alias_name_already_exists.format_response(ctx, success=False, pipe=False)
+    if existing_alias and not custom_link_name:
+        return translations.Add.alias_name_conflict.format_response(ctx, alias_name, success=False, pipe=False)
 
     target_user_data = await User.get_or_none(name=user_name)
     if not target_user_data:
         return translations.user_not_found.format_response(ctx, user_name, success=False, pipe=False)
 
-    target_alias = await (
-        Alias.filter(channel=None, user=target_user_data, name=name).first().prefetch_related("parent"))
-    appendix = ""
+    target_alias = await (Alias.filter(user=target_user_data, name=alias_name,
+                                       disebled=False).first().prefetch_related("parent"))
 
-    if not target_alias:
-        return translations.Link.user_dont_has_alias.format_response(ctx, name, success=False, pipe=False)
+    if not target_alias and not target_alias.parent:
+        return translations.Link.user_dont_has_alias.format_response(ctx, alias_name, success=False, pipe=False)
     elif target_alias.command is None and target_alias.parent_id is not None:  # NOQA
-        # Se o alias já é um link, usa o alias original
-        # target_alias = await Alias.get_or_none(id=target_alias.parent)
         target_alias: Alias = await target_alias.parent
         await target_alias.fetch_related("user")
-
         original_user = await target_alias.user
-        appendix = translations.Link.appendix_link.format(target_alias.name, original_user.name)
         target_alias.name = alias_name
+        link_to_link = True
 
     elif not ALIAS_NAME_REGEX.match(target_alias.name):
         return translations.Link.link_with_invalid_name.format_response(ctx, translations.alias_invalid_name,
@@ -310,14 +312,18 @@ async def link_alias(ctx: Context, args: tuple):
     await Alias.link_alias(ctx.user, name, target_alias)
 
     name_string = translations.Link.link_name_string.format(custom_link_name) if (
-            custom_link_name and custom_link_name != target_alias.name) else ""
+            custom_link_name and custom_link_name != target_alias.name) else "."
 
-    return translations.Link.link_success.format_response(ctx, name_string, appendix, pipe=False)
+    if link_to_link:
+        return translations.Link.link_to_link.format_response(ctx, target_alias.name, original_user.name, name_string,  # NOQA
+                                                              pipe=False)
+
+    return translations.Link.link_success.format_response(ctx, name_string, pipe=False)
 
 
 async def remove_alias(ctx: Context, args: tuple):
     translations = ctx.translations.Alias
-    if len(args) < 2:
+    if len(args) < 1:
         return translations.Remove.no_alias_name_provided.format_response(ctx, success=False, pipe=False)
     name, *rest = chain(args, repeat(None, 2))
     alias = await Alias.get_or_none(user=ctx.user, name=name)
@@ -336,11 +342,11 @@ async def rename_alias(ctx: Context, args: tuple):
     if not ALIAS_NAME_REGEX.match(new_alias_name):
         return translations.alias_invalid_name.format_response(ctx, translations.alias_invalid_name, success=False,
                                                                pipe=False)
-    old_alias = await Alias.get_or_none(user=ctx.user, name=old_alias_name)
+    old_alias = await Alias.get_or_none(user=ctx.user, name=old_alias_name, disebled=False)
 
     if not old_alias:
         return translations.dont_have_alias.format_response(ctx, old_alias_name, success=False, pipe=False)
-    existing_alias = await Alias.filter(user=ctx.user, name=new_alias_name).first()
+    existing_alias = await Alias.filter(user=ctx.user, name=new_alias_name, disebled=False).first()
     if existing_alias:
         return translations.Rename.alias_already_exists.format_response(ctx, new_alias_name, success=False, pipe=False)
 
