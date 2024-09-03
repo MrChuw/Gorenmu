@@ -11,7 +11,6 @@ from loguru import logger
 from twitchio.ext.commands import Bucket
 from twitchio.ext.routines import Routine
 from bot.translations import TranslationManager
-from bot.translations.en.decorators import BaseDecorator
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu

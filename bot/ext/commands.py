@@ -19,6 +19,7 @@ from bot.translations.en.decorators import BaseDecorator
 from typing import Type, TypeVar
 from twitchio.ext.commands.stringparser import StringParser
 from twitchio.ext.commands.errors import CommandNotFound
+import re
 
 T = TypeVar('T')
 if TYPE_CHECKING:
@@ -291,7 +292,10 @@ class Context(TwitchioContext):
         response: Response | None = None
         for command in message.content.split(" | "):  # NOQA
             message = original_message
-            message.content = f"{command} {response_str}"  # NOQA
+            if "{output}" in command:  # NOQA
+                message.content = command.replace("{output}", response_str)  # NOQA
+            else:
+                message.content = f"{command} {response_str}"  # NOQA
             ctx = await self.bot.get_context(message, cls=Context)
             ctx.user = external_ctx.user
             ctx.bot.CommandHandler.load_language(ctx)
@@ -324,7 +328,7 @@ class Context(TwitchioContext):
         if "{user}" in message.content:
             message.content = message.content.replace("{user}", external_ctx.user.name)
         if args:
-            message.content = message.content.format(*args)
+            message.content = format_content(message.content, args)
         if " | " in message.content:
             return await self.pipe_handler(external_ctx, message)
         else:
@@ -370,6 +374,18 @@ def base_decorator(base: BaseDecorator | Type[T]) -> Callable[[Command], Command
         return command
 
     return decorator
+
+
+def format_content(content: str, values: list[str]) -> str:
+    def replace_match(match):
+        index_str = match.group(0)[1:-1]
+        if '+' in index_str:
+            return " ".join(values[int(index_str[0]):])
+        return values[int(index_str)]
+
+    return re.sub(r'\{\d+(?:\+\d*)?}', replace_match, content)
+
+
 
 
 

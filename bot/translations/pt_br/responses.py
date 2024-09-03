@@ -11,7 +11,6 @@ from bot.translations.pt_br.extras import dungeon_rank_dict
 from bot.translations.pt_br.extras import Activity as ActivityExtras
 from bot.translations.pt_br.extras import TimeTools, Timeago
 from bot.translations.pt_br.extras import Dicio
-from textwrap import dedent
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -64,6 +63,10 @@ class PtBrTranslations(EnTranslations):
                     "success": True,
                     "response": "Os comandos foram recarregados com sucesso."})
 
+    class Others(EnTranslations.Others):
+        class Pipe(EnTranslations.Others.Pipe):
+            response: Response = Response({"response": "Pipe não é realmente um comando. "
+                                                       "Para mais informações, visite este link: {}"})
 
     class Afk(EnTranslations.Afk):
         afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
@@ -189,7 +192,7 @@ class PtBrTranslations(EnTranslations):
                                                                   "foi atualizada com sucesso."})
 
             description_reverted: Response = Response({"response": "A descrição do alias \"{}\" "
-                                                                  "foi redefinida com sucesso."})
+                                                                   "foi redefinida com sucesso."})
 
         class Edit(EnTranslations.Alias.Edit):
             no_args_provided: Response = Response({"response": "Nenhum alias ou nome de comando fornecido!"})
@@ -198,7 +201,8 @@ class PtBrTranslations(EnTranslations):
 
             edit_success: Response = Response({"response": 'O alias "{}" foi editado com sucesso.'})
 
-            command_dont_exist: Response = Response({"response": 'Não é possível editar o alias! O comando "{}" não existe.'})
+            command_dont_exist: Response = Response({"response": 'Não é possível editar o alias! '
+                                                                 'O comando "{}" não existe.'})
 
         class Link(EnTranslations.Alias.Link):
             link_no_args: Response = Response({"response": "Você não forneceu um usuário ou o nome do alias! "
@@ -221,30 +225,17 @@ class PtBrTranslations(EnTranslations):
                                                            'Quando o original mudar, o seu também mudará.'})
 
         class Remove(EnTranslations.Alias.Remove):
-            no_alias_name_provided: Response = Response(
-                    {"success": False, "response": "Nenhum nome de alias fornecido!", "pipe": False}
-            )
+            no_alias_name_provided: Response = Response({"response": "Nenhum nome de alias fornecido!"})
 
-            alias_removed: Response = Response(
-                    {"success": False, "response": 'Seu alias "{}" foi removido com sucesso.', "pipe": False}
-            )
+            alias_removed: Response = Response({"response": 'Seu alias "{}" foi removido com sucesso.'})
 
         class Rename(EnTranslations.Alias.Rename):
-            no_name_provided: Response = Response({
-                    "success": False,
-                    "response": "Você deve fornecer tanto o nome atual do alias quanto o novo!",
-                    "pipe": False}
-            )
+            no_name_provided: Response = Response({"response": "Você deve fornecer tanto o nome "
+                                                               "atual do alias quanto o novo!"})
 
-            alias_already_exists: Response = Response({
-                    "success": False,
-                    "response": 'Você já tem o alias "{}"!'})
+            alias_already_exists: Response = Response({"response": 'Você já tem o alias "{}"!'})
 
-            alias_renamed: Response = Response({
-                    "success": False,
-                    "response": 'Seu alias "{}" foi renomeado com sucesso para "{}".',
-                    "pipe": False}
-            )
+            alias_renamed: Response = Response({"response": 'Seu alias "{}" foi renomeado com sucesso para "{}".'})
 
     class Chance(EnTranslations.Chance):
         random_percentage: Response = Response({"success": False, "response": "{:.2f}%."})
@@ -259,6 +250,7 @@ class PtBrTranslations(EnTranslations):
                 "response": "Há um total de {} caracteres. "
                             "Dentre eles, {} são pontuações, {} são letras maiúsculas e {} são caracteres especiais.",
             })
+
 
     class HyperTranslate(EnTranslations.HyperTranslate):
         quantity_error: Response = Response(

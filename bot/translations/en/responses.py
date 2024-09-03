@@ -73,6 +73,10 @@ class EnTranslations:
                     "response": "The commands were successfully reloaded."}
             )
 
+    class Others:
+        class Pipe(BaseTranslation):
+            response: Response = Response({"response": "Pipe is not really a command. "
+                                                       "For more information, visit this link: {}"})
 
     class Afk:
         afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
@@ -277,8 +281,9 @@ class EnTranslations:
         character_count: Response = Response({
                 "success": False,
                 "response": "There is a total of {} characters. "
-                            "Of these, {} are punctuation marks, {} are uppercase letters, and {} are special characters.",
-            })
+                            "Of these, {} are punctuation marks, {} are uppercase letters, "
+                            "and {} are special characters."})
+
 
     class HyperTranslate(BaseTranslation):
         quantity_error: Response = Response(
