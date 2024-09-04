@@ -397,3 +397,6 @@ def custom_format(template, **kwargs):
 
     # Substituir apenas os placeholders definidos em pattern
     return pattern.sub(replace, template)
+
+
+

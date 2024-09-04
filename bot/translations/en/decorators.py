@@ -118,28 +118,31 @@ class EnDecorators:
             usage = "Pipe is not really a command. For more information, visit the website."
             description = "Pipe is not really a command. For more information, visit the website."
             extras = ""
-            template: str = dedent("""
+            template = dedent("""
                     # {command_title}
 
-                    ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
+                    # This is not really a command.
 
-                    {description}
+                    !!! warning "Cooldown!"
 
-                    ## All the alias available for AFK are:
-                        - {aliases}
+                        The cooldown for the pipe will be the same as the cooldown of the commands used.
 
-                    ## The ways to use this command are:
+                    The Pipe is represented by the character "|" (vertical bar), and it is used to forward the output of one command to another.
+
+                    ## How to use pipe:
 
                     ```text
-                    user: {prefix}{command_name}
-
-                    bot: User, 
+                    user: {prefix}example_command_1 <command options> | example_command_2 
+                    or 
+                    user: {prefix}example_command_1 <command options> | example_command_2 <command 2 options> {output} <remaining command 2 options>
                     ```
-                    !!! warning "Maximum length!"
 
-                        The message could not be longer than 450 characters, if it is longer, an error will be returned.
+                    ## The bot's step-by-step will be:
+                     - Execute `example_command_1` with `<command options>` if any.
+                     - Then it will execute `example_command_2` with the response from `example_command_1` added as an argument.
+                       - If you use `{output}`, it will place the response from `example_command_1` in the specified position.
+
                     """)  # NOQA
-
 
     class Afk(BaseClass):
         class Afk(BaseDecorator, BaseClass):

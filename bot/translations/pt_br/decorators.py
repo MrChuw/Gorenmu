@@ -78,24 +78,29 @@ class PtBrDecorators(EnDecorators):
             template = dedent("""
                     # {command_title}
 
-                    # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
+                    # Isto não é realmente um comando.
 
-                    {description}
+                    !!! warning "Cooldown!"
 
-                    ## Todos os aliases disponíveis para {command_name} são:
-                        - {aliases}
+                        O cooldown do pipe será igual ao cooldown dos comandos utilizados.
 
-                    ## As formas de utilizar este comando são:
+                    O Pipe é representado pelo caractere "|" (barra vertical), que serve para encaminhar a saída de um comando para outro.
+
+                    ## Como usar pipe:
 
                     ```text
-                    user: {prefix}{command_name}
-
-                    bot: Usuário, 
+                    user: {prefix}exemplo_de_comando_1 <opções do comando> | exemplo_de_comando_2 
+                    ou 
+                    user: {prefix}exemplo_de_comando_1 <opções do comando> | exemplo_de_comando_2 <opções do comando 2> {output} <resto das opções do comando 2>
                     ```
-                    !!! warning "Tamanho Máximo!"
 
-                        A mensagem não pode ter mais que 450 caracteres; caso seja maior, retornará um erro.
+                    ## O passo a passo do bot será:
+                     - Executar o `exemplo_de_comando_1` com `<opções do comando>` caso tenha alguma.
+                     - Em seguida, ele executará o `exemplo_de_comando_2` com a resposta do comando `exemplo_de_comando_1` adicionada como argumento.
+                       - Se você utilizar `{output}`, ele colocará a resposta de `exemplo_de_comando_1` na posição especificada.
+
                     """)  # NOQA
+
 
     class Afk(EnDecorators.Afk):
         class Afk(EnDecorators.Afk.Afk):
