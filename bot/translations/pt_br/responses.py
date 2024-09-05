@@ -251,8 +251,9 @@ class PtBrTranslations(EnTranslations):
                             "Dentre eles, {} são pontuações, {} são letras maiúsculas e {} são caracteres especiais.",
             })
 
-
     class HyperTranslate(EnTranslations.HyperTranslate):
+        lang: str = "pt"
+
         quantity_error: Response = Response(
             {
                 "success": False,
@@ -269,6 +270,10 @@ class PtBrTranslations(EnTranslations):
             {"success": False, "response": "Não foi possível traduzir o texto."}
         )
         translation: Response = Response({"success": False, "response": "{}"})
+
+
+
+
 
     class Imgur(EnTranslations.Imgur):
         links: Response = Response({"success": False, "response": "", "response_list": []})
@@ -367,6 +372,7 @@ class PtBrTranslations(EnTranslations):
         unexpected_error: Response = Response(
             {"success": False, "response": "Aconteceu algum erro, tente novamente."}
         )
+
 
     class Annotations(EnTranslations.Annotations):
         class Annotation(EnTranslations.Annotations.Annotation):

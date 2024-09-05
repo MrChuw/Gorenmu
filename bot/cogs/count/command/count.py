@@ -43,7 +43,7 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
         cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
         afk_template = getattr(decorator, 'template', EnDecorators.Count.template).format(rate=rate, per=per,
                 cooldown_type=cooldown_type, description=description, command_title=command_.name.capitalize(),
-                command_name=command_.name.lower(), prefix=prefix, )
+                command_name=command_.name.lower(), prefix=prefix)
 
         responses[lang][command_.name.lower()] = afk_template
 

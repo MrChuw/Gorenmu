@@ -14,6 +14,7 @@ class BaseDecorator:
     helper: str
     usage: str
     description: str
+    extras: str
     template: str
 
 
@@ -434,7 +435,6 @@ class EnDecorators:
          - And the response will be `There are a total of 50 characters. Among them, 1 is punctuation, 4 are uppercase letters, and 0 are special characters.` 
          """) # NOQA
 
-
     class Chance(BaseDecorator, BaseClass):
         helper = "Returns a random percentage."
         usage = "To use: {}chance"
@@ -534,6 +534,31 @@ class EnDecorators:
         ```
         """)  # NOQA
 
+    class HyperTranslate(BaseDecorator, BaseClass):
+        helper = "Translates a text into random languages depending on how many times the user requests."
+        usage = "To use: <prefix>hypertranslate <number of times> <text>"
+        description = ("Command based on [ravbug](https://www.ravbug.com/hypertranslate/) that translates a text into "
+                       "random languages depending on how many times the user requests.")
+        extras = ""
+        template = dedent("""
+        # {command_title}
+        
+        # This command can be used {rate} times consecutively, with a cooldown of {per} per {cooldown_type}.
+        
+        {description}
+        
+        ## All available aliases for {command_name} are:
+            - {aliases}
+        
+        ## The ways to use this command are:
+    
+        ```text
+        user: {prefix}{command_name} 10 test
+        
+        bot: User, <some random text.>
+        ```
+        """)  # NOQA
+
     decorators = {
             'afk': Afk,
             'isafk': Afk,
@@ -542,18 +567,13 @@ class EnDecorators:
             'chance': Chance,
             'choice': Choice,
             'count': Count,
+            'hypertranslate': HyperTranslate,
 
             'nada': Admin.Nada,
             'reload': Admin.Reload,
             'pipe': Others.Pipe,
     }
 
-    class HyperTranslate(BaseDecorator, BaseClass):
-        helper = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer que "
-                  "ele seja traduzido.")
-        usage = "para usar: <prefixo>hypertranslate <quantidade de vezes que vai ser traduzido/número> <texto>"
-        description = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer "
-                       "que ele seja traduzido.")
 
     class Imgur(BaseDecorator, BaseClass):
         helper = "Envia um link aleatorio do imgur. (Pode vir NSFW)"

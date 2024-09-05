@@ -242,7 +242,6 @@ class Gorenmu(Bot):
     async def event_message(self, message: Message) -> None:
         if message.echo or message.author.name == self.nick:
             return None
-        # with contextlib.suppress(IndexError, CommandNotFound):
         ctx: Context | None = await self.get_context(message, cls=Context)
         if ctx and "WHISPER" not in ctx.message.raw_data:
             await self.cache.set(f"{ctx.author.id}", Cache.UserCache(ctx), namespace="UserCache")
@@ -305,7 +304,8 @@ class Gorenmu(Bot):
         # Erros a partir do twitchio.
         if data is not None:
             self.log.error(str(data.args), exc_info=error)
-        # self.log.error(str(error.args), exc_info=data)
+        if "'Context' object has no attribute 'user'" not in error.args:
+            self.log.error(str(error.args), exc_info=data)
 
 
 

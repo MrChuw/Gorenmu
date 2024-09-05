@@ -101,7 +101,6 @@ class PtBrDecorators(EnDecorators):
 
                     """)  # NOQA
 
-
     class Afk(EnDecorators.Afk):
         class Afk(EnDecorators.Afk.Afk):
             helper = "Comando para entrar em um status."
@@ -496,6 +495,31 @@ class PtBrDecorators(EnDecorators):
         ```
         """) # NOQA
 
+    class HyperTranslate(EnDecorators.HyperTranslate):
+        helper = "Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que o usuário pedir."
+        usage = "Para usar: <prefixo>hypertranslate <quantidade de vezes> <texto>"
+        description = ("Comando baseado no [ravbug](https://www.ravbug.com/hypertranslate/) que serve para traduzir um texto em "
+                       "idiomas aleatórios dependendo da quantidade de vezes que o usuário pedir.")
+        extras = ""
+        template = dedent("""
+        # {command_title}
+
+        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
+
+        {description}
+
+        ## Todos os aliases disponíveis para {command_name} são:
+            - {aliases}
+
+        ## As formas de utilizar este comando são:
+
+        ```text
+        user: {prefix}{command_name} 10 teste
+
+        bot: Usuário, <algum texto aleatório.>
+        ```
+        """)  # NOQA
+
     decorators = {
             'afk': Afk,
             'isafk': Afk,
@@ -504,19 +528,13 @@ class PtBrDecorators(EnDecorators):
             'chance': Chance,
             'choice': Choice,
             'count': Count,
+            'hypertranslate': HyperTranslate,
 
 
             'nada': Admin.Nada,
             'reload': Admin.Reload,
             'pipe': Others.Pipe,
     }
-
-    class HyperTranslate(EnDecorators.HyperTranslate):
-        helper = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer que "
-                  "ele seja traduzido.")
-        usage = "para usar: <prefixo>hypertranslate <quantidade de vezes que vai ser traduzido/número> <texto>"
-        description = ("Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que você quer "
-                       "que ele seja traduzido.")
 
     class Imgur(EnDecorators.Imgur):
         helper = "Envia um link aleatorio do imgur. (Pode vir NSFW)"

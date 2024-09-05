@@ -284,8 +284,10 @@ class EnTranslations:
                             "Of these, {} are punctuation marks, {} are uppercase letters, "
                             "and {} are special characters."})
 
-
     class HyperTranslate(BaseTranslation):
+        # User bot.apis.translate.constants.GOOGLE_LANGUAGES_TO_CODES as reference for the lang
+        lang: str = "en"
+
         quantity_error: Response = Response(
             {
                 "success": False,
@@ -302,6 +304,10 @@ class EnTranslations:
             {"success": False, "response": "Não foi possível traduzir o texto."}
         )
         translation: Response = Response({"success": False, "response": "{}"})
+
+
+
+
 
     class Imgur(BaseTranslation):
         links: Response = Response({"success": False, "response": "", "response_list": []})
