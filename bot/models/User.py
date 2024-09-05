@@ -58,7 +58,7 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
 
     @staticmethod
     async def create_or_update(ctx: Context, **kwargs) -> Optional[User]:
-        if instance := await User.get_or_none(id=ctx.author.id):
+        if instance := await User.get_or_none(id=int(ctx.author.id)):
             attrs = {"name": ctx.author.name, "channel": ctx.channel.name,  # "saved_color": ctx.author.colour,
                      "content": ctx.message.content.replace("ACTION", "", 1), "timestamp": ctx.message.timestamp,
                      }

@@ -73,6 +73,7 @@ class SessionsCaches:
 
         self.AliasCachedSession: SessionsCaches.AliasCachedSession = self.AliasCachedSession(bot)
         self.CountCachedSession: SessionsCaches.CountCachedSession = self.CountCachedSession(bot)
+        self.TranslateCachedSession: SessionsCaches.TranslateCachedSession = self.TranslateCachedSession(bot)
 
     async def close_all_sessions(self):
         for session in vars(self).values():
@@ -238,6 +239,20 @@ class SessionsCaches:
                                                           allowed_methods=self.allowed_methods, include_headers=True, )
             self.session: CachedSession = CachedSession(cache=self.cache)
 
+    class TranslateCachedSession:
+        def __init__(self, bot: Gorenmu):
+            self.bot = bot
+            self.urls_expire_after = {"*/*": timedelta(weeks=4*6)}
+            self.allowed_methods = ("GET", "HEAD", "POST")
+            if "redis" in bot.__dict__:
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Translate_requests",
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods, include_headers=True)
+            else:
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-Translate-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods, include_headers=True, )
+            self.session: CachedSession = CachedSession(cache=self.cache)
 
 
 

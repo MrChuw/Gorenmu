@@ -59,9 +59,7 @@ class Bot(Bot):
                     context.bot.run_event("command_error", context, _e)
 
         try:
-            args, kwargs = await context.command.parse_args(context, context.command._instance, context.view.words,
-                                                            index=index  # NOQA
-                                                            )
+            args, kwargs = await context.command.parse_args(context, context.command._instance, context.view.words, index=index)  # NOQA
         except (MissingRequiredArgument, BadArgument) as e:
             if self.event_error:
                 args_ = ([context.command._instance, context] if context.command._instance else [context]  # NOQA
@@ -283,7 +281,7 @@ class Context(TwitchioContext):
             await self.handle_echo(ctx=ctx, response_str=response_str)
         await self.send_response(ctx, user_handler, response_str)
 
-    async def pipe_handler(self, external_ctx: Context, message: Message ):
+    async def pipe_handler(self, external_ctx: Context, message: Message):
         response_str = ""
         translations = external_ctx.bot.TranslationManager.get_translations(external_ctx.user.language or "en")
         translation = translations.Exceptions.ResponseExceptions()
@@ -348,8 +346,8 @@ def check(check_list: list) -> Callable[[Command], Command]:
     return decorator
 
 
-def usage(usage: str) -> Callable[[Command], Command]:
-    def decorator(command: Command) -> Command:
+def usage(usage: str) -> Callable[[Command], Command]:  # NOQA
+    def decorator(command: Command) -> Command:  # NOQA
         # if type(command) != Command:
         #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
         command.usage = usage
@@ -359,7 +357,7 @@ def usage(usage: str) -> Callable[[Command], Command]:
 
 
 def helper(description: str) -> Callable[[Command], Command]:
-    def decorator(command: Command) -> Command:
+    def decorator(command: Command) -> Command:  # NOQA
         # if type(command) != Command:
         #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
         command.description = description
@@ -369,7 +367,7 @@ def helper(description: str) -> Callable[[Command], Command]:
 
 
 def base_decorator(base: BaseDecorator | Type[T]) -> Callable[[Command], Command]:
-    def decorator(command: Command) -> Command:
+    def decorator(command: Command) -> Command:  # NOQA
         command.decorators_original = base
         return command
 

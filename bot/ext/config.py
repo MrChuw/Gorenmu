@@ -169,11 +169,10 @@ class DatabaseConfig:
         if self.type is DatabaseType.MEMORY or mock:
             self.database_uri: str = "sqlite://:memory:"
 
-        self.DB_CONFIG = {"connections": {"default": self.database_uri
-                                          }, "apps": {"models": {"models": ["bot.models"], "default_connection": "default",
-                                                                 }
-                                                      },
+        self.DB_CONFIG = {"connections": {"default": self.database_uri},
+                          "apps": {"models": {"models": ["bot.models"], "default_connection": "default"}}
                           }
+
 
 
 class LoggerConfig:
