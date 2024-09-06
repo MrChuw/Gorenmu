@@ -559,6 +559,37 @@ class EnDecorators:
         ```
         """)  # NOQA
 
+    class NSFW(BaseClass):
+        class Imgur(BaseDecorator, BaseClass):
+            helper = "Sends a random Imgur link. (Might be NSFW)"
+            usage = "To use: {}imgur or {}imgur7 <quantity>"
+            description = ("This command generates random Imgur links with 5 characters, from before 2014, and "
+                           "using imgur7 for links from 2014 up to now.")
+            template = dedent("""
+                # {command_title}
+
+                # This command can be used {rate} times consecutively, with a cooldown of {per} per {cooldown_type}.
+
+                {description}
+
+                ## All available aliases for {command_name} are:
+                    - {aliases}
+
+                ## The ways to use this command are:
+
+                ```text
+                user: {prefix}{command_name} <number of images>
+
+                bot: User, <link to the image or link to a site with all the images>
+                ```
+
+                ```text
+                user: {prefix}{command_name}7 <number of images>
+
+                bot: User, <link to the image or link to a site with all the images>
+                ```
+                """)  # NOQA
+
     decorators = {
             'afk': Afk,
             'isafk': Afk,
@@ -568,24 +599,16 @@ class EnDecorators:
             'choice': Choice,
             'count': Count,
             'hypertranslate': HyperTranslate,
+            'imgur': NSFW.Imgur,
 
             'nada': Admin.Nada,
             'reload': Admin.Reload,
             'pipe': Others.Pipe,
     }
 
-
-    class Imgur(BaseDecorator, BaseClass):
-        helper = "Envia um link aleatorio do imgur. (Pode vir NSFW)"
-        usage = "para usar: <prefixo>imgur <quantidade>"
-        description = "Envio um link aleatorio do imgur. (Pode vir NSFW)"
-
-    class Imgur7(BaseDecorator, BaseClass):
-        helper = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
-                  "(Pode vir NSFW)")
-        usage = "para usar: <prefixo>imgur <quantidade>"
-        description = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
-                       "(Pode vir NSFW)")
+    NSFW_commands = {
+            'imgur': NSFW.Imgur,
+    }
 
     class ImgurRepeated(BaseDecorator, BaseClass):
         helper = "Verifica a quantidade de imgurs repetidos."
@@ -649,7 +672,7 @@ class EnDecorators:
             usage = "Para usar: {}"
             description = ""
 
-    class NSFW(BaseClass):  # TODO: Fazer de novo.
+    class NSFWold(BaseClass):  # TODO: Fazer de novo.
         class Boru(BaseDecorator, BaseClass):
             helper = "Envia um ou mais links aleatório de uma lista de boorus."
             usage = "Para usar: {}booru <tags1> <tags2> <tags3> --<quantidade opcional>"

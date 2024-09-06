@@ -264,8 +264,8 @@ class Context(TwitchioContext):
 
         if handle == "echo" and not response_list:
             await self.handle_echo(ctx=ctx, response_str=response_str)
-
-        await self.send_response(ctx, user_handler, response_str)
+        if response_str:
+            await self.send_response(ctx, user_handler, response_str)
         if response_list:
             await self.handle_response_list(ctx, response_list, handle)
 

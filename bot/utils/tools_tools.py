@@ -144,9 +144,3 @@ class ToolsTools:
                 return await ctx.simple_response(ctx, ctx.translations.Exceptions.ToolsExceptions.announcement.format(e)
                                                  )
 
-    @staticmethod
-    async def generate(quantidade: int, k: int, session: CachedSession):
-        urls = ["https://i.imgur.com/" + "".join(random.choices(ascii_letters + digits, k=k)) + ".jpg" for _ in
-                range(quantidade + 10)]
-        tasks = [asyncio.create_task(session.head(url=url, allow_redirects=False)) for url in urls]
-        return await asyncio.gather(*tasks)

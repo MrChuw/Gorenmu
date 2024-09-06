@@ -238,62 +238,43 @@ class PtBrTranslations(EnTranslations):
             alias_renamed: Response = Response({"response": 'Seu alias "{}" foi renomeado com sucesso para "{}".'})
 
     class Chance(EnTranslations.Chance):
-        random_percentage: Response = Response({"success": False, "response": "{:.2f}%."})
+        random_percentage: Response = Response({"response": "{:.2f}%."})
 
     class Choice(EnTranslations.Choice):
         choice_separators: list[str] = EnTranslations.Choice.base_separators + ["ou"]
-        chosen_option: Response = Response({"success": False, "response": "{}"})
+        chosen_option: Response = Response({"response": "{}"})
 
     class Count(EnTranslations.Count):
-        character_count: Response = Response({
-                "success": False,
-                "response": "Há um total de {} caracteres. "
-                            "Dentre eles, {} são pontuações, {} são letras maiúsculas e {} são caracteres especiais.",
-            })
+        character_count: Response = Response({"response": "Há um total de {} caracteres. "
+                                                          "Dentre eles, {} são pontuações, {} "
+                                                          "são letras maiúsculas e {} são caracteres especiais."})
 
     class HyperTranslate(EnTranslations.HyperTranslate):
         lang: str = "pt"
 
-        quantity_error: Response = Response(
-            {
-                "success": False,
-                "response": "Você deve informar a quantidade de vezes que vai ser traduzido. Como exemplo: "
-                "`{}hypertranslate 10 <texto>`",
-                "is_response": False,
-            }
-        )
+        quantity_error: Response = Response({"response": "Você deve informar a quantidade de vezes que vai ser "
+                                                         "traduzido. Como exemplo: `{}hypertranslate 10 <texto>`"})
+
         starter_string: str = "Estou traduzindo o texto..."
-        api_error: Response = Response(
-            {"success": False, "response": "Ocorreu um erro com a api de tradução."}
-        )
-        unexpected_error: Response = Response(
-            {"success": False, "response": "Não foi possível traduzir o texto."}
-        )
-        translation: Response = Response({"success": False, "response": "{}"})
+
+        unexpected_error: Response = Response({"response": "Não foi possível traduzir o texto."})
+
+        translation: Response = Response({"response": "{}"})
+
+    class NSFW(EnTranslations.NSFW):
+        class Imgur(EnTranslations.NSFW.Imgur):
+            links: Response = Response({"response": ""})
+
+            time_message: str = "Tempo: {} "
+
+            all_images_embed: str = "Todas as imagens que foram geradas: {} "
+
+            all_images_embed_time: str = "Tempo: {} || Todas as imagens: {} "
+
+            timeout: Response = Response({"response": "100 segundos se passaram e eu não consegui gerar. "
+                                                      "Espere um pouco e tente novamente."})
 
 
-
-
-
-    class Imgur(EnTranslations.Imgur):
-        links: Response = Response({"success": False, "response": "", "response_list": []})
-        timeout: Response = Response(
-            {
-                "success": False,
-                "response": "100 segundos se passaram e eu não consegui gerar, espera um pouco e tente novamente.",
-                "is_response": False,
-            }
-        )
-
-    class Imgur7(EnTranslations.Imgur7):
-        links: Response = Response({"success": False, "response": "", "response_list": []})
-        timeout: Response = Response(
-            {
-                "success": False,
-                "response": "100 segundos se passaram e eu não consegui gerar, espera um pouco e tente novamente.",
-                "is_response": False,
-            }
-        )
 
     class ImgurRepeated(EnTranslations.ImgurRepeated):
         links_repeated: Response = Response(
@@ -537,13 +518,13 @@ class PtBrTranslations(EnTranslations):
             past: str = "passadas"
             current: str = "atuais"
 
-    class NSFW(EnTranslations.NSFW):
-        class Boru(EnTranslations.NSFW.Boru):
+    class NSFWold(EnTranslations.NSFWold):
+        class Boru(EnTranslations.NSFWold.Boru):
             pls_wait: str = "por favor espera um pouco, estou gerando os links."
             unexpected_error: Response = Response({"success": False, "response": "{}"})
             success: Response = Response({"success": False, "response": ""})
 
-        class AllBoorus(EnTranslations.NSFW.AllBoorus):
+        class AllBoorus(EnTranslations.NSFWold.AllBoorus):
             pls_wait: str = "por favor espera um pouco, estou gerando os links."
             unexpected_error: Response = Response({"success": False, "response": "{}"})
             too_much_tags: Response = Response(

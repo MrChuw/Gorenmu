@@ -27,14 +27,12 @@ class UploadThings:
                 return (await r.read()).decode("utf8")
 
     @staticmethod
-    async def send_imgur(links: str, bot: Gorenmu, cache: SQLiteBackend):
+    async def send_imgur(links: str, bot: Gorenmu, session: CachedSession):
         try:
-            async with CachedSession(cache=cache, headers={"Authorization": bot.config.ApisConfig.site_api_key}
-                                     ) as session:
-                async with session.post(bot.config.BotConfig.imagem_link_upload_thing_url, json={"links": links}
-                                        ) as resp:
-                    embed = json.loads(await resp.text())
-                    return embed["url"]
+            session.headers.update({"Authorization": bot.config.ApisConfig.site_api_key})
+            response = await session.post(bot.config.ApisConfig.imagem_link_upload_thing_url, json={"links": links})
+            embed = json.loads(await response.text())
+            return embed["url"]
         except Exception as e:
             logger.error(e)
             return None

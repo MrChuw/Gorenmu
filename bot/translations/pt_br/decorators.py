@@ -498,8 +498,8 @@ class PtBrDecorators(EnDecorators):
     class HyperTranslate(EnDecorators.HyperTranslate):
         helper = "Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que o usuário pedir."
         usage = "Para usar: <prefixo>hypertranslate <quantidade de vezes> <texto>"
-        description = ("Comando baseado no [ravbug](https://www.ravbug.com/hypertranslate/) que serve para traduzir um texto em "
-                       "idiomas aleatórios dependendo da quantidade de vezes que o usuário pedir.")
+        description = ("Comando baseado no [ravbug](https://www.ravbug.com/hypertranslate/) que serve para traduzir "
+                       "um texto em idiomas aleatórios dependendo da quantidade de vezes que o usuário pedir.")
         extras = ""
         template = dedent("""
         # {command_title}
@@ -520,6 +520,37 @@ class PtBrDecorators(EnDecorators):
         ```
         """)  # NOQA
 
+    class NSFW(EnDecorators.NSFW):
+        class Imgur(EnDecorators.NSFW.Imgur):
+            helper = "Envia um link aleatório do Imgur. (Pode ser NSFW)"
+            usage = "Para usar: {}imgur ou {}imgur7 <quantidade>"
+            description = ("Este comando gera links aleatórios do Imgur com 5 caracteres, que são de 2014 para trás, e "
+                           "usando imgur7 para links de 2014 até o presente.")
+            template = dedent("""
+            # {command_title}
+
+            # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
+
+            {description}
+
+            ## Todos os aliases disponíveis para {command_name} são:
+                - {aliases}
+
+            ## As formas de utilizar este comando são:
+
+            ```text
+            user: {prefix}{command_name} <quantidade de imagens>
+
+            bot: Usuário, <link para a imagem ou link para um site com todas as imagens>
+            ```
+
+            ```text
+            user: {prefix}{command_name}7 <quantidade de imagens>
+
+            bot: Usuário, <link para a imagem ou link para um site com todas as imagens>
+            ```
+            """)  # NOQA
+
     decorators = {
             'afk': Afk,
             'isafk': Afk,
@@ -529,6 +560,7 @@ class PtBrDecorators(EnDecorators):
             'choice': Choice,
             'count': Count,
             'hypertranslate': HyperTranslate,
+            'imgur': NSFW.Imgur,
 
 
             'nada': Admin.Nada,
@@ -536,17 +568,9 @@ class PtBrDecorators(EnDecorators):
             'pipe': Others.Pipe,
     }
 
-    class Imgur(EnDecorators.Imgur):
-        helper = "Envia um link aleatorio do imgur. (Pode vir NSFW)"
-        usage = "para usar: <prefixo>imgur <quantidade>"
-        description = "Envio um link aleatorio do imgur. (Pode vir NSFW)"
-
-    class Imgur7(EnDecorators.Imgur7):
-        helper = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
-                  "(Pode vir NSFW)")
-        usage = "para usar: <prefixo>imgur <quantidade>"
-        description = ("Envia um link aleatorio do imgur com 7 caracteres, e isso pode levar entre 5 minutos e 1h. "
-                       "(Pode vir NSFW)")
+    NSFW_commands = {
+            'imgur': NSFW.Imgur,
+    }
 
     class ImgurRepeated(EnDecorators.ImgurRepeated):
         helper = "Verifica a quantidade de imgurs repetidos."
@@ -610,13 +634,13 @@ class PtBrDecorators(EnDecorators):
             usage = "Para usar: {}"
             description = ""
 
-    class NSFW(EnDecorators.NSFW):  # TODO: Fazer de novo.
-        class Boru(EnDecorators.NSFW.Boru):
+    class NSFWold(EnDecorators.NSFWold):  # TODO: Fazer de novo.
+        class Boru(EnDecorators.NSFWold.Boru):
             helper = "Envia um ou mais links aleatório de uma lista de boorus."
             usage = "Para usar: {}booru <tags1> <tags2> <tags3> --<quantidade opcional>"
             description = "Envia um ou mais link aleatório de uma lista de boorus."
 
-        class AllBoorus(EnDecorators.NSFW.AllBoorus):
+        class AllBoorus(EnDecorators.NSFWold.AllBoorus):
             helper = "Envia um ou mais links aleatório de um site de booru específico."
             usage = "Para usar: {}sfbo <tags1> <tags2> <tags3> --<quantidade opcional>"
             description = "Envia um ou mais links aleatório de um site de booru específico."

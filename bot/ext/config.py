@@ -111,9 +111,6 @@ class BotConfig:
             self.prefix = prefix_generator(str(self.prefix) + allowed_prefix)
         self.allowed_prefix_size: int = data.get("allowed_prefix_size", 1)
         self.site_url: str = data.get("site_url", "https://exemple.org")
-        self.pastbin_url: str = data.get('pastbin_url', "https://bit.exemple.org")
-        self.imagem_link_upload_thing_url: str = data.get("imagem_link_upload_thing_url", "https://uploadthing.com")
-        self.file_upload_url: str = data.get("file_upload_url", "https://upload.exemple.org")
         self.imgur_permitidos: List[int] = data.get("imgur_authorized_ids", [411010313])
 
 
@@ -132,6 +129,9 @@ class ApisConfig:
         self.client_id: str = data.get("client_id", "api_exemple")
         self.api_client_secret: str = data.get("api_client_secret", "api_exemple")
         self.api_client_id: str = data.get("api_client_id", "api_exemple")
+        self.imagem_link_upload_thing_url: str = data.get("imagem_link_upload_thing_url", "https://uploadthing.com")
+        self.file_upload_url: str = data.get("file_upload_url", "https://upload.exemple.org")
+        self.pastbin_url: str = data.get('pastbin_url', "https://bit.exemple.org")
 
 
 class DatabaseConfig:

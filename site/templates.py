@@ -95,6 +95,8 @@ nav:
   - {language_commands}:
       - {language_commands_lower}/index.md
 {nav}
+      - NSFW:
+{nsfw_nav}
 
 """
                               )
@@ -105,6 +107,8 @@ language_change_menu_template: str = ("""    - name: {name}
 """)
 
 nav_template: str = "      - {Command_title}: {language_commands_lower}/{command_file}.md\n"
+
+nsfw_nav_template: str = "          - {Command_title}: {language_commands_lower}/{command_file}.md\n"
 
 redirect_template: str = """<!DOCTYPE html>
 <html lang="en">

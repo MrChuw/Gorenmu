@@ -270,16 +270,17 @@ class EnTranslations:
                 "response": 'Your alias "{}" has been successfully renamed to "{}".'})
 
     class Chance(BaseTranslation):
-        random_percentage: Response = Response({"success": False, "response": "{:.2f}%."})
+        random_percentage: Response = Response({"response": "{:.2f}%."})
 
     class Choice(BaseTranslation):
         base_separators: list[str] = [",", " "]
         choice_separators: list[str] = base_separators + ["or"]
-        chosen_option: Response = Response({"success": False, "response": "{}"})
+        # On translation use choice_separators: list[str] = EnTranslations.Choice.base_separators + list of strings.
+        # See portuguese as exemple.
+        chosen_option: Response = Response({"response": "{}"})
 
     class Count(BaseTranslation):
         character_count: Response = Response({
-                "success": False,
                 "response": "There is a total of {} characters. "
                             "Of these, {} are punctuation marks, {} are uppercase letters, "
                             "and {} are special characters."})
@@ -288,36 +289,31 @@ class EnTranslations:
         # User bot.apis.translate.constants.GOOGLE_LANGUAGES_TO_CODES as reference for the lang
         lang: str = "en"
 
-        quantity_error: Response = Response(
-            {
-                "success": False,
-                "response": "Você deve informar a quantidade de vezes que vai ser traduzido. Como exemplo: "
-                "`{}hypertranslate 10 <texto>`",
-                "is_response": False,
-            }
-        )
-        starter_string: str = "Estou traduzindo o texto..."
-        api_error: Response = Response(
-            {"success": False, "response": "Ocorreu um erro com a api de tradução."}
-        )
-        unexpected_error: Response = Response(
-            {"success": False, "response": "Não foi possível traduzir o texto."}
-        )
-        translation: Response = Response({"success": False, "response": "{}"})
+        quantity_error: Response = Response({"response": "You must specify the number of times the text will be "
+                                                         "translated. Example: `{}hypertranslate 10 <text>`"})
+
+        starter_string: str = "Translating the text..."
+
+        unexpected_error: Response = Response({"response": "The text could not be translated."})
+
+        translation: Response = Response({"response": "{}"})
+
+    class NSFW:
+        class Imgur(BaseTranslation):
+            links: Response = Response({"response": ""})
+
+            time_message: str = "Time: {} "
+
+            all_images_embed: str = "All generated images: {} "
+
+            all_images_embed_time: str = "Time: {} || All images: {} "
+
+            timeout: Response = Response({"response": "100 seconds have passed, and I couldn't generate it. "
+                                                      "Please wait a bit and try again."})
 
 
 
 
-
-    class Imgur(BaseTranslation):
-        links: Response = Response({"success": False, "response": "", "response_list": []})
-        timeout: Response = Response(
-            {
-                "success": False,
-                "response": "100 segundos se passaram e eu não consegui gerar, espera um pouco e tente novamente.",
-                "is_response": False,
-            }
-        )
 
     class Imgur7(BaseTranslation):
         links: Response = Response({"success": False, "response": "", "response_list": []})
@@ -560,7 +556,7 @@ class EnTranslations:
                 {"success": False, "response": "por favor escolha no mínimo 3 números."}
             )
 
-    class NSFW:
+    class NSFWold:
         class Boru(BaseTranslation):
             pls_wait = "por favor espera um pouco, estou gerando os links."
             unexpected_error: Response = Response({"success": False, "response": "{}"})
