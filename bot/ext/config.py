@@ -129,7 +129,8 @@ class ApisConfig:
         self.client_id: str = data.get("client_id", "api_exemple")
         self.api_client_secret: str = data.get("api_client_secret", "api_exemple")
         self.api_client_id: str = data.get("api_client_id", "api_exemple")
-        self.imagem_link_upload_thing_url: str = data.get("imagem_link_upload_thing_url", "https://uploadthing.com")
+        self.image_carousel: str = data.get("image_carousel", "https://uploadthing.com")
+        self.image_carousel_api_key: str = data.get("image_carousel_api_key", "api_exemple")
         self.file_upload_url: str = data.get("file_upload_url", "https://upload.exemple.org")
         self.pastbin_url: str = data.get('pastbin_url', "https://bit.exemple.org")
 

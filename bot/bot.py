@@ -259,7 +259,8 @@ class Gorenmu(Bot):
                         and channel.online is False):
                     return None
                 response: Response | None = None
-                self.log.info(f"#{ctx.channel.name}|| @{ctx.author.name}: {ctx.message.content}")
+                if ctx.command:
+                    self.log.info(f"#{ctx.channel.name}|| @{ctx.author.name}: {ctx.message.content}")
 
                 if f"{ctx.prefix}{ctx.prefix}" in ctx.message.content:
                     response = await ctx.alias_handler(ctx, message)

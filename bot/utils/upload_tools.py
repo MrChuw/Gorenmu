@@ -27,12 +27,13 @@ class UploadThings:
                 return (await r.read()).decode("utf8")
 
     @staticmethod
-    async def send_imgur(links: str, bot: Gorenmu, session: CachedSession):
+    async def send_imgur(links: list[str], bot: Gorenmu, session: CachedSession):
         try:
-            session.headers.update({"Authorization": bot.config.ApisConfig.site_api_key})
-            response = await session.post(bot.config.ApisConfig.imagem_link_upload_thing_url, json={"links": links})
+            session.headers.update({"x-api-key": bot.config.ApisConfig.image_carousel_api_key})
+            response = await session.post(bot.config.ApisConfig.image_carousel, json={"urls": links})
             embed = json.loads(await response.text())
-            return embed["url"]
+            session.headers.pop('x-api-key')
+            return embed["success"]
         except Exception as e:
             logger.error(e)
             return None

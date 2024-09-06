@@ -13,7 +13,8 @@ site_url = "https://gorenmu.vercel.app/"
 imgur_authorized_ids = [184900613, 411010313]
 
 [apis]
-imagem_link_upload_thing_url = "${IMAGEM_LINK_UPLOAD_THING_URL}"
+image_carousel = "${IMAGE_CAROUSEL}"
+image_carousel_api_key = "${IMAGE_CAROUSEL_API_KEY}"
 site_api_key = "${SITE_API_KEY}"
 shlink_key = "${SHLINK_KEY}"
 shlink_url = "${SHLINK_URL}"

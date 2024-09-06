@@ -7,28 +7,30 @@ from bot.apis.translate.constants import GOOGLE_LANGUAGES_TO_CODES as GOOGLE_LAN
 from bot.apis.translate.exceptions import TooManyRequests
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
-from bot.translations import EnDecorators, Response
+from bot.translations import EnDecorators, Response, EnTranslations
 
 
 @base_decorator(EnDecorators.HyperTranslate)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name='hypertranslate', aliases=['ht'])
-async def command(ctx: Context, quantidade: str = None, *, content: str = "") -> Response:
+async def command(ctx: Context, quantity: str = None, *, content: str = "") -> Response:
     translations = ctx.translations.HyperTranslate()
     session = ctx.bot.SessionsCaches.TranslateCachedSession.session
-    if quantidade.isdigit() is False:
+    if quantity.isdigit() is False:
         return translations.quantity_error.format_response(ctx, ctx.prefix, success=False)
-    sleep = 0 if int(quantidade) > 500 else 0.5
+    sleep = 0 if int(quantity) > 500 else 0.5
     runs = 0
-    quantidade = int(quantidade)
+    quantity = int(quantity)
     await ctx.simple_response(ctx, translations.starter_string)
     while True:
         try:
-            if runs == quantidade + 1:
+            if runs == quantity + 1:
                 break
             await asyncio.sleep(sleep)
-            target = translations.lang if runs == quantidade else random.choice(list(GOOGLE_LANGS.values()))
+            target = (
+                EnTranslations.HyperTranslate.lang if runs == quantity - 1 else translations.lang if runs == quantity
+                else random.choice(list(GOOGLE_LANGS.values())))
             translator = GoogleTranslator(session=session, target=target)
             content = await translator.translate(content)
             runs += 1

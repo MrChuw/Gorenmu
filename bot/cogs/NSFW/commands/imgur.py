@@ -83,7 +83,7 @@ async def command(ctx: Context, args: str = "") -> Response:
                        ) for link in links]
                 )
         if len(links) > 1:
-            embed = await ctx.bot.UploadThings.send_imgur(" ".join(link.split()[0] for link in links), ctx.bot,
+            embed = await ctx.bot.UploadThings.send_imgur([link.split()[0] for link in links], ctx.bot,
                                                           ctx.bot.SessionsCaches.ImgurCachedSession.session
                                                           )
             await ImgurAggregate.create(link=embed, user=ctx.user)
