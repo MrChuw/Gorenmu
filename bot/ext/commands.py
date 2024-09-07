@@ -170,7 +170,7 @@ class Context(TwitchioContext):
     user: UserModel
     bot: Gorenmu
     translations: EnTranslations
-    decorators: EnDecorators | BaseClass
+    decorators: dict[str, EnDecorators | BaseClass | dict[str, EnDecorators | BaseClass]]
     command: Command
 
     def __iter__(self):

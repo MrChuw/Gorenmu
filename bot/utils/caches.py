@@ -75,6 +75,7 @@ class SessionsCaches:
         self.CountCachedSession: SessionsCaches.CountCachedSession = self.CountCachedSession(bot)
         self.TranslateCachedSession: SessionsCaches.TranslateCachedSession = self.TranslateCachedSession(bot)
         self.ImgurCachedSession: SessionsCaches.ImgurCachedSession = self.ImgurCachedSession(bot)
+        self.ColorCachedSession: SessionsCaches.ColorCachedSession = self.ColorCachedSession(bot)
 
     async def close_all_sessions(self):
         for session in vars(self).values():
@@ -222,7 +223,7 @@ class SessionsCaches:
                                           allowed_methods=self.allowed_methods, include_headers=True,
                                           allowed_codes=self.allowed_codes)
             else:
-                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-miscellaneous-requests.db",
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-Alias-requests.db",
                                                           urls_expire_after=self.urls_expire_after,
                                                           allowed_methods=self.allowed_methods, include_headers=True,
                                                           allowed_codes=self.allowed_codes)
@@ -272,22 +273,23 @@ class SessionsCaches:
             self.allowed_methods = ("GET", "HEAD", "POST")
             self.allowed_codes = (200,)
             self.headers = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:129.0) Gecko/20100101 Firefox/129.0',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8',
-    'Accept-Language': 'en-US,en;q=0.5',
-    'Referer': 'https://imgur.com/',
-    'DNT': '1',
-    'Sec-GPC': '1',
-    'Connection': 'keep-alive',
-    'Upgrade-Insecure-Requests': '1',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'same-site',
-    'Sec-Fetch-User': '?1',
-    'Priority': 'u=0, i',
-    'Pragma': 'no-cache',
-    'Cache-Control': 'no-cache',
-}
+                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:129.0) Gecko/20100101 Firefox/129.0',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
+                              'image/webp,image/png,image/svg+xml,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Referer': 'https://imgur.com/',
+                    'DNT': '1',
+                    'Sec-GPC': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'same-site',
+                    'Sec-Fetch-User': '?1',
+                    'Priority': 'u=0, i',
+                    'Pragma': 'no-cache',
+                    'Cache-Control': 'no-cache',
+            }
             if "redis" in bot.__dict__:
                 self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Imgur_requests",
                                           urls_expire_after=self.urls_expire_after,
@@ -296,7 +298,7 @@ class SessionsCaches:
                                           allowed_codes=self.allowed_codes
                                           )
             else:
-                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-Translate-requests.db",
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-Imgur-requests.db",
                                                           urls_expire_after=self.urls_expire_after,
                                                           allowed_methods=self.allowed_methods,
                                                           include_headers=True,
@@ -304,5 +306,26 @@ class SessionsCaches:
                                                           )
             self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
 
+    class ColorCachedSession:
+        def __init__(self, bot: Gorenmu):
+            self.bot = bot
+            self.urls_expire_after = {"thecolorapi.com": timedelta(days=30)}
+            self.allowed_methods = ("GET", "HEAD", "POST")
+            self.allowed_codes = (200,)
+            if "redis" in bot.__dict__:
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Color_requests",
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods,
+                                          include_headers=True,
+                                          allowed_codes=self.allowed_codes
+                                          )
+            else:
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-Color-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods,
+                                                          include_headers=True,
+                                                          allowed_codes=self.allowed_codes
+                                                          )
+            self.session: CachedSession = CachedSession(cache=self.cache)
 
 

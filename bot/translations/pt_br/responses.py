@@ -279,17 +279,7 @@ class PtBrTranslations(EnTranslations):
             no_repeated: Response = Response({"response": "Nenhuma imagem repetida."})
 
     class RandomColor(EnTranslations.RandomColor):
-        response: Response = Response(
-            {
-                "success": False,
-                "response": "aqui está uma cor aleatória: #{} https://goo.gl/search?%23{}",
-                "is_response": False,
-            }
-        )
-
-        response_url: Response = Response(
-            {"success": False, "response": "{} é {}. https://goo.gl/search?%23{} {}"}
-        )
+        response_url: Response = Response({"response": "#{} é {}. {}"})
 
     class Reverse(EnTranslations.Reverse):
         reversed_string: Response = Response({"success": False, "response": "{}"})

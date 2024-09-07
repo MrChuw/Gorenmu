@@ -555,7 +555,7 @@ class PtBrDecorators(EnDecorators):
             helper = "Verifica a quantidade de imagens do Imgur repetidas."
             usage = "Para usar: {}imgur_repeated"
             description = ("Este comando é simples, ele conta todas as imagens que "
-                           "já foram geradas pelo [imgur](imgur.html).")
+                           "já foram geradas pelo [imgur](imgur.md).")
             template = dedent("""
             # {command_title}
 
@@ -575,7 +575,26 @@ class PtBrDecorators(EnDecorators):
     class RandomColor(EnDecorators.RandomColor):
         helper = "Envia uma cor aleatória."
         usage = "Para usar: {}random_color"
-        description = "Envia uma cor aleatória."
+        description = "Este comando responde com o código HEX de uma cor aleatória e o link para uma imagem da cor."
+        extras = ""
+        template = dedent("""
+        # {command_title}
+
+        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
+
+        {description}
+
+        ## Todos os aliases disponíveis para {command_name} são:
+            - {aliases}
+
+        ## As formas de utilizar este comando são:
+
+        ```text
+        user: {prefix}{command_name}
+
+        bot: Usuário, #<HEX> <Nome da cor> <Link da imagem da cor>
+        ```
+        """)  # NOQA
 
     decorators = {
             'afk': Afk,
@@ -587,18 +606,19 @@ class PtBrDecorators(EnDecorators):
             'choice': Choice,
             'count': Count,
             'hypertranslate': HyperTranslate,
-            'imgur': NSFW.Imgur,
-            'imgur_repeated': NSFW.ImgurRepeated,
+            'randomcolor': RandomColor,
 
 
-            'nada': Admin.Nada,
-            'reload': Admin.Reload,
+            'NSFW': {
+                    'imgur': NSFW.Imgur,
+                    'imgur_repeated': NSFW.ImgurRepeated,
+            },
+            'Dev': {
+                    'nada': Admin.Nada,
+                    'reload': Admin.Reload
+            }
     }
 
-    NSFW_commands = {
-            'imgur': NSFW.Imgur,
-            'imgur_repeated': NSFW.ImgurRepeated,
-    }
 
 
     class Reverse(EnDecorators.Reverse):

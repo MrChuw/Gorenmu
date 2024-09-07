@@ -12,7 +12,7 @@ from bot.ext.config import Config
 from templates import (
     docs_path, home_index_template, language_change_menu_template, language_codes, language_commands, language_home,
     language_links, language_name, language_table, mkdocs_configs_path, mkdocs_template, nav_template, redirect_path,
-    redirect_template, nsfw_nav_template
+    redirect_template, alt_nav_template_theme, alt_nav_template
 )
 
 
@@ -26,57 +26,66 @@ def make_bot():
 
 
 def get_commands(bot: Gorenmu):
-    command_doc_list: dict[str, dict[str, str]] = {}  # NOQA
-    command_decorator_list: dict[str, dict[str, str]] = {}  # NOQA
-    command_nsfw_doc_list: dict[str, dict[str, str]] = {}  # NOQA
-    command_nsfw_list: dict[str, dict[str, str]] = {}  # NOQA
+    command_doc_list: dict[str, dict[str, str | dict[str, str]]] = {}  # NOQA
+    command_decorator_list: dict[str, dict[str, str | dict[str, str]]] = {}  # NOQA
+    categories = bot.TranslationManager.languages["en"][0].categories
     for lang in bot.TranslationManager.languages:
         decorator_list = bot.TranslationManager.languages["en"][0].decorators
-        nsfw_list = bot.TranslationManager.languages["en"][0].NSFW_commands
         if lang not in command_doc_list:
             command_doc_list[lang] = {}
         if lang not in command_decorator_list:
             command_decorator_list[lang] = {}
-        if lang not in command_nsfw_doc_list:
-            command_nsfw_doc_list[lang] = {}
-        if lang not in command_nsfw_list:
-            command_nsfw_list[lang] = {}
         for command_name in decorator_list:
             if command_name in bot.commands:
                 docs = bot.commands[command_name].docs[lang]
                 if command_name in docs and len(docs) == 1:
-                    if command_name in nsfw_list:
-                        command_nsfw_doc_list[lang][command_name] = docs[command_name]
-                    else:
-                        command_doc_list[lang][command_name] = docs[command_name]
+                    command_doc_list[lang][command_name] = docs[command_name]
                 else:
                     for sub_doc in docs:
-                        if command_name in nsfw_list:
-                            command_nsfw_doc_list[lang][sub_doc] = docs[sub_doc]
-                        else:
-                            command_doc_list[lang][sub_doc] = docs[sub_doc]
+                        command_doc_list[lang][sub_doc] = docs[sub_doc]
                 command = bot.commands[command_name]
                 if lang in command.decorators:
                     decorator = command.decorators[lang]
                     if "usage" in dir(decorator):
-                        if command_name in nsfw_list:
-                            command_nsfw_list[lang][command_name] = decorator
-                        else:
-                            command_decorator_list[lang][command_name] = decorator
+                        command_decorator_list[lang][command_name] = decorator
                     else:
                         for classe in dir(decorator):
                             if classe.startswith("__") or classe.startswith("get_"):
                                 continue
-                            if command_name in nsfw_list:
-                                command_nsfw_list[lang][classe.lower()] = getattr(decorator, classe)
                             else:
                                 command_decorator_list[lang][classe.lower()] = getattr(decorator, classe)
+            elif command_name in categories:
+                category_name = command_name
+                for command_nsfw_name in decorator_list[category_name]:
+                    if category_name not in command_doc_list[lang]:
+                        command_doc_list[lang][category_name] = {}
+                    if category_name not in command_decorator_list[lang]:
+                        command_decorator_list[lang][category_name] = {}
+                    docs = bot.commands[command_nsfw_name].docs[lang]
 
-    return command_doc_list, command_decorator_list, command_nsfw_doc_list, command_nsfw_list
+                    if command_nsfw_name in docs and len(docs) == 1:
+                        command_doc_list[lang][category_name][command_nsfw_name] = docs[command_nsfw_name]
+                    else:
+                        for sub_doc in docs:
+                            command_doc_list[lang][category_name][sub_doc] = docs[sub_doc]
+                    command = bot.commands[command_nsfw_name]
+                    if lang in command.decorators:
+                        decorator = command.decorators[lang]
+                        if "usage" in dir(decorator):
+                            command_decorator_list[lang][category_name][command_nsfw_name] = decorator
+                        else:
+                            for classe in dir(decorator):
+                                if classe.startswith("__") or classe.startswith("get_"):
+                                    continue
+                                else:
+                                    command_decorator_list[lang][category_name][classe.lower()] = getattr(decorator,
+                                                                                                          classe)
+
+    return command_doc_list, command_decorator_list
 
 
-def generate_commands_files(command_list: dict, command_nsfw_doc_list: dict):
-    command_path_list: dict[str, dict[str, pathlib.Path]] = {}
+def generate_commands_files(command_list: dict, categories: list[str]):
+    command_path_list: dict[str, dict[str, pathlib.Path | dict[str, pathlib.Path]]] = {}
     if not os.path.exists(docs_path):
         os.mkdir(docs_path)
     for language in command_list:
@@ -89,25 +98,38 @@ def generate_commands_files(command_list: dict, command_nsfw_doc_list: dict):
         if not os.path.exists(commands_path):
             os.mkdir(commands_path)
         for command_name in command_list[language]:
+            if command_name in categories:
+                if command_name not in command_path_list[language]:
+                    command_path_list[language][command_name] = {}
+                for command_category_name in command_list[language][command_name]:
+                    command_path = commands_path / f"{command_category_name}.md"
+                    command_path.write_text(command_list[language][command_name][command_category_name])
+                    command_path_list[language][command_name][command_category_name] = command_path
+                continue
             command_path = commands_path / f"{command_name}.md"
             command_path.write_text(command_list[language][command_name])
-            command_path_list[language][command_name] = command_path
-
-        for command_name in command_nsfw_doc_list[language]:
-            command_path = commands_path / f"{command_name}.md"
-            command_path.write_text(command_nsfw_doc_list[language][command_name])
             command_path_list[language][command_name] = command_path
     return command_path_list
 
 
-def make_command_table(command_list, command_decorator_list):  # NOQA
+def make_command_table(command_list, command_decorator_list, categories: list[str], exclude_categories: list[str]):  # NOQA
     command_table_list: dict[str, list] = {}
     markdown_tables: dict[str, str] = {}
-
     for lang in command_list:
         if lang not in command_table_list:
             command_table_list[lang] = []
         for command_name in command_list[lang]:
+            if command_name in exclude_categories:
+                continue
+            if command_name in categories:
+                for command_category in command_list[lang][command_name]:
+                    command_table_list[lang].append(
+                            {language_table[language_codes[lang]][0]: f"[{command_category}]({command_category}.md)",
+                             language_table[language_codes[lang]][1]: command_decorator_list[lang][command_name][command_category].helper,
+                             language_table[language_codes[lang]][2]: command_decorator_list[lang][command_name][command_category].extras,
+                             }
+                    )
+                continue
             command_table_list[lang].append(
                     {language_table[language_codes[lang]][0]: f"[{command_name}]({command_name}.md)",
                      language_table[language_codes[lang]][1]: command_decorator_list[lang][command_name].helper,
@@ -145,7 +167,7 @@ def make_index(command_list, command_decorator_list, paths):  # NOQA
         home_path.write_text(home_index_template[language_codes[lang]])
 
 
-def make_mkdocs(command_list, nsfw_command_list):
+def make_mkdocs(command_list, categories: list[str]):
     for lang in command_list:
         if not os.path.exists(mkdocs_configs_path):
             os.mkdir(mkdocs_configs_path)
@@ -153,7 +175,7 @@ def make_mkdocs(command_list, nsfw_command_list):
         if not os.path.exists(lang_config):
             os.mkdir(lang_config)
         lang_mkdocs = lang_config / "mkdocs.yml"
-
+        nav_commands = [command for command in command_list[lang] if command not in categories]
         extras = "".join(language_change_menu_template.format(link=lang2, language_code=language_codes[lang2],
                                                               name=language_name[language_codes[lang2]]
                                                               ) for lang2 in command_list
@@ -162,19 +184,22 @@ def make_mkdocs(command_list, nsfw_command_list):
         nav = "".join(nav_template.format(Command_title=command.title(),
                                           language_commands_lower=language_commands[language_codes[lang]].lower(),
                                           command_file=command
-                                          ) for command in command_list[lang]
+                                          ) for command in nav_commands
                       )
-
-        nsfw_nav = "".join(nsfw_nav_template.format(Command_title=command.title(),
-                                                    language_commands_lower=language_commands[language_codes[lang]].lower(),
-                                                    command_file=command
-                                                    ) for command in nsfw_command_list[lang])
+        alt_nav = ""
+        for category in categories:
+            alt_nav_commands = [command for command in command_list[lang][category] if type(command) is not dict]
+            alt_nav += alt_nav_template_theme.format(name=category)
+            alt_nav += "".join(alt_nav_template.format(Command_title=command.title(),
+                                                     language_commands_lower=language_commands[language_codes[lang]].lower(),
+                                                     command_file=command
+                                                     ) for command in alt_nav_commands)
 
         mkdocs = mkdocs_template.format(link=language_links[language_codes[lang]], language_code=language_codes[lang],
                                         extras=extras, language_home=language_home[language_codes[lang]],
                                         language_commands=language_commands[language_codes[lang]],
                                         language_commands_lower=language_commands[language_codes[lang]].lower(),
-                                        nav=nav, search_language_code=lang, nsfw_nav=nsfw_nav
+                                        nav=nav, search_language_code=lang, alt_nav=alt_nav
                                         )
         lang_mkdocs.write_text(mkdocs)
         if not os.path.exists(redirect_path.parent):
@@ -195,10 +220,12 @@ def build(command_list):
 
 if __name__ == "__main__":
     mock_bot = make_bot()
-    command_doc_list, command_decorator_list, command_nsfw_doc_list, command_nsfw_list = get_commands(mock_bot)
-    paths = generate_commands_files(command_doc_list, command_nsfw_doc_list)
-    command_index = make_command_table(command_doc_list, command_decorator_list)
+    categories = mock_bot.TranslationManager.languages["en"][0].categories
+    exclude_categories = mock_bot.TranslationManager.languages["en"][0].exclude_categories
+    command_doc_list, command_decorator_list = get_commands(mock_bot)
+    paths = generate_commands_files(command_doc_list, categories)
+    command_index = make_command_table(command_doc_list, command_decorator_list, categories, exclude_categories)
     make_index(command_doc_list, command_decorator_list, paths)
-    make_mkdocs(command_doc_list, command_nsfw_doc_list)
+    make_mkdocs(command_doc_list, categories)
     mock_bot.stop()
     build(command_doc_list)

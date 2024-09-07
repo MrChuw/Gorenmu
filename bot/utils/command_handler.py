@@ -22,12 +22,23 @@ from bot.utils.command_checks import Check
 def get_translations(command: Command):
     translations = TranslationManager()
     translations_decorators = {}
-    for lang in translations.languages:
-        translation = translations.languages[lang][0]
-        if command.name.lower() in translation.decorators:
-            translations_decorators[lang] = translation.decorators[command.name.lower()]
+    fallback = translations.languages["en"][0].decorators
+    categories = ["NSFW", "Dev"]
+
+    for lang, lang_data in translations.languages.items():
+        translation = lang_data[0]
+        for category in categories:
+            decorators = translation.decorators.get(category, translation.decorators)
+            if command.name.lower() in decorators:
+                translations_decorators[lang] = decorators[command.name.lower()]
+                break
         else:
-            translations_decorators[lang] = translations.languages["en"][0].decorators[command.name.lower()]
+            for category in categories:
+                fallback_decorators = fallback.get(category, translation.decorators)
+                if command.name.lower() in fallback_decorators:
+                    translations_decorators[lang] = fallback_decorators[command.name.lower()]
+                    break
+
     command.decorators = translations_decorators
     return command
 
@@ -69,7 +80,8 @@ class CommandHandler:
             if not filename.suffix == ".py" or filename.name.startswith("__"):
                 continue
             try:
-                if filename.name == "booru.py":
+                # if filename.name in ['imgur.py', 'imgur_repeated.py', 'nada.py', 'reload.py']:
+                if filename.name in ['afk.py']:
                     pass
                 local: str = os.path.join(path, filename.name)
                 name: str = local[:-3].replace("/", ".")

@@ -51,6 +51,7 @@ redirect_path: pathlib.Path = pathlib.Path("./site/generated/index.html")
 
 docs_path: pathlib.Path = pathlib.Path("./site/docs")
 
+# TODO: change the site_url when choosing where to host
 mkdocs_template: str = dedent("""
 site_name: Gorenmu {language_commands}
 site_url: http://localhost:3400/{link}
@@ -95,8 +96,8 @@ nav:
   - {language_commands}:
       - {language_commands_lower}/index.md
 {nav}
-      - NSFW:
-{nsfw_nav}
+{alt_nav}
+
 
 """
                               )
@@ -108,7 +109,8 @@ language_change_menu_template: str = ("""    - name: {name}
 
 nav_template: str = "      - {Command_title}: {language_commands_lower}/{command_file}.md\n"
 
-nsfw_nav_template: str = "          - {Command_title}: {language_commands_lower}/{command_file}.md\n"
+alt_nav_template_theme: str = "      - {name}:\n"
+alt_nav_template: str = "        - {Command_title}: {language_commands_lower}/{command_file}.md\n"
 
 redirect_template: str = """<!DOCTYPE html>
 <html lang="en">
