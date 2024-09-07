@@ -27,7 +27,7 @@ class PtBrDecorators(EnDecorators):
             bucket_type = "subscriber"
 
         if bucket == Bucket.mod:
-            bucket_type = "mod"
+            bucket_type = "moderação"
         return bucket_type
 
     class Admin(EnDecorators.Admin):
@@ -551,36 +551,55 @@ class PtBrDecorators(EnDecorators):
             ```
             """)  # NOQA
 
-    decorators = {
-            'afk': Afk,
-            'isafk': Afk,
-            'rafk': Afk,
-            'alias': Alias,
-            'chance': Chance,
-            'choice': Choice,
-            'count': Count,
-            'hypertranslate': HyperTranslate,
-            'imgur': NSFW.Imgur,
+        class ImgurRepeated(EnDecorators.NSFW.ImgurRepeated):
+            helper = "Verifica a quantidade de imagens do Imgur repetidas."
+            usage = "Para usar: {}imgur_repeated"
+            description = ("Este comando é simples, ele conta todas as imagens que "
+                           "já foram geradas pelo [imgur](imgur.html).")
+            template = dedent("""
+            # {command_title}
 
+            # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
 
-            'nada': Admin.Nada,
-            'reload': Admin.Reload,
-            'pipe': Others.Pipe,
-    }
+            {description}
 
-    NSFW_commands = {
-            'imgur': NSFW.Imgur,
-    }
+            ## As formas de utilizar este comando são:
 
-    class ImgurRepeated(EnDecorators.ImgurRepeated):
-        helper = "Verifica a quantidade de imgurs repetidos."
-        usage = "Para usar: {}imgur_repetidos"
-        description = "Verifica a quantidade de imgurs repetidos."
+            ```text
+            user: {prefix}{command_name}
+
+            bot: Usuário, Quantidade total de imagens repetidas: <Quantidade de imagens repetidas> || Imagens: <Link para as imagens>
+            ```
+            """)  # NOQA
 
     class RandomColor(EnDecorators.RandomColor):
         helper = "Envia uma cor aleatória."
         usage = "Para usar: {}random_color"
         description = "Envia uma cor aleatória."
+
+    decorators = {
+            'afk': Afk,
+            'isafk': Afk,
+            'rafk': Afk,
+            'alias': Alias,
+            'pipe': Others.Pipe,
+            'chance': Chance,
+            'choice': Choice,
+            'count': Count,
+            'hypertranslate': HyperTranslate,
+            'imgur': NSFW.Imgur,
+            'imgur_repeated': NSFW.ImgurRepeated,
+
+
+            'nada': Admin.Nada,
+            'reload': Admin.Reload,
+    }
+
+    NSFW_commands = {
+            'imgur': NSFW.Imgur,
+            'imgur_repeated': NSFW.ImgurRepeated,
+    }
+
 
     class Reverse(EnDecorators.Reverse):
         helper = "Reverte um texto."

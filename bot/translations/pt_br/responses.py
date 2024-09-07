@@ -274,17 +274,9 @@ class PtBrTranslations(EnTranslations):
             timeout: Response = Response({"response": "100 segundos se passaram e eu não consegui gerar. "
                                                       "Espere um pouco e tente novamente."})
 
-
-
-    class ImgurRepeated(EnTranslations.ImgurRepeated):
-        links_repeated: Response = Response(
-            {
-                "success": False,
-                "response": "Quantidade total de imagens repetidas: {}",
-                "response_list": [],
-                "is_response": False,
-            }
-        )
+        class ImgurRepeated(EnTranslations.NSFW.ImgurRepeated):
+            links_repeated: Response = Response({"response": "Quantidade total de imagens repetidas: {} || Imagens: {}"})
+            no_repeated: Response = Response({"response": "Nenhuma imagem repetida."})
 
     class RandomColor(EnTranslations.RandomColor):
         response: Response = Response(

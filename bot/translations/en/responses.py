@@ -311,29 +311,10 @@ class EnTranslations:
             timeout: Response = Response({"response": "100 seconds have passed, and I couldn't generate it. "
                                                       "Please wait a bit and try again."})
 
+        class ImgurRepeated(BaseTranslation):
+            links_repeated: Response = Response({"response": "Total number of repeated images: {} || Images: {}"})
+            no_repeated: Response = Response({"response": "No repeated images."})
 
-
-
-
-    class Imgur7(BaseTranslation):
-        links: Response = Response({"success": False, "response": "", "response_list": []})
-        timeout: Response = Response(
-            {
-                "success": False,
-                "response": "100 segundos se passaram e eu não consegui gerar, espera um pouco e tente novamente.",
-                "is_response": False,
-            }
-        )
-
-    class ImgurRepeated(BaseTranslation):
-        links_repeated: Response = Response(
-            {
-                "success": False,
-                "response": "Quantidade total de imagens repetidas: {}",
-                "response_list": [],
-                "is_response": False,
-            }
-        )
 
     class RandomColor(BaseTranslation):
         response: Response = Response(
