@@ -285,35 +285,10 @@ class PtBrTranslations(EnTranslations):
         reversed_string: Response = Response({"success": False, "response": "{}"})
 
     class RandomLine(EnTranslations.RandomLine):
-        channel_not_found: Response = Response(
-            {
-                "success": False,
-                "response": "Não achei nenhum canal com nome {} no banco de dados.",
-                "is_response": False,
-            }
-        )
-        user_not_found: Response = Response(
-            {
-                "success": False,
-                "response": "Não achei nenhum usuário com nome {} no banco de dados.",
-                "is_response": False,
-            }
-        )
-        no_message_found: Response = Response(
-            {"success": False, "response": "Não foi possível encontrar uma mensagem."}
-        )
-        no_option_found: Response = Response(
-            {
-                "success": False,
-                "response": "informe se você que uma mensagem de um canal ou de um usuario no canal. Exemplo: "
-                "`{0}rl <nome do canal>` ou `{0}rl <nome do usuario>` ou `{0}rl <nome do canal> "
-                "<nome do usuário>`",
-                "is_response": False,
-            }
-        )
-        random_line: Response = Response(
-            {"success": False, "response": "{} (enviada há {} por {} )"}
-        )
+        channel_not_found: Response = Response({"response": "Não encontrei nenhum canal com o nome @{} ."})
+        user_not_found: Response = Response({"response": "Não encontrei nenhum usuário com o nome @{}."})
+        no_message_found: Response = Response({"response": "Não foi possível encontrar nenhuma mensagem de @{} em @{}."})
+        random_line: Response = Response({"response": "{} (enviada há {} por {})"})
 
     class Scp(EnTranslations.Scp):
         links: Response = Response({"success": False, "response": "{}"})

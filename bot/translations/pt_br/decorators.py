@@ -596,6 +596,75 @@ class PtBrDecorators(EnDecorators):
         ```
         """)  # NOQA
 
+    class Reverse(EnDecorators.Reverse):
+        helper = "Reverte um texto."
+        usage = "Para usar: {}reverse <texto>"
+        description = "Este comando reverte o texto enviado."
+        extras = ""
+        template = dedent("""
+        # {command_title}
+        
+        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
+        
+        {description}
+        
+        ## Todos os aliases disponíveis para {command_name} são:
+            - {aliases}
+        
+        ## As formas de utilizar este comando são:
+
+        ```text
+        user: {prefix}{command_name} o texto enviado.
+        
+        bot: Usuário, .odaivne otxet o
+        ```
+        """) # NOQA
+
+    class RandomLine(EnDecorators.RandomLine):
+        helper = "Pega uma mensagem aleatória do canal ou do usuário no canal."
+        usage = ("para usar: `{0}rl channel:<nome do canal>` ou `{0}rl user:<nome do usuário>` ou `{0}rl` ou "
+                 "`{0}rl channel:<nome do canal>` user:<nome do usuário>`")
+        description = "Este comando seleciona uma mensagem aleatória dependendo das opções passadas."
+        extras = ""
+        template = dedent("""
+        # {command_title}
+
+        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
+
+        {description}
+        
+        ## Todos os aliases disponíveis para {command_name} são:
+            - {aliases}
+
+        ## As formas de utilizar este comando são:
+
+        ```text
+        user: {prefix}{command_name}
+
+        bot: Usuário, <ele irá enviar uma mensagem aleatória do chat atual>
+        ```
+
+        ```text
+        user: {prefix}{command_name} user:<nome do usuário>
+
+        bot: Usuário, <ele irá enviar uma mensagem aleatória do usuário através de todos os canais>
+        ```
+
+        ```text
+        user: {prefix}{command_name} channel:<nome do canal>
+
+        bot: Usuário, <ele irá enviar uma mensagem aleatória de um canal específico>
+        ```
+
+        ```text
+        user: {prefix}{command_name} channel:<nome do canal> user:<nome do usuário>
+
+        bot: Usuário, <ele irá enviar uma mensagem aleatória de um usuário em um canal específico>
+        ```
+        """)  # NOQA
+
+
+
     decorators = {
             'afk': Afk,
             'isafk': Afk,
@@ -607,6 +676,8 @@ class PtBrDecorators(EnDecorators):
             'count': Count,
             'hypertranslate': HyperTranslate,
             'randomcolor': RandomColor,
+            'reverse': Reverse,
+            'randomline': RandomLine,
 
 
             'NSFW': {
@@ -621,15 +692,6 @@ class PtBrDecorators(EnDecorators):
 
 
 
-    class Reverse(EnDecorators.Reverse):
-        helper = "Reverte um texto."
-        usage = "Para usar: {}reverse <texto>"
-        description = "Reverte um texto."
-
-    class RandomLine(EnDecorators.RandomLine):
-        helper = "Pega uma mensagem aleatória do canal ou do usuário no canal."
-        usage = "para usar: `{0}rl --canal:<nome do canal>` ou `{0}rl --user:<nome do usuario>` ou `{0}rl`"
-        description = "Pega uma mensagem aleatória do canal ou do usuário no canal."
 
     class Scp(EnDecorators.Scp):
         helper = "Envia um scp aleatório."

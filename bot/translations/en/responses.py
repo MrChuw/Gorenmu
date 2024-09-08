@@ -315,53 +315,17 @@ class EnTranslations:
             links_repeated: Response = Response({"response": "Total number of repeated images: {} || Images: {}"})
             no_repeated: Response = Response({"response": "No repeated images."})
 
-
     class RandomColor(BaseTranslation):
-        response: Response = Response(
-            {
-                "success": False,
-                "response": "aqui está uma cor aleatória: #{} https://goo.gl/search?%23{}",
-                "is_response": False,
-            }
-        )
-
-        response_url: Response = Response(
-            {"success": False, "response": "{} é {}. https://goo.gl/search?%23{} {}"}
-        )
+        response_url: Response = Response({"response": "#{} is {}. {}"})
 
     class Reverse(BaseTranslation):
         reversed_string: Response = Response({"success": False, "response": "{}"})
 
     class RandomLine(BaseTranslation):
-        channel_not_found: Response = Response(
-            {
-                "success": False,
-                "response": "Não achei nenhum canal com nome {} no banco de dados.",
-                "is_response": False,
-            }
-        )
-        user_not_found: Response = Response(
-            {
-                "success": False,
-                "response": "Não achei nenhum usuário com nome {} no banco de dados.",
-                "is_response": False,
-            }
-        )
-        no_message_found: Response = Response(
-            {"success": False, "response": "Não foi possível encontrar uma mensagem."}
-        )
-        no_option_found: Response = Response(
-            {
-                "success": False,
-                "response": "informe se você que uma mensagem de um canal ou de um usuario no canal. Exemplo: "
-                "`{0}rl <nome do canal>` ou `{0}rl <nome do usuario>` ou `{0}rl <nome do canal> "
-                "<nome do usuário>`",
-                "is_response": False,
-            }
-        )
-        random_line: Response = Response(
-            {"success": False, "response": "{} (enviada há {} por {} )"}
-        )
+        channel_not_found: Response = Response({"response": "I couldn't find any channel named @{}."})
+        user_not_found: Response = Response({"response": "I couldn't find any user named @{}."})
+        no_message_found: Response = Response({"response": "Couldn't find any message from @{} in @{}."})
+        random_line: Response = Response({"response": "{} (sent {} ago by {})"})
 
     class Scp(BaseTranslation):
         links: Response = Response({"success": False, "response": "{}"})

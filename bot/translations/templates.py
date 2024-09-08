@@ -2,6 +2,7 @@ from textwrap import dedent
 
 
 class En:
+        extras = ""
         template: str = dedent("""
         # {command_title}
         
@@ -26,6 +27,7 @@ class En:
 
 
 class PtBr:
+        extras = ""
         template = dedent("""
         # {command_title}
         

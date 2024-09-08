@@ -635,6 +635,74 @@ class EnDecorators:
         ```
         """)  # NOQA
 
+    class Reverse(BaseDecorator, BaseClass):
+        helper = "Reverses a text."
+        usage = "Para usar: {}reverse <texto>"
+        description = "This command reverses the sent text."
+        extras = ""
+        template: str = dedent("""
+        # {command_title}
+        
+        ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
+        
+        {description}
+        
+        ## All the alias available for AFK are:
+            - {aliases}
+        
+        ## The ways to use this command are:
+
+        ```text
+        user: {prefix}{command_name} the text sent.
+        
+        bot: User, .tnes txet eht
+        ```
+        """) # NOQA
+
+    class RandomLine(BaseDecorator, BaseClass):
+        helper = "Fetches a random message from the channel or from a user in the channel."
+        usage = ("to use: `{0}rl channel:<channel name>` or `{0}rl user:<user name>` or `{0}rl` or "
+                 "`{0}rl channel:<channel name> user:<user name>`")
+        description = "This command selects a random message depending on the options provided."
+        extras = ""
+        template = dedent("""
+            # {command_title}
+
+            # This command can be used {rate} times consecutively, with a cooldown of {per} per {cooldown_type}.
+
+            {description}
+        
+        ## All the alias available for AFK are:
+            - {aliases}
+
+            ## The ways to use this command are:
+
+            ```text
+            user: {prefix}{command_name}
+
+            bot: User, <it will send a random message from the current chat>
+            ```
+
+            ```text
+            user: {prefix}{command_name} user:<user name>
+
+            bot: User, <it will send a random message from the user across all channels>
+            ```
+
+            ```text
+            user: {prefix}{command_name} channel:<channel name>
+
+            bot: User, <it will send a random message from a specific channel>
+            ```
+
+            ```text
+            user: {prefix}{command_name} channel:<channel name> user:<user name>
+
+            bot: User, <it will send a random message from a user in a specific channel>
+            ```
+            """)  # NOQA
+
+
     decorators = {
             'afk': Afk,
             'isafk': Afk,
@@ -646,6 +714,8 @@ class EnDecorators:
             'count': Count,
             'hypertranslate': HyperTranslate,
             'randomcolor': RandomColor,
+            'reverse': Reverse,
+            'randomline': RandomLine,
 
 
             'NSFW': {
@@ -660,17 +730,6 @@ class EnDecorators:
 
     categories = ["NSFW", "Dev"]
     exclude_categories = ["NSFW"]
-
-
-    class Reverse(BaseDecorator, BaseClass):
-        helper = "Reverte um texto."
-        usage = "Para usar: {}reverse <texto>"
-        description = "Reverte um texto."
-
-    class RandomLine(BaseDecorator, BaseClass):
-        helper = "Pega uma mensagem aleatória do canal ou do usuário no canal."
-        usage = "para usar: `{0}rl --canal:<nome do canal>` ou `{0}rl --user:<nome do usuario>` ou `{0}rl`"
-        description = "Pega uma mensagem aleatória do canal ou do usuário no canal."
 
     class Scp(BaseDecorator, BaseClass):
         helper = "Envia um scp aleatório."

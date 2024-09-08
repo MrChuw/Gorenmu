@@ -23,7 +23,7 @@ def get_translations(command: Command):
     translations = TranslationManager()
     translations_decorators = {}
     fallback = translations.languages["en"][0].decorators
-    categories = ["NSFW", "Dev"]
+    categories = ["", "NSFW", "Dev"]
 
     for lang, lang_data in translations.languages.items():
         translation = lang_data[0]
