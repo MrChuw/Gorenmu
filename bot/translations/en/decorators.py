@@ -702,6 +702,37 @@ class EnDecorators:
             ```
             """)  # NOQA
 
+    class Scp(BaseDecorator, BaseClass):
+        helper = "Sends a random SCP."
+        usage = "To use: {}scp <amount>"
+        description = ("This command uses the random from [SCP](https://scp-wiki.wikidot.com) to generate "
+                       "random SCP links.")
+        extras = ""
+        template = dedent("""
+        # {command_title}
+
+        # This command can be used {rate}x in a row, with a cooldown of {per} per {cooldown_type}.
+
+        {description}
+
+        ## All available aliases for {command_name} are:
+            - {aliases}
+
+        ## The ways to use this command are:
+
+        ```text
+        user: {prefix}{command_name}
+
+        bot: User, <random SCP link>
+        ```
+
+        ```text
+        user: {prefix}{command_name} 5
+
+        bot: User, <random SCP links>
+        ```
+        """)  # NOQA
+
 
     decorators = {
             'afk': Afk,
@@ -716,6 +747,7 @@ class EnDecorators:
             'randomcolor': RandomColor,
             'reverse': Reverse,
             'randomline': RandomLine,
+            'scp': Scp,
 
 
             'NSFW': {
@@ -730,11 +762,6 @@ class EnDecorators:
 
     categories = ["NSFW", "Dev"]
     exclude_categories = ["NSFW"]
-
-    class Scp(BaseDecorator, BaseClass):
-        helper = "Envia um scp aleatório."
-        usage = "Para usar: {}scp <quantidade>"
-        description = "Envia um scp aleatório."
 
     class UpSideDown(BaseDecorator, BaseClass):
         helper = "Coloca o texto de cabeça para baixo."

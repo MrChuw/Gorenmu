@@ -76,6 +76,7 @@ class SessionsCaches:
         self.TranslateCachedSession: SessionsCaches.TranslateCachedSession = self.TranslateCachedSession(bot)
         self.ImgurCachedSession: SessionsCaches.ImgurCachedSession = self.ImgurCachedSession(bot)
         self.ColorCachedSession: SessionsCaches.ColorCachedSession = self.ColorCachedSession(bot)
+        self.ScpCachedSession: SessionsCaches.ScpCachedSession = self.ScpCachedSession(bot)
 
     async def close_all_sessions(self):
         for session in vars(self).values():
@@ -321,6 +322,28 @@ class SessionsCaches:
                                           )
             else:
                 self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-Color-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods,
+                                                          include_headers=True,
+                                                          allowed_codes=self.allowed_codes
+                                                          )
+            self.session: CachedSession = CachedSession(cache=self.cache)
+
+    class ScpCachedSession:
+        def __init__(self, bot: Gorenmu):
+            self.bot = bot
+            self.urls_expire_after = {"scp-wiki.wikidot.com/*": timedelta(weeks=4)}
+            self.allowed_methods = ("GET", "HEAD", "POST")
+            self.allowed_codes = (200,)
+            if "redis" in bot.__dict__:
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Scp_requests",
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods,
+                                          include_headers=True,
+                                          allowed_codes=self.allowed_codes
+                                          )
+            else:
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-Scp-requests.db",
                                                           urls_expire_after=self.urls_expire_after,
                                                           allowed_methods=self.allowed_methods,
                                                           include_headers=True,

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import asyncio
-import contextlib
 import datetime
 import os
 import sys
@@ -156,7 +155,8 @@ class Gorenmu(Bot):
         await Tortoise.init(config=self.config.DatabaseConfig.DB_CONFIG)
         await Tortoise.generate_schemas()
 
-    async  def close_db(self) -> None:
+    @staticmethod
+    async def close_db() -> None:
         await Tortoise.close_connections()
 
     async def before_close(self) -> None:
@@ -273,7 +273,8 @@ class Gorenmu(Bot):
 
             except InvalidArgument:
                 if ctx.command and hasattr(ctx.command, "usage"):
-                    return await ctx.reply(ctx.decorators.get_usage(ctx))
+                    decorator = ctx.command.decorators[ctx.user.language]
+                    return await ctx.reply(decorator.get_usage(ctx))
                 return await ctx.simple_response(ctx,
                                                  ctx.translations.Exceptions.BotMainLoopExceptions.error_not_registered
                                                  .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))
@@ -294,7 +295,8 @@ class Gorenmu(Bot):
 
             except InvalidArgument:
                 if ctx.command and hasattr(ctx.command, "usage"):
-                    return await ctx.reply(ctx.decorators.get_usage(ctx, ctx))
+                    decorator = ctx.command.decorators[ctx.user.language]
+                    return await ctx.reply(decorator.get_usage(ctx, ctx))
                 return await ctx.simple_response(ctx,
                                                  ctx.translations.Exceptions.BotMainLoopExceptions.error_not_registered
                                                  .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))

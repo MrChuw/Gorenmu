@@ -288,13 +288,11 @@ class PtBrTranslations(EnTranslations):
         channel_not_found: Response = Response({"response": "Não encontrei nenhum canal com o nome @{} ."})
         user_not_found: Response = Response({"response": "Não encontrei nenhum usuário com o nome @{}."})
         no_message_found: Response = Response({"response": "Não foi possível encontrar nenhuma mensagem de @{} em @{}."})
-        random_line: Response = Response({"response": "{} (enviada há {} por {})"})
+        random_line: Response = Response({"response": "{} (enviada há {} por @{})"})
 
     class Scp(EnTranslations.Scp):
-        links: Response = Response({"success": False, "response": "{}"})
-        unexpected_error: Response = Response(
-            {"success": False, "response": "Aconteceu algum erro, tente novamente."}
-        )
+        links: Response = Response({})
+        unexpected_error: Response = Response({"response": "Aconteceu algum erro, tente novamente."})
 
     class UpSideDown(EnTranslations.UpSideDown):
         upsidedown: Response = Response({"success": False, "response": "{}"})

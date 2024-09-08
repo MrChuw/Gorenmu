@@ -325,13 +325,11 @@ class EnTranslations:
         channel_not_found: Response = Response({"response": "I couldn't find any channel named @{}."})
         user_not_found: Response = Response({"response": "I couldn't find any user named @{}."})
         no_message_found: Response = Response({"response": "Couldn't find any message from @{} in @{}."})
-        random_line: Response = Response({"response": "{} (sent {} ago by {})"})
+        random_line: Response = Response({"response": "{} (sent {} ago by @{})"})
 
     class Scp(BaseTranslation):
-        links: Response = Response({"success": False, "response": "{}"})
-        unexpected_error: Response = Response(
-            {"success": False, "response": "Aconteceu algum erro, tente novamente."}
-        )
+        links: Response = Response({})
+        unexpected_error: Response = Response({"response": "An error occurred, please try again."})
 
     class UpSideDown(BaseTranslation):
         upsidedown: Response = Response({"success": False, "response": "{}"})
