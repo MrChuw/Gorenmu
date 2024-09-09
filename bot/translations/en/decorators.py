@@ -733,6 +733,80 @@ class EnDecorators:
         ```
         """)  # NOQA
 
+    class UpSideDown(BaseDecorator, BaseClass):
+        helper = "Turns the text upside down."
+        usage = "To use: {}upsidedown <text>"
+        description = "This command reverses and turns the provided text upside down."
+        extras = ""
+        template = dedent("""
+        # {command_title}
+
+        # This command can be used {rate} times in a row, with a cooldown of {per} per {cooldown_type}.
+
+        {description}
+
+        ## All available aliases for {command_name} are:
+            - {aliases}
+
+        ## The ways to use this command are:
+
+        ```text
+        user: {prefix}{command_name} tests
+
+        bot: User, sʇsǝʇ
+        ```
+        """)  # NOQA
+
+    class Wikihow(BaseDecorator, BaseClass):
+        helper = "Sends a random wikihow."
+        usage = "To use: {}wikihow <amount>"
+        description = ("This command uses the random from [Wikihow](https://wikihow.com) to generate "
+                       "random links.")
+        extras = ""
+        template = dedent("""
+        # {command_title}
+
+        # This command can be used {rate}x in a row, with a cooldown of {per} per {cooldown_type}.
+
+        {description}
+
+        ## The ways to use this command are:
+
+        ```text
+        user: {prefix}{command_name}
+
+        bot: User, <random wikihow link>
+        ```
+
+        ```text
+        user: {prefix}{command_name} 5
+
+        bot: User, <random wikihow links>
+        ```
+        """)  # NOQA
+
+    class Wikipedia(BaseDecorator, BaseClass):
+        helper = "Sends a random wikipedia."
+        usage = "To use: {}wikihow"
+        description = ("This command uses the random from [Wikipedia](https://wikipedia.com) to generate "
+                       "random links.")
+        extras = ""
+        template = dedent("""
+        # {command_title}
+
+        # This command can be used {rate}x in a row, with a cooldown of {per} per {cooldown_type}.
+
+        {description}
+
+        ## The ways to use this command are:
+
+        ```text
+        user: {prefix}{command_name}
+
+        bot: User, <random wikipedia link>
+        ```
+        """)  # NOQA
+
 
     decorators = {
             'afk': Afk,
@@ -747,7 +821,9 @@ class EnDecorators:
             'randomcolor': RandomColor,
             'reverse': Reverse,
             'randomline': RandomLine,
-            'scp': Scp,
+            'rscp': Scp,
+            'upsidedown': UpSideDown,
+            'wikihow': Wikihow,
 
 
             'NSFW': {
@@ -762,21 +838,6 @@ class EnDecorators:
 
     categories = ["NSFW", "Dev"]
     exclude_categories = ["NSFW"]
-
-    class UpSideDown(BaseDecorator, BaseClass):
-        helper = "Coloca o texto de cabeça para baixo."
-        usage = "Para usar: {}upsidedown <texto>"
-        description = "Coloca o texto de cabeça para baixo."
-
-    class Wikihow(BaseDecorator, BaseClass):
-        helper = "Envia um link do wikihow aleatório."
-        usage = "Para usar: {}wikihow <quantidade>"
-        description = "Envia um link do wikihow aleatório."
-
-    class Wikipedia(BaseDecorator, BaseClass):
-            helper = "Envia um link da wikipedia aleatório."
-            usage = "Para usar: {}wikipedia <quantidade>"
-            description = "Envia um link da wikipedia aleatório."
 
     class Annotations(BaseClass):
         class Annotation(BaseDecorator, BaseClass):

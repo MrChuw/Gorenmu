@@ -87,14 +87,14 @@ def transform(string, transliterations=None):
 
     Example:
 
-        >>> import upsidedown
-        >>> print(upsidedown.transform('Hello World!'))
+        >>> import bot.apis.upsidedown
+        >>> print(upsidedown.transform('Hello World!')) # NOQA
         ¡pꞁɹoM oꞁꞁǝH
 
     For languages with diacritics you might want to supply a transliteration to
     work around missing (rendering of) upside-down forms:
-        >>> import upsidedown
-        >>> print(upsidedown.transform('köln', transliterations={'ö': 'oe'}))
+        >>> import bot.apis.upsidedown
+        >>> print(upsidedown.transform('köln', transliterations={'ö': 'oe'})) # NOQA
         uꞁǝoʞ
     """
     transliterations = transliterations or TRANSLITERATIONS

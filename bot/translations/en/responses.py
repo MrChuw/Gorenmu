@@ -332,19 +332,17 @@ class EnTranslations:
         unexpected_error: Response = Response({"response": "An error occurred, please try again."})
 
     class UpSideDown(BaseTranslation):
-        upsidedown: Response = Response({"success": False, "response": "{}"})
+        upsidedown: Response = Response({"response": "{}"})
 
     class Wikihow(BaseTranslation):
-        links: Response = Response({"success": False, "response": "{}"})
-        unexpected_error: Response = Response(
-            {"success": False, "response": "Aconteceu algum erro, tente novamente."}
-        )
+        url: str = "https://www.wikihow.com/Special:Randomizer"
+        links: Response = Response({})
+        unexpected_error: Response = Response({"response": "An error occurred, please try again."})
 
     class Wikipedia(BaseTranslation):
-            links: Response = Response({"success": False, "response": "{}"})
-            unexpected_error: Response = Response(
-                {"success": False, "response": "Aconteceu algum erro, tente novamente."}
-            )
+        url: str = "https://wikipedia.org/wiki/Special:Random"
+        links: Response = Response({})
+        unexpected_error: Response = Response({"response": "An error occurred, please try again."})
 
     class Annotations:
         class Annotation(BaseTranslation):

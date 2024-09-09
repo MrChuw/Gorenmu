@@ -694,6 +694,80 @@ class PtBrDecorators(EnDecorators):
         ```
         """)  # NOQA
 
+    class UpSideDown(EnDecorators.UpSideDown):
+        helper = "Coloca o texto de cabeça para baixo."
+        usage = "Para usar: {}upsidedown <texto>"
+        description = "Este comando inverte e coloca o texto enviado de cabeça para baixo."
+        extras = ""
+        template = dedent("""
+        # {command_title}
+
+        # Este comando pode ser usado {rate} vezes seguidas, com um cooldown de {per} por {cooldown_type}.
+
+        {description}
+
+        ## Todos os aliases disponíveis para {command_name} são:
+            - {aliases}
+
+        ## As formas de utilizar este comando são:
+
+        ```text
+        usuário: {prefix}{command_name} testes
+
+        bot: Usuário, sǝʇsǝʇ
+        ```
+        """)  # NOQA
+
+    class Wikihow(EnDecorators.Wikihow):
+        helper = "Envia um link do wikihow aleatório."
+        usage = "Para usar: {}wikihow <quantidade>"
+        description = ("Este comando utiliza o random do [Wikihow](https://pt.wikihow.com) para gerar links "
+                       "aleatórios.")
+        extras = ""
+        template = dedent("""
+        # {command_title}
+        
+        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
+        
+        {description}
+        
+        ## As formas de utilizar este comando são:
+
+        ```text
+        usuário: {prefix}{command_name}
+
+        bot: Usuário, <link aleatório para o wikihow>
+        ```
+
+        ```text
+        usuário: {prefix}{command_name} 5
+
+        bot: Usuário, <links aleatórios para o wikihow>
+        ```
+        """)  # NOQA
+
+    class Wikipedia(EnDecorators.Wikipedia):
+        helper = "Envia um link da wikipedia aleatório."
+        usage = "Para usar: {}wikipedia"
+        description = ("Este comando utiliza o random do [Wikipedia](https://pt.Wikipedia.com) para gerar links "
+                       "aleatórios.")
+        extras = ""
+        template = dedent("""
+        # {command_title}
+        
+        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
+        
+        {description}
+        
+        ## As formas de utilizar este comando são:
+
+        ```text
+        usuário: {prefix}{command_name}
+
+        bot: Usuário, <link aleatório para o Wikipedia>
+        ```
+        """)  # NOQA
+
 
 
     decorators = {
@@ -709,7 +783,9 @@ class PtBrDecorators(EnDecorators):
             'randomcolor': RandomColor,
             'reverse': Reverse,
             'randomline': RandomLine,
-            'scp': Scp,
+            'rscp': Scp,
+            'upsidedown': UpSideDown,
+            'wikihow': Wikihow,
 
 
             'NSFW': {
@@ -721,21 +797,6 @@ class PtBrDecorators(EnDecorators):
                     'reload': Admin.Reload
             }
     }
-
-    class UpSideDown(EnDecorators.UpSideDown):
-        helper = "Coloca o texto de cabeça para baixo."
-        usage = "Para usar: {}upsidedown <texto>"
-        description = "Coloca o texto de cabeça para baixo."
-
-    class Wikihow(EnDecorators.Wikihow):
-        helper = "Envia um link do wikihow aleatório."
-        usage = "Para usar: {}wikihow <quantidade>"
-        description = "Envia um link do wikihow aleatório."
-
-    class Wikipedia(EnDecorators.Wikipedia):
-            helper = "Envia um link da wikipedia aleatório."
-            usage = "Para usar: {}wikipedia <quantidade>"
-            description = "Envia um link da wikipedia aleatório."
 
     class Annotations(EnDecorators.Annotations):
         class Annotation(EnDecorators.Annotations.Annotation):

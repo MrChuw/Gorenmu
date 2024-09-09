@@ -295,19 +295,17 @@ class PtBrTranslations(EnTranslations):
         unexpected_error: Response = Response({"response": "Aconteceu algum erro, tente novamente."})
 
     class UpSideDown(EnTranslations.UpSideDown):
-        upsidedown: Response = Response({"success": False, "response": "{}"})
+        upsidedown: Response = Response({"response": "{}"})
 
     class Wikihow(EnTranslations.Wikihow):
-        links: Response = Response({"success": False, "response": "{}"})
-        unexpected_error: Response = Response(
-            {"success": False, "response": "Aconteceu algum erro, tente novamente."}
-        )
+        url: str = "https://pt.wikihow.com/Especial:Randomizer"
+        links: Response = Response({})
+        unexpected_error: Response = Response({"response": "Aconteceu algum erro, tente novamente."})
 
     class Wikipedia(EnTranslations.Wikihow):
-        links: Response = Response({"success": False, "response": "{}"})
-        unexpected_error: Response = Response(
-            {"success": False, "response": "Aconteceu algum erro, tente novamente."}
-        )
+        url: str = "https://pt.wikipedia.org/wiki/Special:Random"
+        links: Response = Response({})
+        unexpected_error: Response = Response({"response": "Aconteceu algum erro, tente novamente."})
 
 
     class Annotations(EnTranslations.Annotations):

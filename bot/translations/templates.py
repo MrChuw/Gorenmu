@@ -23,7 +23,7 @@ class En:
         !!! warning "Maximum length!"
         
             The message could not be longer than 450 characters, if it is longer, an error will be returned.
-        """) # NOQA
+        """)  # NOQA
 
 
 class PtBr:
@@ -48,7 +48,7 @@ class PtBr:
         !!! warning "Tamanho Máximo!"
         
             A mensagem não pode ter mais que 450 caracteres; caso seja maior, retornará um erro.
-        """) # NOQA
+        """)  # NOQA
 
 
 

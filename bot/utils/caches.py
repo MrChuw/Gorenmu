@@ -13,6 +13,7 @@ from aiohttp_client_cache import CachedSession, RedisBackend, SQLiteBackend
 
 from bot.ext.commands import Context
 from bot.ext.config import CacheType
+from bs4 import BeautifulSoup
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -55,8 +56,7 @@ class Cache:
 
     @staticmethod
     def create_cache() -> RedisCache | MemcachedCache | SimpleMemoryCache:
-        cache = aioCache(aioCache.MEMORY, serializer=PickleSerializer(), namespace="main")
-        return cache
+        return aioCache(aioCache.MEMORY, serializer=PickleSerializer(), namespace="main")
 
 
 CODE_LIST = (200, 201, 202, 204, 301, 302, 304, 400, 401, 403, 404, 405, 408, 409, 410, 500, 501, 502, 503, 504)
@@ -71,12 +71,16 @@ class SessionsCaches:
         self.InfoCachedSession: SessionsCaches.InfoCachedSession = self.InfoCachedSession(bot)
         self.ToolsCachedSession: SessionsCaches.ToolsCachedSession = self.ToolsCachedSession(bot)
 
-        self.AliasCachedSession: SessionsCaches.AliasCachedSession = self.AliasCachedSession(bot)
-        self.CountCachedSession: SessionsCaches.CountCachedSession = self.CountCachedSession(bot)
-        self.TranslateCachedSession: SessionsCaches.TranslateCachedSession = self.TranslateCachedSession(bot)
-        self.ImgurCachedSession: SessionsCaches.ImgurCachedSession = self.ImgurCachedSession(bot)
-        self.ColorCachedSession: SessionsCaches.ColorCachedSession = self.ColorCachedSession(bot)
-        self.ScpCachedSession: SessionsCaches.ScpCachedSession = self.ScpCachedSession(bot)
+
+        self.UserAgent: str = self.UserAgent(bot).user_agent
+        self.AliasCachedSession: SessionsCaches.AliasCachedSession = self.AliasCachedSession(bot, self.UserAgent)
+        self.CountCachedSession: SessionsCaches.CountCachedSession = self.CountCachedSession(bot, self.UserAgent)
+        self.TranslateCachedSession: SessionsCaches.TranslateCachedSession = self.TranslateCachedSession(bot, self.UserAgent)
+        self.ImgurCachedSession: SessionsCaches.ImgurCachedSession = self.ImgurCachedSession(bot, self.UserAgent)
+        self.ColorCachedSession: SessionsCaches.ColorCachedSession = self.ColorCachedSession(bot, self.UserAgent)
+        self.ScpCachedSession: SessionsCaches.ScpCachedSession = self.ScpCachedSession(bot, self.UserAgent)
+        self.WikihowCachedSession: SessionsCaches.WikihowCachedSession = self.WikihowCachedSession(bot, self.UserAgent)
+        self.WikipediaCachedSession: SessionsCaches.WikipediaCachedSession = self.WikipediaCachedSession(bot, self.UserAgent)
 
     async def close_all_sessions(self):
         for session in vars(self).values():
@@ -211,13 +215,56 @@ class SessionsCaches:
                                                           allowed_methods=self.allowed_methods, include_headers=True, )
             self.session: CachedSession = CachedSession(cache=self.cache)
 
+    class UserAgent:
+        def __init__(self, bot: Gorenmu):
+            self.bot = bot
+            self.urls_expire_after = {"*/*": timedelta(weeks=4)}
+            self.allowed_methods = ("GET", "HEAD", "POST")
+            self.allowed_codes = (200,)
+            if "redis" in bot.__dict__:
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-UserAgent_requests",
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods, include_headers=True,
+                                          allowed_codes=self.allowed_codes)
+            else:
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-UserAgent-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods, include_headers=True,
+                                                          allowed_codes=self.allowed_codes)
+
+            self.session: CachedSession = CachedSession(cache=self.cache)
+            url = 'https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome'
+            response = bot.loop.run_until_complete(self.session.get(url))
+            text = bot.loop.run_until_complete(response.text())
+
+            soup = BeautifulSoup(text, 'html.parser')
+            chrome_td = soup.find('td', text='Chrome (Standard)')
+            self.user_agent = chrome_td.find_next('span', class_='code').get_text()
+
 
     class AliasCachedSession:
-        def __init__(self, bot: Gorenmu):
+        def __init__(self, bot: Gorenmu, user_agent: str):
             self.bot = bot
             self.urls_expire_after = {"*/*": timedelta(hours=1000)}
             self.allowed_methods = ("GET", "HEAD", "POST")
             self.allowed_codes = (200,)
+            self.headers = {
+                    'User-Agent': user_agent,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
+                              'image/webp,image/png,image/svg+xml,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'DNT': '1',
+                    'Sec-GPC': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'same-site',
+                    'Sec-Fetch-User': '?1',
+                    'Priority': 'u=0, i',
+                    'Pragma': 'no-cache',
+                    'Cache-Control': 'no-cache',
+            }
             if "redis" in bot.__dict__:
                 self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Alias_requests",
                                           urls_expire_after=self.urls_expire_after,
@@ -228,14 +275,31 @@ class SessionsCaches:
                                                           urls_expire_after=self.urls_expire_after,
                                                           allowed_methods=self.allowed_methods, include_headers=True,
                                                           allowed_codes=self.allowed_codes)
-            self.session: CachedSession = CachedSession(cache=self.cache)
+            self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
 
     class CountCachedSession:
-        def __init__(self, bot: Gorenmu):
+        def __init__(self, bot: Gorenmu, user_agent: str):
             self.bot = bot
             self.urls_expire_after = {"*/*": timedelta(minutes=30)}
             self.allowed_methods = ("GET", "HEAD", "POST")
             self.allowed_codes = (200,)
+            self.headers = {
+                    'User-Agent': user_agent,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
+                              'image/webp,image/png,image/svg+xml,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'DNT': '1',
+                    'Sec-GPC': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'same-site',
+                    'Sec-Fetch-User': '?1',
+                    'Priority': 'u=0, i',
+                    'Pragma': 'no-cache',
+                    'Cache-Control': 'no-cache',
+            }
             if "redis" in bot.__dict__:
                 self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Count_requests",
                                           urls_expire_after=self.urls_expire_after,
@@ -246,14 +310,31 @@ class SessionsCaches:
                                                           urls_expire_after=self.urls_expire_after,
                                                           allowed_methods=self.allowed_methods, include_headers=True,
                                                           allowed_codes=self.allowed_codes)
-            self.session: CachedSession = CachedSession(cache=self.cache)
+            self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
 
     class TranslateCachedSession:
-        def __init__(self, bot: Gorenmu):
+        def __init__(self, bot: Gorenmu, user_agent: str):
             self.bot = bot
             self.urls_expire_after = {"*/*": timedelta(weeks=4*6)}
             self.allowed_methods = ("GET", "HEAD", "POST")
             self.allowed_codes = (200,)
+            self.headers = {
+                    'User-Agent': user_agent,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
+                              'image/webp,image/png,image/svg+xml,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'DNT': '1',
+                    'Sec-GPC': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'same-site',
+                    'Sec-Fetch-User': '?1',
+                    'Priority': 'u=0, i',
+                    'Pragma': 'no-cache',
+                    'Cache-Control': 'no-cache',
+            }
             if "redis" in bot.__dict__:
                 self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Translate_requests",
                                           urls_expire_after=self.urls_expire_after,
@@ -265,16 +346,16 @@ class SessionsCaches:
                                                           urls_expire_after=self.urls_expire_after,
                                                           allowed_methods=self.allowed_methods, include_headers=True,
                                                           allowed_codes=self.allowed_codes)
-            self.session: CachedSession = CachedSession(cache=self.cache)
+            self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
 
     class ImgurCachedSession:
-        def __init__(self, bot: Gorenmu):
+        def __init__(self, bot: Gorenmu, user_agent: str):
             self.bot = bot
             self.urls_expire_after = {"*/*": timedelta(weeks=4*6)}
             self.allowed_methods = ("GET", "HEAD", "POST")
             self.allowed_codes = (200,)
             self.headers = {
-                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:129.0) Gecko/20100101 Firefox/129.0',
+                    'User-Agent': user_agent,
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
                               'image/webp,image/png,image/svg+xml,*/*;q=0.8',
                     'Accept-Language': 'en-US,en;q=0.5',
@@ -308,11 +389,28 @@ class SessionsCaches:
             self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
 
     class ColorCachedSession:
-        def __init__(self, bot: Gorenmu):
+        def __init__(self, bot: Gorenmu, user_agent: str):
             self.bot = bot
             self.urls_expire_after = {"thecolorapi.com": timedelta(days=30)}
             self.allowed_methods = ("GET", "HEAD", "POST")
             self.allowed_codes = (200,)
+            self.headers = {
+                    'User-Agent': user_agent,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
+                              'image/webp,image/png,image/svg+xml,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'DNT': '1',
+                    'Sec-GPC': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'same-site',
+                    'Sec-Fetch-User': '?1',
+                    'Priority': 'u=0, i',
+                    'Pragma': 'no-cache',
+                    'Cache-Control': 'no-cache',
+            }
             if "redis" in bot.__dict__:
                 self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Color_requests",
                                           urls_expire_after=self.urls_expire_after,
@@ -327,14 +425,30 @@ class SessionsCaches:
                                                           include_headers=True,
                                                           allowed_codes=self.allowed_codes
                                                           )
-            self.session: CachedSession = CachedSession(cache=self.cache)
+            self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
 
     class ScpCachedSession:
-        def __init__(self, bot: Gorenmu):
+        def __init__(self, bot: Gorenmu, user_agent: str):
             self.bot = bot
             self.urls_expire_after = {"scp-wiki.wikidot.com/*": timedelta(weeks=4)}
             self.allowed_methods = ("GET", "HEAD", "POST")
             self.allowed_codes = (200,)
+            self.headers = {
+                    'User-Agent': user_agent,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,'
+                              'image/svg+xml,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Accept-Encoding': 'gzip, deflate, zstd',
+                    'DNT': '1',
+                    'Sec-GPC': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'none',
+                    'Sec-Fetch-User': '?1',
+                    'Priority': 'u=0, i',
+                }
             if "redis" in bot.__dict__:
                 self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Scp_requests",
                                           urls_expire_after=self.urls_expire_after,
@@ -349,6 +463,83 @@ class SessionsCaches:
                                                           include_headers=True,
                                                           allowed_codes=self.allowed_codes
                                                           )
-            self.session: CachedSession = CachedSession(cache=self.cache)
+            self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
+
+    class WikihowCachedSession:
+        def __init__(self, bot: Gorenmu, user_agent: str):
+            self.bot = bot
+            self.urls_expire_after = {"*.wikihow.com/*": timedelta(weeks=4)}
+            self.allowed_methods = ("GET", "HEAD", "POST")
+            self.allowed_codes = (200,)
+            self.headers = {
+                    'User-Agent': user_agent,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,'
+                              'image/svg+xml,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Accept-Encoding': 'gzip, deflate, zstd',
+                    'DNT': '1',
+                    'Sec-GPC': '1',
+                    'Alt-Used': 'wikihow.com',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'cross-site',
+                    'If-Modified-Since': 'Fri, 06 Sep 2024 17:26:47 GMT',
+                    'Priority': 'u=0, i',
+            }
+            if "redis" in bot.__dict__:
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Wikihow_requests",
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods,
+                                          include_headers=True,
+                                          allowed_codes=self.allowed_codes
+                                          )
+            else:
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-Wikihow-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods,
+                                                          include_headers=True,
+                                                          allowed_codes=self.allowed_codes
+                                                          )
+            self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
+
+    class WikipediaCachedSession:
+        def __init__(self, bot: Gorenmu, user_agent: str):
+            self.bot = bot
+            self.urls_expire_after = {"*.wikipedia.com/*": timedelta(weeks=4)}
+            self.allowed_methods = ("GET", "HEAD", "POST")
+            self.allowed_codes = (200,)
+            self.headers = {
+                    'User-Agent': user_agent,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,'
+                              'image/svg+xml,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Accept-Encoding': 'gzip, deflate, zstd',
+                    'DNT': '1',
+                    'Sec-GPC': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'none',
+                    'Sec-Fetch-User': '?1',
+                    'Priority': 'u=0, i',
+                }
+            if "redis" in bot.__dict__:
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Wikipedia_requests",
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods,
+                                          include_headers=True,
+                                          allowed_codes=self.allowed_codes
+                                          )
+            else:
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-Wikipedia-requests.db",
+                                                          urls_expire_after=self.urls_expire_after,
+                                                          allowed_methods=self.allowed_methods,
+                                                          include_headers=True,
+                                                          allowed_codes=self.allowed_codes
+                                                          )
+            self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
 
 
