@@ -36,6 +36,27 @@ class PtBrSiteTemplates(EnSiteTemplates):
             "Contributor": "Contribuinte",
     }
 
+    changelogs = [
+            dedent("""
+                    ---
+                    date:
+                      created: 2024-09-10T02:01:07.661-03:00
+                      updated: 2024-09-10T02:01:07.661-03:00
+                    authors:
+                      - mrchuw
+                    categories:
+                      - 
+                    slug: Changelog-1
+                    title: Changelog 1
+                    ---
+            
+                    # Changelog - 
+            
+                    <!-- more -->
+            
+                    """).lstrip('\n'),
+    ]
+
 
 
 

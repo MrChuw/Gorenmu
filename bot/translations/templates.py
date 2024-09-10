@@ -70,20 +70,24 @@ class PtBr:
                     ])
 
 
+changelogs = [dedent("""
+        ---
+        date:
+          created: XXXX-XX-XX
+          updated: XXXX-XX-XX
+        authors:
+          - mrchuw
+        categories:
+          - 
+        slug: Changelog-
+        title: Changelog 
+        ---
 
+        # Changelog - 
 
-            commands = CommandExemples([
-                            {
-                                "args": "argumento",
-                                "response": "resposta"
-                            },
-                        ])
-            admonitions = Admonitions([
-                            {
-                                "admonition_type": "warning",
-                                "title": "blablabla",
-                                "message": "blablabla"
-                            },
-                        ])
+        <!-- more -->
 
+        """
+                     ).lstrip('\n'),
 
+]

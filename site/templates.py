@@ -49,9 +49,9 @@ plugins:
       post_excerpt_separator: <!-- more -->
   - rss:
       # match_path: blog/posts/.*
-      # use_git: false
+      use_git: false
       date_from_meta:
-        as_creation: date
+        as_creation: date.created
       categories:
         - categories
         - tags
