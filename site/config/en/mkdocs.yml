@@ -1,0 +1,91 @@
+site_name: Gorenmu Commands
+site_url: http://localhost:3400/en/
+docs_dir: '../../docs/en/'
+site_dir: '../../generated/en/'
+repo_url: https://github.com/MrChuw/Gorenmu/
+
+theme:
+  name: material  
+  favicon: assets/images/favicon.png
+  icon:
+    logo: logo
+  custom_dir: '../../overrides/'
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - search.suggest
+    - search.highlight
+    - search.share
+    - navigation.instant
+    - navigation.prune
+    - navigation.indexes
+    - toc.follow
+  palette:
+    scheme: slate
+    primary: bot
+    accent:  bot
+
+
+plugins:
+  - search:
+      lang: en
+  # - privacy
+  - minify:
+      minify_html: true
+  - blog:
+      post_excerpt_separator: <!-- more -->
+  - rss:
+      # match_path: blog/posts/.*
+      # use_git: false
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags
+
+extra:
+  alternate:
+    - name: English
+      link: /en/
+      lang: en
+
+    - name: Português
+      link: /pt_br/
+      lang: pt-BR
+
+
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Changelog: blog/index.md
+  - Commands:
+      - commands/index.md
+      - Pipe: commands/pipe.md
+      - Afk: commands/afk.md
+      - Isafk: commands/isafk.md
+      - Rafk: commands/rafk.md
+      - Alias: commands/alias.md
+      - Chance: commands/chance.md
+      - Choice: commands/choice.md
+      - Count: commands/count.md
+      - Hypertranslate: commands/hypertranslate.md
+      - Randomcolor: commands/randomcolor.md
+      - Reverse: commands/reverse.md
+      - Randomline: commands/randomline.md
+      - Upsidedown: commands/upsidedown.md
+      - Wikihow: commands/wikihow.md
+
+      - NSFW:
+        - Imgur: commands/imgur.md
+        - Imgur_Repeated: commands/imgur_repeated.md
+      - Dev:
+        - Nada: commands/nada.md
+        - Reload: commands/reload.md
+
+

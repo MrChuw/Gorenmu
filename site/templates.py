@@ -1,65 +1,26 @@
 import pathlib
 from textwrap import dedent
 
-language_codes: dict[str, str] = {
-        "en": "en",
-        "pt_br": "pt-BR",
-}
-
-language_links: dict[str, str] = {
-        'en': '/en/',
-        'pt-BR': '/pt_br/',
-}
-
-language_home: dict[str, str] = {
-        'en': 'Home',
-        'pt-BR': 'Página Inicial',
-}
-
-language_commands: dict[str, str] = {
-        'en': 'Commands',
-        'pt-BR': 'Comandos',
-}
-
-language_table: dict[str, list[str]] = {
-        'en': ['Command Name', 'Description', 'Extras'],
-        'pt-BR': ['Nome do Comando', 'Descrição', 'Extras'],
-}
-
-language_name: dict[str, str] = {
-        'en': 'English',
-        'pt-BR': 'Português',
-}
-
-home_index_template: dict[str, str] = {'en': dedent("""
-                                        # Home
-                                        # I still don't know what to put here.
-
-                                        [The commands are here](commands/index.md)
-                                        """),
-                                       'pt-BR': dedent("""
-                                        # Página Inicial
-                                        # Ainda não sei oque colocar aqui.
-
-                                        [Os comandos estão aqui](comandos/index.md)
-                                        
-                                        """)}
-
 mkdocs_configs_path: pathlib.Path = pathlib.Path("./site/config")
 
 redirect_path: pathlib.Path = pathlib.Path("./site/generated/index.html")
 
 docs_path: pathlib.Path = pathlib.Path("./site/docs")
 
+
 # TODO: change the site_url when choosing where to host
 mkdocs_template: str = dedent("""
 site_name: Gorenmu {language_commands}
-site_url: http://localhost:3400/{link}
-docs_dir: '../../docs/{link}'
-site_dir: '../../generated/{link}'
+site_url: http://localhost:3400{link}
+docs_dir: '../../docs{link}'
+site_dir: '../../generated{link}'
+repo_url: https://github.com/MrChuw/Gorenmu/
 
 theme:
-  name: material
+  name: material  
+  favicon: assets/images/favicon.png
+  icon:
+    logo: logo
   custom_dir: '../../overrides/'
   language: {language_code}
   features:
@@ -72,18 +33,32 @@ theme:
     - navigation.prune
     - navigation.indexes
     - toc.follow
+  palette:
+    scheme: slate
+    primary: bot
+    accent:  bot
+
 
 plugins:
   - search:
       lang: {search_language_code}
-  - privacy
-  - offline
+  # - privacy
   - minify:
       minify_html: true
+  - blog:
+      post_excerpt_separator: <!-- more -->
+  - rss:
+      # match_path: blog/posts/.*
+      # use_git: false
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags
+
 extra:
   alternate:
 {extras}
-repo_url: https://github.com/MrChuw/Gorenmu/
 
 markdown_extensions:
   - admonition
@@ -92,20 +67,35 @@ markdown_extensions:
 
 nav:
   - {language_home}: index.md
-  - Blog: blog/index.md
+  - Changelog: blog/index.md
   - {language_commands}:
       - {language_commands_lower}/index.md
 {nav}
 {alt_nav}
 
+""").lstrip('\n')
 
-"""
-                              )
+metadata_template = dedent("""---
+date:
+  created: {created}
+  updated: {updated}
+categories:
+{categories}
+---\n\n
+""").lstrip('\n')
 
-language_change_menu_template: str = ("""    - name: {name}
+authors_template = """
+  {reference}:
+    name: {name}
+    description: {description}
+    avatar: {avatar}\n
+""".lstrip('\n')
+
+language_change_menu_template: str = ("""
+    - name: {name}
       link: /{link}/
       lang: {language_code}\n
-""")
+""").lstrip('\n')
 
 nav_template: str = "      - {Command_title}: {language_commands_lower}/{command_file}.md\n"
 
@@ -133,8 +123,6 @@ redirect_template: str = """<!DOCTYPE html>
                     return;
                 }
             }
-
-            // Default to English if no match is found
             window.location.href = languageLinks['en'];
         }
 
