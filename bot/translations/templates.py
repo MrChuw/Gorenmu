@@ -55,11 +55,35 @@ class PtBr:
 
 
 
+        commands = CommandExemples([
+                        {
+                            "args": "argumento",
+                            "response": "resposta"
+                        },
+                    ])
+        admonitions = Admonitions([
+                        {
+                            "admonition_type": "warning",
+                            "title": "blablabla",
+                            "message": "blablabla"
+                        },
+                    ])
 
 
 
 
-
-
+            commands = CommandExemples([
+                            {
+                                "args": "argumento",
+                                "response": "resposta"
+                            },
+                        ])
+            admonitions = Admonitions([
+                            {
+                                "admonition_type": "warning",
+                                "title": "blablabla",
+                                "message": "blablabla"
+                            },
+                        ])
 
 

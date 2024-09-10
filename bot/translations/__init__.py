@@ -4,12 +4,19 @@ from bot.translations.pt_br import PtBrDecorators, PtBrTranslations
 
 
 class TranslationManager:
-    def __init__(self):
+    def __init__(self, mock: bool = False):
         self.languages = {
             "en": (EnDecorators, EnTranslations),
             "pt_br": (PtBrDecorators, PtBrTranslations),
         }
         self.default_language = "en"
+        if mock:
+            from .en.site_templates import EnSiteTemplates
+            from .pt_br.site_templates import PtBrSiteTemplates
+            self.site: dict[str, EnSiteTemplates] = {  # NOQA
+                    "en": EnSiteTemplates,
+                    "pt_br": PtBrSiteTemplates,
+            }
 
     def get_decorators(self, language: str) -> EnDecorators:
         return self.languages.get(language, self.languages[self.default_language])[0]

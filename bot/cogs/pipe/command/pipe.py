@@ -9,7 +9,7 @@ from bot.translations import EnDecorators, Response
 @base_decorator(EnDecorators.Others.Pipe)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
-@command(name='pipe', aliases=[''])
+@command(name='pipe', aliases=[])
 async def command(ctx: Context) -> Response:
     if ctx.user.language == ctx.bot.TranslationManager.languages[0]:
         url = f"{ctx.bot.config.BotConfig.site_url}{ctx.bot.TranslationManager.languages[0]}/commands/pipe.html"
@@ -34,13 +34,18 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
         description = decorator.get_description(decorator)  # NOQA
         base_decorators = bot.TranslationManager.get_decorator(lang)
         cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
-        afk_template = custom_format(getattr(decorator, 'template', EnDecorators.Alias.template), rate=rate, per=per,
-                                     cooldown_type=cooldown_type, description=description,
-                                     command_title=command_.name.capitalize(), command_name=command_.name.lower(),
-                                     prefix=prefix, aliases=", ".join(command_.aliases)
-                                     )
+        template = custom_format(getattr(decorator, 'template', EnDecorators.Alias.template),
+                                 rate=rate,
+                                 per=per,
+                                 cooldown_type=cooldown_type,
+                                 description=description,
+                                 command_title=command_.name.capitalize(),
+                                 command_name=command_.name.lower(),
+                                 prefix=prefix,
+                                 aliases=", ".join(command_.aliases)
+                                 )
 
-        responses[lang][command_.name.lower()] = afk_template
+        responses[lang][command_.name.lower()] = template
     return responses
 
 

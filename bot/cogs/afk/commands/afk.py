@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
-import asyncio
 import datetime
+
 from bot.bot import Gorenmu
-from bot.models import User, Channel, Status
-from bot.utils import Check, Role
-from typing import Dict, Any, List, Tuple, Optional, Coroutine, Callable
-from bot.ext.commands import Bucket, check, Context, cooldown, base_decorator, helper, usage, command, Command
-from bot.translations import EnTranslations, EnDecorators, Response
+from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
+from bot.models import Status, User
+from bot.translations import EnDecorators, Response
 from bot.translations.en.extras import Activity
 from bot.utils import StringTools
-from textwrap import dedent
 
 afk_alias = [s for s in Activity().afks if s != "afk"]
 rafk_alias = ["rafk"] + [f"r{s}" for s in Activity.afks if s != "afk"]
@@ -54,7 +51,9 @@ async def rafk(ctx: Context) -> Response:
         if afk["content"] == "":
             return translations.RAfk().is_afk.format_response(ctx, status.leave_again, status.emoji, pipe=False)
         else:
-            return translations.RAfk().is_afk.format_response(ctx, status.leave_again, status.emoji, afk["content"], pipe=False)
+            return translations.RAfk().is_afk.format_response(ctx, status.leave_again, status.emoji, afk["content"],
+                                                              pipe=False
+                                                              )
     else:
         return translations.RAfk().is_not_afk.format_response(ctx, success=False, pipe=False)
 
@@ -62,40 +61,39 @@ async def rafk(ctx: Context) -> Response:
 async def isafk(ctx: Context, content: str) -> Response:
     translations = ctx.translations.Afk
     name = StringTools.str2name(content.split()[0])
-    actions = {
-        ctx.bot.nick: translations.IsAfk().bot_nick.format_response(ctx, success=False),
-        ctx.author.name: translations.IsAfk().author_nick.format_response(ctx, success=False)}
+    actions = {ctx.bot.nick: translations.IsAfk().bot_nick.format_response(ctx, success=False),
+               ctx.author.name: translations.IsAfk().author_nick.format_response(ctx, success=False)
+               }
     if name in actions:
         return actions[name]
-    else:
-        user = await User.get_or_none(name=name)
-        if not user:
-            return translations.IsAfk().never_seen.format_response(ctx, name)
-        await user.fetch_related("status")
-        if not user.status:
-            return translations.IsAfk().is_not_afk.format_response(ctx, name)
-        afk: Status = user.status[0]  # NOQA
-        status = translations.afks[afk.alias]
-        if not afk.message:
-            return translations.IsAfk().is_afk.format_response(ctx, name, status.current, status.emoji)
-        return translations.IsAfk().is_afk.format_response(ctx, name, status.current, status.emoji, afk.message)
+    user = await User.get_or_none(name=name)
+    if not user:
+        return translations.IsAfk().never_seen.format_response(ctx, name)
+    await user.fetch_related("status")
+    if not user.status:
+        return translations.IsAfk().is_not_afk.format_response(ctx, name)
+    afk: Status = user.status[0]  # NOQA
+    status = translations.afks[afk.alias]
+    if not afk.message:
+        return translations.IsAfk().is_afk.format_response(ctx, name, status.current, status.emoji)
+    return translations.IsAfk().is_afk.format_response(ctx, name, status.current, status.emoji, afk.message)
 
 
-async def go_afk(afk, content, ctx):
+async def go_afk(status, content, ctx):
     user_status = await Status.get(user=ctx.user)
     user_status.online = False
-    user_status.alias = afk.name
+    user_status.alias = status.name
     user_status.message = content
     user_status.updated_at = datetime.datetime.now(datetime.timezone.utc)
     await user_status.save()
 
 
-async def go_rafk(afk, ctx):
+async def go_rafk(status, ctx):
     user_status = await Status.get(user=ctx.user)
     user_status.online = False
-    user_status.alias = afk["alias"]
-    user_status.message = afk["content"]
-    user_status.updated_at = datetime.datetime.fromisoformat(afk["updated_at"])
+    user_status.alias = status["alias"]
+    user_status.message = status["content"]
+    user_status.updated_at = datetime.datetime.fromisoformat(status["updated_at"])
     await user_status.save()
 
 
@@ -108,60 +106,42 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
     for lang in command_.decorators:
         if lang not in responses:
             responses[lang] = {}
-        decorator: EnDecorators.Afk = command_.decorators[lang]
-        description = decorator.Afk.get_description(decorator)  # NOQA
-        base_decorators = bot.TranslationManager.get_decorator(lang)
-        cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
-        afk_template = getattr(decorator.Afk, 'template', EnDecorators.Afk.Afk.template).format(
-                rate=rate,
-                per=per,
-                cooldown_type=cooldown_type,
-                description=description,
-                command_title="Afk",
-                command_name="afk",
-                prefix=prefix,
-                aliases=", ".join(afk_alias))
 
-        responses[lang]['afk'] = afk_template
+        language: EnDecorators = bot.TranslationManager.languages[lang][0]
+        command_body_template = getattr(language, 'template', EnDecorators.template)
+        alias_template = getattr(language, 'alias_template', EnDecorators.alias_template)
+        command_template = getattr(language, 'command_template', EnDecorators.command_template)
+        admonition_template = getattr(language, 'admonition_template', EnDecorators.admonition_template)
 
-        description = decorator.IsAfk.get_description(decorator)  # NOQA
-        isafk_template = getattr(decorator.IsAfk, 'template', EnDecorators.Afk.IsAfk.template).format(
-                rate=rate,
-                per=per,
-                cooldown_type=cooldown_type,
-                description=description,
-                command_title="IsAfk",
-                command_name="isafk",
-                prefix=prefix,
-        )
+        for subcommand in ["Afk", "IsAfk", "RAfk"]:
+            decorator = getattr(command_.decorators[lang], subcommand, getattr(EnDecorators.Afk, subcommand))
+            description = decorator.get_description(decorator)  # NOQA
+            base_decorators = bot.TranslationManager.get_decorator(lang)
+            cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
+            aliases = ""
+            if subcommand == "Afk":
+                aliases = alias_template.format(command_title=subcommand, aliases=", ".join(afk_alias))
+            elif subcommand == "RAfk":
+                aliases = alias_template.format(command_title=subcommand, aliases=", ".join(rafk_alias))
 
-        responses[lang]['isafk'] = isafk_template
+            command_body = command_body_template.format(command_title=subcommand, rate=rate, per=per,
+                                                        description=description, cooldown_type=cooldown_type,
+                                                        aliases=aliases
+                                                        )
 
-        description = decorator.RAfk.get_description(decorator)  # NOQA
-        isafk_template = getattr(decorator.RAfk, 'template', EnDecorators.Afk.RAfk.template).format(
-                rate=rate,
-                per=per,
-                cooldown_type=cooldown_type,
-                description=description,
-                command_title="RAfk",
-                command_name="rafk",
-                prefix=prefix,
-                aliases=", ".join(rafk_alias)
-        )
+            if commands := getattr(decorator, 'commands', getattr(getattr(EnDecorators.Afk, subcommand), 'commands')):
+                command_body += "".join([
+                        command_template.format(prefix=prefix, command_name=subcommand.lower(), args=item.args,
+                                                response=item.response
+                                                ) for item in commands])
 
-        responses[lang]['rafk'] = isafk_template
+            if commands_admonitions := getattr(decorator, 'admonitions',
+                                               getattr(getattr(EnDecorators.Afk, subcommand), 'admonitions')
+                                               ):
+                command_body += "".join([admonition_template.format(type=admonition.type, title=admonition.title,
+                                                                    message=admonition.message, ) for admonition in
+                                         commands_admonitions])
+
+            responses[lang][subcommand.lower()] = command_body
 
     return responses
-
-
-
-
-
-
-
-
-
-
-
-
-

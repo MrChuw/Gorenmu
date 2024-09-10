@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from twitchio.ext.commands import Bucket
 from textwrap import dedent
+from .extras.response import CommandExemples, Admonitions
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -15,6 +16,10 @@ class BaseDecorator:
     usage: str
     description: str
     extras: str
+    created: str
+    updated: str
+    commands: CommandExemples
+    admonitions: Admonitions
     template: str
 
 
@@ -48,20 +53,52 @@ class BaseClass:
 
 
 class EnDecorators:
+
+    template = dedent("""
+    # {command_title}
+            
+    # This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
+    
+    {description}
+
+    {aliases}
+    ## The way to use this command is:
+
+    """).lstrip('\n')  # NOQA
+
+    alias_template = dedent("""
+    ## All the alias available for {command_title} are:
+        - {aliases}
+    """).lstrip('\n')  # NOQA
+
+    command_template = dedent("""
+    ```text
+        user: {prefix}{command_name} {args}
+
+        bot: User, {response}
+    ```\n
+    """).lstrip('\n')  # NOQA
+
+    admonition_template = dedent("""
+    !!! {type} "{title}"
+    
+        {message}\n
+    """).lstrip('\n')  # NOQA
+
     @staticmethod
     def get_bucket_type(bucket):
         bucket_type = "geral"
         if bucket == Bucket.default:
-            bucket_type = "all user in all channels"
+            bucket_type = "dont know"
 
         if bucket == Bucket.channel:
             bucket_type = "all user per channel"
 
         if bucket == Bucket.member:
-            bucket_type = "member"
+            bucket_type = "user per channel"
 
         if bucket == Bucket.user:
-            bucket_type = "user"
+            bucket_type = "user independent of channel"
 
         if bucket == Bucket.subscriber:
             bucket_type = "subscriber"
@@ -79,16 +116,10 @@ class EnDecorators:
             usage = "How to use: {}nada <text>"
             description = "This command is used for testing."
             extras = ""
-            template = dedent("""
-            # {command_title}
-            
-            # This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
-            
-            {description}
-               
-            ## The way to use this command are always changing.
-            
-            """)  # NOQA
+            created = "2024-09-09"
+            updated = "2024-09-09"
+            commands = False
+            admonitions = False
 
         class Reload(BaseDecorator, BaseClass):
             helper = "Reloads the commands."
@@ -96,22 +127,10 @@ class EnDecorators:
             description = ("This command is used to reload all bot commands. "
                            "If any have been updated and don't require a full restart.")
             extras = ""
-            template = dedent("""
-            # {command_title}
-        
-            # This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
-        
-            {description}
-        
-            ## The way to use this command is:
-        
-            Just the command:
-            ```text
-            user: {prefix}{command_name}
-        
-            bot: User, the commands have been successfully reloaded.
-            ```
-            """)  # NOQA
+            created = "2024-09-09"
+            updated = "2024-09-09"
+            commands = CommandExemples([{'args': "", 'response': "the commands have been successfully reloaded."}])
+            admonitions = False
 
     class Others(BaseClass):
         class Pipe(BaseDecorator, BaseClass):
@@ -119,6 +138,10 @@ class EnDecorators:
             usage = "Pipe is not really a command. For more information, visit the website."
             description = "Pipe is not really a command. For more information, visit the website."
             extras = ""
+            created = "2024-09-09"
+            updated = "2024-09-09"
+            commands = False
+            admonitions = False
             template = dedent("""
                     # {command_title}
 
@@ -151,102 +174,57 @@ class EnDecorators:
             usage = "How to use: {}Afk <message>"
             description = "This command sets your status to AFK."
             extras = ""
-            template: str = dedent("""
-            # {command_title}
-
-            ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
-            
-            {description}
-            
-            ## All the alias available for AFK are:
-                - {aliases}
-            
-            ## The ways to use this command are:
-            Only the command:
-            ```text
-            user: {prefix}{command_name}
-    
-            bot: User, you went AFK: 🏃 ⌨️
-            ```
-            Command with a message:
-            ```text
-            user: {prefix}{command_name} Text you want to leave for when you return or that people will see when they use {prefix}isafk.
-    
-            bot: User, you went AFK: 🏃 ⌨️ and left a note with: Text you want to leave for when you return or that people will see when they use {prefix}isafk.
-            ```
-            !!! warning "Maximum length!"
-
-                The message could not be longer than 450 characters, if it is longer, an error will be returned.
-            """)  # NOQA
+            created = "2024-09-09"
+            updated = "2024-09-09"
+            commands = CommandExemples([
+                    {'args': "", 'response': "you went AFK: 🏃 ⌨️"},
+                    {
+                        'args': "Text you want to leave for when you return or that people will see when they use "
+                                "{prefix}isafk.",
+                        'response': "you went AFK: 🏃 ⌨️ and left a note with: Text you want to leave for when you "
+                                    "return or that people will see when they use {prefix}isafk."
+                    },
+            ])
+            admonitions = Admonitions([{
+                    "admonition_type": "warning",
+                    "title": "Maximum length!",
+                    "message": "The message could not be longer than 450 characters, if it is longer, an error will be "
+                               "returned."
+            }])
 
         class IsAfk(BaseDecorator, BaseClass):
             helper = "Type the command and the user's name to see if they are AFK."
             usage = "How to use: {}IsAfk <username>"
             description = "This command checks if a user is AFK or not."
             extras = ""
-            template = dedent("""
-            # {command_title}
-        
-            ## This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
-            
-            {description}
-            
-            ## The ways to use this command are:
-            
-            ```text
-            user: {prefix}{command_name} user2
-        
-            bot: User, @user2 is not AFK.
-            ```
-
-            ```text
-            user: {prefix}{command_name} user3
-        
-            bot: User, @user3 is AFK.
-            ```
-
-            ```text
-            user: {prefix}{command_name} user4
-        
-            bot: User, @user4 is AFK and left a note: <message>
-            ```
-            """)  # NOQA
+            created = "2024-09-09"
+            updated = "2024-09-09"
+            commands = CommandExemples([
+                    {'args': "user2", 'response': "@user2 is not AFK."},
+                    {'args': "user3", 'response': "@user3 is AFK."},
+                    {'args': "user4", 'response': "@user4 is AFK and left a note: <message>"},
+            ])
+            admonitions = False
 
         class RAfk(BaseDecorator, BaseClass):
             helper = "Return to AFK status."
             usage = "To use: {}rafk"
             description = "This command is used to return to AFK status."
             extras = ""
-            template = dedent("""
-            # {command_title}
-            
-            ## This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
-            
-            {description}
-            
-            ## All available aliases for {command_name} are:
-                - {aliases}
-            
-            ## The ways to use this command are:
-            
-            Just the command:
-            ```text
-            user: {prefix}{command_name}
-            
-            bot: User, @user2 you remained AFK: 🏃 ⌨️
-            ```
-        
-            Command with a message:
-            ```text
-            user: {prefix}{command_name} <message>
-            
-            bot: User, @user2 you remained AFK: 🏃 ⌨️ and left a note: <message>
-            ```
-            
-            !!! warning "Maximum Length!"
-            
-                From the moment you send a message in the chat, you have 2 minutes to return to AFK status. 
-            """)  # NOQA
+            created = "2024-09-09"
+            updated = "2024-09-09"
+            commands = CommandExemples([
+                {'args': "", 'response': "@user2 you remained AFK: 🏃 ⌨️"},
+                {'args': "<message>", 'response': "@user2 you remained AFK: 🏃 ⌨️ and left a note: <message>"},
+            ])
+            admonitions = Admonitions([
+                {
+                    "admonition_type": "warning",
+                    "title": "Maximum Time!",
+                    "message": "From the moment you send a message in the chat, you have 2 minutes to return to AFK "
+                               "status. "
+                },
+            ])
 
     class Alias(BaseDecorator, BaseClass):
         helper = "Command used to manage aliases."
@@ -264,8 +242,10 @@ class EnDecorators:
          - Rename an alias.
         
         Use the command followed by an action (add, check, copy, describe, edit, link, remove, rename) to perform the desired task.
-        """)  # NOQA # TODO: Fazer o templeta do alias
+        """)  # NOQA
         extras = ""
+        created = "2024-09-09"
+        updated = "2024-09-09"
         template = dedent("""
         # {command_title}
     
@@ -441,57 +421,24 @@ class EnDecorators:
         description = ("This command generates and returns a random percentage, "
                        "representing a chance between 0% and 100%.")
         extras = ""
-        template: str = dedent("""
-        # {command_title}
-        
-        ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
-        
-        {description}
-        
-        ## All the alias available for AFK are:
-            - {aliases}
-        
-        ## The ways to use this command are:
-
-        ```text
-        user: {prefix}{command_name}
-        
-        bot: User, 34%
-        """)  # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([{"args": "", "response": "34%"},])
+        admonitions = False
 
     class Choice(BaseDecorator, BaseClass):
         helper = "Chooses an option from the options provided by the user."
         usage = "To use: {}choice <option1> or <option2>"
         description = "Chooses an option from the options provided by the user."
         extras = ""
-        template: str = dedent("""
-        # {command_title}
-        
-        ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
-        
-        {description}
-        
-        ## All the alias available for AFK are:
-            - {aliases}
-        
-        ## The ways to use this command are:
-        
-        ```text
-        user: {prefix}{command_name} dice or house or coin
-        
-        bot: User, house
-        ```
-        ```text
-        user: {prefix}{command_name} dice house coin
-        
-        bot: User, dice
-        ```
-        ```text
-        user: {prefix}{command_name} dice, house, coin
-        
-        bot: User, coin
-        ```
-        """)  # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([
+                {"args": "dice or house or coin", "response": "house"},
+                {"args": "dice house coin", "response": "dice"},
+                {"args": "dice, house, coin", "response": "coin"},
+            ])
+        admonitions = False
 
     class Count(BaseDecorator, BaseClass):
         helper = "Counts the number of symbols in a text or a URL."
@@ -502,37 +449,31 @@ class EnDecorators:
                        "content and performs the count based on what it finds. "
                        "And it will cache the page content for 30 minutes (thirty minutes).")
         extras = ""
-        template: str = dedent("""
-        # {command_title}
-        
-        ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
-        
-        {description}
-        
-        ## The ways to use this command are:
-        ```text
-        user: {prefix}{command_name} some nice text! with some 😄 caracteres, spacial!
-        
-        bot: User, There is a total of 48 characters. Of these, 3 are punctuation marks, 0 are uppercase letters, and 1 are special characters.
-        ```
-        ```text
-        user: {prefix}{command_name} https://example.com/
-        
-        bot: User, There is a total of 20 characters. Of these, 5 are punctuation marks, 0 are uppercase letters, and 0 are special characters.
-        ```
-        This command can also be used to calculate the number of characters in the content of one or more links:
-        
-        ```text
-        user: {prefix}{command_name} type:url https://example.com/
-        
-        bot: User, There is a total of 1257 characters. Of these, 188 are punctuation marks, 21 are uppercase letters, and 0 are special characters.
-        ```
-        ```text
-        user: {prefix}{command_name} type:url https://example.com/ https://example.org/
-        
-        bot: User, There is a total of 2514 characters. Of these, 376 are punctuation marks, 42 are uppercase letters, and 0 are special characters.
-        ```
-        """)  # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([
+                        {
+                            "args": "some nice text! with some 😄 caracteres, spacial!",
+                            "response": "There is a total of 48 characters. Of these, 3 are punctuation marks, 0 are "
+                                        "uppercase letters, and 1 are special characters."
+                        },
+                        {
+                            "args": "https://example.org/",
+                            "response": "There is a total of 20 characters. Of these, 5 are punctuation marks, 0 are "
+                                        "uppercase letters, and 0 are special characters."
+                        },
+                        {
+                            "args": " type:url https://example.com/",
+                            "response": "There is a total of 1257 characters. Of these, 188 are punctuation marks, 21 "
+                                        "are uppercase letters, and 0 are special characters."
+                        },
+                        {
+                            "args": "type:url https://example.com/ https://example.org/",
+                            "response": "User, There is a total of 2514 characters. Of these, 376 are punctuation "
+                                        "marks, 42 are uppercase letters, and 0 are special characters."
+                        },
+                    ])
+        admonitions = False
 
     class HyperTranslate(BaseDecorator, BaseClass):
         helper = "Translates a text into random languages depending on how many times the user requests."
@@ -540,24 +481,10 @@ class EnDecorators:
         description = ("Command based on [ravbug](https://www.ravbug.com/hypertranslate/) that translates a text into "
                        "random languages depending on how many times the user requests.")
         extras = ""
-        template = dedent("""
-        # {command_title}
-        
-        # This command can be used {rate} times consecutively, with a cooldown of {per} per {cooldown_type}.
-        
-        {description}
-        
-        ## All available aliases for {command_name} are:
-            - {aliases}
-        
-        ## The ways to use this command are:
-    
-        ```text
-        user: {prefix}{command_name} 10 test
-        
-        bot: User, <some random text.>
-        ```
-        """)  # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([{"args": "10 test", "response": "<some random text.>"}])
+        admonitions = False
 
     class NSFW(BaseClass):
         class Imgur(BaseDecorator, BaseClass):
@@ -565,99 +492,67 @@ class EnDecorators:
             usage = "To use: {}imgur or {}imgur7 <quantity>"
             description = ("This command generates random Imgur links with 5 characters, from before 2014, and "
                            "using imgur7 for links from 2014 up to now.")
-            template = dedent("""
-                # {command_title}
-
-                # This command can be used {rate} times consecutively, with a cooldown of {per} per {cooldown_type}.
-
-                {description}
-
-                ## All available aliases for {command_name} are:
-                    - {aliases}
-
-                ## The ways to use this command are:
-
-                ```text
-                user: {prefix}{command_name} <number of images>
-
-                bot: User, <link to the image or link to a site with all the images>
-                ```
-
-                ```text
-                user: {prefix}{command_name}7 <number of images>
-
-                bot: User, <link to the image or link to a site with all the images>
-                ```
-                """)  # NOQA
+            extras = ""
+            created = "2024-09-09"
+            updated = "2024-09-09"
+            commands = CommandExemples([
+                            {
+                                "args": " <number of images>",
+                                "response": "<link to the image or link to a site with all the images>"
+                            },
+                            {
+                                "args": "7 <number of images>",
+                                "response": "<link to the image or link to a site with all the images>"
+                            },
+                        ])
+            admonitions = False
 
         class ImgurRepeated(BaseDecorator, BaseClass):
             helper = "Checks the number of repeated Imgur images."
             usage = "To use: {}imgur_repeated"
             description = ("This command is simple; it counts all the images that "
                            "have been generated by [imgur](imgur.md).")
-            template = dedent("""
-            # {command_title}
-
-            # This command can be used {rate} times consecutively, with a cooldown of {per} per {cooldown_type}.
-
-            {description}
-
-            ## The ways to use this command are:
-
-            ```text
-            user: {prefix}{command_name}
-
-            bot: User, Total number of repeated images: <Number of repeated images> || Images: <Link to the images>
-            ```
-            """)  # NOQA
+            extras = ""
+            created = "2024-09-09"
+            updated = "2024-09-09"
+            commands = CommandExemples([
+                            {
+                                "args": "",
+                                "response": "Total number of repeated images: <Number of repeated images> || "
+                                            "Images: <Link to the images>"
+                            },
+                        ])
+            admonitions = False
 
     class RandomColor(BaseDecorator, BaseClass):
         helper = "Sends a random color."
         usage = "To use: {}random_color"
         description = "This command responds with the HEX code of a random color and a link to an image of the color."
         extras = ""
-        template = dedent("""
-        # {command_title}
-
-        # This command can be used {rate} times consecutively, with a cooldown of {per} per {cooldown_type}.
-
-        {description}
-
-        ## All aliases available for {command_name} are:
-            - {aliases}
-
-        ## The ways to use this command are:
-
-        ```text
-        user: {prefix}{command_name}
-
-        bot: User, #<HEX> <Color Name> <Link to the color image>
-        ```
-        """)  # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([
+                        {
+                            "args": "",
+                            "response": "#<HEX> <Color Name> <Link to the color image>"
+                        },
+                    ])
+        admonitions = False
 
     class Reverse(BaseDecorator, BaseClass):
         helper = "Reverses a text."
         usage = "Para usar: {}reverse <texto>"
         description = "This command reverses the sent text."
         extras = ""
-        template: str = dedent("""
-        # {command_title}
-        
-        ## This command can be used {rate}x times in succession, with a cooldown of {per} per {cooldown_type}.
-        
-        {description}
-        
-        ## All the alias available for AFK are:
-            - {aliases}
-        
-        ## The ways to use this command are:
-
-        ```text
-        user: {prefix}{command_name} the text sent.
-        
-        bot: User, .tnes txet eht
-        ```
-        """) # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([
+                        {
+                            "args": "the text sent.",
+                            "response": ".tnes txet eht"
+                        },
+                    ])
+        admonitions = False
 
     class RandomLine(BaseDecorator, BaseClass):
         helper = "Fetches a random message from the channel or from a user in the channel."
@@ -665,42 +560,27 @@ class EnDecorators:
                  "`{0}rl channel:<channel name> user:<user name>`")
         description = "This command selects a random message depending on the options provided."
         extras = ""
-        template = dedent("""
-            # {command_title}
-
-            # This command can be used {rate} times consecutively, with a cooldown of {per} per {cooldown_type}.
-
-            {description}
-        
-        ## All the alias available for AFK are:
-            - {aliases}
-
-            ## The ways to use this command are:
-
-            ```text
-            user: {prefix}{command_name}
-
-            bot: User, <it will send a random message from the current chat>
-            ```
-
-            ```text
-            user: {prefix}{command_name} user:<user name>
-
-            bot: User, <it will send a random message from the user across all channels>
-            ```
-
-            ```text
-            user: {prefix}{command_name} channel:<channel name>
-
-            bot: User, <it will send a random message from a specific channel>
-            ```
-
-            ```text
-            user: {prefix}{command_name} channel:<channel name> user:<user name>
-
-            bot: User, <it will send a random message from a user in a specific channel>
-            ```
-            """)  # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([
+                        {
+                            "args": "",
+                            "response": "<it will send a random message from the current chat>"
+                        },
+                        {
+                            "args": "user:<user name>",
+                            "response": "<it will send a random message from the user across all channels>"
+                        },
+                        {
+                            "args": "channel:<channel name>",
+                            "response": "<it will send a random message from a specific channel>"
+                        },
+                        {
+                            "args": "channel:<channel name> user:<user name>",
+                            "response": "<it will send a random message from a user in a specific channel>"
+                        },
+                    ])
+        admonitions = False
 
     class Scp(BaseDecorator, BaseClass):
         helper = "Sends a random SCP."
@@ -708,54 +588,34 @@ class EnDecorators:
         description = ("This command uses the random from [SCP](https://scp-wiki.wikidot.com) to generate "
                        "random SCP links.")
         extras = ""
-        template = dedent("""
-        # {command_title}
-
-        # This command can be used {rate}x in a row, with a cooldown of {per} per {cooldown_type}.
-
-        {description}
-
-        ## All available aliases for {command_name} are:
-            - {aliases}
-
-        ## The ways to use this command are:
-
-        ```text
-        user: {prefix}{command_name}
-
-        bot: User, <random SCP link>
-        ```
-
-        ```text
-        user: {prefix}{command_name} 5
-
-        bot: User, <random SCP links>
-        ```
-        """)  # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([
+                        {
+                            "args": "",
+                            "response": "<random SCP link>"
+                        },
+                        {
+                            "args": "5",
+                            "response": "<random SCP links>"
+                        },
+                    ])
+        admonitions = False
 
     class UpSideDown(BaseDecorator, BaseClass):
         helper = "Turns the text upside down."
         usage = "To use: {}upsidedown <text>"
         description = "This command reverses and turns the provided text upside down."
         extras = ""
-        template = dedent("""
-        # {command_title}
-
-        # This command can be used {rate} times in a row, with a cooldown of {per} per {cooldown_type}.
-
-        {description}
-
-        ## All available aliases for {command_name} are:
-            - {aliases}
-
-        ## The ways to use this command are:
-
-        ```text
-        user: {prefix}{command_name} tests
-
-        bot: User, sʇsǝʇ
-        ```
-        """)  # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([
+                        {
+                            "args": "tests",
+                            "response": "sʇsǝʇ"
+                        },
+                    ])
+        admonitions = False
 
     class Wikihow(BaseDecorator, BaseClass):
         helper = "Sends a random wikihow."
@@ -763,27 +623,19 @@ class EnDecorators:
         description = ("This command uses the random from [Wikihow](https://wikihow.com) to generate "
                        "random links.")
         extras = ""
-        template = dedent("""
-        # {command_title}
-
-        # This command can be used {rate}x in a row, with a cooldown of {per} per {cooldown_type}.
-
-        {description}
-
-        ## The ways to use this command are:
-
-        ```text
-        user: {prefix}{command_name}
-
-        bot: User, <random wikihow link>
-        ```
-
-        ```text
-        user: {prefix}{command_name} 5
-
-        bot: User, <random wikihow links>
-        ```
-        """)  # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([
+                        {
+                            "args": "",
+                            "response": "<random wikihow link>"
+                        },
+                        {
+                            "args": "5",
+                            "response": "<random wikihow links>"
+                        },
+                    ])
+        admonitions = False
 
     class Wikipedia(BaseDecorator, BaseClass):
         helper = "Sends a random wikipedia."
@@ -791,29 +643,23 @@ class EnDecorators:
         description = ("This command uses the random from [Wikipedia](https://wikipedia.com) to generate "
                        "random links.")
         extras = ""
-        template = dedent("""
-        # {command_title}
-
-        # This command can be used {rate}x in a row, with a cooldown of {per} per {cooldown_type}.
-
-        {description}
-
-        ## The ways to use this command are:
-
-        ```text
-        user: {prefix}{command_name}
-
-        bot: User, <random wikipedia link>
-        ```
-        """)  # NOQA
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([
+                        {
+                            "args": "argumento",
+                            "response": "<random wikipedia link>"
+                        },
+                    ])
+        admonitions = False
 
 
     decorators = {
+            'pipe': Others.Pipe,
             'afk': Afk,
             'isafk': Afk,
             'rafk': Afk,
             'alias': Alias,
-            'pipe': Others.Pipe,
             'chance': Chance,
             'choice': Choice,
             'count': Count,

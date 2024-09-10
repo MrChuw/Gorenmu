@@ -217,6 +217,7 @@ class Config:
         self.ApisConfig = ApisConfig(config["apis"])
         self.CacheConfig = CacheConfig(config["cache"])
         self.DevelopmentConfig = DevelopmentConfig(config["development"])
+        self.mock = mock
 
 
 imgur_permitidos = ["beyxo_", "mr_chuw"]

@@ -8,12 +8,12 @@ if TYPE_CHECKING:
 
 class Response:
     def __init__(self, data: dict):
-        self.ctx: Optional[Context] = data.get("ctx", None)
-        self.success: Optional[bool] = data.get("success", None)
-        self.response: Optional[str] = data.get("response", None)
-        self.response_list: Optional[List[str]] = data.get("response_list", None)
-        self.object: Optional[object] = data.get("object", None)
-        self.handle: Optional[str] = data.get("handle", None)
+        self.ctx: Optional[Context] = data.get("ctx")
+        self.success: Optional[bool] = data.get("success")
+        self.response: Optional[str] = data.get("response")
+        self.response_list: Optional[List[str]] = data.get("response_list")
+        self.object: Optional[object] = data.get("object")
+        self.handle: Optional[str] = data.get("handle")
         self.pipe: bool = data.get("pipe", True)
         self.response_string: str = ""
 
@@ -33,3 +33,37 @@ class Response:
         else:
             self.response_string = self.response
         return self
+
+
+class CommandExemples:
+    def __init__(self, data):
+        self.items = [CommandExemplesItem(**item) for item in data] if data else False
+
+    def __iter__(self):
+        return iter(self.items) if self.items else iter([])
+
+
+class CommandExemplesItem:
+    def __init__(self, args, response):
+        self.args = args
+        self.response = response
+
+
+class Admonitions:
+    def __init__(self, admonitions):
+        self.items = [AdmonitionItem(**item) for item in admonitions] if admonitions else False
+
+    def __iter__(self):
+        return iter(self.items) if self.items else iter([])
+
+
+class AdmonitionItem:
+    def __init__(self, admonition_type, title, message):
+        self.type = admonition_type
+        self.title = title
+        self.message = message
+
+
+
+
+

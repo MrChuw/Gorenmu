@@ -5,9 +5,42 @@ from typing import TYPE_CHECKING
 from bot.translations import EnDecorators
 from twitchio.ext.commands import Bucket
 from textwrap import dedent
+from bot.translations.en.extras.response import CommandExemples, Admonitions
 
 
 class PtBrDecorators(EnDecorators):
+
+    template = dedent("""
+    # {command_title}
+    
+    # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
+    
+    {description}
+
+    {aliases}
+    ## As formas de utilizar este comando são:
+
+    """).lstrip('\n')  # NOQA
+
+    alias_template = dedent("""
+    ## Todos os aliases disponíveis para {command_title} são:
+        - {aliases}
+    """).lstrip('\n')  # NOQA
+
+    command_template = dedent("""
+    ```text
+        user: {prefix}{command_name} {args}
+
+        bot: Usuário, {response}
+    ```\n
+    """).lstrip('\n')  # NOQA
+
+    admonition_template = dedent("""
+    !!! {type} "{title}"
+
+        {message}\n
+    """).lstrip('\n')  # NOQA
+
     @staticmethod
     def get_bucket_type(bucket):
         bucket_type = "geral"
@@ -36,15 +69,8 @@ class PtBrDecorators(EnDecorators):
             usage = "Para usar: {}nada <texto>"
             description = "Este comando é utilizado para testes."
             extras = ""
-            template = dedent("""
-            # {command_title}
-            
-            # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-            
-            {description}
-               
-            ## As formas de utilizar este comando estão sempre mudando.
-            """) # NOQA
+            commands = False
+            admonitions = False
 
         class Reload(EnDecorators.Admin.Reload):
             helper = "Recarrega os comandos."
@@ -52,22 +78,8 @@ class PtBrDecorators(EnDecorators):
             description = ("Este comando é utilizado para recarregar todos os comandos do bot. "
                            "Caso algum tenha sido atualizado e não precisa de um reinício completo.")
             extras = ""
-            template = dedent("""
-            # {command_title}
-            
-            # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-            
-            {description}
-            
-            ## A forma de utilizar este comando é:
-            
-            Apenas o comando:
-            ```text
-            user: {prefix}{command_name}
-            
-            bot: Usuário, Os comandos foram recarregados com sucesso.
-            ```
-            """) # NOQA
+            commands = CommandExemples([{'args': "", 'response': "Os comandos foram recarregados com sucesso."}])
+            admonitions = False
 
     class Others(EnDecorators.Others):
         class Pipe(EnDecorators.Others.Pipe):
@@ -75,6 +87,8 @@ class PtBrDecorators(EnDecorators):
             usage = "Pipe não é realmente um comando. Para mais informações, visite o site."
             description = "Pipe não é realmente um comando. Para mais informações, visite o site."
             extras = ""
+            commands = False
+            admonitions = False
             template = dedent("""
                     # {command_title}
 
@@ -107,105 +121,52 @@ class PtBrDecorators(EnDecorators):
             usage = "Como usar: {}Afk <mensagem>"
             description = "Este comando define seu status como AFK."
             extras = ""
-            template = dedent("""
-            # Afk
-    
-            ## Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-            
-            {description}
-            
-            ## Todos os aliases disponíveis para {command_name} são:
-                - {aliases}
-            
-            ## As formas de utilizar este comando são:
-            
-            Apenas o comando:
-            ```text
-            user: {prefix}{command_name}
-    
-            bot: Usuário, você ficou ausente: 🏃 ⌨️
-            ```
-            
-            Comando com uma mensagem:
-            ```text
-            user: {prefix}{command_name} Texto que você quer deixar para quando voltar ou que as pessoas verão ao usar o {prefix}isafk.
-    
-            bot: Usuário, você ficou ausente: 🏃 ⌨️ e deixou uma nota com: Texto que você quer deixar para quando voltar ou que as pessoas verão ao usar o {prefix}isafk.
-            ```
-            
-            !!! warning "Tamanho Máximo!"
-            
-                A mensagem não pode ter mais que 450 caracteres; caso seja maior, retornará um erro.
-            """)  # NOQA
+            commands = CommandExemples([
+                {'args': "", 'response': "você ficou ausente: 🏃 ⌨️"},
+                {
+                    'args': "Texto que você quer deixar para quando voltar ou que as pessoas verão ao usar o "
+                            "{prefix}isafk.",
+                    'response': "você ficou ausente: 🏃 ⌨️ e deixou uma nota com: Texto que você quer deixar para "
+                                "quando voltar ou que as pessoas verão ao usar o {prefix}isafk."
+                },
+            ])
+            admonitions = Admonitions([
+                {
+                    "admonition_type": "warning",
+                    "title": "Tamanho Máximo!",
+                    "message": "A mensagem não pode ter mais que 450 caracteres; caso seja maior, retornará um erro."
+                },
+            ])
 
         class IsAfk(EnDecorators.Afk.IsAfk):
             helper = "Digite o comando e o nome do usuário para saber se ele está AFK"
             usage = "Para usar: {}IsAfk <nome do usuário>"
             description = "Este comando define se um usuário está AFK ou não."
             extras = ""
-            template = dedent("""
-            # Isafk
-
-            ## Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-            
-            {description}
-            
-            ## As formas de utilizar este comando são:
-
-            ```text
-            user: {prefix}{command_name} user2
-    
-            bot: Usuário, @user2 não está afk.
-            ```
-
-            ```text
-            user: {prefix}{command_name} user3
-    
-            bot: Usuário, @user3 está afk.
-            ```
-
-            ```text
-            user: {prefix}{command_name} user4
-    
-            bot: Usuário, @user4 está afk e deixou um bilhete: <mensagem>
-            ```
-            """)  # NOQA
+            commands = CommandExemples([
+                    {'args': "user2", 'response': "@user2 não está afk."},
+                    {'args': "user3", 'response': "@user3 está afk."},
+                    {'args': "user4", 'response': "@user4 está afk e deixou um bilhete: <mensagem>"},
+            ])
+            admonitions = False
 
         class RAfk(EnDecorators.Afk.RAfk):
             helper = "Retorna a ficar AFK"
             usage = "Para usar: {}rafk"
             description = "Este comando é usado para retornar a ficar AFK."
             extras = ""
-            template = dedent("""
-            # RAfk
-            
-            ## Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-            
-            {description}
-            
-            ## Todos os aliases disponíveis para {command_name} são:
-                - {aliases}
-            
-            ## As formas de utilizar este comando são:
-            
-            Apenas o comando:
-            ```text
-            user: {prefix}{command_name}
-            
-            bot: Usuário, @user2 você continuou Afk: 🏃 ⌨️
-            ```
-
-            Comando com uma mensagem:
-            ```text
-            user: {prefix}{command_name} <mensagem>
-            
-            bot: Usuário, @user2 você continuou Afk: 🏃 ⌨️ e deixou um nota: <mensagem>
-            ```
-            
-            !!! warning "Tamanho Máximo!"
-            
-                Do momento que você mandar uma mensagem no chat, você têm 2 minutos para retornar ao status de Afk. 
-            """) # NOQA
+            commands = CommandExemples([
+                {'args': "", 'response': "@user2 você continuou Afk: 🏃 ⌨️"},
+                {'args': "<mensagem>", 'response': "@user2 você continuou Afk: 🏃 ⌨️ e deixou um nota: <mensagem>"},
+            ])
+            admonitions = Admonitions([
+                {
+                    "admonition_type": "warning",
+                    "title": "Tempo Máximo!",
+                    "message": "Do momento que você mandar uma mensagem no chat, você têm 2 minutos para retornar ao "
+                               "status de Afk."
+                },
+            ])
 
     class Alias(EnDecorators.Alias):
         helper = "Comando usado para gerenciar os alias."
@@ -400,57 +361,20 @@ class PtBrDecorators(EnDecorators):
         usage = "Para usar: {}chance"
         description = "Este comando gera e retorna uma porcentagem aleatória, representando uma chance entre 0% e 100%."
         extras = ""
-        template = dedent("""
-        # {command_title}
-        
-        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-        
-        {description}
-        
-        ## Todos os aliases disponíveis para {command_name} são:
-            - {aliases}
-        
-        ## As formas de utilizar este comando são:
-
-        ```text
-        user: {prefix}{command_name}
-        
-        bot: Usuário, 34%
-        """) # NOQA
+        commands = CommandExemples([{"args": "", "response": "34%"},])
+        admonitions = False
 
     class Choice(EnDecorators.Choice):
         helper = "Escolhe uma opção das opções passadas pelo usuário"
         usage = "Para usar: {}choice <opção1> ou <opção2>"
         description = "Escolhe uma opção das opções passadas pelo usuário."
         extras = ""
-        template = dedent("""
-        # {command_title}
-        
-        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-        
-        {description}
-        
-        ## Todos os aliases disponíveis para {command_name} são:
-            - {aliases}
-        
-        ## As formas de utilizar este comando são:
-
-        ```text
-        user: {prefix}{command_name} dado ou casa ou moeda
-        
-        bot: Usuário, casa
-        ```
-        ```text
-        user: {prefix}{command_name} dado casa moeda
-        
-        bot: Usuário, dado
-        ```
-        ```text
-        user: {prefix}{command_name} dado, casa, moeda
-        
-        bot: Usuário, moeda
-        ```
-        """) # NOQA
+        commands = CommandExemples([
+                {"args": "dado ou casa ou moeda", "response": "casa"},
+                {"args": "dado casa moeda", "response": "dado"},
+                {"args": "dado, casa, moeda", "response": "moeda"},
+            ])
+        admonitions = False
 
     class Count(EnDecorators.Count):
         helper = "Conta a quantidade de símbolos em um texto ou em uma URL."
@@ -460,40 +384,29 @@ class PtBrDecorators(EnDecorators):
                        "e a tag `type:url`, o comando acessa o conteúdo da página e faz a contagem com base no que "
                        "foi encontrado. E ele guardara o conteúdo da página em cache pôr 30 minutos (trinta minutos).")
         extras = ""
-        template = dedent("""
-        # {command_title}
-        
-        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-        
-        {description}
-        
-        ## As formas de utilizar este comando são:
-        
-        Apenas o comando:
-
-        ```text
-        user: {prefix}{command_name} algum texto legal! com alguns 😄 personagens, espaciais!
-        
-        bot: Usuário, Há um total de 55 caracteres. Dentre eles, 3 são pontuações, 0 são letras maiúsculas e 1 são caracteres especiais.
-        ```
-        ```text
-        user: {prefix}{command_name} https://example.com/
-        
-        bot: Usuário, Há um total de 20 caracteres. Dentre eles, 5 são pontuações, 0 são letras maiúsculas e 0 são caracteres especiais.
-        ```
-        Este comando também pode ser utilizado para calcular a quantidade de caracteres no conteúdo de um ou mais links:
-        
-        ```text
-        user: {prefix}{command_name} type:url https://example.com/ 
-        
-        bot: Usuário, Há um total de 1257 caracteres. Dentre eles, 188 são pontuações, 21 são letras maiúsculas e 0 são caracteres especiais.
-        ```
-        ```text
-        user: {prefix}{command_name} type:url  https://example.com/ https://example.org/
-        
-        bot: Usuário, Há um total de 2514 caracteres. Dentre eles, 376 são pontuações, 42 são letras maiúsculas e 0 são caracteres especiais.
-        ```
-        """) # NOQA
+        commands = CommandExemples([
+                        {
+                            "args": " algum texto legal! com alguns 😄 personagens, espaciais!",
+                            "response": "Há um total de 55 caracteres. Dentre eles, 3 são pontuações, 0 são letras "
+                                        "maiúsculas e 1 são caracteres especiais."
+                        },
+                        {
+                            "args": "https://example.com/",
+                            "response": "Há um total de 20 caracteres. Dentre eles, 5 são pontuações, 0 são letras "
+                                        "maiúsculas e 0 são caracteres especiais."
+                        },
+                        {
+                            "args": "type:url https://example.com/ ",
+                            "response": "Há um total de 1257 caracteres. Dentre eles, 188 são pontuações, 21 são "
+                                        "letras maiúsculas e 0 são caracteres especiais."
+                        },
+                        {
+                            "args": "type:url  https://example.com/ https://example.org/",
+                            "response": "Há um total de 2514 caracteres. Dentre eles, 376 são pontuações, 42 são "
+                                        "letras maiúsculas e 0 são caracteres especiais."
+                        },
+                    ])
+        admonitions = False
 
     class HyperTranslate(EnDecorators.HyperTranslate):
         helper = "Traduz um texto para idiomas aleatórios dependendo da quantidade de vezes que o usuário pedir."
@@ -501,24 +414,8 @@ class PtBrDecorators(EnDecorators):
         description = ("Comando baseado no [ravbug](https://www.ravbug.com/hypertranslate/) que serve para traduzir "
                        "um texto em idiomas aleatórios dependendo da quantidade de vezes que o usuário pedir.")
         extras = ""
-        template = dedent("""
-        # {command_title}
-
-        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-
-        {description}
-
-        ## Todos os aliases disponíveis para {command_name} são:
-            - {aliases}
-
-        ## As formas de utilizar este comando são:
-
-        ```text
-        user: {prefix}{command_name} 10 teste
-
-        bot: Usuário, <algum texto aleatório.>
-        ```
-        """)  # NOQA
+        commands = CommandExemples([{"args": "10 teste","response": "<algum texto aleatório.>"}])
+        admonitions = False
 
     class NSFW(EnDecorators.NSFW):
         class Imgur(EnDecorators.NSFW.Imgur):
@@ -526,99 +423,59 @@ class PtBrDecorators(EnDecorators):
             usage = "Para usar: {}imgur ou {}imgur7 <quantidade>"
             description = ("Este comando gera links aleatórios do Imgur com 5 caracteres, que são de 2014 para trás, e "
                            "usando imgur7 para links de 2014 até o presente.")
-            template = dedent("""
-            # {command_title}
-
-            # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-
-            {description}
-
-            ## Todos os aliases disponíveis para {command_name} são:
-                - {aliases}
-
-            ## As formas de utilizar este comando são:
-
-            ```text
-            user: {prefix}{command_name} <quantidade de imagens>
-
-            bot: Usuário, <link para a imagem ou link para um site com todas as imagens>
-            ```
-
-            ```text
-            user: {prefix}{command_name}7 <quantidade de imagens>
-
-            bot: Usuário, <link para a imagem ou link para um site com todas as imagens>
-            ```
-            """)  # NOQA
+            extras = ""
+            commands = CommandExemples([
+                            {
+                                "args": "<quantidade de imagens>",
+                                "response": "<link para a imagem ou link para um site com todas as imagens>"
+                            },
+                            {
+                                "args": "7 <quantidade de imagens>",
+                                "response": "<link para a imagem ou link para um site com todas as imagens>"
+                            },
+                        ])
+            admonitions = False
 
         class ImgurRepeated(EnDecorators.NSFW.ImgurRepeated):
             helper = "Verifica a quantidade de imagens do Imgur repetidas."
             usage = "Para usar: {}imgur_repeated"
             description = ("Este comando é simples, ele conta todas as imagens que "
                            "já foram geradas pelo [imgur](imgur.md).")
-            template = dedent("""
-            # {command_title}
-
-            # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-
-            {description}
-
-            ## As formas de utilizar este comando são:
-
-            ```text
-            user: {prefix}{command_name}
-
-            bot: Usuário, Quantidade total de imagens repetidas: <Quantidade de imagens repetidas> || Imagens: <Link para as imagens>
-            ```
-            """)  # NOQA
+            extras = ""
+            commands = CommandExemples([
+                            {
+                                "args": "",
+                                "response": "Quantidade total de imagens repetidas: <Quantidade de imagens repetidas> "
+                                            "|| Imagens: <Link para as imagens>"
+                            },
+                        ])
+            admonitions = False
 
     class RandomColor(EnDecorators.RandomColor):
         helper = "Envia uma cor aleatória."
         usage = "Para usar: {}random_color"
         description = "Este comando responde com o código HEX de uma cor aleatória e o link para uma imagem da cor."
         extras = ""
-        template = dedent("""
-        # {command_title}
-
-        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-
-        {description}
-
-        ## Todos os aliases disponíveis para {command_name} são:
-            - {aliases}
-
-        ## As formas de utilizar este comando são:
-
-        ```text
-        user: {prefix}{command_name}
-
-        bot: Usuário, #<HEX> <Nome da cor> <Link da imagem da cor>
-        ```
-        """)  # NOQA
+        commands = CommandExemples([
+                        {
+                            "args": "",
+                            "response": "#<HEX> <Nome da cor> <Link da imagem da cor>"
+                        },
+                    ])
+        admonitions = False
 
     class Reverse(EnDecorators.Reverse):
         helper = "Reverte um texto."
         usage = "Para usar: {}reverse <texto>"
         description = "Este comando reverte o texto enviado."
         extras = ""
-        template = dedent("""
-        # {command_title}
-        
-        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-        
-        {description}
-        
-        ## Todos os aliases disponíveis para {command_name} são:
-            - {aliases}
-        
-        ## As formas de utilizar este comando são:
-
-        ```text
-        user: {prefix}{command_name} o texto enviado.
-        
-        bot: Usuário, .odaivne otxet o
-        ```
-        """) # NOQA
+        commands = CommandExemples([
+                        {
+                            "args": "o texto enviado.",
+                            "response": ".odaivne otxet o"
+                        },
+                    ])
+        admonitions = False
 
     class RandomLine(EnDecorators.RandomLine):
         helper = "Pega uma mensagem aleatória do canal ou do usuário no canal."
@@ -626,6 +483,19 @@ class PtBrDecorators(EnDecorators):
                  "`{0}rl channel:<nome do canal>` user:<nome do usuário>`")
         description = "Este comando seleciona uma mensagem aleatória dependendo das opções passadas."
         extras = ""
+        commands = CommandExemples([
+                        {
+                            "args": "argumento",
+                            "response": "resposta"
+                        },
+                    ])
+        admonitions = Admonitions([
+                        {
+                            "admonition_type": "warning",
+                            "title": "blablabla",
+                            "message": "blablabla"
+                        },
+                    ])
         template = dedent("""
         # {command_title}
 
@@ -669,6 +539,19 @@ class PtBrDecorators(EnDecorators):
         description = ("Este comando utiliza o random do [SCP](https://scp-wiki.wikidot.com) para gerar links "
                        "aleatórios do SCP.")
         extras = ""
+        commands = CommandExemples([
+                        {
+                            "args": "argumento",
+                            "response": "resposta"
+                        },
+                    ])
+        admonitions = Admonitions([
+                        {
+                            "admonition_type": "warning",
+                            "title": "blablabla",
+                            "message": "blablabla"
+                        },
+                    ])
         template = dedent("""
         # {command_title}
 
@@ -699,6 +582,19 @@ class PtBrDecorators(EnDecorators):
         usage = "Para usar: {}upsidedown <texto>"
         description = "Este comando inverte e coloca o texto enviado de cabeça para baixo."
         extras = ""
+        commands = CommandExemples([
+                        {
+                            "args": "argumento",
+                            "response": "resposta"
+                        },
+                    ])
+        admonitions = Admonitions([
+                        {
+                            "admonition_type": "warning",
+                            "title": "blablabla",
+                            "message": "blablabla"
+                        },
+                    ])
         template = dedent("""
         # {command_title}
 
@@ -724,6 +620,19 @@ class PtBrDecorators(EnDecorators):
         description = ("Este comando utiliza o random do [Wikihow](https://pt.wikihow.com) para gerar links "
                        "aleatórios.")
         extras = ""
+        commands = CommandExemples([
+                        {
+                            "args": "argumento",
+                            "response": "resposta"
+                        },
+                    ])
+        admonitions = Admonitions([
+                        {
+                            "admonition_type": "warning",
+                            "title": "blablabla",
+                            "message": "blablabla"
+                        },
+                    ])
         template = dedent("""
         # {command_title}
         
@@ -752,6 +661,19 @@ class PtBrDecorators(EnDecorators):
         description = ("Este comando utiliza o random do [Wikipedia](https://pt.Wikipedia.com) para gerar links "
                        "aleatórios.")
         extras = ""
+        commands = CommandExemples([
+                        {
+                            "args": "argumento",
+                            "response": "resposta"
+                        },
+                    ])
+        admonitions = Admonitions([
+                        {
+                            "admonition_type": "warning",
+                            "title": "blablabla",
+                            "message": "blablabla"
+                        },
+                    ])
         template = dedent("""
         # {command_title}
         
@@ -771,11 +693,11 @@ class PtBrDecorators(EnDecorators):
 
 
     decorators = {
+            'pipe': Others.Pipe,
             'afk': Afk,
             'isafk': Afk,
             'rafk': Afk,
             'alias': Alias,
-            'pipe': Others.Pipe,
             'chance': Chance,
             'choice': Choice,
             'count': Count,

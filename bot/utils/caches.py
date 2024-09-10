@@ -215,6 +215,8 @@ class SessionsCaches:
                                                           allowed_methods=self.allowed_methods, include_headers=True, )
             self.session: CachedSession = CachedSession(cache=self.cache)
 
+
+
     class UserAgent:
         def __init__(self, bot: Gorenmu):
             self.bot = bot
@@ -236,6 +238,7 @@ class SessionsCaches:
             url = 'https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome'
             response = bot.loop.run_until_complete(self.session.get(url))
             text = bot.loop.run_until_complete(response.text())
+            bot.loop.run_until_complete(self.session.close())
 
             soup = BeautifulSoup(text, 'html.parser')
             chrome_td = soup.find('td', text='Chrome (Standard)')

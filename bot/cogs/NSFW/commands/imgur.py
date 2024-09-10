@@ -38,24 +38,20 @@ async def generate(ctx: Context, quantity: int, k: int) -> List[str]:
             if url.status == 200:
                 links.append(f"{url.url} {len(links) + 1}º ")
                 count += 1
-            elif url.status == 429 or url.status == 503:
+            elif url.status in [429, 503]:
                 return links
-        if len(links) < quantity:
-            if quantity >= 1001:
-                await asyncio.sleep(5)
-                timeout += 15
-                new_quantity = int(quantity * 0.2)
-                urls = await generate_links(quantity=new_quantity, k=k,
-                                            session=ctx.bot.SessionsCaches.ImgurCachedSession.session
-                                            )
-            else:
-                await asyncio.sleep(1)
-                new_quantity = int(quantity * 0.5)
-                urls = await generate_links(quantity=new_quantity, k=k,
-                                            session=ctx.bot.SessionsCaches.ImgurCachedSession.session
-                                            )
-        else:
+        if len(links) >= quantity:
             return links
+        if quantity >= 1001:
+            await asyncio.sleep(5)
+            timeout += 15
+            new_quantity = int(quantity * 0.2)
+        else:
+            await asyncio.sleep(1)
+            new_quantity = int(quantity * 0.5)
+        urls = await generate_links(quantity=new_quantity, k=k,
+                                    session=ctx.bot.SessionsCaches.ImgurCachedSession.session
+                                    )
 
 
 @base_decorator(EnDecorators.NSFW.Imgur)
@@ -64,47 +60,42 @@ async def generate(ctx: Context, quantity: int, k: int) -> List[str]:
 @command(name='imgur', aliases=['imgur7'])
 async def command(ctx: Context, args: str = "") -> Response:
     translations = ctx.translations.NSFW.Imgur
-    quantity = int(args) if args.isdigit() is True else 1
-    quantity = quantity if int(ctx.author.id) in ctx.bot.config.BotConfig.imgur_permitidos else (
-            quantity) if quantity <= 100 else 100
+    quantity = int(args) if args.isdigit() else 1
+    quantity = quantity if int(ctx.author.id) in ctx.bot.config.BotConfig.imgur_permitidos else min(quantity, 100)
     time_start = time.perf_counter()
     k = 5 if ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower() == "imgur" else 7
-    timeout = timeout_calc(quantity)
     links = await generate(ctx, quantity, k)
-    responses = []
     embed = None
-    if links is not None:
-        finished = ctx.translations.SupportTools.Humanize.Humanize.precisedelta(time.perf_counter() - time_start,
-                                                                                minimum_unit="microseconds"
-                                                                                )
-        await Imgur.bulk_create(
-                [Imgur(user=ctx.user, link=link.split(" ", 1)[0].replace("https://i.imgur.com/", "").replace(".jpg", ""
-                                                                                                             )
-                       ) for link in links]
-                )
-        if len(links) > 1:
-            embed = await ctx.bot.UploadThings.send_imgur([link.split()[0] for link in links], ctx.bot,
-                                                          ctx.bot.SessionsCaches.ImgurCachedSession.session
-                                                          )
-            await ImgurAggregate.create(link=embed, user=ctx.user)
-        if quantity < 10:
-            # if len(links) > quantity:
-            if embed:
-                responses.append(" ".join(links[:quantity]).replace("i.imgur.com/", "rg.psf.lt/"))
-                responses.append(translations.all_images_embed.format(embed))
-                return translations.links.format_response(ctx, response_list=responses)
-        if quantity >= 10:
-            if embed:
-                responses.append(translations.all_images_embed_time.format(finished, embed))
-                return translations.links.format_response(ctx, response_list=responses)
-        if quantity >= 25:
-            responses.append(translations.time_message.format(finished))
-        for i in range(0, len(links), 10):
-            chunk = links[i:i + 10]
-            responses.append(" ".join(chunk).replace("i.imgur.com/", "rg.psf.lt/"))
-        return translations.links.format_response(ctx, response_list=responses)
-    else:
+    if links is None:
         return translations.timeout.format_response(ctx, success=False)
+    finished = ctx.translations.SupportTools.Humanize.Humanize.precisedelta(time.perf_counter() - time_start,
+                                                                            minimum_unit="microseconds"
+                                                                            )
+    await Imgur.bulk_create(
+            [Imgur(user=ctx.user, link=link.split(" ", 1)[0].replace("https://i.imgur.com/", "").replace(".jpg", ""
+                                                                                                         )
+                   ) for link in links]
+    )
+    if len(links) > 1:
+        embed = await ctx.bot.UploadThings.send_imgur([link.split()[0] for link in links], ctx.bot,
+                                                      ctx.bot.SessionsCaches.ImgurCachedSession.session
+                                                      )
+        await ImgurAggregate.create(link=embed, user=ctx.user)
+    responses = []
+    if quantity < 10 and embed:
+        responses.extend((" ".join(links[:quantity]).replace("i.imgur.com/", "rg.psf.lt/"),
+                          translations.all_images_embed.format(embed))
+                         )
+        return translations.links.format_response(ctx, response_list=responses)
+    if quantity >= 10 and embed:
+        responses.append(translations.all_images_embed_time.format(finished, embed))
+        return translations.links.format_response(ctx, response_list=responses)
+    if quantity >= 25:
+        responses.append(translations.time_message.format(finished))
+    for i in range(0, len(links), 10):
+        chunk = links[i:i + 10]
+        responses.append(" ".join(chunk).replace("i.imgur.com/", "rg.psf.lt/"))
+    return translations.links.format_response(ctx, response_list=responses)
 
 
 def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) -> dict[str, dict[str, str]]:
@@ -120,16 +111,36 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
         description = decorator.get_description(decorator)  # NOQA
         base_decorators = bot.TranslationManager.get_decorator(lang)
         cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
-        afk_template = getattr(decorator, 'template', EnDecorators.NSFW.Imgur.template).format(
-                rate=rate, per=per,
-                cooldown_type=cooldown_type,
-                description=description,
-                command_title=command_.name.capitalize(),
-                command_name=command_.name.lower(),
-                prefix=prefix,
-                aliases=", ".join(command_.aliases)
-        )
 
-        responses[lang][command_.name.lower()] = afk_template
+        language: EnDecorators = bot.TranslationManager.languages[lang][0]
+        command_body_template = getattr(language, 'template', EnDecorators.template)
+        alias_template = getattr(language, 'alias_template', EnDecorators.alias_template)
+        command_template = getattr(language, 'command_template', EnDecorators.command_template)
+        admonition_template = getattr(language, 'admonition_template', EnDecorators.admonition_template)
+
+        aliases = ""
+        if command_.aliases:
+            aliases = alias_template.format(command_title=command_.name.capitalize(),
+                                            aliases=", ".join(command_.aliases)
+                                            )
+
+        command_body = command_body_template.format(command_title=command_.name.capitalize(), rate=rate, per=per,
+                                                    description=description, cooldown_type=cooldown_type,
+                                                    aliases=aliases
+                                                    )
+
+        if commands := getattr(decorator, 'commands', EnDecorators.NSFW.Imgur.commands):
+            command_body += "".join([
+                    command_template.format(prefix=prefix, command_name=command_.name.lower(), args=item.args,
+                                            response=item.response
+                                            ) for item in commands])
+
+        if commands_admonitions := getattr(decorator, 'admonitions', EnDecorators.NSFW.Imgur.admonitions):
+            command_body += "".join([admonition_template.format(type=admonition.type, title=admonition.title,
+                                                                message=admonition.message, ) for admonition in
+                                     commands_admonitions]
+                                    )
+
+        responses[lang][command_.name.lower()] = command_body.replace(" 7", "7")
 
     return responses

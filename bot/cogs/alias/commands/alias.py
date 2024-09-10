@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import re
 from itertools import chain, repeat
-from bot.bot import Gorenmu
 
 from twitchio.ext.commands import Command
 
+from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Context, cooldown
 from bot.models import Alias, User
 from bot.translations import EnDecorators, Response
-import re
 
 ALIAS_NAME_REGEX = re.compile(
         r'^[-\w\u00a9\u00ae\u2000-\u3300\ud83c\ud000-\udfff\ud83d\ud000-\udfff\ud83e\ud000-\udfff]{2,30}$'
@@ -18,24 +17,24 @@ ALIAS_NAME_REGEX = re.compile(
 @base_decorator(EnDecorators.Alias)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
-@command(name='alias', aliases=[''])
+@command(name='alias', aliases=[])
 async def command(ctx: Context, action: str, *args, ) -> Response:
     # TODO: Verificar se o deleted está direito nas funções.
-    if action.lower() in ["add"]:
+    if action.lower() in {"add"}:
         return await add_alias(ctx, args)
-    elif action.lower() in ["check", "list"]:
+    elif action.lower() in {"check", "list"}:
         return await check_alias(ctx, args)
-    elif action.lower() in ["copy"]:
+    elif action.lower() in {"copy"}:
         return await copy_alias(ctx, args)
-    elif action.lower() in ["describe"]:
+    elif action.lower() in {"describe"}:
         return await describe_alias(ctx, args)
-    elif action.lower() in ["edit"]:
+    elif action.lower() in {"edit"}:
         return await edit_alias(ctx, args)
-    elif action.lower() in ["link"]:
+    elif action.lower() in {"link"}:
         return await link_alias(ctx, args)
-    elif action.lower() in ["remove"]:
+    elif action.lower() in {"remove"}:
         return await remove_alias(ctx, args)
-    elif action.lower() in ["rename"]:
+    elif action.lower() in {"rename"}:
         return await rename_alias(ctx, args)
 
 
@@ -67,14 +66,12 @@ async def upload_alias(ctx: Context, aliases: list[Alias], table_name: str):  # 
             parent_name = await User.get(id=alias.user_id) or ""
         updated_at = alias.updated_at.strftime(ctx.translations.SupportTools.TimeTools.strftime)
         created_at = alias.created_at.strftime(ctx.translations.SupportTools.TimeTools.strftime)
-        alias_table_list.append({alias_table_headers[0]: name,
-                                 alias_table_headers[1]: description,
-                                 alias_table_headers[2]: invocation,
-                                 alias_table_headers[3]: arguments,
-                                 alias_table_headers[4]: parent_name,
-                                 alias_table_headers[5]: updated_at,
-                                 alias_table_headers[6]: created_at
-                                 })
+        alias_table_list.append(
+                {alias_table_headers[0]: name, alias_table_headers[1]: description, alias_table_headers[2]: invocation,
+                 alias_table_headers[3]: arguments, alias_table_headers[4]: parent_name,
+                 alias_table_headers[5]: updated_at, alias_table_headers[6]: created_at
+                 }
+        )
 
     columns = alias_table_list[0].keys()
     max_lens = {column: max(len(str(item[column])) for item in alias_table_list + [{column: column}]) for column in
@@ -86,7 +83,6 @@ async def upload_alias(ctx: Context, aliases: list[Alias], table_name: str):  # 
              alias_table_list]
 
     markdown_table = "\n".join([header, separator] + lines)
-
 
     url = 'https://alias.mrchuw.com.br/submit'
     data = {'markdown': markdown_table, 'table_name': table_name}
@@ -126,7 +122,8 @@ async def check_alias(ctx: Context, args: tuple):  # TODO: test check a link ali
         aliases_flat = [alias.name for alias in aliases]
         url = await upload_alias(ctx, aliases, translations.alias_table_name.format(ctx.author.display_name))
         return translations.Check.user_alias_list.format_response(ctx, ", ".join(aliases_flat), url, success=False,
-                                                                  pipe=False)
+                                                                  pipe=False
+                                                                  )
 
     target_aliases_flat = []
     aliases = await Alias.filter(channel=None, user=ctx.user, deleted=False).prefetch_related("parent")
@@ -137,9 +134,9 @@ async def check_alias(ctx: Context, args: tuple):  # TODO: test check a link ali
         target_aliases = await Alias.filter(channel=None, user=target_user).prefetch_related("parent")
         target_aliases_flat = [alias.name for alias in target_aliases]
 
-    if target_aliases_flat == [] and first_name not in aliases_flat and not second_name:
+    if not target_aliases_flat and first_name not in aliases_flat and not second_name:
         return translations.user_has_no_alias.format_response(ctx, target_user.name, success=False, pipe=False)
-    elif target_aliases_flat == [] and first_name in aliases_flat and not second_name:
+    elif not target_aliases_flat and first_name in aliases_flat and not second_name:
         user = ctx.user
         alias_name = first_name
         mention = translations.mention(ctx, user, user.name)
@@ -174,7 +171,8 @@ async def check_alias(ctx: Context, args: tuple):  # TODO: test check a link ali
         alias = await Alias.get(id=alias.parent.id, deleted=False)
         original_user = await User.get(id=alias.user.id)
         return translations.Check.appendix_message.format_response(ctx, alias.name, original_user.name, alias.name,
-                                                                   alias.name, invocation, url, pipe=False)
+                                                                   alias.name, invocation, url, pipe=False
+                                                                   )
 
     return translations.Check.normal_message.format_response(ctx, alias.name, invocation, url, pipe=False)
 
@@ -182,10 +180,7 @@ async def check_alias(ctx: Context, args: tuple):  # TODO: test check a link ali
 async def copy_alias(ctx: Context, args: tuple):
     translations = ctx.translations.Alias
     target_user_name, target_alias_name, *rest = chain(args, repeat(None, 2))
-    rest = [arg for arg in rest if arg]
-    new_name = None
-    if rest:
-        new_name = rest[0]
+    new_name = rest[0] if (rest := [arg for arg in rest if arg]) else None
     if not target_user_name:
         return translations.Copy.user_not_provided.format_response(ctx, success=False, pipe=False)
     if not target_alias_name:
@@ -203,22 +198,19 @@ async def copy_alias(ctx: Context, args: tuple):
 
     target_alias = await Alias.filter(channel=None, user=target_user, name=target_alias_name, deleted=False).first()
     if target_alias is None:
-        return translations.Copy.no_alias_found.format_response(ctx, target_alias_name,
-                                                                target_user.name,
-                                                                success=False,
-                                                                pipe=False)
+        return translations.Copy.no_alias_found.format_response(ctx, target_alias_name, target_user.name, success=False,
+                                                                pipe=False
+                                                                )
 
     if target_alias.command is None:  # NOQA
-        return translations.Copy.link_to_a_link.format_response(ctx, ctx.prefix, target_user.name,
-                                                                target_alias_name,
-                                                                success=False,
-                                                                pipe=False)
+        return translations.Copy.link_to_a_link.format_response(ctx, ctx.prefix, target_user.name, target_alias_name,
+                                                                success=False, pipe=False
+                                                                )
 
-    new_alias = await Alias.create(user_id=ctx.author.id, channel_id=None,
-                                   name=target_alias_name if not new_name else new_name,
+    new_alias = await Alias.create(user_id=ctx.author.id, channel_id=None, name=new_name or target_alias_name,
                                    command=target_alias.command,  # NOQA
-                                   invocation=target_alias.invocation,
-                                   arguments=target_alias.arguments, parent_id=target_alias.id, )
+                                   invocation=target_alias.invocation, arguments=target_alias.arguments,
+                                   parent_id=target_alias.id, )
     if new_name:
         return translations.Copy.copy_success.format_response(ctx, target_alias_name, new_alias.name, pipe=False)
     return translations.Copy.copy_success.format_response(ctx, new_alias.name, pipe=False)
@@ -268,7 +260,7 @@ async def edit_alias(ctx: Context, args: tuple):
 
     alias.command = command_check.name
     alias.invocation = command_
-    alias.arguments = rest if rest else None
+    alias.arguments = rest or None
 
     await alias.save()
     return translations.Edit.edit_success.format_response(ctx, alias.name, pipe=False)
@@ -281,7 +273,6 @@ async def link_alias(ctx: Context, args: tuple):
         return translations.Link.link_no_args.format_response(ctx, success=False, pipe=False)
 
     user_name, alias_name, custom_link_name, *rest = chain(args, repeat(None, 2))
-    rest = [arg for arg in rest if arg]
     name = custom_link_name or alias_name
 
     existing_alias = await Alias.filter(user=ctx.user, name=name, deleted=False).first()
@@ -293,8 +284,8 @@ async def link_alias(ctx: Context, args: tuple):
     if not target_user_data:
         return translations.user_not_found.format_response(ctx, user_name, success=False, pipe=False)
 
-    target_alias = await (Alias.filter(user=target_user_data, name=alias_name,
-                                       deleted=False).first().prefetch_related("parent"))
+    target_alias = await (
+            Alias.filter(user=target_user_data, name=alias_name, deleted=False).first().prefetch_related("parent"))
 
     if not target_alias and not target_alias.parent:
         return translations.Link.user_dont_has_alias.format_response(ctx, alias_name, success=False, pipe=False)
@@ -307,8 +298,8 @@ async def link_alias(ctx: Context, args: tuple):
 
     elif not ALIAS_NAME_REGEX.match(target_alias.name):
         return translations.Link.link_with_invalid_name.format_response(ctx, translations.alias_invalid_name,
-                                                                        success=False,
-                                                                        pipe=False)
+                                                                        success=False, pipe=False
+                                                                        )
 
     await Alias.link_alias(ctx.user, name, target_alias)
 
@@ -316,15 +307,14 @@ async def link_alias(ctx: Context, args: tuple):
             custom_link_name and custom_link_name != target_alias.name) else "."
 
     if link_to_link:
-        return translations.Link.link_to_link.format_response(ctx, target_alias.name, original_user.name, name_string,  # NOQA
-                                                              pipe=False)
+        return translations.Link.link_to_link.format_response(ctx, target_alias.name, original_user.name, name_string, pipe=False)  # NOQA
 
     return translations.Link.link_success.format_response(ctx, name_string, pipe=False)
 
 
 async def remove_alias(ctx: Context, args: tuple):
     translations = ctx.translations.Alias
-    if len(args) < 1:
+    if not args:
         return translations.Remove.no_alias_name_provided.format_response(ctx, success=False, pipe=False)
     name, *rest = chain(args, repeat(None, 2))
     alias = await Alias.get_or_none(user=ctx.user, name=name)
@@ -342,7 +332,8 @@ async def rename_alias(ctx: Context, args: tuple):
     old_alias_name, new_alias_name, *rest = chain(args, repeat(None, 2))
     if not ALIAS_NAME_REGEX.match(new_alias_name):
         return translations.alias_invalid_name.format_response(ctx, translations.alias_invalid_name, success=False,
-                                                               pipe=False)
+                                                               pipe=False
+                                                               )
     old_alias = await Alias.get_or_none(user=ctx.user, name=old_alias_name, deleted=False)
 
     if not old_alias:
@@ -356,7 +347,7 @@ async def rename_alias(ctx: Context, args: tuple):
     return translations.Rename.alias_renamed.format_response(ctx, old_alias_name, new_alias_name, pipe=False)
 
 
-def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) -> dict[str, dict[str, str]]: # TODO: Fazer o templeta do alias
+def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) -> dict[str, dict[str, str]]:
     responses: dict[str, dict[str, str]] = {}
     cooldown_ = command_._cooldowns[0]  # NOQA
     per = cooldown_._per  # NOQA
@@ -369,19 +360,13 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
         description = decorator.get_description(decorator)  # NOQA
         base_decorators = bot.TranslationManager.get_decorator(lang)
         cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
-        # Exemplo de uso
-        afk_template = custom_format(
-                getattr(decorator, 'template', EnDecorators.Alias.template),
-                rate=rate,
-                per=per,
-                cooldown_type=cooldown_type,
-                description=description,
-                command_title=command_.name.capitalize(),
-                command_name=command_.name.lower(),
-                prefix=prefix, aliases=", ".join([])
-        )
+        template = custom_format(getattr(decorator, 'template', EnDecorators.Alias.template), rate=rate, per=per,
+                                 cooldown_type=cooldown_type, description=description,
+                                 command_title=command_.name.capitalize(), command_name=command_.name.lower(),
+                                 prefix=prefix, aliases=", ".join([])
+                                 )
 
-        responses[lang][command_.name.lower()] = afk_template
+        responses[lang][command_.name.lower()] = template
 
     return responses
 
@@ -397,6 +382,3 @@ def custom_format(template, **kwargs):
 
     # Substituir apenas os placeholders definidos em pattern
     return pattern.sub(replace, template)
-
-
-

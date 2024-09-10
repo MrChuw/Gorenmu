@@ -17,7 +17,7 @@ from bot.translations import EnDecorators, Response, EnTranslations
 async def command(ctx: Context, quantity: str = None, *, content: str = "") -> Response:
     translations = ctx.translations.HyperTranslate()
     session = ctx.bot.SessionsCaches.TranslateCachedSession.session
-    if quantity.isdigit() is False:
+    if not quantity.isdigit():
         return translations.quantity_error.format_response(ctx, ctx.prefix, success=False)
     sleep = 0 if int(quantity) > 500 else 0.5
     runs = 0
@@ -58,9 +58,38 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
         description = decorator.get_description(decorator)  # NOQA
         base_decorators = bot.TranslationManager.get_decorator(lang)
         cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
-        afk_template = getattr(decorator, 'template', EnDecorators.HyperTranslate.template).format(rate=rate, per=per,
-                cooldown_type=cooldown_type, description=description, command_title=command_.name.capitalize(),
-                command_name=command_.name.lower(), prefix=prefix, aliases=", ".join(command_.aliases)
-        )
-        responses[lang][command_.name.lower()] = afk_template
+
+        language: EnDecorators = bot.TranslationManager.languages[lang][0]
+        command_body_template = getattr(language, 'template', EnDecorators.template)
+        alias_template = getattr(language, 'alias_template', EnDecorators.alias_template)
+        command_template = getattr(language, 'command_template', EnDecorators.command_template)
+        admonition_template = getattr(language, 'admonition_template', EnDecorators.admonition_template)
+
+        aliases = ""
+        if command_.aliases:
+            aliases = alias_template.format(command_title=command_.name.capitalize(),
+                                            aliases=", ".join(command_.aliases)
+                                            )
+
+        command_body = command_body_template.format(command_title=command_.name.capitalize(), rate=rate, per=per,
+                                                    description=description, cooldown_type=cooldown_type,
+                                                    aliases=aliases
+                                                    )
+
+        command_responses = ""
+        if commands := getattr(decorator, 'commands', EnDecorators.HyperTranslate.commands):
+            command_responses = "".join([
+                    command_template.format(prefix=prefix, command_name=command_.name.lower(), args=item.args,
+                                            response=item.response
+                                            ) for item in commands])
+
+        admonitions = ""
+        if commands_admonitions := getattr(decorator, 'admonitions', EnDecorators.HyperTranslate.admonitions):
+            admonitions = "".join([admonition_template.format(type=admonition.type, title=admonition.title,
+                                                              message=admonition.message, ) for admonition in
+                                   commands_admonitions]
+                                  )
+
+        responses[lang][command_.name.lower()] = command_body + command_responses + admonitions
+
     return responses
