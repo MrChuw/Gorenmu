@@ -10,21 +10,25 @@ from bot.translations.en.extras.response import CommandExemples, Admonitions
 
 class PtBrDecorators(EnDecorators):
 
-    template = dedent("""
+    template_part1 = dedent("""
     # {command_title}
-    
-    # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
-    
-    {description}
 
-    {aliases}
-    ## As formas de utilizar este comando são:
+    ## Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
 
     """).lstrip('\n')  # NOQA
 
+    template_part2 = dedent("""
+    {description}
+
+    {aliases}
+
+    """).lstrip('\n')  # NOQA
+
+    template_part3 = "## As formas de utilizar este comando são:\n\n"
+
     alias_template = dedent("""
     ## Todos os aliases disponíveis para {command_title} são:
-        - {aliases}
+        - {aliases}\n
     """).lstrip('\n')  # NOQA
 
     command_template = dedent("""
@@ -189,7 +193,7 @@ class PtBrDecorators(EnDecorators):
         template = dedent("""
         # {command_title}
         
-        # Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
+        ## Este comando pode ser usado {rate}x seguidas, com o cooldown de {per} por {cooldown_type}.
         
         !!! warning "Restrições para os nomes dos aliases!"
         
@@ -691,6 +695,59 @@ class PtBrDecorators(EnDecorators):
         """)  # NOQA
 
 
+    class Annotations(EnDecorators.Annotations):
+        helper = "Cria anotações permanentes para o usuário."
+        usage = "Para usar: {}note add/check/delete"
+        description = "Este comando serve para criar anotações que "
+        extras = ""
+        commands = CommandExemples([
+                {
+                    "args": "add Uma anotação de algo que eu quero poder checar para sempre.",
+                    "response": "Anotação criada com sucesso. 📝 (ID: <id da anotação>)"
+                },
+                {
+                    "args": "add title:\"título para facilitar lembrar o conteúdo\" Uma anotação de algo que eu quero "
+                            "poder checar para sempre.",
+                    "response": "Anotação criada com sucesso. 📝 (ID: <id da anotação>)"
+                },
+                {
+                    "args": "check",
+                    "response": "Suas anotações são as de ID: <título se tiver [id]>"
+                },
+                {
+                    "args": "check <id>",
+                    "response": "<Conteúdo da anotação.>"
+                },
+                {
+                    "args": "delete <id>",
+                    "response": "Sua anotação de ID <id> foi deletada com sucesso. 🗑"
+                },
+            ])
+        admonitions = Admonitions([
+                {
+                    "admonition_type": "warning",
+                    "position": "bottom",
+                    "title": "Tamanho Máximo para o add!",
+                    "message": "A mensagem não pode ter mais que 450 caracteres; caso seja maior, retornará um erro."
+                },
+                {
+                    "admonition_type": "warning",
+                    "position": "bottom",
+                    "title": "Tamanho Máximo para o Titulo do add!",
+                    "message": "A mensagem não pode ter mais que 32 caracteres; caso seja maior, retornará um erro."
+                },
+                {
+                    "admonition_type": "tip",
+                    "position": "top",
+                    "title": "Annotations e Alias",
+                    "message": "Use alias e anotações juntos para criar comandos personalizados. "
+                               "Por exemplo, com +alias add bolos note check <id>, você poderá usar ++bolos para que o "
+                               "bot envie automaticamente o conteúdo da anotação, sem precisar usar o comando completo "
+                               "note check <id>."
+                },
+            ])
+
+
 
     decorators = {
             'pipe': Others.Pipe,
@@ -708,6 +765,7 @@ class PtBrDecorators(EnDecorators):
             'rscp': Scp,
             'upsidedown': UpSideDown,
             'wikihow': Wikihow,
+            'annotations': Annotations,
 
 
             'NSFW': {
@@ -720,16 +778,6 @@ class PtBrDecorators(EnDecorators):
             }
     }
 
-    class Annotations(EnDecorators.Annotations):
-        class Annotation(EnDecorators.Annotations.Annotation):
-            helper = "Cria anotações permanentes para o usuário."
-            usage = "Para usar: {}anotacao <anotação>"
-            description = "Cria anotações permanentes para o usuário."
-
-        class Annotations(EnDecorators.Annotations.Annotation):
-            helper = "Lista anotações do usuário. Da mais recente para a mais antiga."
-            usage = "Para usar: {}anotacoes"
-            description = "Lista anotações do usuário. Da mais recente para a mais antiga."
 
     class Lottery(EnDecorators.Lottery):
         class Bet(EnDecorators.Lottery.Bet):

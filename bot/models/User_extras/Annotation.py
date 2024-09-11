@@ -9,7 +9,9 @@ if TYPE_CHECKING:
 
 
 class Annotation(Base, TimestampMixin):
-    content: Union[str, fields.TextField] = fields.TextField()
+    title: fields.TextField = fields.CharField(max_length=32, null=True)
+    content: fields.TextField = fields.TextField()
+    deleted: fields.BooleanField = fields.BooleanField(default=False)
 
     user: User = fields.ForeignKeyField("models.User", related_name="annotation")
 

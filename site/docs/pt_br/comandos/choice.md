@@ -9,12 +9,14 @@ categories:
 
 # Choice
 
-# Este comando pode ser usado 3x seguidas, com o cooldown de 10 por usuário independente do canal.
+## Este comando pode ser usado 3x seguidas, com o cooldown de 10 por usuário independente do canal.
 
 Escolhe uma opção das opções passadas pelo usuário.
 
 ## Todos os aliases disponíveis para Choice são:
     - pick
+
+
 
 ## As formas de utilizar este comando são:
 

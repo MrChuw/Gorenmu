@@ -9,9 +9,10 @@ categories:
 
 # Count
 
-# This command can be used 3 times in succession, with a cooldown of 10 per user independent of channel.
+## This command can be used 3 times in succession, with a cooldown of 10 per user independent of channel.
 
 This command can count the number of characters, uppercase letters, punctuation marks, and special characters in a text or the content of a URL. If you provide a link and the tag `type:url`, the command fetches the page's content and performs the count based on what it finds. And it will cache the page content for 30 minutes (thirty minutes).
+
 
 
 ## The way to use this command is:

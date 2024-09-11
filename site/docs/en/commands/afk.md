@@ -7,30 +7,32 @@ categories:
 ---
 
 
-# Afk
+# RAfk
 
-# This command can be used 3 times in succession, with a cooldown of 10 per user independent of channel.
+## This command can be used 3 times in succession, with a cooldown of 10 per user independent of channel.
 
-This command sets your status to AFK.
+This command is used to return to AFK status.
 
-## All the alias available for Afk are:
-    - read, brb, eat, food, play, game, sleep, night, study, art, watch, shower, assist, code, work
+## All the alias available for RAfk are:
+    - rafk, rread, rbrb, reat, rfood, rplay, rgame, rsleep, rnight, rstudy, rart, rwatch, rshower, rassist, rcode, rwork
+
+
 
 ## The way to use this command is:
 
 ```text
-    user: +afk 
+    user: +rafk 
 
-    bot: User, you went AFK: 🏃 ⌨️
+    bot: User, @user2 you remained AFK: 🏃 ⌨️
 ```
 
 ```text
-    user: +afk Text you want to leave for when you return or that people will see when they use {prefix}isafk.
+    user: +rafk <message>
 
-    bot: User, you went AFK: 🏃 ⌨️ and left a note with: Text you want to leave for when you return or that people will see when they use {prefix}isafk.
+    bot: User, @user2 you remained AFK: 🏃 ⌨️ and left a note: <message>
 ```
 
-!!! warning "Maximum length!"
+!!! warning "Maximum Time!"
 
-    The message could not be longer than 450 characters, if it is longer, an error will be returned.
+    From the moment you send a message in the chat, you have 2 minutes to return to AFK status. 
 

@@ -68,8 +68,6 @@ nav:
       - commands/index.md
       - Pipe: commands/pipe.md
       - Afk: commands/afk.md
-      - Isafk: commands/isafk.md
-      - Rafk: commands/rafk.md
       - Alias: commands/alias.md
       - Chance: commands/chance.md
       - Choice: commands/choice.md
@@ -80,6 +78,7 @@ nav:
       - Randomline: commands/randomline.md
       - Upsidedown: commands/upsidedown.md
       - Wikihow: commands/wikihow.md
+      - Annotations: commands/annotations.md
 
       - NSFW:
         - Imgur: commands/imgur.md

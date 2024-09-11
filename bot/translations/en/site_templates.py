@@ -52,12 +52,14 @@ class EnSiteTemplates:
             dedent("""
             ---
             date:
-              created: 2024-09-09
-              updated: 2024-09-10
+              created: 2024-09-11T00:39:15.349-03:00
+              updated: 2024-09-11T00:39:15.349-03:00
             authors:
               - mrchuw
             categories:
-              - 
+              - afk
+              - isafk
+              - rafk
             slug: Changelog-1
             title: Changelog 1
             ---
@@ -65,8 +67,6 @@ class EnSiteTemplates:
             # Changelog - 
             
             <!-- more -->
-            
-            
             
             """).lstrip('\n'),
     ]

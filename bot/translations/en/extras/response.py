@@ -58,11 +58,13 @@ class Admonitions:
 
 
 class AdmonitionItem:
-    def __init__(self, admonition_type, title, message):
+    def __init__(self, admonition_type, title, message, position = "bottom"):
+        if position not in {"top", "middle", "bottom"}:
+            position = "bottom"
         self.type = admonition_type
         self.title = title
         self.message = message
-
+        self.position = position
 
 
 

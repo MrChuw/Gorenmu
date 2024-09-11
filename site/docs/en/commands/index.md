@@ -5,8 +5,6 @@
 | :---------------------------------: | :------------------------------------------------------------------------------------: | :----: |
 |           [pipe](pipe.md)           |         Pipe is not really a command. For more information, visit the website.         |        |
 |            [afk](afk.md)            |                              Command to set your status.                               |        |
-|          [isafk](isafk.md)          |              Type the command and the user's name to see if they are AFK.              |        |
-|           [rafk](rafk.md)           |                                 Return to AFK status.                                  |        |
 |          [alias](alias.md)          |                            Command used to manage aliases.                             |        |
 |         [chance](chance.md)         |                              Returns a random percentage.                              |        |
 |         [choice](choice.md)         |                Chooses an option from the options provided by the user.                |        |
@@ -17,5 +15,6 @@
 |     [randomline](randomline.md)     |        Fetches a random message from the channel or from a user in the channel.        |        |
 |     [upsidedown](upsidedown.md)     |                              Turns the text upside down.                               |        |
 |        [wikihow](wikihow.md)        |                                Sends a random wikihow.                                 |        |
+|    [annotations](annotations.md)    |                       Cria anotações permanentes para o usuário.                       |        |
 |           [nada](nada.md)           |                           This command is used for testing.                            |        |
 |         [reload](reload.md)         |                                 Reloads the commands.                                  |        |

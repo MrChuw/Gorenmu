@@ -344,63 +344,18 @@ class EnTranslations:
         links: Response = Response({})
         unexpected_error: Response = Response({"response": "An error occurred, please try again."})
 
-    class Annotations:
-        class Annotation(BaseTranslation):
-            no_content_provided: Response = Response(
-                {
-                    "success": False,
-                    "response": "Você deve informar algo para eu criar uma anotação.",
-                    "is_response": False,
-                }
-            )
-            too_much_annotations: Response = Response(
-                {
-                    "success": False,
-                    "response": "já existem 100 anotações, não é possível criar mais.",
-                    "is_response": False,
-                }
-            )
-            too_much_characters: Response = Response(
-                {"success": False, "response": "A anotação deve ter no máximo 450 caracteres."}
-            )
-            annotation_created: Response = Response(
-                {"success": False, "response": "Anotação criada com sucesso.  📝 (ID: {})"}
-            )
-
-        class Annotations(BaseTranslation):
-            annotation_content: Response = Response(
-                {"success": False, "response": "sua anotação de id {} é: {}"}
-            )
-            not_permitted: Response = Response(
-                {
-                    "success": False,
-                    "response": "a anotação de ID {} não pertence a você ou não existe.",
-                    "is_response": False,
-                }
-            )
-            deleted: Response = Response(
-                {
-                    "success": False,
-                    "response": "sua anotação de ID {} foi deletada com sucesso. 🗑",
-                    "is_response": False,
-                }
-            )
-            no_annotations_with_id: Response = Response(
-                {"success": False, "response": "você não possui nenhuma anotação com esse ID"}
-            )
-            no_id_provided: Response = Response(
-                {
-                    "success": False,
-                    "response": "você deve passar o ID da anotação que quer deletar",
-                    "is_response": False,
-                }
-            )
-            all_annotations: Response = Response(
-                {"success": False, "response": "suas anotações são os de ID: {}"}
-            )
-            no_annotations: Response = Response(
-                {"success": False, "response": "você não tem anotações."}
-            )
+    class Annotations(BaseTranslation):
+        too_much_characters: Response = Response({"response": "The annotation must have a maximum of 450 characters."})
+        title_too_long: Response = Response({"response": "The title must have a maximum of 32 characters."})
+        too_few_characters: Response = Response({"response": "You forgot to send the annotation content."})
+        annotation_created: Response = Response({"response": "Annotation created successfully. 📝 (ID: {})"})
+        no_annotations_with_id: Response = Response({"response": "You don't have any annotation with ID {}."})
+        all_annotations: Response = Response({"response": "Your annotations are the ones with ID: {}"})
+        annotation_content: Response = Response({"response": "{}"})
+        deleted: Response = Response({"response": "Your annotation with ID {} was successfully deleted. 🗑"})
+        id_not_provided: Response = Response({"response": "{} is not a valid ID."})
+        option_not_recognized: Response = Response({"response": "The valid options are only "
+                                                                "\"add\" \"check\" \"delete\""})
 
     class Lottery:
         class Bet(BaseTranslation):

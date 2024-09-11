@@ -72,44 +72,38 @@ class PtBrTranslations(EnTranslations):
         afks: dict[str, ActivityExtras.Status] = ActivityExtras.afks
 
         class Afk(EnTranslations.Afk.Afk):
-            message_too_long: Response = Response({
-                    "success": False,
-                    "response": "Esta mensagem é muito longa."})
+            message_too_long: Response = Response({"response": "Esta mensagem é muito longa."})
             afk_response: Response = Response({"success": True, "response": "{}: {}"})
             afk_content_response: Response = Response(
                 {"success": True, "response": "{}: {} e deixou uma nota com: {}"})
 
         class IsAfk(EnTranslations.Afk.IsAfk):
             bot_nick: Response = Response(
-                {"success": False, "response": "eu sempre estou aqui... observando."}
+                {"response": "eu sempre estou aqui... observando."}
             )
             author_nick: Response = Response(
-                {"success": False, "response": "você não está trabalhando... obviamente"}
+                {"response": "você não está trabalhando... obviamente"}
             )
             never_seen: Response = Response(
-                {"success": False, "response": "não lembro de ja ter visto nenhum {}."}
+                {"response": "não lembro de ja ter visto nenhum {}."}
             )
-            is_afk: Response = Response({"success": False, "response": "@{} {}: {}"})
+            is_afk: Response = Response({"response": "@{} {}: {}"})
             is_afk_content: Response = Response(
-                {"success": False, "response": "@{} {} e deixou um bilhete: {}"}
+                {"response": "@{} {} e deixou um bilhete: {}"}
             )
-            is_not_afk: Response = Response({"success": False, "response": "@{} não está Afk."})
+            is_not_afk: Response = Response({"response": "@{} não está Afk."})
 
         class RAfk(EnTranslations.Afk.RAfk):
-            time_expired: Response = Response({
-                    "success": False,
-                    "response": "O tempo para voltar já passou.",
+            time_expired: Response = Response({"response": "O tempo para voltar já passou.",
                     "pipe": False})
-            is_afk: Response = Response({"success": False, "response": "{}: {}"})
-            is_afk_content: Response = Response({
-                    "success": False,
-                    "response": "{} {} e deixou um bilhete: {}"})
-            is_not_afk: Response = Response({"success": False, "response": "voce não está afk."})
+            is_afk: Response = Response({"response": "{}: {}"})
+            is_afk_content: Response = Response({"response": "{} {} e deixou um bilhete: {}"})
+            is_not_afk: Response = Response({"response": "voce não está afk."})
 
         class AfkListeners(EnTranslations.Afk.AfkListeners):
-                is_afk: Response = Response({"success": False, "response": "{}: {} (ficou {} {})"})
+                is_afk: Response = Response({"response": "{}: {} (ficou {} {})"})
                 is_afk_content: Response = Response(
-                        {"success": False, "response": "{} {} e deixou um nota: {} (ficou {} {})"})
+                        {"response": "{} {} e deixou um nota: {} (ficou {} {})"})
 
     class Alias(EnTranslations.Alias):
         user_not_found: Response = Response({"response": "não há usuário com nome de {}."})
@@ -282,7 +276,7 @@ class PtBrTranslations(EnTranslations):
         response_url: Response = Response({"response": "#{} é {}. {}"})
 
     class Reverse(EnTranslations.Reverse):
-        reversed_string: Response = Response({"success": False, "response": "{}"})
+        reversed_string: Response = Response({"response": "{}"})
 
     class RandomLine(EnTranslations.RandomLine):
         channel_not_found: Response = Response({"response": "Não encontrei nenhum canal com o nome @{} ."})
@@ -307,161 +301,98 @@ class PtBrTranslations(EnTranslations):
         links: Response = Response({})
         unexpected_error: Response = Response({"response": "Aconteceu algum erro, tente novamente."})
 
-
     class Annotations(EnTranslations.Annotations):
-        class Annotation(EnTranslations.Annotations.Annotation):
-            no_content_provided: Response = Response(
-                {
-                    "success": False,
-                    "response": "Você deve informar algo para eu criar uma anotação.",
-                    "is_response": False,
-                }
-            )
-            too_much_annotations: Response = Response(
-                {
-                    "success": False,
-                    "response": "já existem 100 anotações, não é possível criar mais.",
-                    "is_response": False,
-                }
-            )
-            too_much_characters: Response = Response(
-                {"success": False, "response": "A anotação deve ter no máximo 450 caracteres."}
-            )
-            annotation_created: Response = Response(
-                {"success": False, "response": "Anotação criada com sucesso.  📝 (ID: {})"}
-            )
+        too_much_characters: Response = Response({"response": "A anotação deve ter no máximo 450 caracteres."})
+        title_too_long: Response = Response({"response": "O titulo deve ter no máximo 32 caracteres."})
+        too_few_characters: Response = Response({"response": "Você se esqueceu de enviar o conteúdo da anotação."})
+        annotation_created: Response = Response({"response": "Anotação criada com sucesso. 📝 (ID: {})"})
+        no_annotations_with_id: Response = Response({"response": "Você não possui nenhuma anotação com o ID {}."})
+        all_annotations: Response = Response({"response": "Suas anotações são as de ID: {}"})
+        annotation_content: Response = Response({"response": "{}"})
+        deleted: Response = Response({"response": "Sua anotação de ID {} foi deletada com sucesso. 🗑"})
+        id_not_provided: Response = Response({"response": "{} não é um ID válido."})
+        option_not_recognized: Response = Response({"response": "As opções válidas são apenas "
+                                                                "\"add\" \"check\" \"delete\""})
 
-        class Annotations(EnTranslations.Annotations.Annotations):
-            annotation_content: Response = Response(
-                {"success": False, "response": "sua anotação de id {} é: {}"}
-            )
-            not_permitted: Response = Response(
-                {
-                    "success": False,
-                    "response": "a anotação de ID {} não pertence a você ou não existe.",
-                    "is_response": False,
-                }
-            )
-            deleted: Response = Response(
-                {
-                    "success": False,
-                    "response": "sua anotação de ID {} foi deletada com sucesso. 🗑",
-                    "is_response": False,
-                }
-            )
-            no_annotations_with_id: Response = Response(
-                {"success": False, "response": "você não possui nenhuma anotação com esse ID"}
-            )
-            no_id_provided: Response = Response(
-                {
-                    "success": False,
-                    "response": "você deve passar o ID da anotação que quer deletar",
-                    "is_response": False,
-                }
-            )
-            all_annotations: Response = Response(
-                {"success": False, "response": "suas anotações são os de ID: {}"}
-            )
-            no_annotations: Response = Response(
-                {"success": False, "response": "você não tem anotações."}
-            )
 
     class Lottery(EnTranslations.Lottery):
         class Bet(EnTranslations.Lottery.Bet):
             lottery_lock: Response = Response(
-                {
-                    "success": False,
-                    "response": "desculpe a lotérica esta fechada enquanto os resultados estão sendo computado.",
-                    "is_response": False,
+                {"response": "desculpe a lotérica esta fechada enquanto os resultados estão sendo computado.",
+                    
                 }
             )
             not_enough_cookies: Response = Response(
-                {
-                    "success": False,
-                    "response": "você não tem cookies suficientes para fazer uma aposta.",
-                    "is_response": False,
+                {"response": "você não tem cookies suficientes para fazer uma aposta.",
+                    
                 }
             )
             five_numbers_bet: Response = Response(
-                {
-                    "success": False,
-                    "response": "a aposta foi criada com os números {} com o valor de 5 cookies.",
-                    "is_response": False,
+                {"response": "a aposta foi criada com os números {} com o valor de 5 cookies.",
+                    
                 }
             )
             more_than_five_numbers_bet: Response = Response(
-                {
-                    "success": False,
-                    "response": "a aposta foi criada com os números {} com o valor de {} cookies.",
-                    "is_response": False,
+                {"response": "a aposta foi criada com os números {} com o valor de {} cookies.",
+                    
                 }
             )
             too_much_numbers: Response = Response(
-                {"success": False, "response": "você não pode apostar mais que 15 números."}
+                {"response": "você não pode apostar mais que 15 números."}
             )
             only_numbers: Response = Response(
-                {"success": False, "response": "envie apenas números de 1 a 60."}
+                {"response": "envie apenas números de 1 a 60."}
             )
             duplicate_numbers: Response = Response(
-                {"success": False, "response": "por favor escolha números não repetidos."}
+                {"response": "por favor escolha números não repetidos."}
             )
             minimum_bet: Response = Response(
-                {"success": False, "response": "por favor escolha no mínimo 3 números."}
+                {"response": "por favor escolha no mínimo 3 números."}
             )
 
         class Lottery(EnTranslations.Lottery.Lottery):
             lottery_lock: Response = Response(
-                {
-                    "success": False,
-                    "response": "desculpe a lotérica esta fechada enquanto os resultados estão sendo computado.",
-                    "is_response": False,
+                {"response": "desculpe a lotérica esta fechada enquanto os resultados estão sendo computado.",
+                    
                 }
             )
 
             timeout: Response = Response(
-                {
-                    "success": False,
-                    "response": "você demorou muito tempo para escolher uma opção.",
-                    "is_response": False,
+                {"response": "você demorou muito tempo para escolher uma opção.",
+                    
                 }
             )
 
             not_enough_cookies: Response = Response(
-                {
-                    "success": False,
-                    "response": "você não tem cookies suficientes para fazer uma aposta.",
-                    "is_response": False,
+                {"response": "você não tem cookies suficientes para fazer uma aposta.",
+                    
                 }
             )
 
             five_numbers_bet: Response = Response(
-                {
-                    "success": False,
-                    "response": "a aposta foi criada com os números {} com o valor de 5 cookies.",
-                    "is_response": False,
+                {"response": "a aposta foi criada com os números {} com o valor de 5 cookies.",
+                    
                 }
             )
 
             more_than_five_numbers_bet: Response = Response(
-                {
-                    "success": False,
-                    "response": "a aposta foi criada com os números {} com o valor de {} cookies.",
-                    "is_response": False,
+                {"response": "a aposta foi criada com os números {} com o valor de {} cookies.",
+                    
                 }
             )
 
             too_much_numbers: Response = Response(
-                {"success": False, "response": "você não pode apostar mais que 15 números."}
+                {"response": "você não pode apostar mais que 15 números."}
             )
 
             only_numbers: Response = Response(
-                {"success": False, "response": "envie apenas números de 1 a 60."}
+                {"response": "envie apenas números de 1 a 60."}
             )
             duplicate_numbers: Response = Response(
-                {"success": False, "response": "por favor escolha números não repetidos."}
+                {"response": "por favor escolha números não repetidos."}
             )
             minimum_bet: Response = Response(
-                {"success": False, "response": "por favor escolha no mínimo 3 números."}
+                {"response": "por favor escolha no mínimo 3 números."}
             )
 
             bet_message: str = ("agora você precisa escolher ate 6 números de 1 a 60 (para a aposta padrão ou ate 15 "
@@ -474,20 +405,18 @@ class PtBrTranslations(EnTranslations):
     class NSFWold(EnTranslations.NSFWold):
         class Boru(EnTranslations.NSFWold.Boru):
             pls_wait: str = "por favor espera um pouco, estou gerando os links."
-            unexpected_error: Response = Response({"success": False, "response": "{}"})
-            success: Response = Response({"success": False, "response": ""})
+            unexpected_error: Response = Response({"response": "{}"})
+            success: Response = Response({"response": ""})
 
         class AllBoorus(EnTranslations.NSFWold.AllBoorus):
             pls_wait: str = "por favor espera um pouco, estou gerando os links."
-            unexpected_error: Response = Response({"success": False, "response": "{}"})
+            unexpected_error: Response = Response({"response": "{}"})
             too_much_tags: Response = Response(
-                {
-                    "success": False,
-                    "response": "Quantidade de tags ultrapassou o limite permitido de {}.",
-                    "is_response": False,
+                {"response": "Quantidade de tags ultrapassou o limite permitido de {}.",
+                    
                 }
             )
-            success: Response = Response({"success": False, "response": ""})
+            success: Response = Response({"response": ""})
 
     class Cookies(EnTranslations.Cookies):
         cookie_lines: list[str] = None
@@ -499,53 +428,43 @@ class PtBrTranslations(EnTranslations):
 
         class Cookie(EnTranslations.Cookies.Cookie):
             not_eat: Response = Response(
-                {"success": False, "response": "você não comeu nada, uau!"}
+                {"response": "você não comeu nada, uau!"}
             )
             negative_eat: Response = Response(
-                {
-                    "success": False,
-                    "response": "para comer {} cookies, você primeiro deve saber reverter a entropia.",
-                    "is_response": False,
+                {"response": "para comer {} cookies, você primeiro deve saber reverter a entropia.",
+                    
                 }
             )
             multiple_eat: Response = Response(
-                {"success": False, "response": "você comeu {} cookies de uma só vez. 🥠"}
+                {"response": "você comeu {} cookies de uma só vez. 🥠"}
             )
-            eat: Response = Response({"success": False, "response": ""})
+            eat: Response = Response({"response": ""})
             not_enough_cookies: Response = Response(
-                {
-                    "success": False,
-                    "response": "você so pode poder comer {}, para comer {} vai ter que esperar mais {} de dias "
+                {"response": "você so pode poder comer {}, para comer {} vai ter que esperar mais {} de dias "
                     "guardando o cookie diário. (não usar stock ou cookie)",
-                    "is_response": False,
+                    
                 }
             )
             daily_limit_reached: Response = Response(
-                {
-                    "success": False,
-                    "response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    "is_response": False,
+                {"response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
+                    
                 }
             )
 
         class CookieCount(EnTranslations.Cookies.CookieCount):
             bot_nick: Response = Response(
-                {
-                    "success": False,
-                    "response": "eu tenho cookies infinitos, e distribuo uma fração deles para vocês.",
-                    "is_response": False,
+                {"response": "eu tenho cookies infinitos, e distribuo uma fração deles para vocês.",
+                    
                 }
             )
             user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "usuário {} ainda não foi registra e não usou nenhum comando de cookie.",
-                    "is_response": False,
+                {"response": "usuário {} ainda não foi registra e não usou nenhum comando de cookie.",
+                    
                 }
             )
-            cookie: Response = Response({"success": False, "response": ""})
+            cookie: Response = Response({"response": ""})
             no_cookie: Response = Response(
-                {"success": False, "response": "{} ainda não comeu nenhum cookie"}
+                {"response": "{} ainda não comeu nenhum cookie"}
             )
 
             @staticmethod
@@ -584,329 +503,273 @@ class PtBrTranslations(EnTranslations):
 
         class Gift(EnTranslations.Cookies.Gift):
             invalid_amount: Response = Response(
-                {
-                    "success": False,
-                    "response": "mande uma quantidade valida para doação e não {}.",
-                    "is_response": False,
+                {"response": "mande uma quantidade valida para doação e não {}.",
+                    
                 }
             )
             bot_nick: Response = Response(
-                {"success": False, "response": "eu não quero seu cookie."}
+                {"response": "eu não quero seu cookie."}
             )
             user_himself: Response = Response(
-                {"success": False, "response": "você tentou presenteou você mesmo, uau!"}
+                {"response": "você tentou presenteou você mesmo, uau!"}
             )
             user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "@{} ainda não foi registrado (não usou nenhum comando)",
-                    "is_response": False,
+                {"response": "@{} ainda não foi registrado (não usou nenhum comando)",
+                    
                 }
             )
             multiple_gift: Response = Response(
-                {"success": False, "response": "você presenteou @{} com {} cookie(s) 🎁"}
+                {"response": "você presenteou @{} com {} cookie(s) 🎁"}
             )
             gift: Response = Response(
-                {
-                    "success": False,
-                    "response": "você so pode poder presentear {}, para presentear {} vai ter que esperar mais {} de "
+                {"response": "você so pode poder presentear {}, para presentear {} vai ter que esperar mais {} de "
                     "dias guardando o cookie diário. (não usar stock, cookie ou give)",
-                    "is_response": False,
+                    
                 }
             )
             daily_limit_reached: Response = Response(
-                {
-                    "success": False,
-                    "response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    "is_response": False,
+                {"response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
+                    
                 }
             )
 
         class SlotMachine(EnTranslations.Cookies.SlotMachine):
             daily_limit_reached: Response = Response(
-                {
-                    "success": False,
-                    "response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    "is_response": False,
+                {"response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
+                    
                 }
             )
             invalid_amount: Response = Response(
-                {
-                    "success": False,
-                    "response": "você esta tentando apostar {} mais so tem {} cookies não resgatados.",
-                    "is_response": False,
+                {"response": "você esta tentando apostar {} mais so tem {} cookies não resgatados.",
+                    
                 }
             )
             daily_win: Response = Response(
-                {
-                    "success": False,
-                    "response": "[{}] você usou seu cookie diário e ganhou {} cookies!",
-                    "is_response": False,
+                {"response": "[{}] você usou seu cookie diário e ganhou {} cookies!",
+                    
                 }
             )
             daily_single_loss: Response = Response(
-                {
-                    "success": False,
-                    "response": "[{''.join(fruits)}] você perdeu seu cookie diário...",
-                    "is_response": False,
+                {"response": "[{''.join(fruits)}] você perdeu seu cookie diário...",
+                    
                 }
             )
             not_daily_multiple_loss: Response = Response(
-                {
-                    "success": False,
-                    "response": "[{}] você usou seu cookie diário não resgatado e ganhou {} cookies!",
-                    "is_response": False,
+                {"response": "[{}] você usou seu cookie diário não resgatado e ganhou {} cookies!",
+                    
                 }
             )
             not_daily_single_loss: Response = Response(
-                {
-                    "success": False,
-                    "response": "[{}] você perdeu seu cookie diário não resgatado...",
-                    "is_response": False,
+                {"response": "[{}] você perdeu seu cookie diário não resgatado...",
+                    
                 }
             )
             not_daily_multiple_win: Response = Response(
-                {
-                    "success": False,
-                    "response": "você usou {} cookies diários não resgatados e ganhou {} cookies das seguintes "
+                {"response": "você usou {} cookies diários não resgatados e ganhou {} cookies das seguintes "
                     "apostas: {}",
-                    "is_response": False,
+                    
                 }
             )
             not_daily_lost_everything: Response = Response(
-                {
-                    "success": False,
-                    "response": "você usou {} cookies diários e perdeu tudo PoroSad",
-                    "is_response": False,
+                {"response": "você usou {} cookies diários e perdeu tudo PoroSad",
+                    
                 }
             )
 
         class Stock(EnTranslations.Cookies.Stock):
             invalid_number: Response = Response(
-                {
-                    "success": False,
-                    "response": "envie um número inteiro para o que deseja guardar e não {amount}.",
-                    "is_response": False,
+                {"response": "envie um número inteiro para o que deseja guardar e não {amount}.",
+                    
                 }
             )
             single_stock: Response = Response(
-                {"success": False, "response": "você estocou seu cookie diário 🍪"}
+                {"response": "você estocou seu cookie diário 🍪"}
             )
             invalid_amount: Response = Response(
-                {
-                    "success": False,
-                    "response": "envie uma quantidade entre nada para apostar so um e {} e não {}.",
-                    "is_response": False,
+                {"response": "envie uma quantidade entre nada para apostar so um e {} e não {}.",
+                    
                 }
             )
             invalid_quantity: Response = Response(
-                {
-                    "success": False,
-                    "response": "você esta tentando apostar {} mais so tem {} cookies não resgatados.",
-                    "is_response": False,
+                {"response": "você esta tentando apostar {} mais so tem {} cookies não resgatados.",
+                    
                 }
             )
             old_stock: Response = Response(
-                {"success": False, "response": "você estocou seu cookie diário não resgatado 🍪"}
+                {"response": "você estocou seu cookie diário não resgatado 🍪"}
             )
             multiple_old_stock: Response = Response(
-                {
-                    "success": False,
-                    "response": "você estocou seus {amount} cookies diários não resgatados 🍪",
-                    "is_response": False,
+                {"response": "você estocou seus {amount} cookies diários não resgatados 🍪",
+                    
                 }
             )
             daily_limit_reached: Response = Response(
-                {
-                    "success": False,
-                    "response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    "is_response": False,
+                {"response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
+                    
                 }
             )
 
         class Top(EnTranslations.Cookies.Top):
-            ranks: Response = Response({"success": False, "response": "os ranks são: {}"})
+            ranks: Response = Response({"response": "os ranks são: {}"})
             top10_ish: Response = Response(
-                {
-                    "success": False,
-                    "response": "top {} {}: {} || Você está na posição {}º do ranking com {}.",
-                    "is_response": False,
+                {"response": "top {} {}: {} || Você está na posição {}º do ranking com {}.",
+                    
                 }
             )
 
     class Copy(EnTranslations.Copy):
         class Copy(EnTranslations.Copy.Copy):
-            success: Response = Response({"success": False, "response": "o id da copypasta {}"})
-            copy: Response = Response({"success": False, "response": "{}"})
+            success: Response = Response({"response": "o id da copypasta {}"})
+            copy: Response = Response({"response": "{}"})
             wrong_id: Response = Response(
-                {"success": False, "response": "não existe copypasta com esse id."}
+                {"response": "não existe copypasta com esse id."}
             )
 
         class DeleteCopy(EnTranslations.Copy.DeleteCopy):
             deleted: Response = Response(
-                {"success": False, "response": "a copypasta de id {} foi deletada."}
+                {"response": "a copypasta de id {} foi deletada."}
             )
             not_owner: Response = Response(
-                {"success": False, "response": "você precisa ser o criador da copy para apagar."}
+                {"response": "você precisa ser o criador da copy para apagar."}
             )
             error: Response = Response(
-                {"success": False, "response": "envie {}delcopy delete {} para deletar."}
+                {"response": "envie {}delcopy delete {} para deletar."}
             )
 
         class RandomCopy(EnTranslations.Copy.RandomCopy):
-            success: Response = Response({"success": False, "response": "{}"})
+            success: Response = Response({"response": "{}"})
 
     class Dungeons(EnTranslations.Dungeons):
         dungeonrank_dict = dungeon_rank_dict
 
         class DungeonLevel(EnTranslations.Dungeons.DungeonLevel):
             bot_nick: Response = Response(
-                {"success": False, "response": "eu apenas crio as dungeons..."}
+                {"response": "eu apenas crio as dungeons..."}
             )
             no_class_chosen: Response = Response(
-                {"success": False, "response": "{} ainda não escolheu a nova classe"}
+                {"response": "{} ainda não escolheu a nova classe"}
             )
             player_status: Response = Response(
-                {
-                    "success": False,
-                    "response": "{} é {} ({}, {} XP) com {} dungeons ({} vitórias, {} derrotas, {:.2f}% winrate) ♦",
-                    "is_response": False,
+                {"response": "{} é {} ({}, {} XP) com {} dungeons ({} vitórias, {} derrotas, {:.2f}% winrate) ♦",
+                    
                 }
             )
             player_not_found: Response = Response(
-                {"success": False, "response": "{} ainda não entrou em nenhuma dungeon"}
+                {"response": "{} ainda não entrou em nenhuma dungeon"}
             )
 
         class DungeonRank(EnTranslations.Dungeons.DungeonRank):
             winrate: Response = Response(
-                {
-                    "success": False,
-                    "response": "top {} {}: {} || você é o {}º no ranking com {:.2f}% {}.",
-                    "is_response": False,
+                {"response": "top {} {}: {} || você é o {}º no ranking com {:.2f}% {}.",
+                    
                 }
             )
             player_rank = "|| Você está na posição {}º no ranking com {} {}."
-            normal: Response = Response({"success": False, "response": "top {} {}: {} {}"})
+            normal: Response = Response({"response": "top {} {}: {} {}"})
 
         class DungeonEnter(EnTranslations.Dungeons.DungeonEnter):
-            class_rank_up: Response = Response({"success": False, "response": "agora você é {}"})
+            class_rank_up: Response = Response({"response": "agora você é {}"})
             class_to_choose: Response = Response(
-                {
-                    "success": False,
-                    "response": "antes de continuar, digite o comando e sua nova classe: {} ou {}",
-                    "is_response": False,
+                {"response": "antes de continuar, digite o comando e sua nova classe: {} ou {}",
+                    
                 }
             )
-            dungeon_result: Response = Response({"success": False, "response": "{}"})
+            dungeon_result: Response = Response({"response": "{}"})
             cooldown: Response = Response(
-                {"success": False, "response": "aguarde {} para entrar em outra dungeon ⌛"}
+                {"response": "aguarde {} para entrar em outra dungeon ⌛"}
             )
             class_choice: Response = Response(
-                {"success": False, "response": "você escolheu {}! {}"}
+                {"response": "você escolheu {}! {}"}
             )
             class_first_choice: Response = Response(
-                {
-                    "success": False,
-                    "response": "antes de continuar, escolha sua classe! "
+                {"response": "antes de continuar, escolha sua classe! "
                     "Digite {}ed Guerreiro(a), Arqueiro(a) ou Mago(a)",
-                    "is_response": False,
+                    
                 }
             )
 
         class DungeonFast(EnTranslations.Dungeons.DungeonFast):
             class_to_choose: Response = Response(
-                {
-                    "success": False,
-                    "response": "antes de continuar, digite '{}ed' e sua nova classe: {} ou {}",
-                    "is_response": False,
+                {"response": "antes de continuar, digite '{}ed' e sua nova classe: {} ou {}",
+                    
                 }
             )
             cooldown: Response = Response(
-                {"success": False, "response": "aguarde {} para entrar em outra dungeon ⌛"}
+                {"response": "aguarde {} para entrar em outra dungeon ⌛"}
             )
-            dungeon_result: Response = Response({"success": False, "response": "{}"})
+            dungeon_result: Response = Response({"response": "{}"})
             class_first_choice: Response = Response(
-                {
-                    "success": False,
-                    "response": "antes de continuar, escolha sua classe! "
+                {"response": "antes de continuar, escolha sua classe! "
                     "Digite {}ed Guerreiro(a), Arqueiro(a) ou Mago(a)",
-                    "is_response": False,
+                    
                 }
             )
 
     class General(EnTranslations.General):
         class BotInfo(EnTranslations.General.BotInfo):
             info: Response = Response(
-                {
-                    "success": False,
-                    "response": "estou conectado à {} canais, com {} comandos, "
+                {"response": "estou conectado à {} canais, com {} comandos, "
                     '"feito" por @{} em Python (Twitchio). '
                     "Site do boto: {}",
-                    "is_response": False,
+                    
                 }
             )
-            site: Response = Response({"success": False, "response": "{}"})
-            uptime: Response = Response({"success": False, "response": "eu acordei há {}"})
+            site: Response = Response({"response": "{}"})
+            uptime: Response = Response({"response": "eu acordei há {}"})
 
         class Bug(EnTranslations.General.Bug):
             bug_id: Response = Response(
-                {"success": False, "response": "seu bug foi reportado 🐛 (ID {})"}
+                {"response": "seu bug foi reportado 🐛 (ID {})"}
             )
 
         class Channels(EnTranslations.General.Channels):
             quantity: Response = Response(
-                {"success": False, "response": "estou conectado em {quantidade} canais."}
+                {"response": "estou conectado em {quantidade} canais."}
             )
-            names: Response = Response({"success": False, "response": "{}"})
+            names: Response = Response({"response": "{}"})
 
         class Color(EnTranslations.General.Color):
             user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "eu não encontrei ninguém com o nick de {} e isso também não é uma cor valida.",
-                    "is_response": False,
+                {"response": "eu não encontrei ninguém com o nick de {} e isso também não é uma cor valida.",
+                    
                 }
             )
             unexpected_error: Response = Response(
-                {
-                    "success": False,
-                    "response": "Veja o nome da cor pelo HEX ou a cor de alguém pelo nick. "
+                {"response": "Veja o nome da cor pelo HEX ou a cor de alguém pelo nick. "
                     "Ex: {}cor ff00ff ou {}cor {}",
-                    "is_response": False,
+                    
                 }
             )
             user_has_no_color = "o usuário {} não tem nenhuma cor salva."
             user_color = "{} cor salva"
             author_color = "sua cor salva é"
-            response: Response = Response({"success": False, "response": "{}"})
+            response: Response = Response({"response": "{}"})
             response_link: Response = Response(
-                {"success": False, "response": "{} é {}. https://goo.gl/search?%23{} {}"}
+                {"response": "{} é {}. https://goo.gl/search?%23{} {}"}
             )
 
         class Dict(EnTranslations.General.Dict):
             word_not_found: Response = Response(
-                {"success": False, "response": "não encontrei a palavra {} no www.dicio.com.br"}
+                {"response": "não encontrei a palavra {} no www.dicio.com.br"}
             )
             word: Response = Response(
-                {"success": False, "response": "A palavra '{}' existe em {}"}
+                {"response": "A palavra '{}' existe em {}"}
             )
 
         class Echo(EnTranslations.General.Echo):
-            echo: Response = Response({"success": False, "response": "{}"})
+            echo: Response = Response({"response": "{}"})
 
         class Help(EnTranslations.General.Help):
             command_site: Response = Response(
-                {
-                    "success": False,
-                    "response": "veja todos os comandos: https://gorenmu.vercel.app/docs/intro",
-                    "is_response": False,
+                {"response": "veja todos os comandos: https://gorenmu.vercel.app/docs/intro",
+                    
                 }
             )
             command: Response = Response(
-                {"success": False, "response": "{}{}: {} | Comando no site: {}"}
+                {"response": "{}{}: {} | Comando no site: {}"}
             )
             command_aliases: Response = Response(
-                {"success": False, "response": "{}{} ({}): {} | Comando no site: {}"}
+                {"response": "{}{} ({}): {} | Comando no site: {}"}
             )
 
         class Join(EnTranslations.General.Join):
@@ -916,345 +779,311 @@ class PtBrTranslations(EnTranslations):
                 "chat do {} ."
             )
             already_in_channel_disabled: Response = Response(
-                {
-                    "success": False,
-                    "response": "Eu nunca sai do canal {} e vc pôde me ativar novamente usando {}start !",
-                    "is_response": False,
+                {"response": "Eu nunca sai do canal {} e vc pôde me ativar novamente usando {}start !",
+                    
                 }
             )
             joined: Response = Response(
-                {"success": False, "response": "Entrei no canal com sucesso!"}
+                {"response": "Entrei no canal com sucesso!"}
             )
             already_in_channel: Response = Response(
-                {"success": False, "response": "Ja estou no canal {}!"}
+                {"response": "Ja estou no canal {}!"}
             )
 
         class LastSeen(EnTranslations.General.LastSeen):
             bot_nick: Response = Response(
-                {"success": False, "response": "eu estou em todos os lugares, a todo momento..."}
+                {"response": "eu estou em todos os lugares, a todo momento..."}
             )
             author: Response = Response(
-                {"success": False, "response": "você foi visto pela última vez aqui ☝️"}
+                {"response": "você foi visto pela última vez aqui ☝️"}
             )
             author_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "@{name} ainda não foi registrado (não usou nenhum comando)",
-                    "is_response": False,
+                {"response": "@{name} ainda não foi registrado (não usou nenhum comando)",
+                    
                 }
             )
             not_authorized: Response = Response(
-                {"success": False, "response": "esse usuário optou por não permitir mencioná-lo"}
+                {"response": "esse usuário optou por não permitir mencioná-lo"}
             )
             last_seen: Response = Response(
-                {"success": False, "response": "@{} foi visto em @{} pela última vez: {} (há {})"}
+                {"response": "@{} foi visto em @{} pela última vez: {} (há {})"}
             )
 
         class Leave(EnTranslations.General.Leave):
             not_in_channel: Response = Response(
-                {"success": False, "response": "Eu não estou no seu canal {}!"}
+                {"response": "Eu não estou no seu canal {}!"}
             )
-            left: Response = Response({"success": False, "response": "{} removido com sucesso!"})
+            left: Response = Response({"response": "{} removido com sucesso!"})
 
         class Nicks(EnTranslations.General.Nicks):
             user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "não encontrei ninguem com nome de {} no meu banco de dados.",
-                    "is_response": False,
+                {"response": "não encontrei ninguem com nome de {} no meu banco de dados.",
+                    
                 }
             )
-            nicks: Response = Response({"success": False, "response": "{}"})
-            last_nick: Response = Response({"success": False, "response": "{} → {}"})
+            nicks: Response = Response({"response": "{}"})
+            last_nick: Response = Response({"response": "{} → {}"})
             no_nick: Response = Response(
-                {"success": False, "response": "nenhuma mudança de nick registrada ainda."}
+                {"response": "nenhuma mudança de nick registrada ainda."}
             )
 
         class Ping(EnTranslations.General.Ping):
             ping: Response = Response(
-                {"success": False, "response": "{} || RAM usada {} pelo python || {}"}
+                {"response": "{} || RAM usada {} pelo python || {}"}
             )
 
         class PopOut(EnTranslations.General.PopOut):
             url: Response = Response(
-                {"success": False, "response": "https://www.twitch.tv/popout/{}/chat?popout="}
+                {"response": "https://www.twitch.tv/popout/{}/chat?popout="}
             )
 
         class Preview(EnTranslations.General.Preview):
             no_stream: Response = Response(
-                {"success": False, "response": "este usuário não esta em live."}
+                {"response": "este usuário não esta em live."}
             )
-            response: Response = Response({"success": False, "response": "{}"})
+            response: Response = Response({"response": "{}"})
 
         class Spam(EnTranslations.General.Spam):
             content_not_valid: Response = Response(
-                {"success": False, "response": "Por favor, digite um conteúdo para o spam."}
+                {"response": "Por favor, digite um conteúdo para o spam."}
             )
             number_not_valid: Response = Response(
-                {"success": False, "response": "'{}' não é um número."}
+                {"response": "'{}' não é um número."}
             )
-            response: Response = Response({"success": False, "response": ""})
+            response: Response = Response({"response": ""})
 
         class Suggest(EnTranslations.General.Suggest):
             suggest_id: Response = Response(
-                {"success": False, "response": "sua sugestão foi anotada 📝 (ID {})"}
+                {"response": "sua sugestão foi anotada 📝 (ID {})"}
             )
 
     class Infos(EnTranslations.Infos):
         class AccountAge(EnTranslations.Infos.AccountAge):
             user_not_found: Response = Response(
-                {"success": False, "response": "@{} é um usuário inválido."}
+                {"response": "@{} é um usuário inválido."}
             )
             birthday_year: Response = Response(
-                {"success": False, "response": "hoje completa {} ano que {} criou a conta 🎂"}
+                {"response": "hoje completa {} ano que {} criou a conta 🎂"}
             )
             birthday_years: Response = Response(
-                {"success": False, "response": "hoje completa {} anos que {} criou a conta 🎂"}
+                {"response": "hoje completa {} anos que {} criou a conta 🎂"}
             )
             age: Response = Response(
-                {"success": False, "response": "{} criou a conta em {} (há {})"}
+                {"response": "{} criou a conta em {} (há {})"}
             )
 
         class Avatar(EnTranslations.Infos.Avatar):
             user_not_found: Response = Response(
-                {"success": False, "response": "minha foto de perfil: {} || {}"}
+                {"response": "minha foto de perfil: {} || {}"}
             )
             author_avatar: Response = Response(
-                {"success": False, "response": "Usuário {} não exites."}
+                {"response": "Usuário {} não exites."}
             )
             bot_avatar: Response = Response(
-                {"success": False, "response": "sua foto de perfil: {} || {}"}
+                {"response": "sua foto de perfil: {} || {}"}
             )
             nick_avatar: Response = Response(
-                {"success": False, "response": "foto de perfil de @{}: {} || {}"}
+                {"response": "foto de perfil de @{}: {} || {}"}
             )
 
         class FirstFollow(EnTranslations.Infos.FirstFollow):
             first_and_follow: Response = Response(
-                {
-                    "success": False,
-                    "response": "{} seguiu primeiro @{} e foi seguido primeiro por @{}",
-                    "is_response": False,
+                {"response": "{} seguiu primeiro @{} e foi seguido primeiro por @{}",
+                    
                 }
             )
             not_first_but_followed: Response = Response(
-                {
-                    "success": False,
-                    "response": "{} não segue ninguém e foi seguido primeiro por @{}",
-                    "is_response": False,
+                {"response": "{} não segue ninguém e foi seguido primeiro por @{}",
+                    
                 }
             )
             follow_but_not_followed: Response = Response(
-                {
-                    "success": False,
-                    "response": "{} seguiu primeiro @{} e não é seguido por ninguém",
-                    "is_response": False,
+                {"response": "{} seguiu primeiro @{} e não é seguido por ninguém",
+                    
                 }
             )
             alone: Response = Response(
-                {"success": False, "response": "{} não segue e não é seguido por ninguém"}
+                {"response": "{} não segue e não é seguido por ninguém"}
             )
 
         class FollowAge(EnTranslations.Infos.FollowAge):
             user_not_found: Response = Response(
-                {"success": False, "response": "@{} é um usuário inválido."}
+                {"response": "@{} é um usuário inválido."}
             )
             follow_yourself: Response = Response(
-                {"success": False, "response": "{} não pode se seguir."}
+                {"response": "{} não pode se seguir."}
             )
-            not_followed: Response = Response({"success": False, "response": "{} não segue {}"})
+            not_followed: Response = Response({"response": "{} não segue {}"})
             follow: Response = Response(
-                {"success": False, "response": "{} seguiu {} em {} (há {})"}
+                {"response": "{} seguiu {} em {} (há {})"}
             )
 
         class Live(EnTranslations.Infos.Live):
             bot_nick: Response = Response(
-                {"success": False, "response": "eu sou um bot, não um streamer"}
+                {"response": "eu sou um bot, não um streamer"}
             )
             user_not_found: Response = Response(
-                {"success": False, "response": "@{channel} é um canal inválido"}
+                {"response": "@{channel} é um canal inválido"}
             )
             channel_offline: Response = Response(
-                {"success": False, "response": "@{channel} está offline"}
+                {"response": "@{channel} está offline"}
             )
             stream: Response = Response(
-                {
-                    "success": False,
-                    "response": "{} está streamando {} para {} viewers: {} (há {})",
-                    "is_response": False,
+                {"response": "{} está streamando {} para {} viewers: {} (há {})",
+                    
                 }
             )
             stream_with_print: Response = Response(
-                {
-                    "success": False,
-                    "response": "{} está streamando {} para {} viewers: {} (há {}) || Print {}",
-                    "is_response": False,
+                {"response": "{} está streamando {} para {} viewers: {} (há {}) || Print {}",
+                    
                 }
             )
 
         class Title(EnTranslations.Infos.Title):
             bot_nick: Response = Response(
-                {"success": False, "response": "eu sou um bot, não um streamer."}
+                {"response": "eu sou um bot, não um streamer."}
             )
             user_not_found: Response = Response(
-                {"success": False, "response": "@{} é um canal inválido"}
+                {"response": "@{} é um canal inválido"}
             )
             no_title_game: Response = Response(
-                {"success": False, "response": "@{} não têm nem título e nem jogo configurado."}
+                {"response": "@{} não têm nem título e nem jogo configurado."}
             )
-            no_title: Response = Response({"success": False, "response": "{} 🎮 {}"})
-            title_no_game: Response = Response({"success": False, "response": "{} 📑 {}"})
-            full_title: Response = Response({"success": False, "response": "{} 📑 {} | 🎮 {}"})
+            no_title: Response = Response({"response": "{} 🎮 {}"})
+            title_no_game: Response = Response({"response": "{} 📑 {}"})
+            full_title: Response = Response({"response": "{} 📑 {} | 🎮 {}"})
 
     class Interactive(EnTranslations.Interactive):
         class Fight(EnTranslations.Interactive.Fight):
             options: list[str] = fight_option
             bot_nick: Response = Response(
-                {"success": False, "response": "você nunca conseguiria me derrotar..."}
+                {"response": "você nunca conseguiria me derrotar..."}
             )
             internal_fight: Response = Response(
-                {"success": False, "response": "você iniciou uma luta interna..."}
+                {"response": "você iniciou uma luta interna..."}
             )
             already_fight: Response = Response(
-                {"success": False, "response": "@{} já está sendo desafiado por @{}!"}
+                {"response": "@{} já está sendo desafiado por @{}!"}
             )
-            result: Response = Response({"success": False, "response": "{}"})
+            result: Response = Response({"response": "{}"})
             refused: Response = Response(
-                {"success": False, "response": "@{} recusou o desafio contra @{} LUL"}
+                {"response": "@{} recusou o desafio contra @{} LUL"}
             )
             timeout: Response = Response(
-                {"success": False, "response": "@{} não respondeu ao seu desafio a tempo"}
+                {"response": "@{} não respondeu ao seu desafio a tempo"}
             )
 
         class Hug(EnTranslations.Interactive.Hug):
-            bot: Response = Response({"success": False, "response": "🤗"})
+            bot: Response = Response({"response": "🤗"})
             yourself: Response = Response(
-                {"success": False, "response": "você tentou se abraçar..."}
+                {"response": "você tentou se abraçar..."}
             )
-            hug: Response = Response({"success": False, "response": "você abraçou @{} 🤗"})
+            hug: Response = Response({"response": "você abraçou @{} 🤗"})
 
         class Kiss(EnTranslations.Interactive.Kiss):
-            bot: Response = Response({"success": False, "response": "😳"})
+            bot: Response = Response({"response": "😳"})
             yourself: Response = Response(
-                {"success": False, "response": "você tentou se beijar..."}
+                {"response": "você tentou se beijar..."}
             )
             kiss: Response = Response(
-                {"success": False, "response": "você deu um beijinho em @{} 😚"}
+                {"response": "você deu um beijinho em @{} 😚"}
             )
 
         class Love(EnTranslations.Interactive.Love):
             yourself: Response = Response(
-                {"success": False, "response": "uma pessoa não pode ser shipada com ela mesma..."}
+                {"response": "uma pessoa não pode ser shipada com ela mesma..."}
             )
             ship: Response = Response(
-                {"success": False, "response": "@{} & @{}: {} com {}% de amor {}"}
+                {"response": "@{} & @{}: {} com {}% de amor {}"}
             )
 
         class Pat(EnTranslations.Interactive.Pat):
-            bot: Response = Response({"success": False, "response": "😊"})
+            bot: Response = Response({"response": "😊"})
             yourself: Response = Response(
-                {"success": False, "response": "você tentou fazer cafuné em si mesmo..."}
+                {"response": "você tentou fazer cafuné em si mesmo..."}
             )
-            pat: Response = Response({"success": False, "response": "você fez cafuné em @{} 😊"})
+            pat: Response = Response({"response": "você fez cafuné em @{} 😊"})
 
         class Penis(EnTranslations.Interactive.Penis):
-            bot: Response = Response({"success": False, "response": "eu só tenho pen drive."})
-            penis: Response = Response({"success": False, "response": "{} tem {}cm {}"})
+            bot: Response = Response({"response": "eu só tenho pen drive."})
+            penis: Response = Response({"response": "{} tem {}cm {}"})
 
         class Slap(EnTranslations.Interactive.Slap):
-            bot: Response = Response({"success": False, "response": "vai bater na mãe 😠."})
+            bot: Response = Response({"response": "vai bater na mãe 😠."})
             yourself: Response = Response(
-                {"success": False, "response": "você se deu um tapa... 😕."}
+                {"response": "você se deu um tapa... 😕."}
             )
             slap: Response = Response(
-                {"success": False, "response": "você deu um tapa em @{} 👋"}
+                {"response": "você deu um tapa em @{} 👋"}
             )
 
         class Tuck(EnTranslations.Interactive.Tuck):
-            bot: Response = Response({"success": False, "response": "eu não posso dormir agora."})
+            bot: Response = Response({"response": "eu não posso dormir agora."})
             yourself: Response = Response(
-                {"success": False, "response": "você foi para a cama 🛏"}
+                {"response": "você foi para a cama 🛏"}
             )
             tuck: Response = Response(
-                {"success": False, "response": "você colocou @{} na cama 🙂👉🛏"}
+                {"response": "você colocou @{} na cama 🙂👉🛏"}
             )
 
     class Markov(EnTranslations.Markov):
         class Markov(EnTranslations.Markov.Markov):
             channel_not_found: Response = Response(
-                {"success": False, "response": "@canal não encontrado no meu banco de dados."}
+                {"response": "@canal não encontrado no meu banco de dados."}
             )
             user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "@{} usuário não encontrado no meu banco de dados.",
-                    "is_response": False,
+                {"response": "@{} usuário não encontrado no meu banco de dados.",
+                    
                 }
             )
             no_start: Response = Response(
-                {
-                    "success": False,
-                    "response": "não encontrei nenhuma mensagem com o inicio {} para iniciar a geração",
-                    "is_response": False,
+                {"response": "não encontrei nenhuma mensagem com o inicio {} para iniciar a geração",
+                    
                 }
             )
-            markov_generated: Response = Response({"success": False, "response": "{}"})
+            markov_generated: Response = Response({"response": "{}"})
 
     class Marry(EnTranslations.Marry):
         class Marry(EnTranslations.Marry.Marry):
             bot: Response = Response(
-                {
-                    "success": False,
-                    "response": "não fui programado para fazer parte de um relacionamento.",
-                    "is_response": False,
+                {"response": "não fui programado para fazer parte de um relacionamento.",
+                    
                 }
             )
             yourself: Response = Response(
-                {"success": False, "response": "você não pode se casar com você mesmo..."}
+                {"response": "você não pode se casar com você mesmo..."}
             )
             user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "@{} ainda não foi registrado! (não usou nenhum comando)",
-                    "is_response": False,
+                {"response": "@{} ainda não foi registrado! (não usou nenhum comando)",
+                    
                 }
             )
             proposal_already_in_progress: Response = Response(
-                {
-                    "success": False,
-                    "response": "antes você precisa responder ao pedido de @{}! Digite 'yes' ou 'no",
-                    "is_response": False,
+                {"response": "antes você precisa responder ao pedido de @{}! Digite 'yes' ou 'no",
+                    
                 }
             )
             someone_arrived_first: Response = Response(
-                {
-                    "success": False,
-                    "response": "@{} chegou primeiro e já fez uma proposta à mão de @{}",
-                    "is_response": False,
+                {"response": "@{} chegou primeiro e já fez uma proposta à mão de @{}",
+                    
                 }
             )
             already_married: Response = Response(
-                {"success": False, "response": "vocês dois já são casados... não se lembra?"}
+                {"response": "vocês dois já são casados... não se lembra?"}
             )
             author_limit_reached: Response = Response(
-                {
-                    "success": False,
-                    "response": "você já está casado(a) com {} pessoas não é o suficiente?",
-                    "is_response": False,
+                {"response": "você já está casado(a) com {} pessoas não é o suficiente?",
+                    
                 }
             )
             limit_reached: Response = Response(
-                {
-                    "success": False,
-                    "response": "@{} já está com o {} pessoas, não há espaço para mais um...",
-                    "is_response": False,
+                {"response": "@{} já está com o {} pessoas, não há espaço para mais um...",
+                    
                 }
             )
             not_enough_cookies: Response = Response(
-                {
-                    "success": False,
-                    "response": "para pagar a aliança e todo o casório, você deve juntar mais {} cookies.",
-                    "is_response": False,
+                {"response": "para pagar a aliança e todo o casório, você deve juntar mais {} cookies.",
+                    
                 }
             )
 
@@ -1263,86 +1092,72 @@ class PtBrTranslations(EnTranslations):
             )
 
             not_enough_cookies2: Response = Response(
-                {
-                    "success": False,
-                    "response": "parece que @{} gastou todos os cookies que eram pra aliança... "
+                {"response": "parece que @{} gastou todos os cookies que eram pra aliança... "
                     "o casamento precisou ser cancelado",
-                    "is_response": False,
+                    
                 }
             )
             proposal_accept: Response = Response(
-                {
-                    "success": False,
-                    "response": "{}, você aceitou o pedido de @{}, felicidades para o casal! 🎉💞",
-                    "is_response": False,
+                {"response": "{}, você aceitou o pedido de @{}, felicidades para o casal! 🎉💞",
+                    
                 }
             )
             no_proposal: Response = Response(
-                {"success": False, "response": "{}, não há nenhum pedido de casamento para você."}
+                {"response": "{}, não há nenhum pedido de casamento para você."}
             )
 
             proposal_denied: Response = Response(
-                {"success": False, "response": "{}, você recusou o pedido de casamento de @{} 💔"}
+                {"response": "{}, você recusou o pedido de casamento de @{} 💔"}
             )
 
             timeout: Response = Response(
-                {
-                    "success": False,
-                    "response": "o tempo para pensar acabou, caso descidão se casar de novo use o comando novamente.",
-                    "is_response": False,
+                {"response": "o tempo para pensar acabou, caso descidão se casar de novo use o comando novamente.",
+                    
                 }
             )
 
         class Divorce(EnTranslations.Marry.Divorce):
             bot: Response = Response(
-                {"success": False, "response": "eu nunca estaria casado com você."}
+                {"response": "eu nunca estaria casado com você."}
             )
             yourself: Response = Response(
-                {"success": False, "response": "você não pode se livrar de você mesmo."}
+                {"response": "você não pode se livrar de você mesmo."}
             )
             not_married: Response = Response(
-                {"success": False, "response": "você não está casado com ninguém."}
+                {"response": "você não está casado com ninguém."}
             )
             user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "@{} ainda não foi registrado! (não usou nenhum comando)",
-                    "is_response": False,
+                {"response": "@{} ainda não foi registrado! (não usou nenhum comando)",
+                    
                 }
             )
             divorce: Response = Response(
-                {
-                    "success": False,
-                    "response": "então, é isso... da próxima vez, case-se com alguém "
+                {"response": "então, é isso... da próxima vez, case-se com alguém "
                     "que realmente te ame, e não qualquer pessoa por aí",
-                    "is_response": False,
+                    
                 }
             )
             wrong_person: Response = Response(
-                {
-                    "success": False,
-                    "response": "você não sabe nem o nome da pessoa com quem está casado?",
-                    "is_response": False,
+                {"response": "você não sabe nem o nome da pessoa com quem está casado?",
+                    
                 }
             )
 
         class MarryAge(EnTranslations.Marry.MarryAge):
             bot: Response = Response(
-                {"success": False, "response": "nunca me casarei com ninguém."}
+                {"response": "nunca me casarei com ninguém."}
             )
             user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "@{} ainda não foi registrado! (não usou nenhum comando)",
-                    "is_response": False,
+                {"response": "@{} ainda não foi registrado! (não usou nenhum comando)",
+                    
                 }
             )
             not_married: Response = Response(
-                {"success": False, "response": "{} não esta casado com ninguém."}
+                {"response": "{} não esta casado com ninguém."}
             )
             married: str = "@{} está casado com @{} há {}"
             divorced: str = "@{} está separado de @{} há {} e quem pediu o divórcio foi @{}"
-            response: Response = Response({"success": False, "response": ""})
+            response: Response = Response({"response": ""})
 
     class Pet(EnTranslations.Pet):
         PetsDict: PetsDict = pets
@@ -1350,100 +1165,90 @@ class PtBrTranslations(EnTranslations):
 
         class Pet(EnTranslations.Pet.Pet):
             bot: Response = Response(
-                {
-                    "success": False,
-                    "response": "eu tenho todos os pets, e ofereço alguns pra vocês",
-                    "is_response": False,
+                {"response": "eu tenho todos os pets, e ofereço alguns pra vocês",
+                    
                 }
             )
             user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "@{} ainda não foi registrado! (não usou nenhum comando)",
-                    "is_response": False,
+                {"response": "@{} ainda não foi registrado! (não usou nenhum comando)",
+                    
                 }
             )
             mention_denied: Response = Response(
-                {"success": False, "response": "@{} optou por não permitir ser mencionado."}
+                {"response": "@{} optou por não permitir ser mencionado."}
             )
-            pets: Response = Response({"success": False, "response": "{} possui {}"})
+            pets: Response = Response({"response": "{} possui {}"})
             no_pets: Response = Response(
-                {
-                    "success": False,
-                    "response": "adquira um dos pets disponíveis ({}petlist) em troca de cookies.",
-                    "is_response": False,
+                {"response": "adquira um dos pets disponíveis ({}petlist) em troca de cookies.",
+                    
                 }
             )
             user_no_pets: Response = Response(
-                {"success": False, "response": "{} não possui nenhum pet."}
+                {"response": "{} não possui nenhum pet."}
             )
 
         class PetBuy(EnTranslations.Pet.PetBuy):
             no_cookies: Response = Response(
-                {
-                    "success": False,
-                    "response": "comece a estocar cookies para adquirir um pet ({}stock)",
-                    "is_response": False,
+                {"response": "comece a estocar cookies para adquirir um pet ({}stock)",
+                    
                 }
             )
             not_enough_cookies: Response = Response(
-                {"success": False, "response": "estoque {} cookies para adquirir {}"}
+                {"response": "estoque {} cookies para adquirir {}"}
             )
             name_too_large: str = (
                 "vamos maneirar no tamanho do nome, " "tente novamente desta vez com um nome menor que 32 caracteres."
             )
             timeout: Response = Response(
-                {"success": False, "response": "o tempo para comprar acabou tente novamente."}
+                {"response": "o tempo para comprar acabou tente novamente."}
             )
             timeout_response: Response = Response(
-                {"success": False, "response": "você demorou de mais para responder."}
+                {"response": "você demorou de mais para responder."}
             )
             what_name: str = "qual nome você gostaria de da-lo?"
             are_you_sure: str = "tem certeza que deja nomear de {}? (yes ou no)"
             pet_name: str = "o seu pet sera nomeado {}"
             pet_buy: Response = Response(
-                {"success": False, "response": "você adquiriu {} {} por {} cookies."}
+                {"response": "você adquiriu {} {} por {} cookies."}
             )
             no_options: Response = Response(
-                {"success": False, "response": "escolha um dos pets disponíveis hoje ({}petlist)"}
+                {"response": "escolha um dos pets disponíveis hoje ({}petlist)"}
             )
 
         class PetList(EnTranslations.Pet.PetList):
             pet_list: Response = Response(
-                {"success": False, "response": "pets disponíveis (adquira com {}petbuy): {}"}
+                {"response": "pets disponíveis (adquira com {}petbuy): {}"}
             )
 
         class PetName(EnTranslations.Pet.PetName):
             no_pets: Response = Response(
-                {"success": False, "response": "Você não tem pets para dar nome."}
+                {"response": "Você não tem pets para dar nome."}
             )
             what_pet_to_name: str = (
                 "qual dos pets você quer nomear: {}? " "(mande o número do pet que você gostaria de mudar.)"
             )
             timeout: Response = Response(
-                {"success": False, "response": "você demorou de mais para responder."}
+                {"response": "você demorou de mais para responder."}
             )
             what_name: str = "qual nome você quer dar para {}?"
             new_name: Response = Response(
-                {"success": False, "response": "o nome do pet foi mudado para {} ."}
+                {"response": "o nome do pet foi mudado para {} ."}
             )
 
         class PetPat(EnTranslations.Pet.PetPat):
             no_pet_name: Response = Response(
-                {"success": False, "response": "você não especificou o nome do pet."}
+                {"response": "você não especificou o nome do pet."}
             )
             no_pets: Response = Response(
-                {"success": False, "response": "você fez carinho em {} {}"}
+                {"response": "você fez carinho em {} {}"}
             )
             pet_pat: Response = Response(
-                {
-                    "success": False,
-                    "response": "adquira um dos pets disponíveis ({}petlist) em troca de cookies.",
-                    "is_response": False,
+                {"response": "adquira um dos pets disponíveis ({}petlist) em troca de cookies.",
+                    
                 }
             )
             wrong_pet_name: Response = Response(
-                {"success": False, "response": "você não tem um pet com este nome.."}
+                {"response": "você não tem um pet com este nome.."}
             )
 
         class PetSell(EnTranslations.Pet.PetSell):
@@ -1452,288 +1257,256 @@ class PtBrTranslations(EnTranslations):
     class Profile(EnTranslations.Profile):
         class Mention(EnTranslations.Profile.Mention):
             mention_on: Response = Response(
-                {
-                    "success": False,
-                    "response": "outros usuários poderão mencionar você novamente nos comandos.",
-                    "is_response": False,
+                {"response": "outros usuários poderão mencionar você novamente nos comandos.",
+                    
                 }
             )
 
         class NickName(EnTranslations.Profile.NickName):
             nickname_too_large: Response = Response(
-                {
-                    "success": False,
-                    "response": "o apelido {} é muito grande, por favor tente manter com no máximo 32 caracteres.",
-                    "is_response": False,
+                {"response": "o apelido {} é muito grande, por favor tente manter com no máximo 32 caracteres.",
+                    
                 }
             )
             nickname_removed: Response = Response(
-                {"success": False, "response": "seu apelido foi removido com sucesso!"}
+                {"response": "seu apelido foi removido com sucesso!"}
             )
             nickname_changed: Response = Response(
-                {"success": False, "response": "você alterou seu de apelido para {} com sucesso!"}
+                {"response": "você alterou seu de apelido para {} com sucesso!"}
             )
 
         class SaveCity(EnTranslations.Profile.SaveCity):
             city_removed: Response = Response(
-                {"success": False, "response": "Cidade foi removida com sucesso!."}
+                {"response": "Cidade foi removida com sucesso!."}
             )
             city_added: Response = Response(
-                {
-                    "success": False,
-                    "response": "Você salvou {} como sua cidade, agora basta usar {}weather.",
-                    "is_response": False,
+                {"response": "Você salvou {} como sua cidade, agora basta usar {}weather.",
+                    
                 }
             )
 
         class SaveColor(EnTranslations.Profile.SaveColor):
             color_removed: Response = Response(
-                {"success": False, "response": "a cor foi removida com sucesso!"}
+                {"response": "a cor foi removida com sucesso!"}
             )
             color_added: Response = Response(
-                {
-                    "success": False,
-                    "response": 'você salvou a cor {} e pode visualizá-la usando "{}color"',
-                    "is_response": False,
+                {"response": 'você salvou a cor {} e pode visualizá-la usando "{}color"',
+                    
                 }
             )
 
         class UnMention(EnTranslations.Profile.UnMention):
             mention_off: Response = Response(
-                {
-                    "success": False,
-                    "response": "agora outros usuários não poderão mais mencionar você nos comandos.",
-                    "is_response": False,
+                {"response": "agora outros usuários não poderão mais mencionar você nos comandos.",
+                    
                 }
             )
 
     class Reminder(EnTranslations.Reminder):
         class Remind(EnTranslations.Reminder.Remind):
             bot: Response = Response(
-                {
-                    "success": False,
-                    "response": "estou sempre aqui... não precisa me deixar lembretes.",
-                    "is_response": False,
+                {"response": "estou sempre aqui... não precisa me deixar lembretes.",
+                    
                 }
             )
             user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "esse usuário ainda não foi registrado. (não usou nenhum comando)",
-                    "is_response": False,
+                {"response": "esse usuário ainda não foi registrado. (não usou nenhum comando)",
+                    
                 }
             )
             user_opt_out: Response = Response(
-                {"success": False, "response": "o usuário {} optou por desligar os reminds para."}
+                {"response": "o usuário {} optou por desligar os reminds para."}
             )
             author_too_much_reminds: Response = Response(
-                {"success": False, "response": "já existem muitos lembretes seus pendentes..."}
+                {"response": "já existem muitos lembretes seus pendentes..."}
             )
             user_too_much_reminds: Response = Response(
-                {"success": False, "response": "já existem muitos lembretes pendentes para {}"}
+                {"response": "já existem muitos lembretes pendentes para {}"}
             )
             time_not_found: Response = Response(
-                {"success": False, "response": "não entendi o tempo que você me passou."}
+                {"response": "não entendi o tempo que você me passou."}
             )
             remind_on_back: Response = Response(
-                {
-                    "success": False,
-                    "response": "{} será lembrado disso na próxima vez que falar no chat 📝 (ID {})",
-                    "is_response": False,
+                {"response": "{} será lembrado disso na próxima vez que falar no chat 📝 (ID {})",
+                    
                 }
             )
             dont_have_time_machine: Response = Response(
-                {"success": False, "response": "eu ainda não inventei a máquina do tempo."}
+                {"response": "eu ainda não inventei a máquina do tempo."}
             )
             minimum_time: Response = Response(
-                {
-                    "success": False,
-                    "response": "o tempo mínimo para lembretes cronometrados é 1 minuto.",
-                    "is_response": False,
+                {"response": "o tempo mínimo para lembretes cronometrados é 1 minuto.",
+                    
                 }
             )
             remind_on_time: Response = Response(
-                {"success": False, "response": "{} será lembrado disso em {}. ⏲️(ID {})"}
+                {"response": "{} será lembrado disso em {}. ⏲️(ID {})"}
             )
 
         class Reminds(EnTranslations.Reminder.Reminds):
             remind_for: Response = Response(
-                {"success": False, "response": "esse lembrete é para {}: {}."}
+                {"response": "esse lembrete é para {}: {}."}
             )
             remind_timed_with_content: Response = Response(
-                {"success": False, "response": "esse lembrete é para {} em {}: {}."}
+                {"response": "esse lembrete é para {} em {}: {}."}
             )
             remind_timed_without_content: Response = Response(
-                {"success": False, "response": "esse lembrete era para {} há {}."}
+                {"response": "esse lembrete era para {} há {}."}
             )
             remind_deleted: Response = Response(
-                {"success": False, "response": "seu lembrete de ID {} foi deletado."}
+                {"response": "seu lembrete de ID {} foi deletado."}
             )
             remind_not_found: Response = Response(
-                {"success": False, "response": "você não possui nenhum lembrete com esse ID."}
+                {"response": "você não possui nenhum lembrete com esse ID."}
             )
             no_id_selected: Response = Response(
-                {
-                    "success": False,
-                    "response": "você deve passar o ID do lembrete que quer deletar.",
-                    "is_response": False,
+                {"response": "você deve passar o ID do lembrete que quer deletar.",
+                    
                 }
             )
             author_reminds: Response = Response(
-                {"success": False, "response": "seus lembretes pendentes são os de ID: {}."}
+                {"response": "seus lembretes pendentes são os de ID: {}."}
             )
             author_dont_have_reminds: Response = Response(
-                {"success": False, "response": "você não tem lembretes pendentes."}
+                {"response": "você não tem lembretes pendentes."}
             )
 
         class RemindListener(EnTranslations.Reminder.RemindListener):
             remind_timed_with_content: Response = Response(
-                {"success": False, "response": "{} deixou um lembrete: {} (há {})"}
+                {"response": "{} deixou um lembrete: {} (há {})"}
             )
             remind_timed_without_content: Response = Response(
-                {"success": False, "response": "{} deixou um lembrete em branco (há {})"}
+                {"response": "{} deixou um lembrete em branco (há {})"}
             )
 
     class Settings(EnTranslations.Settings):
         class BanWord(EnTranslations.Settings.BanWord):
             word_added: Response = Response(
-                {"success": False, "response": "esse já é um termo banido."}
+                {"response": "esse já é um termo banido."}
             )
             word_already_on_list: Response = Response(
-                {
-                    "success": False,
-                    "response": "não irei mais enviar mensagens que tiverem esse termo.",
-                    "is_response": False,
+                {"response": "não irei mais enviar mensagens que tiverem esse termo.",
+                    
                 }
             )
 
         class Disable(EnTranslations.Settings.Disable):
             command_dont_exist: Response = Response(
-                {"success": False, "response": "esse comando não existe."}
+                {"response": "esse comando não existe."}
             )
             command_cannot_be_disabled: Response = Response(
-                {"success": False, "response": "não pode ser desativado."}
+                {"response": "não pode ser desativado."}
             )
             command_already_disabled: Response = Response(
-                {"success": False, "response": '"{}" já está desativado.'}
+                {"response": '"{}" já está desativado.'}
             )
             command_disabled: Response = Response(
-                {"success": False, "response": '"{}" foi desativado.'}
+                {"response": '"{}" foi desativado.'}
             )
 
         class Enable(EnTranslations.Settings.Enable):
             command_dont_exist: Response = Response(
-                {"success": False, "response": "esse comando não existe."}
+                {"response": "esse comando não existe."}
             )
             command_reactivated: Response = Response(
-                {"success": False, "response": '"{}" foi reativado.'}
+                {"response": '"{}" foi reativado.'}
             )
             command_already_activated: Response = Response(
-                {"success": False, "response": '"{}" já está ativado.'}
+                {"response": '"{}" já está ativado.'}
             )
 
         class Prefix(EnTranslations.Settings.Prefix):
             prefix_invalid: Response = Response(
-                {"success": False, "response": "este prefixo {prefixo} é invalido"}
+                {"response": "este prefixo {prefixo} é invalido"}
             )
             prefix_invalid_or_absent: Response = Response(
-                {"success": False, "response": "Esqueceu de mandar o prefixo ou ele é invalido."}
+                {"response": "Esqueceu de mandar o prefixo ou ele é invalido."}
             )
             prefix_already_in_use: Response = Response(
-                {"success": False, "response": "O canal ja esta usando o prefixo {prefixo}."}
+                {"response": "O canal ja esta usando o prefixo {prefixo}."}
             )
             prefix_changed: Response = Response(
-                {"success": False, "response": 'O prefixo do canal foi alterado para "{}".'}
+                {"response": 'O prefixo do canal foi alterado para "{}".'}
             )
             prefix_too_large: Response = Response(
-                {
-                    "success": False,
-                    "response": "Atualmente eu so consigo armazenar prefixos de ate 2 caracteres o prefixo que você "
+                {"response": "Atualmente eu so consigo armazenar prefixos de ate 2 caracteres o prefixo que você "
                     'tentou usar não é valido pois contem "{}" caracteres.',
-                    "is_response": False,
+                    
                 }
             )
 
         class Start(EnTranslations.Settings.Start):
-            already_on: Response = Response({"success": False, "response": "já estou ligado ☕"})
-            started: Response = Response({"success": False, "response": "você me ligou ☕"})
+            already_on: Response = Response({"response": "já estou ligado ☕"})
+            started: Response = Response({"response": "você me ligou ☕"})
 
         class Stop(EnTranslations.Settings.Stop):
-            stopped: Response = Response({"success": False, "response": "você me desligou 💤"})
+            stopped: Response = Response({"response": "você me desligou 💤"})
 
         class UnBanWord(EnTranslations.Settings.UnBanWord):
             word_removed: Response = Response(
-                {"success": False, "response": '"{}" foi removido dos termos banidos.'}
+                {"response": '"{}" foi removido dos termos banidos.'}
             )
             word_not_found: Response = Response(
-                {"success": False, "response": '"{}" não é um termo banidos.'}
+                {"response": '"{}" não é um termo banidos.'}
             )
 
     class Tools(EnTranslations.Tools):
         class Math(EnTranslations.Tools.Math):
-            result: Response = Response({"success": False, "response": "{}"})
+            result: Response = Response({"response": "{}"})
             error: Response = Response(
-                {
-                    "success": False,
-                    "response": "não consegui calcular... lembre-se: use * para multiplicação, use / para divisão, "
+                {"response": "não consegui calcular... lembre-se: use * para multiplicação, use / para divisão, "
                     "e use ponto em vez de vírgula para números decimais. {}",
-                    "is_response": False,
+                    
                 }
             )
 
         class Shorten(EnTranslations.Tools.Shorten):
             no_links_found: Response = Response(
-                {"success": False, "response": "Use: `{}encurta <link>`"}
+                {"response": "Use: `{}encurta <link>`"}
             )
             shorten_links: Response = Response(
-                {"success": False, "response": "Aqui está os links: {}"}
+                {"response": "Aqui está os links: {}"}
             )
             shorten_link: Response = Response(
-                {"success": False, "response": "Aqui está os link: {}"}
+                {"response": "Aqui está os link: {}"}
             )
             shorten_error: Response = Response(
-                {"success": False, "response": "Não foi possível encurtar o link."}
+                {"response": "Não foi possível encurtar o link."}
             )
 
         class Time(EnTranslations.Tools.Time):
-            time: Response = Response({"success": False, "response": "{}"})
-            future_time: Response = Response({"success": False, "response": "em {}"})
-            past_time: Response = Response({"success": False, "response": "há {}"})
+            time: Response = Response({"response": "{}"})
+            future_time: Response = Response({"response": "em {}"})
+            past_time: Response = Response({"response": "há {}"})
             unit_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "as medidas suportadas atualmente são: anos, meses, semanas, dias, horas, "
+                {"response": "as medidas suportadas atualmente são: anos, meses, semanas, dias, horas, "
                     "minutos e segundos. Caso nenhuma seja colocada, será dado o tempo completo convertido. ",
-                    "is_response": False,
+                    
                 }
             )
             too_much_time: Response = Response(
-                {"success": False, "response": "tempo de mais para converter."}
+                {"response": "tempo de mais para converter."}
             )
 
         class UserId(EnTranslations.Tools.UserId):
             user_not_found: Response = Response(
-                {"success": False, "response": "não achei nenhum usuário com esse id."}
+                {"response": "não achei nenhum usuário com esse id."}
             )
-            id_or_name: Response = Response({"success": False, "response": "{}"})
+            id_or_name: Response = Response({"response": "{}"})
 
         class Weather(EnTranslations.Tools.Weather, WeatherTools):
             city_not_passed: Response = Response(
-                {
-                    "success": False,
-                    "response": "você não enviou nenhuma cidade e não tem nenhuma cidade salva, "
+                {"response": "você não enviou nenhuma cidade e não tem nenhuma cidade salva, "
                     "use {}savecity <cidade> para salvar uma cidade.",
-                    "is_response": False,
+                    
                 }
             )
             city_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "eu não encontrei nenhuma cidade com o nome de {}.",
-                    "is_response": False,
+                {"response": "eu não encontrei nenhuma cidade com o nome de {}.",
+                    
                 }
             )
-            weather: Response = Response({"success": False, "response": ""})
+            weather: Response = Response({"response": ""})
 
             @staticmethod
             def format_weather(self: Response, ctx: Context, *args: Any, **kwargs: Any) -> Response:
@@ -1788,65 +1561,55 @@ class PtBrTranslations(EnTranslations):
 
     class Tower(EnTranslations.Tower):
         class EnterTower(EnTranslations.Tower.EnterTower):
-            class_rank_up: Response = Response({"success": False, "response": "agora você é {}"})
+            class_rank_up: Response = Response({"response": "agora você é {}"})
             class_to_choose: Response = Response(
-                {
-                    "success": False,
-                    "response": "Antes de continuar, digite o comando e sua nova classe: {} ou {}",
-                    "is_response": False,
+                {"response": "Antes de continuar, digite o comando e sua nova classe: {} ou {}",
+                    
                 }
             )
             cooldown: Response = Response(
-                {"success": False, "response": "aguarde {} para entrar continuar a escalada ⌛"}
+                {"response": "aguarde {} para entrar continuar a escalada ⌛"}
             )
-            tower_result: Response = Response({"success": False, "response": "{}"})
+            tower_result: Response = Response({"response": "{}"})
             class_choice: Response = Response(
-                {"success": False, "response": "você escolheu {}! {}"}
+                {"response": "você escolheu {}! {}"}
             )
             class_first_choice: Response = Response(
-                {
-                    "success": False,
-                    "response": "antes de continuar, escolha sua classe! {}ed  " "Guerreiro(a), Arqueiro(a) ou Mago(a)",
-                    "is_response": False,
+                {"response": "antes de continuar, escolha sua classe! {}ed  " "Guerreiro(a), Arqueiro(a) ou Mago(a)",
+                    
                 }
             )
 
         class FastTower(EnTranslations.Tower.FastTower):
             class_to_choose: Response = Response(
-                {
-                    "success": False,
-                    "response": "Antes de continuar, digite o comando e sua nova classe: {} ou {}",
-                    "is_response": False,
+                {"response": "Antes de continuar, digite o comando e sua nova classe: {} ou {}",
+                    
                 }
             )
             cooldown: Response = Response(
-                {"success": False, "response": "aguarde {} para entrar continuar a escalada ⌛"}
+                {"response": "aguarde {} para entrar continuar a escalada ⌛"}
             )
-            tower_result: Response = Response({"success": False, "response": "{}"})
+            tower_result: Response = Response({"response": "{}"})
             class_first_choice: Response = Response(
-                {
-                    "success": False,
-                    "response": "antes de continuar, escolha sua classe! {}et " "Guerreiro(a), Arqueiro(a) ou Mago(a)",
-                    "is_response": False,
+                {"response": "antes de continuar, escolha sua classe! {}et " "Guerreiro(a), Arqueiro(a) ou Mago(a)",
+                    
                 }
             )
 
         class TowerLevel(EnTranslations.Tower.TowerLevel):
             bot_nick: Response = Response(
-                {"success": False, "response": "Eu apenas conto as historias dos encontros."}
+                {"response": "Eu apenas conto as historias dos encontros."}
             )
             no_class_chosen: Response = Response(
-                {"success": False, "response": "{} ainda não escolheu uma classe."}
+                {"response": "{} ainda não escolheu uma classe."}
             )
             player_status: Response = Response(
-                {
-                    "success": False,
-                    "response": "{} é {} ({}, {} XP). Esta no andar {} zona {}, com um total de {} "
+                {"response": "{} é {} ({}, {} XP). Esta no andar {} zona {}, com um total de {} "
                     "encontros ({} vitórias, {} derrotas, {.2f}% winrate) ♦",
-                    "is_response": False,
+                    
                 }
             )
-            player_not_found: Response = Response({"success": False, "response": ""})
+            player_not_found: Response = Response({"response": ""})
 
 
 
@@ -1856,20 +1619,18 @@ class PtBrTranslations(EnTranslations):
                 {"success": True, "response": "não existe nenhum usuário com nick {}."}
             )
             user_response: Response = Response(
-                {
-                    "success": False,
-                    "response": "as infos de {} foram adicionadas.",
+                {"response": "as infos de {} foram adicionadas.",
                     "response_list": [],
-                    "is_response": False,
+                    
                 }
             )
 
         class AddBot(EnTranslations.Admin.AddBot):
             user_not_found: Response = Response(
-                {"success": False, "response": "eu ainda não vi esse bot em nenhum chat."}
+                {"response": "eu ainda não vi esse bot em nenhum chat."}
             )
             user_already_added: Response = Response(
-                {"success": False, "response": "o bot {} ja esta registrado."}
+                {"response": "o bot {} ja esta registrado."}
             )
             user_added: Response = Response(
                 {"success": True, "response": "o bot {} foi adicionado aos bots."}
@@ -1877,26 +1638,24 @@ class PtBrTranslations(EnTranslations):
 
         class AllChannels(EnTranslations.Admin.AllChannels):
             channels: Response = Response(
-                {"success": False, "response": "aqui a lista de todos os canais que eu estou: {}"}
+                {"response": "aqui a lista de todos os canais que eu estou: {}"}
             )
 
         class Announce(EnTranslations.Admin.Announce):
             success: Response = Response(
-                {"success": False, "response": "O comando foi executado com sucesso."}
+                {"response": "O comando foi executado com sucesso."}
             )
 
         class ApiBot(EnTranslations.Admin.ApiBot):
             added_with_success: Response = Response(
-                {
-                    "success": False,
-                    "response": "O comando foi executado com sucesso. Com {} bots adicionados.",
-                    "is_response": False,
+                {"response": "O comando foi executado com sucesso. Com {} bots adicionados.",
+                    
                 }
             )
 
         class ChannelLog(EnTranslations.Admin.ChannelLog):
             channel_already_added: Response = Response(
-                {"success": False, "response": "Ja estou no canal {}."}
+                {"response": "Ja estou no canal {}."}
             )
             channel_added: Response = Response(
                 {"success": True, "response": "Entrei no canal {}."}
@@ -1917,15 +1676,13 @@ class PtBrTranslations(EnTranslations):
                 {"success": True, "response": "não existe nenhum usuário com nick {}."}
             )
             user_info: Response = Response(
-                {
-                    "success": False,
-                    "response": "aqui as infos do usuário: {}.",
+                {"response": "aqui as infos do usuário: {}.",
                     "response_list": [],
-                    "is_response": False,
+                    
                 }
             )
             channel_info: Response = Response(
-                {"success": False, "response": "aqui as infos do canal: {}.", "response_list": []}
+                {"response": "aqui as infos do canal: {}.", "response_list": []}
             )
 
         class DelFromDB(EnTranslations.Admin.DelFromDB):
@@ -1940,7 +1697,7 @@ class PtBrTranslations(EnTranslations):
                     "success": True,
                     "response": "foi deletado {} usuários do canal {}.",
                     "response_list": [],
-                    "is_response": False,
+                    
                 }
             )
 
@@ -1957,7 +1714,7 @@ class PtBrTranslations(EnTranslations):
                 {"success": True, "response": "O bot foi reiniciado com sucesso."}
             )
             unexpected_error: Response = Response(
-                {"success": False, "response": "Houve um erro ao reiniciar o bot: {}"}
+                {"response": "Houve um erro ao reiniciar o bot: {}"}
             )
 
         class RGit(EnTranslations.Admin.RGit):

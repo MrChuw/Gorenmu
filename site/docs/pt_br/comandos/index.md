@@ -5,8 +5,6 @@
 | :---------------------------------: | :--------------------------------------------------------------------------------------------: | :----: |
 |           [pipe](pipe.md)           |             Pipe não é realmente um comando. Para mais informações, visite o site.             |        |
 |            [afk](afk.md)            |                               Comando para entrar em um status.                                |        |
-|          [isafk](isafk.md)          |                Digite o comando e o nome do usuário para saber se ele está AFK                 |        |
-|           [rafk](rafk.md)           |                                      Retorna a ficar AFK                                       |        |
 |          [alias](alias.md)          |                             Comando usado para gerenciar os alias.                             |        |
 |         [chance](chance.md)         |                               Retorna uma percentagem aleatória.                               |        |
 |         [choice](choice.md)         |                       Escolhe uma opção das opções passadas pelo usuário                       |        |
@@ -17,5 +15,6 @@
 |     [randomline](randomline.md)     |                  Pega uma mensagem aleatória do canal ou do usuário no canal.                  |        |
 |     [upsidedown](upsidedown.md)     |                              Coloca o texto de cabeça para baixo.                              |        |
 |        [wikihow](wikihow.md)        |                              Envia um link do wikihow aleatório.                               |        |
+|    [annotations](annotations.md)    |                           Cria anotações permanentes para o usuário.                           |        |
 |           [nada](nada.md)           |                             Este comando é utilizado para testes.                              |        |
 |         [reload](reload.md)         |                                     Recarrega os comandos.                                     |        |

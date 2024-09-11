@@ -10,7 +10,7 @@ categories:
 
 # Alias
 
-# This command can be used 3 times in succession, with a cooldown of 10 per user independent of channel.
+## This command can be used 3 times in succession, with a cooldown of 10 per user independent of channel.
 
 !!! warning "Restrictions for alias names!"
 

@@ -54,21 +54,25 @@ class BaseClass:
 
 class EnDecorators:
 
-    template = dedent("""
+    template_part1 = dedent("""
     # {command_title}
-            
-    # This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
-    
-    {description}
 
-    {aliases}
-    ## The way to use this command is:
+    ## This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
 
     """).lstrip('\n')  # NOQA
 
+    template_part2 = dedent("""
+    {description}
+
+    {aliases}
+
+    """).lstrip('\n')  # NOQA
+
+    template_part3 = "## The way to use this command is:\n\n"
+
     alias_template = dedent("""
     ## All the alias available for {command_title} are:
-        - {aliases}
+        - {aliases}\n
     """).lstrip('\n')  # NOQA
 
     command_template = dedent("""
@@ -249,7 +253,7 @@ class EnDecorators:
         template = dedent("""
         # {command_title}
     
-        # This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
+        ## This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.
     
         !!! warning "Restrictions for alias names!"
     
@@ -609,12 +613,7 @@ class EnDecorators:
         extras = ""
         created = "2024-09-09"
         updated = "2024-09-09"
-        commands = CommandExemples([
-                        {
-                            "args": "tests",
-                            "response": "sʇsǝʇ"
-                        },
-                    ])
+        commands = CommandExemples([{"args": "tests", "response": "sʇsǝʇ"}])
         admonitions = False
 
     class Wikihow(BaseDecorator, BaseClass):
@@ -653,6 +652,25 @@ class EnDecorators:
                     ])
         admonitions = False
 
+    class Annotations(BaseDecorator, BaseClass):
+        helper = "Cria anotações permanentes para o usuário."
+        usage = "Para usar: {}anotacao <anotação>"
+        description = "Cria anotações permanentes para o usuário."
+        extras = ""
+        created = "2024-09-09"
+        updated = "2024-09-09"
+        commands = CommandExemples([
+                {
+                    "args": "argumento",
+                    "response": "resposta"
+                },
+        ])
+        admonitions = Admonitions([{
+                "admonition_type": "warning",
+                "title": "Maximum length!",
+                "message": "The message could not be longer than 450 characters, if it is longer, an error will be "
+                           "returned."
+        }])
 
     decorators = {
             'pipe': Others.Pipe,
@@ -670,6 +688,7 @@ class EnDecorators:
             'rscp': Scp,
             'upsidedown': UpSideDown,
             'wikihow': Wikihow,
+            'annotations': Annotations,
 
 
             'NSFW': {
@@ -684,17 +703,6 @@ class EnDecorators:
 
     categories = ["NSFW", "Dev"]
     exclude_categories = ["NSFW"]
-
-    class Annotations(BaseClass):
-        class Annotation(BaseDecorator, BaseClass):
-            helper = "Cria anotações permanentes para o usuário."
-            usage = "Para usar: {}anotacao <anotação>"
-            description = "Cria anotações permanentes para o usuário."
-
-        class Annotations(BaseDecorator, BaseClass):
-            helper = "Lista anotações do usuário. Da mais recente para a mais antiga."
-            usage = "Para usar: {}anotacoes"
-            description = "Lista anotações do usuário. Da mais recente para a mais antiga."
 
     class Lottery(BaseClass):
         class Bet(BaseDecorator, BaseClass):

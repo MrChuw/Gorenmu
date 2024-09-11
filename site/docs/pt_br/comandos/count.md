@@ -9,9 +9,10 @@ categories:
 
 # Count
 
-# Este comando pode ser usado 3x seguidas, com o cooldown de 10 por usuário independente do canal.
+## Este comando pode ser usado 3x seguidas, com o cooldown de 10 por usuário independente do canal.
 
 Este comando pode contar o número de caracteres, letras maiúsculas, pontuações e caracteres especiais em um texto ou no conteúdo de uma URL. Se você fornecer um link e a tag `type:url`, o comando acessa o conteúdo da página e faz a contagem com base no que foi encontrado. E ele guardara o conteúdo da página em cache pôr 30 minutos (trinta minutos).
+
 
 
 ## As formas de utilizar este comando são:

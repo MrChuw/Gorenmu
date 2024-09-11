@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import asyncio
 
-from aiohttp_client_cache import CachedSession, CachedResponse
+from aiohttp_client_cache import CachedResponse, CachedSession
 
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
@@ -36,7 +36,6 @@ async def command(ctx: Context) -> Response:
         return translations.unexpected_error.format_response(ctx, success=False)
 
 
-
 def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) -> dict[str, dict[str, str]]:
     responses: dict[str, dict[str, str]] = {}
     cooldown_ = command_._cooldowns[0]  # NOQA
@@ -52,10 +51,12 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
         cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
 
         language: EnDecorators = bot.TranslationManager.languages[lang][0]
-        command_body_template = getattr(language, 'template', EnDecorators.template)
-        alias_template = getattr(language, 'alias_template', EnDecorators.alias_template)
-        command_template = getattr(language, 'command_template', EnDecorators.command_template)
-        admonition_template = getattr(language, 'admonition_template', EnDecorators.admonition_template)
+        command_body_template1: str = getattr(language, 'template_part1', EnDecorators.template_part1)
+        command_body_template2: str = getattr(language, 'template_part2', EnDecorators.template_part2)
+        command_body_template3: str = getattr(language, 'template_part3', EnDecorators.template_part3)
+        alias_template: str = getattr(language, 'alias_template', EnDecorators.alias_template)
+        command_template: str = getattr(language, 'command_template', EnDecorators.command_template)
+        admonition_template: str = getattr(language, 'admonition_template', EnDecorators.admonition_template)
 
         aliases = ""
         if command_.aliases:
@@ -63,10 +64,26 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
                                             aliases=", ".join(command_.aliases)
                                             )
 
-        command_body = command_body_template.format(command_title=command_.name.capitalize(), rate=rate, per=per,
-                                                    description=description, cooldown_type=cooldown_type,
-                                                    aliases=aliases
-                                                    )
+        command_body = command_body_template1.format(command_title=command_.name.capitalize(), rate=rate, per=per,
+                                                     cooldown_type=cooldown_type, )
+        commands_admonitions = getattr(decorator, 'admonitions', EnDecorators.Wikipedia.admonitions)
+        if commands_admonitions:
+            for admonition in commands_admonitions:
+                if admonition.position == "top":
+                    command_body += admonition_template.format(type=admonition.type, title=admonition.title,
+                                                               message=admonition.message
+                                                               )
+
+        command_body += command_body_template2.format(description=description, aliases=aliases)
+
+        if commands_admonitions:
+            for admonition in commands_admonitions:
+                if admonition.position == "middle":
+                    command_body += admonition_template.format(type=admonition.type, title=admonition.title,
+                                                               message=admonition.message
+                                                               )
+
+        command_body += command_body_template3
 
         if commands := getattr(decorator, 'commands', EnDecorators.Wikipedia.commands):
             command_body += "".join([
@@ -74,22 +91,13 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
                                             response=item.response
                                             ) for item in commands])
 
-        if commands_admonitions := getattr(decorator, 'admonitions', EnDecorators.Wikipedia.admonitions):
-            command_body += "".join([admonition_template.format(type=admonition.type, title=admonition.title,
-                                                                message=admonition.message, ) for admonition in
-                                     commands_admonitions]
-                                    )
+        if commands_admonitions:
+            for admonition in commands_admonitions:
+                if admonition.position == "bottom":
+                    command_body += admonition_template.format(type=admonition.type, title=admonition.title,
+                                                               message=admonition.message
+                                                               )
 
         responses[lang][command_.name.lower()] = command_body
 
     return responses
-
-
-
-
-
-
-
-
-
-

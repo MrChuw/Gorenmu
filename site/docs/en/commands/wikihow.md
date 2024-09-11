@@ -9,9 +9,10 @@ categories:
 
 # Wikihow
 
-# This command can be used 3 times in succession, with a cooldown of 10 per user independent of channel.
+## This command can be used 3 times in succession, with a cooldown of 10 per user independent of channel.
 
 This command uses the random from [Wikihow](https://wikihow.com) to generate random links.
+
 
 
 ## The way to use this command is:

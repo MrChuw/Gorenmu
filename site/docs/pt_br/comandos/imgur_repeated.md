@@ -11,9 +11,10 @@ categories:
 
 # Imgur_repeated
 
-# Este comando pode ser usado 3x seguidas, com o cooldown de 10 por moderação.
+## Este comando pode ser usado 3x seguidas, com o cooldown de 10 por moderação.
 
 Este comando é simples, ele conta todas as imagens que já foram geradas pelo [imgur](imgur.md).
+
 
 
 ## As formas de utilizar este comando são:

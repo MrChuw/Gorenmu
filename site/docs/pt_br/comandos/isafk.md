@@ -9,12 +9,12 @@ categories:
 
 # IsAfk
 
-# Este comando pode ser usado 3x seguidas, com o cooldown de 10 por usuário independente do canal.
+## This command can be used 3 times in succession, with a cooldown of 10 per usuário independente do canal.
 
 Este comando define se um usuário está AFK ou não.
 
 
-## As formas de utilizar este comando são:
+## The way to use this command is:
 
 ```text
     user: +isafk user2

@@ -45,7 +45,7 @@ class PtBrSiteTemplates(EnSiteTemplates):
                     authors:
                       - mrchuw
                     categories:
-                      - 
+                      - asdf
                     slug: Changelog-1
                     title: Changelog 1
                     ---
