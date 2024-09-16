@@ -256,8 +256,9 @@ def build(command_list):
         lang_path = mkdocs_configs_path / lang / "mkdocs.yml"
         command = ['mkdocs', 'build', '-f', lang_path.resolve()]
         subprocess.run(command, check=True)
-        ...
-    ...
+
+
+
 
 
 if __name__ == "__main__":

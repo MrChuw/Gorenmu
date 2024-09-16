@@ -45,6 +45,8 @@ plugins:
   # - privacy
   - minify:
       minify_html: true
+      minify_js: true
+      minify_css: true
   - blog:
       post_excerpt_separator: <!-- more -->
   - rss:
