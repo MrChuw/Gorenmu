@@ -105,12 +105,9 @@ class Check:
             logging.error(e)
             await ctx.reply(ctx.translations.Exceptions.LotteryExceptions().lottery_seed.format(ctx.bot.dev_name))
             raise UnknownError
-        if not await LotteryBank.get_or_none(encerrada=False, acumulado=True):
+        if not await LotteryBank.get_or_none(closed=False, accumulated=True):
             await LotteryBank.create()
-        if ctx.bot.lottery_seed:
-            ctx.bot.lottery_seed = datetime.now().toordinal()
-        else:
-            ctx.bot.lottery_seed = datetime.now().toordinal()
+        ctx.bot.lottery_seed = datetime.now().toordinal()
         return True
 
     # COOKIE

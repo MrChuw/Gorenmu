@@ -44,6 +44,7 @@ async def get_random_message(user=None, channel=None):
 @command(name='randomline', aliases=['rl'])
 async def command(ctx: Context, *, options: str = "") -> Response:
     translations = ctx.translations.RandomLine
+    humanize = ctx.translations.SupportTools.Humanize
     options_splited = options.split(" ")
 
     channel_original = next((opt.replace("channel:", "") for opt in options_splited if "channel:" in opt), None)
@@ -68,7 +69,10 @@ async def command(ctx: Context, *, options: str = "") -> Response:
                                                              channel_original or ctx.channel.name
                                                              )
 
-    return translations.random_line.format_response(ctx, message.content, message.created_a_time(ctx),
+    return translations.random_line.format_response(ctx,
+                                                    message.content,
+                                                    message.created_a_time(humanize=humanize,
+                                                                           timezone=ctx.user.timezone_),
                                                     message.user.nickname or message.user.name
                                                     )
 

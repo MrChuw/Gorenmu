@@ -13,6 +13,9 @@ from bot.models.User_extras import (
     Reminder, Status, Suggest,
 )
 
+from zoneinfo import ZoneInfo
+from datetime import datetime
+
 if TYPE_CHECKING:
     from bot.ext.commands import Context
 
@@ -28,6 +31,7 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     nickname: CharFieldStr = fields.CharField(max_length=32, null=True)
     timestamp: DatetimeTzField = fields.DatetimeField(null=True)
     language: CharFieldStr = fields.CharField(max_length=32, null=True)
+    timezone: CharFieldStr = fields.CharField(max_length=50, default="UTC")
     cookies: Coroutine[List[Cookies]] = fields.ReverseRelation["Cookies"]
     player: Coroutine[List[Player]] = fields.ReverseRelation["Player"]
     pets: Coroutine[List[Pets]] = fields.ReverseRelation["Pets"]
@@ -50,11 +54,16 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     markov = fields.ReverseRelation["MarkovUsers"]
     markov_channels = fields.ReverseRelation["MarkovUserChannel"]
 
+
     class Meta:
         table = "user"
 
     def __str__(self) -> str:
         return f"{self.nickname}" if self.sponsor and self.nickname else f"@{self.name}"
+
+    @property
+    def timezone_(self):
+        return ZoneInfo(self.timezone)
 
     @staticmethod
     async def create_or_update(ctx: Context, **kwargs) -> Optional[User]:

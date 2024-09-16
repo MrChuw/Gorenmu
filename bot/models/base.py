@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Union
 
-import humanize
+import humanize as Humanize
 from tortoise import fields, Model
 
 
@@ -38,13 +38,13 @@ class TimestampMixin:
     def updated_ago(self):
         return datetime.utcnow() - self.updated_at
 
-    @property
-    def created_a_time(self):
-        return humanize.precisedelta(datetime.now(pytz.utc) - self.created_at)
 
-    @property
-    def updated_a_time(self):
-        return humanize.precisedelta(datetime.now(pytz.utc) - self.updated_at)
+    def created_a_time(self, humanize: Humanize, timezone):
+        return humanize.precisedelta(datetime.now(timezone) - self.created_at.astimezone(timezone))
+
+
+    def updated_a_time(self, humanize: Humanize, timezone):
+        return humanize.precisedelta(datetime.now(timezone) - self.updated_at.astimezone(timezone))
 
     @property
     def created_em(self):

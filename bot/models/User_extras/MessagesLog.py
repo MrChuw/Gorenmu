@@ -33,8 +33,10 @@ class MessagesLog(Base):
         return datetime.now(pytz.utc) - self.created_at
 
 
-    def created_a_time(self, ctx: Context):
-        return ctx.translations.SupportTools.Humanize().Humanize.precisedelta(datetime.now(pytz.utc) - self.created_at)
+
+    def created_a_time(self, humanize, timezone):
+        return humanize.precisedelta(datetime.now(timezone) - self.created_at.astimezone(timezone))
+
 
     @staticmethod
     async def all_messages_generator(maximum=None, category=None, offset=0, channel_id=None):

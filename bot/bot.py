@@ -51,7 +51,7 @@ class Gorenmu(Bot):
         self.LotteryTools: LotteryTools = LotteryTools(self)
         self.CookieTools: CookieTools = CookieTools(self)
         self.BooruTools: BooruTools = BooruTools(self.SessionsCaches.BooruCachedSession.cache)
-        self.aposta_lock: asyncio.Lock = asyncio.Lock()
+        self.lottery_lock: asyncio.Lock = asyncio.Lock()
         self.TranslationManager: TranslationManager = TranslationManager(self.config.mock)
         self.reconnection_attempts: dict[str, int] = {}
         self.bots_ids: list[int] = []

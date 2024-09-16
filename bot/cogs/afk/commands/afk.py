@@ -166,6 +166,6 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
                                                                    message=admonition.message
                                                                    )
 
-            responses[lang][command_.name.lower()] = command_body
+            responses[lang][subcommand.lower()] = command_body
 
     return responses
