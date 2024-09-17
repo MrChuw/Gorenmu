@@ -704,6 +704,8 @@ class EnDecorators:
         description = ("This command is used to create or check bets. Bets must be made using numbers "
                        "between 1 and 60, with up to 6 numbers per bet, at the cost of 5 cookies "
                        "(bets with more than 6 numbers are allowed but are more expensive).")
+        created = "2024-09-16T12:17:48.181-03:00"
+        updated = "2024-09-17T12:17:48.181-03:00"
         extras = ""
         commands = CommandExemples([
                 {
