@@ -9,7 +9,6 @@ from bot.ext import routine
 from bot.models import Channel, Lottery, LotteryBank, Reminder, User
 
 time_util_lottery = 1800
-# time_util_lottery = 150
 points_for_hits = {3: 1, 4: 2, 5: 3, 6: 5}
 
 
