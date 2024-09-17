@@ -14,8 +14,8 @@ points_for_hits = {3: 1, 4: 2, 5: 3, 6: 5}
 
 
 # TODO: change to saturday
-@routine(wait_first=True, weekly_days=[0, 1, 2, 3, 4, 5, 6],
-         weekly_times=[(datetime.datetime.now() + datetime.timedelta(minutes=15)).time()] * 7
+@routine(wait_first=True, weekly_days=[5],
+         weekly_times=[datetime.time(hour=12)]
          )
 # @routine(seconds=30)
 async def routine(bot: Gorenmu) -> None:
