@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 from twitchio.ext.commands import Bucket
-from twitchio.ext.routines import Routine
+from bot.ext import Routine
 from bot.translations import TranslationManager
 
 if TYPE_CHECKING:
@@ -129,12 +129,10 @@ class CommandHandler:
                 name: str = local[:-3].replace("/", ".")
                 package: str = ".".join(filename.parts)
                 module: types.ModuleType = import_module(name, package=package)
-                routine: Routine = Routine(coro=module.routine, time=getattr(module, "time", None),
-                                           delta=getattr(module, "delta", None),
-                                           wait_first=getattr(module, "wait_first", False), )
+                routine: Routine = module.routine
                 bot.routines.append(routine)
             except Exception as e:
-                logger.error(f"Routine '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
+                logger.error(f"Routine '{filename.name[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     @staticmethod
     def load_cogs(bot: Gorenmu, base: str) -> None:

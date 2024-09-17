@@ -32,7 +32,7 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     timestamp: DatetimeTzField = fields.DatetimeField(null=True)
     language: CharFieldStr = fields.CharField(max_length=32, null=True)
     timezone: CharFieldStr = fields.CharField(max_length=50, default="UTC")
-    cookies: Coroutine[List[Cookies]] = fields.ReverseRelation["Cookies"]
+    cookies: List[Cookies] = fields.ReverseRelation["Cookies"]
     player: Coroutine[List[Player]] = fields.ReverseRelation["Player"]
     pets: Coroutine[List[Pets]] = fields.ReverseRelation["Pets"]
     player_torre: Coroutine[List[PlayerTower]] = fields.ReverseRelation["Player_torre"]

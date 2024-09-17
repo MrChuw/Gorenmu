@@ -21,6 +21,7 @@ from twitchio.ext.commands.stringparser import StringParser
 from twitchio.ext.commands.errors import CommandNotFound
 import re
 
+
 T = TypeVar('T')
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -382,8 +383,6 @@ def format_content(content: str, values: list[str]) -> str:
         return values[int(index_str)]
 
     return re.sub(r'\{\d+(?:\+\d*)?}', replace_match, content)
-
-
 
 
 

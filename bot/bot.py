@@ -16,8 +16,8 @@ from twitchio.ext.routines import Routine
 from bot.exceptions import (
     CheckFailure, CommandNotFound, CommandOnCooldown, DevRequired, InvalidArgument, OwnerRequired,
 )
-from bot.ext.commands import Bot, Context, Message, routine
-from bot.ext.config import Config
+from bot.ext import Bot, Context, Message, routine
+from bot.ext import Config
 from bot.models import Channel as ChannelModel, User as UserModel
 from bot.models.User_extras import BotsIgnore
 from bot.translations import Response, TranslationManager
@@ -194,6 +194,8 @@ class Gorenmu(Bot):
                 f"{len(self.commands)} commands."
         )
 
+        await UserModel.get_or_create(id=self.user_id, name=self.nick)
+
     async def global_before_invoke(self, ctx: Context) -> None:  # NOQA
         if ctx.message.content:
             ctx.message.content.replace("\U000e0000", "")
@@ -221,7 +223,7 @@ class Gorenmu(Bot):
             return None
         if isinstance(error, CommandOnCooldown):
             cooldown_str = translations.command_on_cooldown.format(
-                    ctx.translations.SupportTools.Humanize.Humanize.naturaltime(error.retry_after, future=True)
+                    ctx.translations.SupportTools.Humanize.naturaltime(error.retry_after, future=True)
             )
             return await ctx.simple_response(ctx, cooldown_str)
         if isinstance(error, NotImplementedError):
@@ -304,7 +306,6 @@ class Gorenmu(Bot):
                 self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
 
     async def event_error(self, error: Exception, data: str = None) -> None:
-        # Erros a partir do twitchio.
         if data is not None:
             self.log.error(str(data.args), exc_info=error)
         if "'Context' object has no attribute 'user'" not in error.args:
