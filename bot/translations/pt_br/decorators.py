@@ -694,66 +694,93 @@ class PtBrDecorators(EnDecorators):
         ```
         """)  # NOQA
 
-
     class Annotations(EnDecorators.Annotations):
         helper = "Cria anotações permanentes para o usuário."
         usage = "Para usar: {}note add/check/delete"
-        description = "Este comando serve para criar anotações que "
+        description = "Este comando serve para criar anotações permanentes."
         extras = ""
         commands = CommandExemples([
                 {
                     "args": "add Uma anotação de algo que eu quero poder checar para sempre.",
                     "response": "Anotação criada com sucesso. 📝 (ID: <id da anotação>)"
-                },
-                {
+                }, {
                     "args": "add title:\"título para facilitar lembrar o conteúdo\" Uma anotação de algo que eu quero "
                             "poder checar para sempre.",
                     "response": "Anotação criada com sucesso. 📝 (ID: <id da anotação>)"
-                },
-                {
+                }, {
                     "args": "check",
                     "response": "Suas anotações são as de ID: <título se tiver [id]>"
-                },
-                {
+                }, {
                     "args": "check <id>",
                     "response": "<Conteúdo da anotação.>"
-                },
-                {
+                }, {
                     "args": "delete <id>",
                     "response": "Sua anotação de ID <id> foi deletada com sucesso. 🗑"
-                },
-            ])
+                }])
         admonitions = Admonitions([
                 {
                     "admonition_type": "warning",
                     "position": "bottom",
-                    "title": "Tamanho Máximo para o add!",
+                    "title": "Tamanho Máximo para o 'add'!",
                     "message": "A mensagem não pode ter mais que 450 caracteres; caso seja maior, retornará um erro."
-                },
-                {
+                }, {
                     "admonition_type": "warning",
                     "position": "bottom",
-                    "title": "Tamanho Máximo para o Titulo do add!",
-                    "message": "A mensagem não pode ter mais que 32 caracteres; caso seja maior, retornará um erro."
-                },
-                {
+                    "title": "Tamanho Máximo para o Título do 'add'!",
+                    "message": "O título não pode ter mais que 32 caracteres; caso seja maior, retornará um erro."
+                }, {
                     "admonition_type": "tip",
                     "position": "top",
-                    "title": "Annotations e Alias",
+                    "title": "Anotações e Alias",
                     "message": "Use alias e anotações juntos para criar comandos personalizados. "
                                "Por exemplo, com +alias add bolos note check <id>, você poderá usar ++bolos para que o "
                                "bot envie automaticamente o conteúdo da anotação, sem precisar usar o comando completo "
                                "note check <id>."
-                },
-            ])
+                }])
 
-
+    class Lottery(EnDecorators.Lottery):
+        helper = "Usado para criar ou verificar apostas."
+        usage = "Para usar: {}aposta <números que você quer apostar>"
+        description = ("Este comando é usado para criar ou consultar apostas. Elas devem ser feitas utilizando números "
+                       "entre 1 e 60, com até 6 números por aposta, no valor de 5 cookies "
+                       "(apostas com mais de 6 números são permitidas, mas é mais caro).")
+        extras = ""
+        commands = CommandExemples([
+                {
+                    "args": "create 1, 2, 3, 4, 5, 6",
+                    "response": "A aposta foi criada com os números [1, 2, 3, 4, 5, 6] e o valor de 5 cookies. (ID: 1)"
+                }, {
+                    "args": "create random",
+                    "response": "A aposta foi criada com os números [números aleatórios entre 1 e 60] e o valor de "
+                                "5 cookies. (ID: <id>)"
+                }, {
+                    "args": "check", "response": "Suas apostas atuais são: [IDs], com o valor total de <Total>."
+                }, {
+                    "args": "check <ID>",
+                    "response": "Aposta com os números: [1, 2, 3, 4, 5, 6] no valor de 5, criada há <Tempo>."
+                }, {
+                    "args": "check old",
+                    "response": "Suas apostas passadas são: <IDs>, com o valor total de <Total>."
+                }, {
+                    "args": "check new",
+                    "response": "Suas apostas atuais são: <IDs>, com o valor total de <Total>."
+                }, {
+                    "args": "check",
+                    "response": "Todas as suas apostas são: <IDs>, com o valor total de <Total>."
+                }])
+        admonitions = Admonitions([
+                {
+                    "admonition_type": "info",
+                    "position": "bottom",
+                    "title": "Desabilitar Notificações.",
+                    "message": "Para desabilitar as notificações de loteria no seu canal, você pode usar "
+                               "\"[disable](disable.md) lottery notice\"."
+                }
+        ])
 
     decorators = {
             'pipe': Others.Pipe,
             'afk': Afk,
-            'isafk': Afk,
-            'rafk': Afk,
             'alias': Alias,
             'chance': Chance,
             'choice': Choice,
@@ -766,6 +793,7 @@ class PtBrDecorators(EnDecorators):
             'upsidedown': UpSideDown,
             'wikihow': Wikihow,
             'annotations': Annotations,
+            'lottery': Lottery,
 
 
             'NSFW': {
@@ -778,17 +806,6 @@ class PtBrDecorators(EnDecorators):
             }
     }
 
-
-    class Lottery(EnDecorators.Lottery):
-        class Bet(EnDecorators.Lottery.Bet):
-            helper = "use <prefixo>aposta <números que vc quer apostar>"
-            usage = "Para usar: {}aposta <números que vc quer apostar>"
-            description = "use <prefixo>aposta <números que vc quer apostar>"
-
-        class Lottery(EnDecorators.Lottery.Lottery):
-            helper = ""
-            usage = "Para usar: {}"
-            description = ""
 
     class NSFWold(EnDecorators.NSFWold):  # TODO: Fazer de novo.
         class Boru(EnDecorators.NSFWold.Boru):

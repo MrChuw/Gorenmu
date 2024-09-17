@@ -13,6 +13,7 @@ from .extras import Humanize
 from .extras import Timeago
 from .extras import TimeTools
 from .extras import Dicio
+from .extras import Values, bets_values
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -25,6 +26,8 @@ class EnTranslations:
         response: Response
 
     class SupportTools:
+        Humanize: Humanize = Humanize
+
         class TimeTools(BaseTranslation):
             TimeTools: TimeTools = TimeTools
             Timeago: Timeago = Timeago
@@ -34,8 +37,8 @@ class EnTranslations:
         class Lottery(BaseTranslation):
             bet_or_consultation: list[str] = ["aposta", "consultar"]
 
-        class Humanize(BaseTranslation):
-            Humanize: Humanize = Humanize
+
+
 
         class Dicio(BaseTranslation):
             Dicio: Dicio = Dicio
@@ -348,7 +351,7 @@ class EnTranslations:
         too_much_characters: Response = Response({"response": "The annotation must have a maximum of 450 characters."})
         title_too_long: Response = Response({"response": "The title must have a maximum of 32 characters."})
         too_few_characters: Response = Response({"response": "You forgot to send the annotation content."})
-        annotation_created: Response = Response({"response": "Annotation created successfully. 📝 (ID: {})"})
+        annotation_created: Response = Response({"response": "Note successfully created. 📝 (ID: {})"})
         no_annotations_with_id: Response = Response({"response": "You don't have any annotation with ID {}."})
         all_annotations: Response = Response({"response": "Your annotations are the ones with ID: {}"})
         annotation_content: Response = Response({"response": "{}"})
@@ -357,100 +360,52 @@ class EnTranslations:
         option_not_recognized: Response = Response({"response": "The valid options are only "
                                                                 "\"add\" \"check\" \"delete\""})
 
-    class Lottery:
-        class Bet(BaseTranslation):
-            lottery_lock: Response = Response(
-                {
-                    "success": False,
-                    "response": "desculpe a lotérica esta fechada enquanto os resultados estão sendo computado.",
-                    "is_response": False,
-                }
-            )
-            not_enough_cookies: Response = Response(
-                {
-                    "success": False,
-                    "response": "você não tem cookies suficientes para fazer uma aposta.",
-                    "is_response": False,
-                }
-            )
-            five_numbers_bet: Response = Response(
-                {
-                    "success": False,
-                    "response": "a aposta foi criada com os números {} com o valor de 5 cookies.",
-                    "is_response": False,
-                }
-            )
-            more_than_five_numbers_bet: Response = Response(
-                {
-                    "success": False,
-                    "response": "a aposta foi criada com os números {} com o valor de {} cookies.",
-                    "is_response": False,
-                }
-            )
-            too_much_numbers: Response = Response(
-                {"success": False, "response": "você não pode apostar mais que 15 números."}
-            )
-            only_numbers: Response = Response(
-                {"success": False, "response": "envie apenas números de 1 a 60."}
-            )
-            duplicate_numbers: Response = Response(
-                {"success": False, "response": "por favor escolha números não repetidos."}
-            )
-            minimum_bet: Response = Response(
-                {"success": False, "response": "por favor escolha no mínimo 3 números."}
-            )
+    class Lottery(BaseTranslation):
+        bets_values: list[Values] = bets_values
+        past_base: list[str] = ["old"]
+        current_base: list[str] = ["current", "present"]
+        past: list[str] = past_base
+        current: list[str] = current_base
 
-        class Lottery(BaseTranslation):
-            lottery_lock: Response = Response(
-                {
-                    "success": False,
-                    "response": "desculpe a lotérica esta fechada enquanto os resultados estão sendo computado.",
-                    "is_response": False,
-                }
-            )
-            timeout: Response = Response(
-                {
-                    "success": False,
-                    "response": "você demorou muito tempo para escolher uma opção.",
-                    "is_response": False,
-                }
-            )
-            not_enough_cookies: Response = Response(
-                {
-                    "success": False,
-                    "response": "você não tem cookies suficientes para fazer uma aposta.",
-                    "is_response": False,
-                }
-            )
+        only_numbers: Response = Response({"response": "Only send numbers from 1 to 60."})
+        duplicate_numbers: Response = Response({"response": "Please choose non-duplicate numbers."})
+        not_enough_cookies: Response = Response({"response": "You don't have enough cookies to place a bet. "
+                                                             "The minimum is 5 cookies."})
+        not_enough_cookies_more_five: Response = Response({"response": "You don't have enough cookies to place a bet. "
+                                                                       "The number of cookies you need is {}"})
+        bet_place: Response = Response({"response": "The bet has been placed with the numbers {} and a value of {} "
+                                                    "cookies. (ID: {})"})
+        lottery_lock: Response = Response({"response": "Sorry, the lottery is closed while the results are being "
+                                                       "computed."})
+        timeout: Response = Response({"response": "You took too long to choose an option."})
+        too_much_numbers: Response = Response({"response": "You cannot bet on more than 15 numbers."})
+        minimum_bet: Response = Response({"response": "Please choose at least 3 numbers."})
 
-            five_numbers_bet: Response = Response(
-                {
-                    "success": False,
-                    "response": "a aposta foi criada com os números {} com o valor de 5 cookies.",
-                    "is_response": False,
-                }
-            )
+        no_bet_id: Response = Response({"response": "You don't have any bet with this ID."})
+        ticket_info: Response = Response({"response": "Ticket with numbers: {} worth {} created {} ago."})
+        no_old_bets_found: Response = Response({"response": "You don't have any past/closed bets."})
+        old_bets: Response = Response({"response": "Your past bets are: {}, with a total value of {}."})
+        no_active_bets_found: Response = Response({"response": "You don't have any active bets in the current round."})
+        active_bets: Response = Response({"response": "Your current bets are: {}, with a total value of {}."})
+        no_bets: Response = Response({"response": "You haven't made any bets so far."})
+        all_bets: Response = Response({"response": "All of your bets are: {}, with a total value of {}."})
+        unknown_option: Response = Response({"response": "The lottery options are: \"create\" and \"check\"."})
+        lottery_announce_messages: list[str] = [
+                "In 30 minutes, the lottery will start calculating the results. The total prize is {}, use {}lottery "
+                "create <numbers> to participate.",
+                "In 15 minutes, the lottery will start calculating the results.",
+                "In 1 minute, the lottery will start calculating the results.",
+                "Lottery closed, starting to compute the results."]
 
-            more_than_five_numbers_bet: Response = Response(
-                {
-                    "success": False,
-                    "response": "a aposta foi criada com os números {} com o valor de {} cookies.",
-                    "is_response": False,
-                }
-            )
-            too_much_numbers: Response = Response(
-                {"success": False, "response": "você não pode apostar mais que 15 números."}
-            )
+        winners: str = ("The drawn numbers were: {}, all winners will be notified with a reminder with the "
+                        "values and drawn numbers.")
 
-            only_numbers: Response = Response(
-                {"success": False, "response": "envie apenas números de 1 a 60."}
-            )
-            duplicate_numbers: Response = Response(
-                {"success": False, "response": "por favor escolha números não repetidos."}
-            )
-            minimum_bet: Response = Response(
-                {"success": False, "response": "por favor escolha no mínimo 3 números."}
-            )
+        no_winners: str = ("The drawn numbers were: {}, there were no winners, the prize of {} has rolled over to the "
+                           "next draw.")
+
+        lottery_result_announce: str = "The lottery is over and here are the results: {}"
+
+        remind_message: str = "You won {} cookies in the lottery! The winning tickets were: {}"
 
     class NSFWold:
         class Boru(BaseTranslation):

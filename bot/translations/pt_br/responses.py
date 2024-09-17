@@ -11,6 +11,7 @@ from bot.translations.pt_br.extras import dungeon_rank_dict
 from bot.translations.pt_br.extras import Activity as ActivityExtras
 from bot.translations.pt_br.extras import TimeTools, Timeago
 from bot.translations.pt_br.extras import Dicio
+from .extras import Values, bets_values
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
@@ -18,6 +19,8 @@ if TYPE_CHECKING:
 
 class PtBrTranslations(EnTranslations):
     class SupportTools(EnTranslations.Exceptions):
+        Humanize: Humanize = Humanize
+
         class TimeTools(EnTranslations.SupportTools.TimeTools):
             TimeTools: TimeTools = TimeTools
             Timeago: Timeago = Timeago
@@ -26,8 +29,6 @@ class PtBrTranslations(EnTranslations):
         class Lottery(EnTranslations.SupportTools.Lottery):
             bet_or_consultation: list[str] = ["aposta", "consultar"]
 
-        class Humanize(EnTranslations.SupportTools.Lottery):
-            Humanize: Humanize = Humanize
 
         class Dicio(EnTranslations.SupportTools.Dicio):
             Dicio: Dicio = Dicio
@@ -314,93 +315,51 @@ class PtBrTranslations(EnTranslations):
         option_not_recognized: Response = Response({"response": "As opções válidas são apenas "
                                                                 "\"add\" \"check\" \"delete\""})
 
-
     class Lottery(EnTranslations.Lottery):
-        class Bet(EnTranslations.Lottery.Bet):
-            lottery_lock: Response = Response(
-                {"response": "desculpe a lotérica esta fechada enquanto os resultados estão sendo computado.",
-                    
-                }
-            )
-            not_enough_cookies: Response = Response(
-                {"response": "você não tem cookies suficientes para fazer uma aposta.",
-                    
-                }
-            )
-            five_numbers_bet: Response = Response(
-                {"response": "a aposta foi criada com os números {} com o valor de 5 cookies.",
-                    
-                }
-            )
-            more_than_five_numbers_bet: Response = Response(
-                {"response": "a aposta foi criada com os números {} com o valor de {} cookies.",
-                    
-                }
-            )
-            too_much_numbers: Response = Response(
-                {"response": "você não pode apostar mais que 15 números."}
-            )
-            only_numbers: Response = Response(
-                {"response": "envie apenas números de 1 a 60."}
-            )
-            duplicate_numbers: Response = Response(
-                {"response": "por favor escolha números não repetidos."}
-            )
-            minimum_bet: Response = Response(
-                {"response": "por favor escolha no mínimo 3 números."}
-            )
+        bets_values: list[Values] = bets_values
+        past: list[str] = EnTranslations.Lottery.past_base + ["velhas", "passadas"]
+        current: list[str] = EnTranslations.Lottery.current_base + ["atuais", "novas"]
+        only_numbers: Response = Response({"response": "Envie apenas números de 1 a 60."})
+        duplicate_numbers: Response = Response({"response": "Por favor, escolha números não repetidos."})
+        not_enough_cookies: Response = Response({"response": "Você não tem cookies suficientes para fazer uma aposta. "
+                                                             "O valor mínimo é 5 cookies."})
+        not_enough_cookies_more_five: Response = Response({"response": "Você não tem cookies suficientes para fazer "
+                                                                       "uma aposta. A quantidade de cookies que vc "
+                                                                       "precia é {}"})
+        bet_place: Response = Response({"response": "A aposta foi criada com os números {} e o valor de {} cookies. "
+                                                    "(ID: {})"})
+        lottery_lock: Response = Response({"response": "Desculpe, a lotérica está fechada enquanto os resultados "
+                                                       "estão sendo computados."})
+        timeout: Response = Response({"response": "Você demorou muito tempo para escolher uma opção."})
+        too_much_numbers: Response = Response({"response": "Você não pode apostar em mais de 15 números."})
+        minimum_bet: Response = Response({"response": "Por favor, escolha no mínimo 3 números."})
 
-        class Lottery(EnTranslations.Lottery.Lottery):
-            lottery_lock: Response = Response(
-                {"response": "desculpe a lotérica esta fechada enquanto os resultados estão sendo computado.",
-                    
-                }
-            )
+        no_bet_id: Response = Response({"response": "Você não tem nenhuma aposta com este ID."})
+        ticket_info: Response = Response({"response": "Aposta com os números: {} no valor de {} criada há {}."})
+        no_old_bets_found: Response = Response({"response": "Você não possui nenhuma aposta passada/fechada."})
+        old_bets: Response = Response({"response": "Suas apostas passadas são: {}, com o valor total de {}."})
+        no_active_bets_found: Response = Response({"response": "Você não possui nenhuma aposta ativa na rodada atual."})
+        active_bets: Response = Response({"response": "Suas apostas atuais são: {}, com o valor total de {}."})
+        no_bets: Response = Response({"response": "Você não tem nenhuma aposta feita até agora."})
+        all_bets: Response = Response({"response": "Todas as suas apostas são: {}, com o valor total de {}."})
+        unknown_option: Response = Response({"response": "As opções da lotérica sao: \"create\" e \"check\"."})
+        lottery_announce_messages: list[str] = [
+                "Em 30 minutos a lotérica vai começar calcular os resultados o prêmio total é de {}, use {}lottery "
+                "create <números> para participar.",
+                "Em 15 minutos a lotérica vai começar calcular os resultados.",
+                "Em 1 minuto a lotérica vai começar calcular os resultados.",
+                "Loteria fechada, começando a computar os resultados.",
+        ]
 
-            timeout: Response = Response(
-                {"response": "você demorou muito tempo para escolher uma opção.",
-                    
-                }
-            )
+        winners: str = ("Os números sorteados foram: {}, todos os ganhadores serão notificados com um remind com os "
+                        "valores e números sorteados.")
 
-            not_enough_cookies: Response = Response(
-                {"response": "você não tem cookies suficientes para fazer uma aposta.",
-                    
-                }
-            )
+        no_winners: str = ("Os números sorteados foram: {}, não houve ganhadores, o premio de {} acumulou para o "
+                           "próximo sorteio.")
 
-            five_numbers_bet: Response = Response(
-                {"response": "a aposta foi criada com os números {} com o valor de 5 cookies.",
-                    
-                }
-            )
+        lottery_result_announce: str = "A loteria acabou e aqui estão os resultado: {}"
+        remind_message: str = "Você ganhou {} cookies na lotérica! Os tickets ganhadores foram: {}"
 
-            more_than_five_numbers_bet: Response = Response(
-                {"response": "a aposta foi criada com os números {} com o valor de {} cookies.",
-                    
-                }
-            )
-
-            too_much_numbers: Response = Response(
-                {"response": "você não pode apostar mais que 15 números."}
-            )
-
-            only_numbers: Response = Response(
-                {"response": "envie apenas números de 1 a 60."}
-            )
-            duplicate_numbers: Response = Response(
-                {"response": "por favor escolha números não repetidos."}
-            )
-            minimum_bet: Response = Response(
-                {"response": "por favor escolha no mínimo 3 números."}
-            )
-
-            bet_message: str = ("agora você precisa escolher ate 6 números de 1 a 60 (para a aposta padrão ou ate 15 "
-                                "para a Aposta Máxima custando 1.294 cookies).")
-
-            consultation_message: str = "você gostaria de consultar apostas passadas ou atuais?"
-            past: str = "passadas"
-            current: str = "atuais"
 
     class NSFWold(EnTranslations.NSFWold):
         class Boru(EnTranslations.NSFWold.Boru):

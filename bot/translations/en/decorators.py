@@ -15,11 +15,11 @@ class BaseDecorator:
     helper: str
     usage: str
     description: str
-    extras: str
+    extras: str = ""
     created: str
     updated: str
-    commands: CommandExemples
-    admonitions: Admonitions
+    commands: CommandExemples = None
+    admonitions: Admonitions = None
     template: str
 
 
@@ -653,30 +653,96 @@ class EnDecorators:
         admonitions = False
 
     class Annotations(BaseDecorator, BaseClass):
-        helper = "Cria anotações permanentes para o usuário."
-        usage = "Para usar: {}anotacao <anotação>"
-        description = "Cria anotações permanentes para o usuário."
+        helper = "Creates permanent notes for the user."
+        usage = "To use: {}note add/check/delete"
+        description = "This command is used to create permanent notes."
+        created = "2024-09-10"
+        updated = "2024-09-10"
         extras = ""
-        created = "2024-09-09"
-        updated = "2024-09-09"
         commands = CommandExemples([
                 {
-                    "args": "argumento",
-                    "response": "resposta"
-                },
-        ])
-        admonitions = Admonitions([{
-                "admonition_type": "warning",
-                "title": "Maximum length!",
-                "message": "The message could not be longer than 450 characters, if it is longer, an error will be "
-                           "returned."
-        }])
+                    "args": "add A note about something I want to be able to check forever.",
+                    "response": "Note successfully created. 📝 (ID: <note ID>)"
+                }, {
+                    "args": "add title:\"title to make it easier to remember the content\" "
+                            "A note about something I want to be able to check forever.",
+                    "response": "Note successfully created. 📝 (ID: <note ID>)"
+                }, {
+                    "args": "check",
+                    "response": "Your notes are those with ID: <title if available [id]>"
+                }, {
+                    "args": "check <id>",
+                    "response": "<Note content.>"
+                }, {
+                    "args": "delete <id>",
+                    "response": "Your note with ID <id> was successfully deleted. 🗑"
+                }])
+        admonitions = Admonitions([
+                {
+                    "admonition_type": "warning",
+                    "position": "bottom",
+                    "title": "Maximum Length for 'add'!",
+                    "message": "The message cannot exceed 450 characters; if it does, an error will be returned."
+                }, {
+                    "admonition_type": "warning",
+                    "position": "bottom",
+                    "title": "Maximum Length for 'add' Title!",
+                    "message": "The title cannot exceed 32 characters; if it does, an error will be returned."
+                }, {
+                    "admonition_type": "tip",
+                    "position": "top",
+                    "title": "Annotations and Aliases",
+                    "message": "Use aliases and notes together to create custom commands. "
+                               "For example, with +alias add cakes note check <id>, you can use ++cakes to "
+                               "have the bot automatically send the note content, without needing to use the "
+                               "full command note check <id>."
+                }])
+
+    class Lottery(BaseDecorator, BaseClass):
+        helper = "Used to create or check bets."
+        usage = "To use: {}bet <numbers you want to bet>"
+        description = ("This command is used to create or check bets. Bets must be made using numbers "
+                       "between 1 and 60, with up to 6 numbers per bet, at the cost of 5 cookies "
+                       "(bets with more than 6 numbers are allowed but are more expensive).")
+        extras = ""
+        commands = CommandExemples([
+                {
+                    "args": "create 1, 2, 3, 4, 5, 6",
+                    "response": "The bet was created with the numbers [1, 2, 3, 4, 5, 6] and the cost of 5 cookies. "
+                                "(ID: 1)"
+                }, {
+                    "args": "create random",
+                    "response": "The bet was created with the numbers [random numbers between 1 and 60] and the cost "
+                                "of 5 cookies. (ID: <id>)"
+                }, {
+                    "args": "check",
+                    "response": "Your current bets are: [IDs], with a total value of <Total>."
+                }, {
+                    "args": "check <ID>",
+                    "response": "Bet with the numbers: [1, 2, 3, 4, 5, 6] costing 5, created <Time> ago."
+                }, {
+                    "args": "check old",
+                    "response": "Your past bets are: <IDs>, with a total value of <Total>."
+                }, {
+                    "args": "check new",
+                    "response": "Your current bets are: <IDs>, with a total value of <Total>."
+                }, {
+                    "args": "check",
+                    "response": "All your bets are: <IDs>, with a total value of <Total>."
+                }])
+        admonitions = Admonitions([
+                {
+                    "admonition_type": "info",
+                    "position": "bottom",
+                    "title": "Disable Notifications.",
+                    "message": "To disable lottery notifications in your channel, you can use \"[disable](disable.md) "
+                               "lottery notice\"."
+                }])
+
 
     decorators = {
             'pipe': Others.Pipe,
             'afk': Afk,
-            'isafk': Afk,
-            'rafk': Afk,
             'alias': Alias,
             'chance': Chance,
             'choice': Choice,
@@ -689,6 +755,7 @@ class EnDecorators:
             'upsidedown': UpSideDown,
             'wikihow': Wikihow,
             'annotations': Annotations,
+            'lottery': Lottery,
 
 
             'NSFW': {
@@ -704,16 +771,6 @@ class EnDecorators:
     categories = ["NSFW", "Dev"]
     exclude_categories = ["NSFW"]
 
-    class Lottery(BaseClass):
-        class Bet(BaseDecorator, BaseClass):
-            helper = "use <prefixo>aposta <números que vc quer apostar>"
-            usage = "Para usar: {}aposta <números que vc quer apostar>"
-            description = "use <prefixo>aposta <números que vc quer apostar>"
-
-        class Lottery(BaseDecorator, BaseClass):
-            helper = ""
-            usage = "Para usar: {}"
-            description = ""
 
     class NSFWold(BaseClass):  # TODO: Fazer de novo.
         class Boru(BaseDecorator, BaseClass):
