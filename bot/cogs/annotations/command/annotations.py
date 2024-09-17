@@ -24,10 +24,10 @@ async def command(ctx: Context, option="", *, content="") -> Response:
 
 async def add(ctx: Context, content: str) -> Response:
     translations = ctx.translations.Annotations
-    title = None
-    if match := re.search(r'title:"(.*?)"', content):
+    title = ""
+    if match := re.search(r'title:"(.*?)"', ctx.message.content):
         title = match[1]
-        content = content.replace(f'title:"{title}"', "")
+        content = content.replace(title, "")
     if len(title) > 32:
         return translations.title_too_long.format_response(ctx, False)
     if len(content) > 450:
@@ -45,8 +45,8 @@ async def check(ctx: Context, content: str) -> Response:
         if not annotation:
             return translations.no_annotations_with_id.format_response(ctx, int(content), success=False)
         return translations.annotation_content.format_response(ctx, annotation.content)
-    annotation = await Annotation.create(content=content, user=ctx.user)
-    annotations = ", ".join([f'{nota.title or ""} [{nota.id}]' for nota in annotation])
+    annotation = await Annotation.filter(user=ctx.user, deleted=False)
+    annotations = ", ".join([f'{note.title or ""} [{note.id}]' for note in annotation])
     return translations.all_annotations.format_response(ctx, annotations)
 
 
