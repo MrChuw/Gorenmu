@@ -2,7 +2,7 @@ __version__ = "1.0.15"
 import importlib
 from random import randint
 
-from aiohttp_client_cache import RedisBackend, SQLiteBackend
+from aiohttp_client_cache import CachedSession
 
 from .classes import parser
 from .client.atfbooru import Atfbooru as AtfbooruClient
@@ -15,7 +15,7 @@ from .client.furbooru import Furbooru as FurbooruClient
 from .client.gelbooru import Gelbooru as GelbooruClient
 from .client.hypnohub import Hypnohub as HypnohubClient
 from .client.konachan import Konachan as KonachanClient
-from .client.konachan_net import Konachan_Net as Konachan_NetClient
+from .client.konachannet import KonachanNet as Konachan_NetClient
 from .client.lolibooru import Lolibooru as LolibooruClient
 from .client.paheal import Paheal as PahealClient
 from .client.realbooru import Realbooru as RealbooruClient
@@ -26,7 +26,7 @@ from .client.xbooru import Xbooru as XbooruClient
 from .client.yandere import Yandere as YandereClient
 from .utils.parser import resolve
 
-importlib.reload(parser)
+# GelbooruClient = importlib.reload(GelbooruClient)
 
 from .classes.parser import (
     Gelbooru,
@@ -54,9 +54,32 @@ from typing import List
 
 # TODO: Refazer isso, organizar melhor.
 
+
+
+
+
+
 class Booru:
     def __init__(self):
-        pass
+        self.boorus = {
+                "glbo": Booru.Gelbooru, "gelbooru": Booru.Gelbooru,  # NOQA
+                "dnbo": Booru.Danbooru, "danbooru": Booru.Danbooru,  # NOQA
+                "rule34": Booru.Rule34,  # NOQA
+                "rlbo": Booru.Realbooru, "realbooru": Booru.Realbooru,  # NOQA
+                "tbibo": Booru.Tbib, "tbib": Booru.Tbib,  # NOQA
+                "xbbo": Booru.Xbooru, "xbooru": Booru.Xbooru,  # NOQA
+                "sfbo": Booru.Safebooru, "safebooru": Booru.Safebooru,  # NOQA
+                "ynbo": Booru.Yandere, "yandere": Booru.Yandere,  # NOQA
+                "Knbo": Booru.Konachan, "konachan": Booru.Konachan,  # NOQA
+                "hybo": Booru.Hypnohub, "hypnohub": Booru.Hypnohub,  # NOQA
+                "e621bo": Booru.E621, "e621": Booru.E621,  # NOQA
+                "e926bo": Booru.E926, "e926": Booru.E926,  # NOQA
+                "dpbo": Booru.Derpibooru, "derpibooru": Booru.Derpibooru,  # NOQA
+                "fubo": Booru.Furbooru, "furbooru": Booru.Furbooru,  # NOQA
+                "bhbo": Booru.Behoimi, "behoimi": Booru.Behoimi,  # NOQA
+                "phbo": Booru.Paheal, "paheal": Booru.Paheal,  # NOQA
+                "knnbo": Booru.KonachanNet, "konachan_net": Booru.KonachanNet,  # NOQA
+        }
 
     @classmethod
     async def search(
@@ -66,23 +89,33 @@ class Booru:
         block: str = "",
         limit: int = 100,
         page: int = randint(0, 100),
-        random: bool = True,
         gacha: bool = False,
     ):
-        result = await provider.search(query, block, limit, page, random, gacha, )
-        if result == 1:
-            return None
-        parsed_result = resolve(result)
-        return parsed_result
+        result = await provider.search(query, block, limit, page, gacha, )
+        return result or None
+
+    @classmethod
+    async def random(
+        cls,
+        provider,
+        query: str,
+        block: str = "",
+        limit: int = 100,
+        page: int = randint(0, 300),
+        gacha: bool = False,
+    ):
+        image, preview = await provider.random(query, block, limit, page, gacha)
+        return (None, None) if not image and not preview else (image, preview)
 
     def get_booru_instance(self, name):
         return getattr(self, name)
 
-    class gelbooru(GelbooruClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Gelbooru(GelbooruClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Gelbooru(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -93,11 +126,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class rule34(Rule34Client):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Rule34(Rule34Client):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Rule34(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -108,11 +142,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class tbib(TbibClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Tbib(TbibClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Tbib(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -123,11 +158,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class safebooru(SafebooruClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Safebooru(SafebooruClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Safebooru(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -138,11 +174,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class xbooru(XbooruClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Xbooru(XbooruClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Xbooru(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -153,11 +190,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class realbooru(RealbooruClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Realbooru(RealbooruClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Realbooru(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -168,11 +206,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class hypnohub(HypnohubClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Hypnohub(HypnohubClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Hypnohub(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -183,11 +222,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class danbooru(DanbooruClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Danbooru(DanbooruClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Danbooru(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -198,11 +238,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class yandere(YandereClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Yandere(YandereClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Yandere(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -213,11 +254,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class konachan(KonachanClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Konachan(KonachanClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Konachan(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -228,11 +270,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class konachan_net(Konachan_NetClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class KonachanNet(Konachan_NetClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Konachan_Net(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -243,11 +286,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class e621(E621Client):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class E621(E621Client):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return E621(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -258,11 +302,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class e926(E926Client):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class E926(E926Client):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return E926(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -273,11 +318,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class derpibooru(DerpibooruClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Derpibooru(DerpibooruClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Derpibooru(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -288,11 +334,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class furbooru(FurbooruClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Furbooru(FurbooruClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Furbooru(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -303,11 +350,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class behoimi(BehoimiClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Behoimi(BehoimiClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Behoimi(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -318,11 +366,12 @@ class Booru:
             else:
                 raise ValueError("Input must be a list or a dictionary.")
 
-    class paheal(PahealClient):
-        def __init__(self, cache: SQLiteBackend | RedisBackend):
-            super().__init__(cache)
+    class Paheal(PahealClient):
+        def __init__(self, session: CachedSession, amount: int):
+            super().__init__(session, amount)
 
-        def from_dict(cls, data: dict):
+        @staticmethod
+        def from_dict(data: dict):
             return Paheal(data)
 
         def from_dict_list(self, data: List[dict]):
@@ -332,5 +381,6 @@ class Booru:
                 return self.from_dict(data)
             else:
                 raise ValueError("Input must be a list or a dictionary.")
+
 
 

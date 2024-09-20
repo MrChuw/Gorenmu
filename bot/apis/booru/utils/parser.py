@@ -78,7 +78,7 @@ class Api:
         self.derpibooru = "https://derpibooru.org/api/v1/json/search/images"
         self.furbooru = "https://furbooru.com/api/v1/json/search/images"
         self.behoimi = "http://behoimi.org/post/index.json"
-        self.paheal = "https://rule34.paheal.net/api/danbooru/find_posts/index.json"
+        self.paheal = "https://rule34.paheal.net"
         self.error_handling_limit = "there is a hard limit of 1000 posts per request."
         self.error_handling_sameval = "block values should not be hit to the query"
         self.error_handling_cantparse = "failed to get data, the api is misleading"
@@ -98,8 +98,7 @@ def list_api():
     -------
     list
     """
-    # create this list for mocking
-    api_list = [
+    return [
         BASE_URL.gelbooru,
         BASE_URL.rule34,
         BASE_URL.tbib,
@@ -120,7 +119,6 @@ def list_api():
         BASE_URL.behoimi,
         BASE_URL.paheal,
     ]
-    return api_list
 
 
 def better_object(parser: dict):

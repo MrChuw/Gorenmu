@@ -136,6 +136,16 @@ class EnDecorators:
             commands = CommandExemples([{'args': "", 'response': "the commands have been successfully reloaded."}])
             admonitions = False
 
+        class Restart(BaseDecorator, BaseClass):
+            helper = "Restarts the bot."
+            usage = "Para usar: {}restart"
+            description = "Restarts the bot."
+            created = "2024-09-18T18:25:27.911-03:00"
+            updated = "2024-09-18T18:25:27.911-03:00"
+            extras = ""
+            commands = CommandExemples([{'args': "", 'response': ""}])
+            admonitions = False
+
     class Others(BaseClass):
         class Pipe(BaseDecorator, BaseClass):
             helper = "Pipe is not really a command. For more information, visit the website."
@@ -528,6 +538,15 @@ class EnDecorators:
                         ])
             admonitions = False
 
+        class Boru(BaseDecorator, BaseClass):
+            # This command will not be added to the site
+            helper = "Sends one or more random links from a list of boorus."
+            usage = "To use: {}booru <quantity>"
+            description = "Sends one or more random links from a list of boorus."
+            # helper = "Envia um ou mais links aleatório de um site de booru específico."
+            # usage = "Para usar: {}sfbo <tags1> <tags2> <tags3> --<quantidade opcional>"
+            # description = "Envia um ou mais links aleatório de um site de booru específico."
+
     class RandomColor(BaseDecorator, BaseClass):
         helper = "Sends a random color."
         usage = "To use: {}random_color"
@@ -741,6 +760,26 @@ class EnDecorators:
                                "lottery notice\"."
                 }])
 
+    class Safebooru(BaseDecorator, BaseClass):
+        helper = ""
+        usage = "Para usar: {}"
+        description = ""
+        extras = ""
+        created = ""
+        updated = ""
+        commands = CommandExemples([
+                {
+                    'args': "argumento",
+                    'response': "resposta"
+                }
+        ])
+        admonitions = Admonitions([
+                {
+                    "admonition_type": "warning",
+                    "title": "Tamanho Máximo!",
+                    "message": "blablabla"
+                }
+        ])
 
     decorators = {
             'pipe': Others.Pipe,
@@ -766,24 +805,13 @@ class EnDecorators:
             },
             'Dev': {
                     'nada': Admin.Nada,
-                    'reload': Admin.Reload
+                    'reload': Admin.Reload,
+                    'restart': Admin.Restart,
             }
     }
 
     categories = ["NSFW", "Dev"]
     exclude_categories = ["NSFW"]
-
-
-    class NSFWold(BaseClass):  # TODO: Fazer de novo.
-        class Boru(BaseDecorator, BaseClass):
-            helper = "Envia um ou mais links aleatório de uma lista de boorus."
-            usage = "Para usar: {}booru <tags1> <tags2> <tags3> --<quantidade opcional>"
-            description = "Envia um ou mais link aleatório de uma lista de boorus."
-
-        class AllBoorus(BaseDecorator, BaseClass):
-            helper = "Envia um ou mais links aleatório de um site de booru específico."
-            usage = "Para usar: {}sfbo <tags1> <tags2> <tags3> --<quantidade opcional>"
-            description = "Envia um ou mais links aleatório de um site de booru específico."
 
     class Cookies(BaseClass):
         class Cookie(BaseDecorator, BaseClass):
@@ -1235,11 +1263,6 @@ class EnDecorators:
             helper = "Inicia um sorteio."
             usage = "Para usar: {}lottery_start <tempo ate o final da loteria> <quantidade que a casa vai colocar>"
             description = "Inicia um sorteio."
-
-        class Restart(BaseDecorator, BaseClass):
-            helper = "Reinicia o bot."
-            usage = "Para usar: {}restart"
-            description = "Reinicia o bot."
 
         class RGit(BaseDecorator, BaseClass):
             helper = "Puxa do git."

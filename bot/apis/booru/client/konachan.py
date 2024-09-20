@@ -1,16 +1,13 @@
-import json
-import time
-from random import randint, shuffle
+from random import randint, shuffle, choice
 
-import aiohttp
-from aiohttp_client_cache import CachedSession, RedisBackend, SQLiteBackend
-
-from ..utils.parser import Api, better_object, deserialize, get_hostname, parse_image
+from ..utils import SearchListType, Api
+from ..schemas import konachan_from_dict, KonachanElement
+from yarl import URL
 
 Booru = Api()
 
 
-class Konachan(object):
+class Konachan(SearchListType):
     """Konachan wrapper
 
     Methods
@@ -22,42 +19,8 @@ class Konachan(object):
         Gets images, image urls only from konachan.
 
     """
-
-    @staticmethod
-    def append_obj(raw_object: dict):
-        """Extends new object to the raw dict
-
-        Parameters
-        ----------
-        raw_object : dict
-            The raw object returned by konachan.
-
-        Returns
-        -------
-        str
-            The new value of the raw object
-        """
-        for i in range(len(raw_object)):
-            if "id" in raw_object[i]:
-                raw_object[i][
-                    "post_url"
-                ] = f"{get_hostname(Booru.konachan)}/post/show/{raw_object[i]['id']}"
-
-        return raw_object
-
-    def __init__(self, cache: SQLiteBackend | RedisBackend,):
-        self.specs = {}
-        self.cache = cache
-
-    async def search(
-        self,
-        query: str,
-        block: str = "",
-        limit: int = 100,
-        page: int = randint(0, 100),
-        random: bool = True,
-        gacha: bool = False,
-    ):
+    async def search(self, query: str, url: str = Booru.safebooru, block: str = "", limit: int = 100,
+                     page: int = randint(0, 100), gacha: bool = False) -> list[KonachanElement] | None:
         """Search and gets images from konachan.
 
         Parameters
@@ -81,100 +44,41 @@ class Konachan(object):
         -------
         dict
             The json object returned by konachan.
+            :param gacha:
+            :param page:
+            :param limit:
+            :param block:
+            :param query:
+            :param url:
         """
-        if gacha:
-            limit = 100
+        response = await self._search(url=url, query=query, block=block, limit=limit, page=page, gacha=gacha)
+        if not response:
+            return None
+        response = konachan_from_dict(response)
+        return response
 
-        if limit > 1000:
-            raise ValueError(Booru.error_handling_limit)
 
-        else:
-            self.query = query
+    async def random(self,
+                     query: str,
+                     block: str = "",
+                     limit: int = 100,
+                     page: int = randint(0, 100),
+                     gacha: bool = False
+                     ):
+        results = await self.search(url=Booru.konachan, query=query, block=block, limit=limit, page=page, gacha=gacha)
+        if not results:
+            return None, None
+        shuffle(results)
 
-        self.specs["tags"] = str(self.query)
-        self.specs["limit"] = str(limit)
-        self.specs["page"] = randint(0, 100)  # str(page)
-        self.final = {"teste": 1}
-        start_time = time.time()
-        seconds = 12
+        if self.amount > 1:
+            images = []
+            images_preview = []
+            for _ in range(self.amount):
+                post = choice(results)
+                results.remove(post)
+                images.append(URL(post.file_url))
+                images_preview.append(URL(post.preview_url))
+            return images, images_preview
 
-        while self.final == {"teste": 1}:
-            elapsed_time = time.time() - start_time
-            if elapsed_time > seconds:
-                return 1
-            timeout = aiohttp.ClientTimeout(total=240)
-            async with CachedSession(cache=self.cache, timeout=timeout) as session:
-                async with session.get(
-                    Booru.konachan, params=self.specs, allow_redirects=True
-                ) as resp:
-                    self.data = await resp.text()
-            self.final = self.final = deserialize(json.loads(self.data))
-            if len(self.final) == 0:
-                self.final = {"teste": 1}
-            self.specs["page"] = randint(0, 5)
-
-        if not self.final:
-            raise ValueError(Booru.error_handling_null)
-
-        self.not_random = Konachan.append_obj(self.final)
-        shuffle(self.not_random)
-
-        try:
-            if gacha:
-                return better_object(self.not_random[randint(0, len(self.not_random))])
-
-            elif random:
-                return better_object(self.not_random)
-
-            else:
-                return better_object(Konachan.append_obj(self.final))
-
-        except Exception as e:
-            raise ValueError(f"Failed to get data: {e}")
-
-    async def get_image(self, query: str, limit: int = 100, page: int = randint(0, 100)):
-        """Gets images, meant just image urls from konachan.
-
-        Parameters
-        ----------
-        query : str
-            The query to search for.
-
-        limit : int
-            The limit of images to return.
-
-        page : int
-            The number of desired page
-
-        Returns
-        -------
-        dict
-            The json object returned by konachan.
-
-        """
-
-        if limit > 1000:
-            raise ValueError(Booru.error_handling_limit)
-
-        else:
-            self.query = query
-
-        self.specs["tags"] = str(self.query)
-        self.specs["limit"] = str(limit)
-        self.specs["page"] = str(page)
-
-        try:
-            timeout = aiohttp.ClientTimeout(total=240)
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(
-                    Booru.konachan, params=self.specs, allow_redirects=True
-                ) as resp:
-                    self.data = await resp.text()
-            self.final = self.final = deserialize(json.loads(self.data))
-
-            self.not_random = parse_image(self.final)
-            shuffle(self.not_random)
-            return better_object(self.not_random)
-
-        except:
-            raise ValueError(f"Failed to get data")
+        post = choice(results)
+        return [URL(post.file_url)], [URL(post.preview_url)]

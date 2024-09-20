@@ -85,6 +85,14 @@ class PtBrDecorators(EnDecorators):
             commands = CommandExemples([{'args': "", 'response': "Os comandos foram recarregados com sucesso."}])
             admonitions = False
 
+        class Restart(EnDecorators.Admin.Restart):
+            helper = "Reinicia o bot."
+            usage = "Para usar: {}restart"
+            description = "Reinicia o bot."
+            extras = ""
+            commands = CommandExemples([{'args': "", 'response': ""}])
+            admonitions = False
+
     class Others(EnDecorators.Others):
         class Pipe(EnDecorators.Others.Pipe):
             helper = "Pipe não é realmente um comando. Para mais informações, visite o site."
@@ -455,6 +463,16 @@ class PtBrDecorators(EnDecorators):
                         ])
             admonitions = False
 
+        class Boru(EnDecorators.NSFW.Boru):
+            # Este comando não vai ser adicionado ao site
+            helper = "Envia um ou mais links aleatórios de uma lista de boorus."
+            usage = "Para usar: {}booru <quantidade>"
+            description = "Envia um ou mais links aleatórios de uma lista de boorus."
+
+            # helper = "Envia um ou mais links aleatório de um site de booru específico."
+            # usage = "Para usar: {}sfbo <tags1> <tags2> <tags3> --<quantidade opcional>"
+            # description = "Envia um ou mais links aleatório de um site de booru específico."
+
     class RandomColor(EnDecorators.RandomColor):
         helper = "Envia uma cor aleatória."
         usage = "Para usar: {}random_color"
@@ -778,6 +796,8 @@ class PtBrDecorators(EnDecorators):
                 }
         ])
 
+
+
     decorators = {
             'pipe': Others.Pipe,
             'afk': Afk,
@@ -802,21 +822,10 @@ class PtBrDecorators(EnDecorators):
             },
             'Dev': {
                     'nada': Admin.Nada,
-                    'reload': Admin.Reload
+                    'reload': Admin.Reload,
+                    'restart': Admin.Restart,
             }
     }
-
-
-    class NSFWold(EnDecorators.NSFWold):  # TODO: Fazer de novo.
-        class Boru(EnDecorators.NSFWold.Boru):
-            helper = "Envia um ou mais links aleatório de uma lista de boorus."
-            usage = "Para usar: {}booru <tags1> <tags2> <tags3> --<quantidade opcional>"
-            description = "Envia um ou mais link aleatório de uma lista de boorus."
-
-        class AllBoorus(EnDecorators.NSFWold.AllBoorus):
-            helper = "Envia um ou mais links aleatório de um site de booru específico."
-            usage = "Para usar: {}sfbo <tags1> <tags2> <tags3> --<quantidade opcional>"
-            description = "Envia um ou mais links aleatório de um site de booru específico."
 
     class Cookies(EnDecorators.Cookies):
         class Cookie(EnDecorators.Cookies.Cookie):
@@ -1270,10 +1279,6 @@ class PtBrDecorators(EnDecorators):
             description = "Inicia um sorteio."
 
 
-        class Restart(EnDecorators.AdminOld.Restart):
-            helper = "Reinicia o bot."
-            usage = "Para usar: {}restart"
-            description = "Reinicia o bot."
 
         class RGit(EnDecorators.AdminOld.RGit):
             helper = "Puxa do git."

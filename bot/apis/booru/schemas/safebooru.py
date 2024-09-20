@@ -1,0 +1,209 @@
+from enum import Enum
+from dataclasses import dataclass
+from typing import Optional, Any, List, TypeVar, Type, Callable, cast
+
+
+T = TypeVar("T")
+EnumT = TypeVar("EnumT", bound=Enum)
+
+
+def from_str(x: Any) -> str:
+    assert isinstance(x, str)
+    return x
+
+
+def from_none(x: Any) -> Any:
+    assert x is None
+    return x
+
+
+def from_union(fs, x):
+    for f in fs:
+        try:
+            return f(x)
+        except:
+            pass
+    assert False
+
+
+def from_int(x: Any) -> int:
+    assert isinstance(x, int) and not isinstance(x, bool)
+    return x
+
+
+def from_bool(x: Any) -> bool:
+    assert isinstance(x, bool)
+    return x
+
+
+def to_enum(c: Type[EnumT], x: Any) -> EnumT:
+    assert isinstance(x, c)
+    return x.value
+
+
+def from_list(f: Callable[[Any], T], x: Any) -> List[T]:
+    assert isinstance(x, list)
+    return [f(y) for y in x]
+
+
+def to_class(c: Type[T], x: Any) -> dict:
+    assert isinstance(x, c)
+    return cast(Any, x).to_dict()
+
+
+class Owner(Enum):
+    ANONYMOUS = "anonymous"
+    ASCFAWEQ = "ascfaweq"
+    BRYCE2199 = "bryce2199"
+    CAT = "cat"
+    CHADATRON = "chadatron"
+    CHIP123 = "chip123"
+    CHIS333 = "chis333"
+    CHONYUUDEKAPAI = "chonyuudekapai"
+    DANANA = "danana"
+    DANBOORU = "danbooru"
+    EMERGDJFE = "emergdjfe"
+    FATIEE = "fatiee"
+    FISHETTE = "fishette"
+    GAMEGAMI49 = "gamegami49"
+    GELBOORU = "gelbooru"
+    HAAKU = "haaku"
+    HINATA28 = "hinata28"
+    JEREMYZR0 = "jeremyzr0"
+    KONACHAN = "konachan"
+    MARGARITA_VU_A = "margarita_vu_a"
+    MIKUOXRIN0 = "mikuoxrin0"
+    MINECRAFTRABBIT = "minecraftrabbit"
+    MIOXNORMAN = "mioxnorman"
+    MOEIMOUTO = "moeimouto"
+    NEKOBOORU = "nekobooru"
+    NPEE2003 = "npee2003"
+    PLANTSVSZOMBIES = "plantsvszombies"
+    SANKAKU_COMPLEX = "sankaku_complex"
+    SOLITONMEDIC = "solitonmedic"
+    STARFISHER = "starfisher"
+    TSUKIKO = "tsukiko"
+    WINRYMIA = "winrymia"
+    WOORK19 = "woork19"
+    YUU110010 = "yuu110010"
+    こんばんは = "こんばんは"
+
+
+class Rating(Enum):
+    GENERAL = "general"
+    QUESTIONABLE = "questionable"
+    SAFE = "safe"
+
+
+class Status(Enum):
+    ACTIVE = "active"
+    PENDING = "pending"
+
+
+@dataclass
+class SafebooruElement:
+    preview_url: Optional[str] = None
+    sample_url: Optional[str] = None
+    file_url: Optional[str] = None
+    directory: Optional[int] = None
+    hash: Optional[str] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+    id: Optional[int] = None
+    image: Optional[str] = None
+    change: Optional[int] = None
+    owner: Optional[Owner] = None
+    parent_id: Optional[int] = None
+    rating: Optional[Rating] = None
+    sample: Optional[bool] = None
+    sample_height: Optional[int] = None
+    sample_width: Optional[int] = None
+    score: Optional[int] = None
+    tags: Optional[str] = None
+    source: Optional[str] = None
+    status: Optional[Status] = None
+    has_notes: Optional[bool] = None
+    comment_count: Optional[int] = None
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'SafebooruElement':
+        assert isinstance(obj, dict)
+        preview_url = from_union([from_str, from_none], obj.get("preview_url"))
+        sample_url = from_union([from_str, from_none], obj.get("sample_url"))
+        file_url = from_union([from_str, from_none], obj.get("file_url"))
+        directory = from_union([from_int, from_none], obj.get("directory"))
+        hash = from_union([from_str, from_none], obj.get("hash"))
+        width = from_union([from_int, from_none], obj.get("width"))
+        height = from_union([from_int, from_none], obj.get("height"))
+        id = from_union([from_int, from_none], obj.get("id"))
+        image = from_union([from_str, from_none], obj.get("image"))
+        change = from_union([from_int, from_none], obj.get("change"))
+        owner = from_union([Owner, from_none], obj.get("owner"))
+        parent_id = from_union([from_int, from_none], obj.get("parent_id"))
+        rating = from_union([Rating, from_none], obj.get("rating"))
+        sample = from_union([from_bool, from_none], obj.get("sample"))
+        sample_height = from_union([from_int, from_none], obj.get("sample_height"))
+        sample_width = from_union([from_int, from_none], obj.get("sample_width"))
+        score = from_union([from_int, from_none], obj.get("score"))
+        tags = from_union([from_str, from_none], obj.get("tags"))
+        source = from_union([from_str, from_none], obj.get("source"))
+        status = from_union([Status, from_none], obj.get("status"))
+        has_notes = from_union([from_bool, from_none], obj.get("has_notes"))
+        comment_count = from_union([from_int, from_none], obj.get("comment_count"))
+        return SafebooruElement(preview_url, sample_url, file_url, directory, hash, width, height, id, image, change, owner, parent_id, rating, sample, sample_height, sample_width, score, tags, source, status, has_notes, comment_count)
+
+    def to_dict(self) -> dict:
+        result: dict = {}
+        if self.preview_url is not None:
+            result["preview_url"] = from_union([from_str, from_none], self.preview_url)
+        if self.sample_url is not None:
+            result["sample_url"] = from_union([from_str, from_none], self.sample_url)
+        if self.file_url is not None:
+            result["file_url"] = from_union([from_str, from_none], self.file_url)
+        if self.directory is not None:
+            result["directory"] = from_union([from_int, from_none], self.directory)
+        if self.hash is not None:
+            result["hash"] = from_union([from_str, from_none], self.hash)
+        if self.width is not None:
+            result["width"] = from_union([from_int, from_none], self.width)
+        if self.height is not None:
+            result["height"] = from_union([from_int, from_none], self.height)
+        if self.id is not None:
+            result["id"] = from_union([from_int, from_none], self.id)
+        if self.image is not None:
+            result["image"] = from_union([from_str, from_none], self.image)
+        if self.change is not None:
+            result["change"] = from_union([from_int, from_none], self.change)
+        if self.owner is not None:
+            result["owner"] = from_union([lambda x: to_enum(Owner, x), from_none], self.owner)
+        if self.parent_id is not None:
+            result["parent_id"] = from_union([from_int, from_none], self.parent_id)
+        if self.rating is not None:
+            result["rating"] = from_union([lambda x: to_enum(Rating, x), from_none], self.rating)
+        if self.sample is not None:
+            result["sample"] = from_union([from_bool, from_none], self.sample)
+        if self.sample_height is not None:
+            result["sample_height"] = from_union([from_int, from_none], self.sample_height)
+        if self.sample_width is not None:
+            result["sample_width"] = from_union([from_int, from_none], self.sample_width)
+        if self.score is not None:
+            result["score"] = from_union([from_int, from_none], self.score)
+        if self.tags is not None:
+            result["tags"] = from_union([from_str, from_none], self.tags)
+        if self.source is not None:
+            result["source"] = from_union([from_str, from_none], self.source)
+        if self.status is not None:
+            result["status"] = from_union([lambda x: to_enum(Status, x), from_none], self.status)
+        if self.has_notes is not None:
+            result["has_notes"] = from_union([from_bool, from_none], self.has_notes)
+        if self.comment_count is not None:
+            result["comment_count"] = from_union([from_int, from_none], self.comment_count)
+        return result
+
+
+def safebooru_from_dict(s: Any) -> List[SafebooruElement]:
+    return from_list(SafebooruElement.from_dict, s)
+
+
+def safebooru_to_dict(x: List[SafebooruElement]) -> Any:
+    return from_list(lambda x: to_class(SafebooruElement, x), x)

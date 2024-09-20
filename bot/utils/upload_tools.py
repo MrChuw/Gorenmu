@@ -39,12 +39,13 @@ class UploadThings:
             return None
 
     @staticmethod
-    async def shortener(url: str | None, bot: Gorenmu, session: CachedSession):
+    async def shortener(url: str | None, tags: list[str], bot: Gorenmu, session: CachedSession):
         shlink_url = bot.config.ApisConfig.shlink_url
-        payload = {"longUrl": url, "forwardQuery": "true", "findIfExists": "true"}
-        headers = {"accept": "application/json", "Content-Type": "application/json",
-                   "X-Api-Key": bot.config.ApisConfig.shlink_key,
-                   }
+        payload = {"longUrl": url, "forwardQuery": "true", "findIfExists": "true", "tags": tags}
+        headers = {
+                "accept": "application/json",
+                "Content-Type": "application/json",
+                "X-Api-Key": bot.config.ApisConfig.shlink_key}
         if url is None:
             return None
         try:

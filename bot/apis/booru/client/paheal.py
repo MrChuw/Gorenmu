@@ -1,12 +1,11 @@
-import json
 import time
-from random import randint, shuffle
+from random import randint, shuffle, choice
+from bs4 import BeautifulSoup
 
-import aiohttp
-from aiohttp_client_cache import CachedSession, RedisBackend, SQLiteBackend
-from xmltodict import parse
+from aiohttp_client_cache import CachedSession
 
-from ..utils.parser import Api, better_object
+from ..utils.parser import Api
+from yarl import URL
 
 Booru = Api()
 
@@ -24,37 +23,16 @@ class Paheal(object):
 
     """
 
-    def __init__(self, cache: SQLiteBackend | RedisBackend, api_key: str = "", user_id: str = ""):
-        """Initializes paheal.
+    def __init__(self, session: CachedSession, amount: int):
+        self.session = session
+        self.amount: int = amount
+        self.specs = {}
+        self.data: str | None = None
+        self.query: str | None = None
+        self.img: URL | None = None
+        self.preview: URL | None = None
 
-        Parameters
-        ----------
-        api_key : str
-            Your API Key which is accessible within your account options page
-
-        user_id : str
-            Your user ID, which is accessible on the account options/profile page.
-        """
-        self.cache = cache
-
-        if api_key and user_id == "":
-            self.api_key = None
-            self.user_id = None
-        else:
-            self.api_key = api_key
-            self.user_id = user_id
-
-        self.specs = {"api_key": self.api_key, "user_id": self.user_id}
-
-    async def search(
-        self,
-        query: str,
-        block: str = "",
-        limit: int = 100,
-        page: int = randint(0, 100),
-        random: bool = True,
-        gacha: bool = False,
-    ):
+    async def search(self, url: str, tag: str = "", page: int = randint(0, 300)):
         """Search and gets images from paheal.
 
         Parameters
@@ -78,108 +56,55 @@ class Paheal(object):
         -------
         dict
             The json object returned by paheal.
+            :param page:
+            :param tag:
+            :param url:
         """
-        if gacha:
-            limit = 100
 
-        if limit > 1000:
-            raise ValueError(Booru.error_handling_limit)
-
-        else:
-            self.tags = query
-
-        self.specs["tags"] = str(self.tags)
-        self.specs["limit"] = str(limit)
-        self.specs["page"] = randint(0, 100)  # str(page)
-        self.final = {"teste": 1}
         start_time = time.time()
         seconds = 12
 
-        while self.final == {"teste": 1}:
+        url_request = f"{url}/post/list/"
+
+        if tag := tag.replace(" ", "_"):
+            url_request += tag
+
+        url_request += str(page)
+
+        while not self.img or not self.preview:
             elapsed_time = time.time() - start_time
             if elapsed_time > seconds:
-                return 1
-            timeout = aiohttp.ClientTimeout(total=240)
-            async with CachedSession(cache=self.cache, timeout=timeout) as session:
-                async with session.get(Booru.paheal, params=self.specs, allow_redirects=True) as resp:
-                    self.data = await resp.text()
-            self.final = parse(self.data)
-            self.final = json.dumps(self.final)
-            self.final = json.loads(self.final)
-            if self.final["posts"]["@count"] == "0":
-                self.final = {"teste": 1}
-            if self.final != {"teste": 1}:
-                self.final = self.final["posts"]["tag"]
-            self.specs["page"] = randint(0, 5)
+                return None
+            self.response = await self.session.get(url_request, allow_redirects=True)
+            self.data = await self.response.text()
+            soup = BeautifulSoup(self.data, "html.parser")
+            thumb_links = soup.find_all("div", class_="shm-thumb thumb")
+            random_thumb_link = choice(thumb_links)
+            self.img = random_thumb_link.find("a", text="File Only")['href'] if random_thumb_link.find("a", text="File Only") else None
+            self.preview = url + random_thumb_link.find("img")["src"]
+        return True
 
-        if len(self.final) == 0:
-            raise ValueError(Booru.error_handling_null)
 
-        self.not_random = self.final
-        shuffle(self.not_random)
+    async def random(self,
+                     query: str,
+                     block: str = "",
+                     limit: int = 100,
+                     page: int = randint(0, 300),
+                     gacha: bool = False
+                     ):
+        if self.amount > 1:
+            images = []
+            images_preview = []
+            for _ in range(self.amount):
+                self.img = None
+                self.preview = None
+                response = await self.search(url=Booru.paheal, tag=query, page=page)
+                if not response:
+                    return None, None
+                page = page + 1 if page < 100 else page - 1
+                images.append(URL(self.img))
+                images_preview.append(URL(self.preview))
+            return images, images_preview
 
-        try:
-            if gacha:
-                return better_object(self.final[randint(0, len(self.final))])
-
-            elif random:
-                return better_object(self.final)
-
-            else:
-                return better_object(self.not_random)
-
-        except:
-            raise ValueError(f"Failed to get data")
-
-    async def get_image(self, query: str, limit: int = 100, page: int = randint(0, 100)):
-        """Gets images, meant just image urls from paheal.
-
-        Parameters
-        ----------
-        query : str
-            The tags to search for.
-
-        limit : int
-            The limit of images to return.
-
-        page : int
-            The number of desired page
-
-        Returns
-        -------
-        list
-            The list of image urls.
-
-        """
-
-        if limit > 1000:
-            raise ValueError(Booru.error_handling_limit)
-
-        else:
-            self.tags = query
-
-        self.specs["tags"] = str(self.tags)
-        self.specs["limit"] = str(limit)
-        self.specs["page"] = str(page)
-
-        try:
-            timeout = aiohttp.ClientTimeout(total=240)
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(Booru.paheal, params=self.specs, allow_redirects=True) as resp:
-                    self.data = resp
-
-            data_dict = parse(self.data.text)
-            unsolved = json.dumps(data_dict)
-            self.final = json.loads(unsolved, encoding="utf-8")
-
-            abc_kontol = self.final
-            ## extract all image urls
-            self.image_urls = []
-            for i in abc_kontol:  # paheal emang ngentot
-                self.image_urls.append(i["@file_url"])
-
-            shuffle(self.image_urls)
-            return better_object(self.image_urls)
-
-        except Exception as e:
-            raise ValueError(f"Failed to get data: {e}")
+        response = await self.search(url=Booru.paheal, tag=query, page=page)
+        return ([URL(self.img)], [URL(self.preview)]) if response else (None, None)

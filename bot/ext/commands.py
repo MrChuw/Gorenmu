@@ -162,7 +162,13 @@ class Bot(Bot):
 
             self.run_event("command_error", context, error)
             return context
-        context = cls(message=message, bot=self, prefix=prefix, command=command_, valid=True, view=view)
+
+        invoke_by = None
+
+        if message and message.content and prefix in message.content:
+            cls.invoke_by = message.content.partition(" ")[0][len(prefix):].lower()
+
+        context = cls(message=message, bot=self, prefix=prefix, command=command_, valid=True, view=view, invoke_by=invoke_by)
 
         return context
 
@@ -173,12 +179,15 @@ class Context(TwitchioContext):
     translations: EnTranslations
     decorators: dict[str, EnDecorators | BaseClass | dict[str, EnDecorators | BaseClass]]
     command: Command
+    invoke_by: str | None = None
 
     def __iter__(self):
         yield "author", self.author.name if self.author and self.author.name else None
         yield "channel", self.channel.name if self.channel and self.channel.name else None
         yield "message", self.message.content if self.message and self.message.content else None
         yield "command", self.command.name if self.command and self.command.name else None
+
+
 
     @staticmethod
     async def extract_response(response: Response):

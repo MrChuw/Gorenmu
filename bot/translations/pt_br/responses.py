@@ -64,6 +64,10 @@ class PtBrTranslations(EnTranslations):
                     "success": True,
                     "response": "Os comandos foram recarregados com sucesso."})
 
+        class Restart(EnTranslations.Admin.Restart):
+            success: Response = Response({"response": "O bot foi reiniciado com sucesso."})
+            unexpected_error: Response = Response({"response": "Houve um erro ao reiniciar o bot: {}"})
+
     class Others(EnTranslations.Others):
         class Pipe(EnTranslations.Others.Pipe):
             response: Response = Response({"response": "Pipe não é realmente um comando. "
@@ -273,6 +277,14 @@ class PtBrTranslations(EnTranslations):
             links_repeated: Response = Response({"response": "Quantidade total de imagens repetidas: {} || Imagens: {}"})
             no_repeated: Response = Response({"response": "Nenhuma imagem repetida."})
 
+        class Boru(EnTranslations.NSFW.Boru):
+            original: str = "Original"
+            preview: str = "Preview"
+            pls_wait: str = "por favor espera um pouco, estou gerando os links."
+            unexpected_error: Response = Response({"response": "{}"})
+            success: Response = Response({"response": "{}"})
+            too_much_tags: Response = Response({"response": "Quantidade de tags ultrapassou o limite permitido de {}."})
+
     class RandomColor(EnTranslations.RandomColor):
         response_url: Response = Response({"response": "#{} é {}. {}"})
 
@@ -359,23 +371,6 @@ class PtBrTranslations(EnTranslations):
 
         lottery_result_announce: str = "A loteria acabou e aqui estão os resultado: {}"
         remind_message: str = "Você ganhou {} cookies na lotérica! Os tickets ganhadores foram: {}"
-
-
-    class NSFWold(EnTranslations.NSFWold):
-        class Boru(EnTranslations.NSFWold.Boru):
-            pls_wait: str = "por favor espera um pouco, estou gerando os links."
-            unexpected_error: Response = Response({"response": "{}"})
-            success: Response = Response({"response": ""})
-
-        class AllBoorus(EnTranslations.NSFWold.AllBoorus):
-            pls_wait: str = "por favor espera um pouco, estou gerando os links."
-            unexpected_error: Response = Response({"response": "{}"})
-            too_much_tags: Response = Response(
-                {"response": "Quantidade de tags ultrapassou o limite permitido de {}.",
-                    
-                }
-            )
-            success: Response = Response({"response": ""})
 
     class Cookies(EnTranslations.Cookies):
         cookie_lines: list[str] = None
@@ -1667,14 +1662,6 @@ class PtBrTranslations(EnTranslations):
 
         class LotteryStart(EnTranslations.Admin.LotteryStart):
             pass  # TODO: Fazer quando refizer o loterica_start
-
-        class Restart(EnTranslations.Admin.Restart):
-            success: Response = Response(
-                {"success": True, "response": "O bot foi reiniciado com sucesso."}
-            )
-            unexpected_error: Response = Response(
-                {"response": "Houve um erro ao reiniciar o bot: {}"}
-            )
 
         class RGit(EnTranslations.Admin.RGit):
             git_pulled: Response = Response(

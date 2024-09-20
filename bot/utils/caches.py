@@ -14,6 +14,8 @@ from aiohttp_client_cache import CachedSession, RedisBackend, SQLiteBackend
 from bot.ext.commands import Context
 from bot.ext.config import CacheType
 from bs4 import BeautifulSoup
+import aiohttp
+
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -66,7 +68,6 @@ class SessionsCaches:
     def __init__(self, bot):
         self.AdminCachedSession: SessionsCaches.AdminCachedSession = self.AdminCachedSession(bot)
         self.RandomCachedSession: SessionsCaches.RandomCachedSession = self.RandomCachedSession(bot)
-        self.BooruCachedSession: SessionsCaches.NSFWCachedSession = self.NSFWCachedSession(bot)
         self.GeneralCachedSession: SessionsCaches.GeneralCachedSession = self.GeneralCachedSession(bot)
         self.InfoCachedSession: SessionsCaches.InfoCachedSession = self.InfoCachedSession(bot)
         self.ToolsCachedSession: SessionsCaches.ToolsCachedSession = self.ToolsCachedSession(bot)
@@ -81,6 +82,8 @@ class SessionsCaches:
         self.ScpCachedSession: SessionsCaches.ScpCachedSession = self.ScpCachedSession(bot, self.UserAgent)
         self.WikihowCachedSession: SessionsCaches.WikihowCachedSession = self.WikihowCachedSession(bot, self.UserAgent)
         self.WikipediaCachedSession: SessionsCaches.WikipediaCachedSession = self.WikipediaCachedSession(bot, self.UserAgent)
+        self.BooruCachedSession: SessionsCaches.BooruCachedSession = self.BooruCachedSession(bot, self.UserAgent)
+
 
     async def close_all_sessions(self):
         for session in vars(self).values():
@@ -214,7 +217,6 @@ class SessionsCaches:
                                                           urls_expire_after=self.urls_expire_after,
                                                           allowed_methods=self.allowed_methods, include_headers=True, )
             self.session: CachedSession = CachedSession(cache=self.cache)
-
 
 
     class UserAgent:
@@ -545,4 +547,65 @@ class SessionsCaches:
                                                           )
             self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers)
 
+    class BooruCachedSession:
+        def __init__(self, bot: Gorenmu, user_agent: str):
+            self.bot = bot
+            self.urls_expire_after = {
+                    bot.config.ApisConfig.shlink_url: timedelta(hours=24),
+                    "https://gelbooru.com/": timedelta(hours=1),
+                    "https://rule34.xxx/": timedelta(hours=1),
+                    "https://tbib.org/": timedelta(hours=1),
+                    "https://safebooru.org/": timedelta(hours=1),
+                    "https://xbooru.com/": timedelta(hours=1),
+                    "https://realbooru.com/": timedelta(hours=1),
+                    "https://hypnohub.net/": timedelta(hours=1),
+                    "https://danbooru.donmai.us/": timedelta(hours=1),
+                    "https://booru.allthefallen.moe/": timedelta(hours=1),
+                    "https://yande.re/": timedelta(hours=1),
+                    "https://konachan.com/": timedelta(hours=1),
+                    "https://konachan.net/": timedelta(hours=1),
+                    "https://lolibooru.moe/": timedelta(hours=1),
+                    "https://e621.net/": timedelta(hours=1),
+                    "https://e926.net/": timedelta(hours=1),
+                    "https://derpibooru.org/": timedelta(hours=1),
+                    "https://furbooru.com/": timedelta(hours=1),
+                    "http://behoimi.org/": timedelta(hours=1),
+                    "https://rule34.paheal.net/": timedelta(hours=1),
+                    }
+            self.allowed_methods = ("GET", "HEAD", "POST")
+            self.allowed_codes = (200,)
+            self.headers = {
+                    'User-Agent': user_agent,
+                    # "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0",
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,'
+                              'image/svg+xml,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Accept-Encoding': 'gzip, deflate, zstd',
+                    'DNT': '1',
+                    'Sec-GPC': '1',
+                    'Alt-Used': 'danbooru.donmai.us',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'none',
+                    'Sec-Fetch-User': '?1',
+                    'Priority': 'u=0, i',
+                    "TE": "trailers",
+                }
 
+            if "redis" in bot.__dict__:
+                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-Booru_requests",
+                                          urls_expire_after=self.urls_expire_after,
+                                          allowed_methods=self.allowed_methods,
+                                          include_headers=True,
+                                          allowed_codes=self.allowed_codes
+                                          )
+            else:
+                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-Booru-requests.db",
+                                                          allowed_methods=self.allowed_methods,
+                                                          include_headers=True,
+                                                          allowed_codes=self.allowed_codes
+                                                          )
+            timeout = aiohttp.ClientTimeout(total=240)
+            self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers, timeout=timeout)

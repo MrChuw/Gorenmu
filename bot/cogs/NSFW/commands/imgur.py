@@ -68,7 +68,7 @@ async def command(ctx: Context, args: str = "") -> Response:
     embed = None
     if links is None:
         return translations.timeout.format_response(ctx, success=False)
-    finished = ctx.translations.SupportTools.Humanize.Humanize.precisedelta(time.perf_counter() - time_start,
+    finished = ctx.translations.SupportTools.Humanize.precisedelta(time.perf_counter() - time_start,
                                                                             minimum_unit="microseconds"
                                                                             )
     await Imgur.bulk_create(

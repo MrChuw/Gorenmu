@@ -76,6 +76,10 @@ class EnTranslations:
                     "response": "The commands were successfully reloaded."}
             )
 
+        class Restart(BaseTranslation):
+            success: Response = Response({"response": "The bot has been successfully restarted."})
+            unexpected_error: Response = Response({"response": "There was an error restarting the bot: {}"})
+
     class Others:
         class Pipe(BaseTranslation):
             response: Response = Response({"response": "Pipe is not really a command. "
@@ -318,6 +322,14 @@ class EnTranslations:
             links_repeated: Response = Response({"response": "Total number of repeated images: {} || Images: {}"})
             no_repeated: Response = Response({"response": "No repeated images."})
 
+        class Boru(BaseTranslation):
+            original: str = "Original"
+            preview: str = "Preview"
+            pls_wait = "por favor espera um pouco, estou gerando os links."
+            unexpected_error: Response = Response({"success": False, "response": "{}"})
+            success: Response = Response({"response": "{}"})
+            too_much_tags: Response = Response({"response": "Quantidade de tags ultrapassou o limite permitido de {}."})
+
     class RandomColor(BaseTranslation):
         response_url: Response = Response({"response": "#{} is {}. {}"})
 
@@ -406,24 +418,6 @@ class EnTranslations:
         lottery_result_announce: str = "The lottery is over and here are the results: {}"
 
         remind_message: str = "You won {} cookies in the lottery! The winning tickets were: {}"
-
-    class NSFWold:
-        class Boru(BaseTranslation):
-            pls_wait = "por favor espera um pouco, estou gerando os links."
-            unexpected_error: Response = Response({"success": False, "response": "{}"})
-            success: Response = Response({"success": False, "response": ""})
-
-        class AllBoorus(BaseTranslation):
-            pls_wait = "por favor espera um pouco, estou gerando os links."
-            unexpected_error: Response = Response({"success": False, "response": "{}"})
-            too_much_tags: Response = Response(
-                {
-                    "success": False,
-                    "response": "Quantidade de tags ultrapassou o limite permitido de {}.",
-                    "is_response": False,
-                }
-            )
-            success: Response = Response({"success": False, "response": ""})
 
     class Cookies:
         cookie_lines: list[str] = None
