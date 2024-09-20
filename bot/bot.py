@@ -148,7 +148,11 @@ class Gorenmu(Bot):
             await self.get_channel(name).send(message)
         except Exception as e:
             logger.error(e)
-            os.execv(sys.executable, ["python3.10"] + sys.argv)
+            if venv_python := os.getenv("VIRTUAL_ENV"):
+                python_executable = os.path.join(venv_python, "bin", "python")
+            else:
+                python_executable = sys.executable
+            os.execv(python_executable, [python_executable] + sys.argv)
 
     async def connect_db(self) -> None:
         await Tortoise.init(config=self.config.DatabaseConfig.DB_CONFIG)
@@ -184,7 +188,11 @@ class Gorenmu(Bot):
     async def event_ready(self) -> None:  # Load de comando está desativado.
         self.restart += 1
         if self.restart > 1:
-            os.execv(sys.executable, ["python3.10"] + sys.argv)
+            if venv_python := os.getenv("VIRTUAL_ENV"):
+                python_executable = os.path.join(venv_python, "bin", "python")
+            else:
+                python_executable = sys.executable
+            os.execv(python_executable, [python_executable] + sys.argv)
         self.dev_name = (await self.fetch_users(ids=[self.config.BotConfig.dev_userid]))[0].display_name
         await self.join_channels([self.dev_name])
         await asyncio.sleep(1)

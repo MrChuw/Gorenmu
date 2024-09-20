@@ -90,7 +90,7 @@ async def upload_alias(ctx: Context, aliases: list[Alias], table_name: str):  # 
     alias_cached_session = ctx.bot.SessionsCaches.AliasCachedSession
 
     response = await alias_cached_session.session.post(url, data=data)
-    response = await ctx.bot.UploadThings.shortener(response.url.human_repr(), ctx.bot, alias_cached_session.session)
+    response = await ctx.bot.UploadThings.shortener(response.url.human_repr(), ["aliases"], ctx.bot, alias_cached_session.session)
     return response
 
 

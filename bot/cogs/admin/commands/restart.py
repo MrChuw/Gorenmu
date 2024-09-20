@@ -1,30 +1,27 @@
 # -*- coding: utf-8 -*-
+import os
+import sys
+
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
 from bot.translations import EnDecorators, Response
 from bot.utils import Role
-import importlib
-import sys
 
 
-
-@base_decorator(EnDecorators.Admin.Reload)
+@base_decorator(EnDecorators.Admin.Restart)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([Role.dev])
-@command(name='reload', aliases=[])
-async def command(ctx: Context, module: str = "") -> Response:
-    if module:
-        reload_module_and_dependencies(module)
-    ctx.bot.CommandHandler.reload_cogs(ctx.bot)
-    return ctx.translations.Admin.Reload().commands_reloaded.format_response(ctx)
-
-
-def reload_module_and_dependencies(module_name):
-    for mod_name in list(sys.modules):
-        if mod_name.startswith("bot."):
-            ...
-        if mod_name.startswith(module_name):
-            importlib.reload(sys.modules[mod_name])
+@command(name="restart", aliases=[])
+async def command(ctx: Context) -> Response:
+    translations = ctx.translations.Admin.Restart
+    if venv_python := os.getenv("VIRTUAL_ENV"):
+        python_executable = os.path.join(venv_python, "bin", "python")
+    else:
+        python_executable = sys.executable
+    try:
+        os.execv(python_executable, [python_executable] + sys.argv)
+    except Exception as e:
+        return translations.unexpected_error.format_response(ctx, e, success=False)
 
 
 def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) -> dict[str, dict[str, str]]:
@@ -36,7 +33,7 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
     for lang in command_.decorators:
         if lang not in responses:
             responses[lang] = {}
-        decorator: EnDecorators.Admin.Reload = command_.decorators[lang]
+        decorator: EnDecorators.Admin.Restart = command_.decorators[lang]
         description = decorator.get_description(decorator)  # NOQA
         base_decorators = bot.TranslationManager.get_decorator(lang)
         cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
@@ -56,8 +53,10 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
                                             )
 
         command_body = command_body_template1.format(command_title=command_.name.capitalize(), rate=rate, per=per,
-                                                     cooldown_type=cooldown_type, )
-        commands_admonitions = getattr(decorator, 'admonitions', EnDecorators.Admin.Reload.admonitions)
+                                                     cooldown_type=cooldown_type
+                                                     )
+        commands_admonitions = getattr(decorator, 'admonitions', EnDecorators.Admin.Restart.admonitions)
+
         if commands_admonitions:
             for admonition in commands_admonitions:
                 if admonition.position == "top":
@@ -76,12 +75,11 @@ def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) 
 
         command_body += command_body_template3
 
-        if commands := getattr(decorator, 'commands', EnDecorators.Admin.Reload.commands):
+        if commands := getattr(decorator, 'commands', EnDecorators.Admin.Restart.commands):
             command_body += "".join([
                     command_template.format(prefix=prefix, command_name=command_.name.lower(), args=item.args,
                                             response=item.response
                                             ) for item in commands])
-
         if commands_admonitions:
             for admonition in commands_admonitions:
                 if admonition.position == "bottom":
