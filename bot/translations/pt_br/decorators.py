@@ -796,6 +796,40 @@ class PtBrDecorators(EnDecorators):
                 }
         ])
 
+    class Safebooru(EnDecorators.Safebooru):
+        helper = "Comando utilizado para gerar imagens aleatórias do Safebooru."
+        usage = "Para usar: {}safebooru <quantidade> <tags>"
+        description = ("Este comando é utilizado para gerar imagens aleatórias do Safebooru "
+                       "e encurtá-las para conveniência.")
+        extras = ""
+        commands = CommandExemples([
+                {
+                    'args': "",
+                    'response': "Original: <URL> || "
+                                "Preview: <URL>"
+                },
+                {
+                    'args': "3",
+                    'response': "Original: <URL> || "
+                                "Preview: <URL>"
+                                "Original: <URL> || "
+                                "Preview: <URL>"
+                                "Original: <URL> || "
+                                "Preview: <URL>"
+                },
+                {
+                    'args': "some_tag",
+                    'response': "Original: <URL> || "
+                                "Preview: <URL>"
+                },
+        ])
+        admonitions = Admonitions([
+                {
+                    "admonition_type": "warning",
+                    "title": "Tags!",
+                    "message": "Para tags que contêm espaços, substitua o espaço por \"_\"."
+                }
+        ])
 
 
     decorators = {

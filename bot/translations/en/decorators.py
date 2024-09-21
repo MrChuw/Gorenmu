@@ -761,23 +761,39 @@ class EnDecorators:
                 }])
 
     class Safebooru(BaseDecorator, BaseClass):
-        helper = ""
-        usage = "Para usar: {}"
-        description = ""
+        helper = "Command used to generate random images from Safebooru."
+        usage = "To use: {}safebooru <quantity> <tags>"
+        description = ("This command is used to generate random images from Safebooru "
+                       "and shorten them for convenience.")
         extras = ""
-        created = ""
-        updated = ""
+        created = "2024-09-19T14:58:36.046-03:00"
+        updated = "2024-09-19T14:58:36.046-03:00"
         commands = CommandExemples([
                 {
-                    'args': "argumento",
-                    'response': "resposta"
-                }
+                    'args': "",
+                    'response': "Original: <URL> || "
+                                "Preview: <URL>"
+                },
+                {
+                    'args': "3",
+                    'response': "Original: <URL> || "
+                                "Preview: <URL>"
+                                "Original: <URL> || "
+                                "Preview: <URL>"
+                                "Original: <URL> || "
+                                "Preview: <URL>"
+                },
+                {
+                    'args': "some_tag",
+                    'response': "Original: <URL> || "
+                                "Preview: <URL>"
+                },
         ])
         admonitions = Admonitions([
                 {
                     "admonition_type": "warning",
-                    "title": "Tamanho Máximo!",
-                    "message": "blablabla"
+                    "title": "Tags!",
+                    "message": "For tags containing spaces, the space must be replaced with \"_\"."
                 }
         ])
 
