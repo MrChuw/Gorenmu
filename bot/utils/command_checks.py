@@ -11,7 +11,7 @@ from bot.exceptions import (
     SubRequired, UnknownError, UserIsNotAllowed, VipRequired,
 )
 from bot.ext.commands import Context
-from bot.models import (Cookies as CookieModel, LotteryBank, User as UserModel)
+from bot.models import (Cookies, LotteryBank, User as UserModel)
 from bot.utils.string_manipulation import StringTools
 
 
@@ -97,10 +97,10 @@ class Check:
     @staticmethod
     async def lottery_seed(ctx: Context) -> bool:
         try:
-            await CookieModel.get(id=int(ctx.author.id))
+            await Cookies.get(id=int(ctx.author.id))
         except DoesNotExist:
             user = await UserModel.get(id=int(ctx.author.id))
-            await CookieModel.create(user=user, id=int(ctx.author.id))
+            await Cookies.create(user=user, id=int(ctx.author.id))
         except MultipleObjectsReturned as e:
             logging.error(e)
             await ctx.reply(ctx.translations.Exceptions.LotteryExceptions().lottery_seed.format(ctx.bot.dev_name))
@@ -113,10 +113,13 @@ class Check:
     # COOKIE
     @staticmethod
     async def cookie_check(ctx: Context) -> bool:
-        cookie = CookieModel.get_or_none(id=int(ctx.author.id))
-        if not cookie:
-            user = await UserModel.get(id=int(ctx.author.id))
-            await CookieModel.create(user=user, id=int(ctx.author.id))
+        try:
+            cookie = await Cookies.get(id=int(ctx.author.id))
+        except DoesNotExist:
+            cookie = await Cookies.create(user=ctx.user, id=int(ctx.author.id))
+        if not cookie.cooldown:
+            await cookie.new_cooldown()
+
         ctx.bot.CookieTools.seed = datetime.now().toordinal()
         if ctx.bot.CookieTools.seed % 100 == 0:
             ctx.bot.CookieTools.multiplicador = 5

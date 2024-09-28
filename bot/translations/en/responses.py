@@ -17,6 +17,7 @@ from .extras import Values, bets_values
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
+    from bot.models import Cookies
 
 
 
@@ -28,17 +29,15 @@ class EnTranslations:
     class SupportTools:
         Humanize: Humanize = Humanize
 
+        mention: str = "you"
+
         class TimeTools(BaseTranslation):
             TimeTools: TimeTools = TimeTools
             Timeago: Timeago = Timeago
             strftime: str = "%m/%d/%Y %I:%M %p"
 
-
         class Lottery(BaseTranslation):
             bet_or_consultation: list[str] = ["aposta", "consultar"]
-
-
-
 
         class Dicio(BaseTranslation):
             Dicio: Dicio = Dicio
@@ -419,138 +418,125 @@ class EnTranslations:
 
         remind_message: str = "You won {} cookies in the lottery! The winning tickets were: {}"
 
-    class Cookies:
-        cookie_lines: list[str] = None
-
+    class Cookies(BaseTranslation):
         def cookie_file(self):  # TODO: Ver se funfa.
-            with open("extras/cookies.txt", "r", encoding="utf-8") as file:
+            with open("bot/translations/en/extras/cookies.txt", "r", encoding="utf-8") as file:
                 cookie_lines = file.readlines()
             return cookie_lines
 
-        class Cookie(BaseTranslation):
-            not_eat: Response = Response(
-                {"success": False, "response": "você não comeu nada, uau!"}
-            )
-            negative_eat: Response = Response(
-                {
-                    "success": False,
-                    "response": "para comer {} cookies, você primeiro deve saber reverter a entropia.",
-                    "is_response": False,
-                }
-            )
-            multiple_eat: Response = Response(
-                {"success": False, "response": "você comeu {} cookies de uma só vez. 🥠"}
-            )
-            eat: Response = Response({"success": False, "response": ""})
-            not_enough_cookies: Response = Response(
-                {
-                    "success": False,
-                    "response": "você so pode poder comer {}, para comer {} vai ter que esperar mais {} de dias "
-                    "guardando o cookie diário. (não usar stock ou cookie)",
-                    "is_response": False,
-                }
-            )
-            daily_limit_reached: Response = Response(
-                {
-                    "success": False,
-                    "response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    "is_response": False,
-                }
-            )
 
-        class CookieCount(BaseTranslation):
-            bot_nick: Response = Response(
-                {
-                    "success": False,
-                    "response": "eu tenho cookies infinitos, e distribuo uma fração deles para vocês.",
-                    "is_response": False,
-                }
-            )
-            user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "usuário {} ainda não foi registra e não usou nenhum comando de cookie.",
-                    "is_response": False,
-                }
-            )
-            cookie: Response = Response({"success": False, "response": ""})
-            no_cookie: Response = Response(
-                {"success": False, "response": "{} ainda não comeu nenhum cookie"}
-            )
+        daily_limit_reached: Response = Response({"response": "Você ainda está em cooldown espere mais {} até a "
+                                                              "proxima fornada! ⌛"})
 
-            @staticmethod
-            def format_cookie(self: Response, ctx: Context, *args: Any, **kwargs: Any):
-                self.ctx = ctx
-                success = kwargs.pop("success", True)
-                response_list = kwargs.pop("response_list", None)
-                handle = kwargs.pop("handle", None)
-                self.is_response = True
+        user_not_found: Response = Response({"response": "usuário {} ainda não foi registra e não usou nenhum comando "
+                                                         "de cookie."})
 
-                mention = kwargs.pop("mention", None)
-                cookie = kwargs.pop("cookie")
+        invalid_option: Response = Response({"response": "Escolha em uma das opções \"eat\", \"count\", "
+                                                         "\"top\", \"gift\", \"stock\" ou \"sm\""})
 
-                # Definir valores em response_obj se fornecidos
-                if success is not None:
-                    self.success = success
-                if response_list is not None:
-                    self.response_list = response_list
-                if handle is not None:
-                    self.handle = handle
+        cookie_not_found: Response = Response({"response": "O usuário {} ainda não usou nenhum comando "
+                                                           "relaciona aos cookies."})
 
-                comidos = f"já comeu {cookie.consumed} cookies 🥠," if cookie.consumed > 0 else ""
-                stocked = f"tem {round(cookie.stocked)} estocados," if cookie.stocked > 0 else ""
-                received = f"foi presenteado com {cookie.received}," if cookie.received > 0 else ""
-                donated = f"presenteou {cookie.donated}," if cookie.donated > 0 else ""
-                unclaimed = (
-                    f"e tem um total de {ctx.bot.CookieTools.seed - cookie.daily} não resgatados."
-                    if ctx.bot.CookieTools.seed - cookie.daily > 0
-                    else ""
-                )
-                total = f"e teve um total de cookies de {cookie.total} cookies que ja passaram na conta."
-                response = f"{mention} {comidos} {stocked} {received} {donated} {unclaimed} {total}"
+        # Eat
+        not_eat: Response = Response({"response": "você não comeu nada, uau!"})
 
-                self.response_string = response
-                return self
+        negative_eat: Response = Response({"response": "para comer {} cookies, você primeiro deve saber reverter a "
+                                                       "entropia."})
 
-        class Gift(BaseTranslation):
-            invalid_amount: Response = Response(
-                {
-                    "success": False,
-                    "response": "mande uma quantidade valida para doação e não {}.",
-                    "is_response": False,
-                }
+        multiple_eat: Response = Response({"response": "você comeu {} cookies de uma só vez. 🥠"})
+
+        eat: Response = Response({"response": "{}"})
+
+        # Cookie Count
+        cc_bot_nick: Response = Response({"response": "eu tenho cookies infinitos, e distribuo uma fração deles "
+                                                      "para vocês."})
+
+        @staticmethod
+        def format_cookie_count(ctx: Context, *args: Any, **kwargs: Any):
+            self = Response({})
+            self.ctx = ctx
+            self.success = kwargs.pop("success", True)
+            self.response_list = kwargs.pop("response_list", None)
+            self.handle = kwargs.pop("handle", None)
+            self.is_response = True
+
+            mention = kwargs.pop("mention", None)
+            cookie: Cookies = kwargs.pop("cookie")
+
+            comidos = f"já comeu {cookie.consumed} cookies 🥠," if cookie.consumed > 0 else ""
+            stocked = f"tem {round(cookie.stocked)} estocados," if cookie.stocked > 0 else ""
+            received = f"foi presenteado com {cookie.received}," if cookie.received > 0 else ""
+            donated = f"presenteou {cookie.donated}," if cookie.donated > 0 else ""
+
+            not_redeemed = cookie.not_redeemed()
+
+            unclaimed = (
+                f"e tem um total de {not_redeemed} não resgatados."
+                if not_redeemed > 0
+                else ""
             )
-            bot_nick: Response = Response(
-                {"success": False, "response": "eu não quero seu cookie."}
-            )
-            user_himself: Response = Response(
-                {"success": False, "response": "você tentou presenteou você mesmo, uau!"}
-            )
-            user_not_found: Response = Response(
-                {
-                    "success": False,
-                    "response": "@{} ainda não foi registrado (não usou nenhum comando)",
-                    "is_response": False,
-                }
-            )
-            multiple_gift: Response = Response(
-                {"success": False, "response": "você presenteou @{} com {} cookie(s) 🎁"}
-            )
-            gift: Response = Response(
-                {
-                    "success": False,
-                    "response": "você so pode poder presentear {}, para presentear {} vai ter que esperar mais {} de "
-                    "dias guardando o cookie diário. (não usar stock, cookie ou give)",
-                    "is_response": False,
-                }
-            )
-            daily_limit_reached: Response = Response(
-                {
-                    "success": False,
-                    "response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    "is_response": False,
-                }
-            )
+            total = f"e teve um total de cookies de {cookie.total} cookies que ja passaram na conta."
+            response = f"{mention} {comidos} {stocked} {received} {donated} {unclaimed} {total}"
+
+            self.response_string = response
+            return self
+
+        # Gift
+        gift_bot_nick: Response = Response({"response": "eu não quero seu cookie."})
+
+        gift_user_himself: Response = Response({"response": "você tentou presenteou você mesmo, uau!"})
+
+        # User not found response
+
+        # Cookie not found
+
+        gift_on_cooldown_no_stock: Response = Response({"response": "você não têm nenhum cookie estocado e o cooldown "
+                                                                    "dura mais {}."})
+
+        # daily_limit response
+
+        invalid_gift_amount: Response = Response({"response": "mande uma quantidade valida para presentear e não {}."})
+
+        multiple_gift: Response = Response({"response": "você presenteou @{} com {} cookie(s) 🎁"})
+
+        gift: Response = Response({"response": "você presenteou @{} com um cookie(s) 🎁"})
+
+        gift_not_enough_cookies: Response = Response({"response": "para presentear você precisa primeiro resgatar o "
+                                                                  "cookie."})
+
+        # gift_not_enough_cookies: Response = Response({"response": "você so pode presentear {}, para presentear {} vai "
+        #                                                           "ter que esperar mais {} guardando o "
+        #                                                           "cookie diário. (não usar stock ou cookie)"})
+
+        # Stock
+        stock: Response = Response({"response": "você stockou {} cookies 🍪, o próximo sai em 6h."})
+
+        stock_not_daily: Response = Response({"response": "você stockou {} cookies 🍪."})
+
+        stock_not_enough_cookies: Response = Response({"response": "você so pode stockar {}."})
+
+        # Top
+        
+        order_dict = {
+            # Key         field      title
+            "stocked": ("stocked", "stocked"),
+            "streak": ("streak", "streak"),
+            "consumed": ("consumed", "cookiers"),
+            "donated": ("donated", "givers"),
+            "received": ("received", "receivers"),
+            "total": ("total", "total"),
+        }
+
+        ranks: Response = Response({"success": False, "response": "os ranks são: {}"})
+
+        top10_ish: Response = Response(
+            {
+                "success": False,
+                "response": "top {} {}: {} || Você está na posição {}º do ranking com {}.",
+                "is_response": False,
+            }
+        )
+
 
         class SlotMachine(BaseTranslation):
             daily_limit_reached: Response = Response(
@@ -611,58 +597,6 @@ class EnTranslations:
                 }
             )
 
-        class Stock(BaseTranslation):
-            invalid_number: Response = Response(
-                {
-                    "success": False,
-                    "response": "envie um número inteiro para o que deseja guardar e não {amount}.",
-                    "is_response": False,
-                }
-            )
-            single_stock: Response = Response(
-                {"success": False, "response": "você estocou seu cookie diário 🍪"}
-            )
-            invalid_amount: Response = Response(
-                {
-                    "success": False,
-                    "response": "envie uma quantidade entre nada para apostar so um e {} e não {}.",
-                    "is_response": False,
-                }
-            )
-            invalid_quantity: Response = Response(
-                {
-                    "success": False,
-                    "response": "você esta tentando apostar {} mais so tem {} cookies não resgatados.",
-                    "is_response": False,
-                }
-            )
-            old_stock: Response = Response(
-                {"success": False, "response": "você estocou seu cookie diário não resgatado 🍪"}
-            )
-            multiple_old_stock: Response = Response(
-                {
-                    "success": False,
-                    "response": "você estocou seus {amount} cookies diários não resgatados 🍪",
-                    "is_response": False,
-                }
-            )
-            daily_limit_reached: Response = Response(
-                {
-                    "success": False,
-                    "response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    "is_response": False,
-                }
-            )
-
-        class Top(BaseTranslation):
-            ranks: Response = Response({"success": False, "response": "os ranks são: {}"})
-            top10_ish: Response = Response(
-                {
-                    "success": False,
-                    "response": "top {} {}: {} || Você está na posição {}º do ranking com {}.",
-                    "is_response": False,
-                }
-            )
 
     class Copy:
         class Copy(BaseTranslation):

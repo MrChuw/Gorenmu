@@ -21,6 +21,8 @@ class PtBrTranslations(EnTranslations):
     class SupportTools(EnTranslations.Exceptions):
         Humanize: Humanize = Humanize
 
+        mention: str = "você"
+
         class TimeTools(EnTranslations.SupportTools.TimeTools):
             TimeTools: TimeTools = TimeTools
             Timeago: Timeago = Timeago
@@ -28,7 +30,6 @@ class PtBrTranslations(EnTranslations):
 
         class Lottery(EnTranslations.SupportTools.Lottery):
             bet_or_consultation: list[str] = ["aposta", "consultar"]
-
 
         class Dicio(EnTranslations.SupportTools.Dicio):
             Dicio: Dicio = Dicio
@@ -373,203 +374,7 @@ class PtBrTranslations(EnTranslations):
         remind_message: str = "Você ganhou {} cookies na lotérica! Os tickets ganhadores foram: {}"
 
     class Cookies(EnTranslations.Cookies):
-        cookie_lines: list[str] = None
-
-        def cookie_file(self):  # TODO: Ver se funfa.
-            with open("extras/cookies.txt", "r", encoding="utf-8") as file:
-                cookie_lines = file.readlines()
-            return cookie_lines
-
-        class Cookie(EnTranslations.Cookies.Cookie):
-            not_eat: Response = Response(
-                {"response": "você não comeu nada, uau!"}
-            )
-            negative_eat: Response = Response(
-                {"response": "para comer {} cookies, você primeiro deve saber reverter a entropia.",
-                    
-                }
-            )
-            multiple_eat: Response = Response(
-                {"response": "você comeu {} cookies de uma só vez. 🥠"}
-            )
-            eat: Response = Response({"response": ""})
-            not_enough_cookies: Response = Response(
-                {"response": "você so pode poder comer {}, para comer {} vai ter que esperar mais {} de dias "
-                    "guardando o cookie diário. (não usar stock ou cookie)",
-                    
-                }
-            )
-            daily_limit_reached: Response = Response(
-                {"response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    
-                }
-            )
-
-        class CookieCount(EnTranslations.Cookies.CookieCount):
-            bot_nick: Response = Response(
-                {"response": "eu tenho cookies infinitos, e distribuo uma fração deles para vocês.",
-                    
-                }
-            )
-            user_not_found: Response = Response(
-                {"response": "usuário {} ainda não foi registra e não usou nenhum comando de cookie.",
-                    
-                }
-            )
-            cookie: Response = Response({"response": ""})
-            no_cookie: Response = Response(
-                {"response": "{} ainda não comeu nenhum cookie"}
-            )
-
-            @staticmethod
-            def format_cookie(self: Response, ctx: Context, *args: Any, **kwargs: Any):
-                self.ctx = ctx
-                success = kwargs.pop("success", True)
-                response_list = kwargs.pop("response_list", None)
-                handle = kwargs.pop("handle", None)
-                self.is_response = True
-
-                mention = kwargs.pop("mention", None)
-                cookie = kwargs.pop("cookie")
-
-                # Definir valores em response_obj se fornecidos
-                if success is not None:
-                    self.success = success
-                if response_list is not None:
-                    self.response_list = response_list
-                if handle is not None:
-                    self.handle = handle
-
-                comidos = f"já comeu {cookie.consumed} cookies 🥠," if cookie.consumed > 0 else ""
-                stocked = f"tem {round(cookie.stocked)} estocados," if cookie.stocked > 0 else ""
-                received = f"foi presenteado com {cookie.received}," if cookie.received > 0 else ""
-                donated = f"presenteou {cookie.donated}," if cookie.donated > 0 else ""
-                unclaimed = (
-                    f"e tem um total de {ctx.bot.CookieTools.seed - cookie.daily} não resgatados."
-                    if ctx.bot.CookieTools.seed - cookie.daily > 0
-                    else ""
-                )
-                total = f"e teve um total de cookies de {cookie.total} cookies que ja passaram na conta."
-                response = f"{mention} {comidos} {stocked} {received} {donated} {unclaimed} {total}"
-
-                self.response_string = response
-                return self
-
-        class Gift(EnTranslations.Cookies.Gift):
-            invalid_amount: Response = Response(
-                {"response": "mande uma quantidade valida para doação e não {}.",
-                    
-                }
-            )
-            bot_nick: Response = Response(
-                {"response": "eu não quero seu cookie."}
-            )
-            user_himself: Response = Response(
-                {"response": "você tentou presenteou você mesmo, uau!"}
-            )
-            user_not_found: Response = Response(
-                {"response": "@{} ainda não foi registrado (não usou nenhum comando)",
-                    
-                }
-            )
-            multiple_gift: Response = Response(
-                {"response": "você presenteou @{} com {} cookie(s) 🎁"}
-            )
-            gift: Response = Response(
-                {"response": "você so pode poder presentear {}, para presentear {} vai ter que esperar mais {} de "
-                    "dias guardando o cookie diário. (não usar stock, cookie ou give)",
-                    
-                }
-            )
-            daily_limit_reached: Response = Response(
-                {"response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    
-                }
-            )
-
-        class SlotMachine(EnTranslations.Cookies.SlotMachine):
-            daily_limit_reached: Response = Response(
-                {"response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    
-                }
-            )
-            invalid_amount: Response = Response(
-                {"response": "você esta tentando apostar {} mais so tem {} cookies não resgatados.",
-                    
-                }
-            )
-            daily_win: Response = Response(
-                {"response": "[{}] você usou seu cookie diário e ganhou {} cookies!",
-                    
-                }
-            )
-            daily_single_loss: Response = Response(
-                {"response": "[{''.join(fruits)}] você perdeu seu cookie diário...",
-                    
-                }
-            )
-            not_daily_multiple_loss: Response = Response(
-                {"response": "[{}] você usou seu cookie diário não resgatado e ganhou {} cookies!",
-                    
-                }
-            )
-            not_daily_single_loss: Response = Response(
-                {"response": "[{}] você perdeu seu cookie diário não resgatado...",
-                    
-                }
-            )
-            not_daily_multiple_win: Response = Response(
-                {"response": "você usou {} cookies diários não resgatados e ganhou {} cookies das seguintes "
-                    "apostas: {}",
-                    
-                }
-            )
-            not_daily_lost_everything: Response = Response(
-                {"response": "você usou {} cookies diários e perdeu tudo PoroSad",
-                    
-                }
-            )
-
-        class Stock(EnTranslations.Cookies.Stock):
-            invalid_number: Response = Response(
-                {"response": "envie um número inteiro para o que deseja guardar e não {amount}.",
-                    
-                }
-            )
-            single_stock: Response = Response(
-                {"response": "você estocou seu cookie diário 🍪"}
-            )
-            invalid_amount: Response = Response(
-                {"response": "envie uma quantidade entre nada para apostar so um e {} e não {}.",
-                    
-                }
-            )
-            invalid_quantity: Response = Response(
-                {"response": "você esta tentando apostar {} mais so tem {} cookies não resgatados.",
-                    
-                }
-            )
-            old_stock: Response = Response(
-                {"response": "você estocou seu cookie diário não resgatado 🍪"}
-            )
-            multiple_old_stock: Response = Response(
-                {"response": "você estocou seus {amount} cookies diários não resgatados 🍪",
-                    
-                }
-            )
-            daily_limit_reached: Response = Response(
-                {"response": "você já usou seu cookie diário, a próxima fornada sai a meia noite! ⌛",
-                    
-                }
-            )
-
-        class Top(EnTranslations.Cookies.Top):
-            ranks: Response = Response({"response": "os ranks são: {}"})
-            top10_ish: Response = Response(
-                {"response": "top {} {}: {} || Você está na posição {}º do ranking com {}.",
-                    
-                }
-            )
+        pass
 
     class Copy(EnTranslations.Copy):
         class Copy(EnTranslations.Copy.Copy):

@@ -797,6 +797,35 @@ class EnDecorators:
                 }
         ])
 
+    class Cookies(BaseDecorator, BaseClass):
+        helper = "coma um cookie e receba uma frase da sorte."
+        usage = "Para usar: {}cookie <quantidade|1>"
+        description = "coma um cookie e receba uma frase da sorte."
+
+        class CookieCount(BaseDecorator, BaseClass):
+            helper = "presenteie alguém com seu cookie diário"
+            usage = "Para usar: {}gift <nome_do_usuário>"
+            description = "presenteie alguém com seu cookie diário"
+
+        class Gift(BaseDecorator, BaseClass):
+            helper = "aposte seu cookie diário para ter a chance de ganhar outros"
+            usage = (
+                    "Para usar: {}slotmachine <all pode ser usado para apostar todos os cookies não resgatados rapidamente>")
+            description = "aposte seu cookie diário para ter a chance de ganhar outros"
+
+        class SlotMachine(BaseDecorator, BaseClass):
+            pass
+
+        class Stock(BaseDecorator, BaseClass):
+            helper = "estoque o seu cookie diário."
+            usage = "Para usar: {}stock <all pode ser usado para stockar todos os cookies não resgatados rapidamente>"
+            description = "estoque o seu cookie diário."
+
+        class Top(BaseDecorator, BaseClass):
+            helper = "veja quais são os maiores comedores ou doadores de cookies"
+            usage = "Para usar: {}top ou passes uma das opções stocked | streak | consumed | donated | received | total"
+            description = "veja quais são os maiores comedores ou doadores de cookies"
+
     decorators = {
             'pipe': Others.Pipe,
             'afk': Afk,
@@ -829,35 +858,7 @@ class EnDecorators:
     categories = ["NSFW", "Dev"]
     exclude_categories = ["NSFW"]
 
-    class Cookies(BaseClass):
-        class Cookie(BaseDecorator, BaseClass):
-            helper = "coma um cookie e receba uma frase da sorte."
-            usage = "Para usar: {}cookie <quantidade|1>"
-            description = "coma um cookie e receba uma frase da sorte."
 
-        class CookieCount(BaseDecorator, BaseClass):
-            helper = "presenteie alguém com seu cookie diário"
-            usage = "Para usar: {}gift <nome_do_usuário>"
-            description = "presenteie alguém com seu cookie diário"
-
-        class Gift(BaseDecorator, BaseClass):
-            helper = "aposte seu cookie diário para ter a chance de ganhar outros"
-            usage = (
-                    "Para usar: {}slotmachine <all pode ser usado para apostar todos os cookies não resgatados rapidamente>")
-            description = "aposte seu cookie diário para ter a chance de ganhar outros"
-
-        class SlotMachine(BaseDecorator, BaseClass):
-            pass
-
-        class Stock(BaseDecorator, BaseClass):
-            helper = "estoque o seu cookie diário."
-            usage = "Para usar: {}stock <all pode ser usado para stockar todos os cookies não resgatados rapidamente>"
-            description = "estoque o seu cookie diário."
-
-        class Top(BaseDecorator, BaseClass):
-            helper = "veja quais são os maiores comedores ou doadores de cookies"
-            usage = "Para usar: {}top ou passes uma das opções stocked | streak | consumed | donated | received | total"
-            description = "veja quais são os maiores comedores ou doadores de cookies"
 
     class Copy(BaseClass):
         class Copy(BaseDecorator, BaseClass):

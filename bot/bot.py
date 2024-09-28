@@ -22,7 +22,7 @@ from bot.models import Channel as ChannelModel, User as UserModel
 from bot.models.User_extras import BotsIgnore
 from bot.translations import Response, TranslationManager
 from bot.utils import (
-    CookieTools, LotteryTools, MarkovProcessor, ToolsTools, UploadThings,
+    CookieTools, LotteryTools, MarkovProcessor, ToolsTools, UploadThings, StringTools
 )
 from bot.utils.caches import (Cache, SessionsCaches)
 from bot.utils.command_handler import CommandHandler
@@ -48,6 +48,7 @@ class Gorenmu(Bot):
         self.MarkovProcessor: MarkovProcessor | None = None
         self.UploadThings: UploadThings = UploadThings(self)
         self.ToolsTools: ToolsTools = ToolsTools(self)
+        self.StringTools: StringTools = StringTools()
         self.LotteryTools: LotteryTools = LotteryTools(self)
         self.CookieTools: CookieTools = CookieTools(self)
         self.lottery_lock: asyncio.Lock = asyncio.Lock()

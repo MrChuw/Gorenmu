@@ -4,9 +4,8 @@ import humanize
 
 humanize.activate("pt_BR")
 
-class Humanize:
-    # TODO: Fazer com que a linguagem to humanize varie de acordo com a língua do usuário.
 
+class Humanize:
     @staticmethod
     def precisedelta(value, minimum_unit="seconds", suppress=(), format="%0.2f") -> str:
         return humanize.precisedelta(value, minimum_unit=minimum_unit, suppress=suppress, format=format)

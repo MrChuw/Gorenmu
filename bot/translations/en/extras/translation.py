@@ -13,18 +13,6 @@ mention_dict = {"en": "you",
 class BaseTranslation:
     ctx: Context
 
-    # TODO: adicionar um fallback para o idioma padrão caso não tenha a tradução.
-
-    @staticmethod
-    def mention(ctx: Context, user: User, name: str) -> str:
-        return (
-            mention_dict[user.language] if user.name == ctx.author.name else f"@{name}"
-        )
-        # if user.language is not None:
-        #     pass  # if user.language == "pt_br":
-        #     return "você" if user.name == ctx.author.name else f"@{name}"
-        # if user.language == "en-us":
-        #     return "you" if user.name == ctx.author.name else f"@{name}"
 
     @staticmethod
     def remind_mention(ctx: Context, user: User, name: str, invoke_by: str) -> str:

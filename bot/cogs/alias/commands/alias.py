@@ -139,9 +139,10 @@ async def check_alias(ctx: Context, args: tuple):  # TODO: test check a link ali
     elif not target_aliases_flat and first_name in aliases_flat and not second_name:
         user = ctx.user
         alias_name = first_name
-        mention = translations.mention(ctx, user, user.name)
+        mention = mention = ctx.translations.SupportTools.mention if user.name == ctx.author.name else f"@{user.name}"
     elif target_aliases_flat and first_name not in aliases_flat and not second_name:
-        mention = translations.mention(ctx, target_user, target_user.name)
+        mention = ctx.translations.SupportTools.mention if target_user.name == ctx.author.name \
+            else f"@{target_user.name}"
         url = await upload_alias(ctx, target_aliases, translations.alias_table_name.format(mention))  # NOQA
         return translations.Check.list_of_alias_of.format_response(ctx, mention, url, pipe=False)
     elif target_aliases_flat and first_name in aliases_flat and not second_name:
@@ -155,7 +156,7 @@ async def check_alias(ctx: Context, args: tuple):  # TODO: test check a link ali
             return translations.user_not_found.format_response(ctx, first_name, success=False, pipe=False)
 
         alias_name = second_name
-        mention = translations.mention(ctx, user, ctx.author.name)
+        mention = ctx.translations.SupportTools.mention if user.name == ctx.author.name else f"@{user.name}"
 
     alias = await Alias.filter(user_id=user.id, name=alias_name, deleted=False).first().prefetch_related("parent")  # NOQA
 

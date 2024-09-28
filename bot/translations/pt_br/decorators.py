@@ -831,6 +831,34 @@ class PtBrDecorators(EnDecorators):
                 }
         ])
 
+    class Cookies(EnDecorators.Cookies):
+        helper = "coma um cookie e receba uma frase da sorte."
+        usage = "Para usar: {}cookie <quantidade|1>"
+        description = "coma um cookie e receba uma frase da sorte."
+
+        class CookieCount(EnDecorators.Cookies.CookieCount):
+            helper = "presenteie alguém com seu cookie diário"
+            usage = "Para usar: {}gift <nome_do_usuário>"
+            description = "presenteie alguém com seu cookie diário"
+
+        class Gift(EnDecorators.Cookies.Gift):
+            helper = "aposte seu cookie diário para ter a chance de ganhar outros"
+            usage = (
+                    "Para usar: {}slotmachine <all pode ser usado para apostar todos os cookies não resgatados rapidamente>")
+            description = "aposte seu cookie diário para ter a chance de ganhar outros"
+
+        class SlotMachine(EnDecorators.Cookies.SlotMachine):
+            pass
+
+        class Stock(EnDecorators.Cookies.Stock):
+            helper = "estoque o seu cookie diário."
+            usage = "Para usar: {}stock <all pode ser usado para stockar todos os cookies não resgatados rapidamente>"
+            description = "estoque o seu cookie diário."
+
+        class Top(EnDecorators.Cookies.Top):
+            helper = "veja quais são os maiores comedores ou doadores de cookies"
+            usage = "Para usar: {}top ou passes uma das opções stocked | streak | consumed | donated | received | total"
+            description = "veja quais são os maiores comedores ou doadores de cookies"
 
     decorators = {
             'pipe': Others.Pipe,
@@ -861,35 +889,7 @@ class PtBrDecorators(EnDecorators):
             }
     }
 
-    class Cookies(EnDecorators.Cookies):
-        class Cookie(EnDecorators.Cookies.Cookie):
-            helper = "coma um cookie e receba uma frase da sorte."
-            usage = "Para usar: {}cookie <quantidade|1>"
-            description = "coma um cookie e receba uma frase da sorte."
 
-        class CookieCount(EnDecorators.Cookies.CookieCount):
-            helper = "presenteie alguém com seu cookie diário"
-            usage = "Para usar: {}gift <nome_do_usuário>"
-            description = "presenteie alguém com seu cookie diário"
-
-        class Gift(EnDecorators.Cookies.Gift):
-            helper = "aposte seu cookie diário para ter a chance de ganhar outros"
-            usage = (
-                    "Para usar: {}slotmachine <all pode ser usado para apostar todos os cookies não resgatados rapidamente>")
-            description = "aposte seu cookie diário para ter a chance de ganhar outros"
-
-        class SlotMachine(EnDecorators.Cookies.SlotMachine):
-            pass
-
-        class Stock(EnDecorators.Cookies.Stock):
-            helper = "estoque o seu cookie diário."
-            usage = "Para usar: {}stock <all pode ser usado para stockar todos os cookies não resgatados rapidamente>"
-            description = "estoque o seu cookie diário."
-
-        class Top(EnDecorators.Cookies.Top):
-            helper = "veja quais são os maiores comedores ou doadores de cookies"
-            usage = "Para usar: {}top ou passes uma das opções stocked | streak | consumed | donated | received | total"
-            description = "veja quais são os maiores comedores ou doadores de cookies"
 
     class Copy(EnDecorators.Copy):
         class Copy(EnDecorators.Copy.Copy):
