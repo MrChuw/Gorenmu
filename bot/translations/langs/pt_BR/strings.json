@@ -1,0 +1,48 @@
+{
+    "SupportTools": {
+        "TimeTools": {
+            "strftime": "%m/%d/%Y %I:%M %p"
+        },
+        "mention": "você",
+        "Lottery": {
+            "bet_or_consultation": {
+                "item": [
+                    "aposta",
+                    "consultar"
+                ]
+            }
+        }
+    },
+    "Exceptions": {
+        "ResponseExceptions": {
+            "pipe_response": "aqui está a resposta gerada pelo último comando: {}",
+            "error_on_response": "um erro aconteceu durante o comando '{}'",
+            "command_not_pipeble": "este comando não pôde ser utilizado com pipe."
+        },
+        "LotteryExceptions": {
+            "lottery_seed": "Algo terrível aconteceu, contate '{}' aqui na twitch utilizando whispers."
+        },
+        "ToolsExceptions": {
+            "announcement": "algo deu errado com os anuncios. {}"
+        },
+        "BotMainLoopExceptions": {
+            "dev_required": "você precisa ser meu criador para rodar este comando.",
+            "owner_required": "comando reservado para o criador do bot.",
+            "command_on_cooldown": "para usar este comando novamente, retorne em {}.",
+            "not_implemented": "este comando está temporariamente desativado.",
+            "error_not_registered": "um erro inesperado aconteceu, porfavor reporte este erro para @{}."
+        }
+    },
+    "Admin": {
+        "Reload": {
+            "commands_reloaded": "Os comando foram recarregados com sucesso."
+        },
+        "Restart": {
+            "success": "O bot reinicio com sucesso.",
+            "unexpected_error": "Um erro aconteceu ao reiniciar o bot: {}"
+        },
+        "Nada": {
+            "nada": "o comando executou com sucesso."
+        }
+    }
+}
