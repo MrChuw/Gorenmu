@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Translations>
+<root>
     <TypeChecking>
         <response></response>
     </TypeChecking>
@@ -48,4 +48,4 @@
             <unexpected_error>There was an error restarting the bot: {}</unexpected_error>
         </Restart>
     </Admin>
-</Translations>
+</root>
