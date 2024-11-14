@@ -56,7 +56,7 @@ async def create(ctx: Context, content: str) -> Response:
 
 
     bet_data = translations.bets_values[len(numbers)]
-    value_need = bet_data.value * len(list(combinations(numbers, 6))) if len(numbers) >= 7 else 5
+    value_need = bet_data * len(list(combinations(numbers, 6))) if len(numbers) >= 7 else 5
     last_lottery = await LotteryBank.get(closed=False)
     if cookies.stocked < value_need and len(numbers) <= 6:
         return translations.not_enough_cookies.format_response(ctx, success=False)

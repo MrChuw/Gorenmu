@@ -1,0 +1,24 @@
+{
+  "fight": [
+    "@{name} finishes off @{author}!",
+    "@{name} leaves @{author} unconscious!",
+    "@{name} defeats @{author} easily!",
+    "@{name} mercilessly beats up @{author}!",
+    "@{name} gives @{author} no chance and wins!",
+    "@{name} nearly loses but knocks down @{author}!",
+    "@{name} wins the fight against @{author}!",
+    "@{name} beats @{author} with difficulty!",
+    "@{name} wins against @{author} in a close fight!",
+    "@{name} easily wins against @{author}!",
+    "@{author} finishes off @{name}!",
+    "@{author} leaves @{name} unconscious!",
+    "@{author} defeats @{name} easily!",
+    "@{author} mercilessly beats up @{name}!",
+    "@{author} gives @{name} no chance and wins!",
+    "@{author} nearly loses but knocks down @{name}!",
+    "@{author} wins the fight against @{name}!",
+    "@{author} beats @{name} with difficulty!",
+    "@{author} wins against @{name} in a close fight!",
+    "@{author} easily wins against @{name}!"
+  ]
+}
