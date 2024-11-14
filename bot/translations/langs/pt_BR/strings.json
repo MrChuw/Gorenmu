@@ -11,6 +11,9 @@
                     "consultar"
                 ]
             }
+        },
+        "Humanize": {
+            "language": "pt_BR"
         }
     },
     "Exceptions": {
@@ -24,13 +27,6 @@
         },
         "ToolsExceptions": {
             "announcement": "algo deu errado com os anuncios. {}"
-        },
-        "BotMainLoopExceptions": {
-            "dev_required": "você precisa ser meu criador para rodar este comando.",
-            "owner_required": "comando reservado para o criador do bot.",
-            "command_on_cooldown": "para usar este comando novamente, retorne em {}.",
-            "not_implemented": "este comando está temporariamente desativado.",
-            "error_not_registered": "um erro inesperado aconteceu, porfavor reporte este erro para @{}."
         }
     },
     "Admin": {

@@ -5,12 +5,13 @@
             "strftime": "%m/%d/%Y %I:%M %p"
         },
         "Lottery": {
-            "bet_or_consultation": {
-                "item": [
+            "bet_or_consultation": [
                     "bet",
                     "consult"
                 ]
-            }
+        },
+        "Humanize": {
+            "language": "en"
         }
     },
     "Exceptions": {
@@ -98,7 +99,7 @@
         "Add": {
             "no_command_to_add": "You didn't send a command! Usage: {}alias add (name) (command) (…arguments)",
             "alias_name_conflict": "Cannot add alias \"{}\" - you already have one! You can either \"edit\" its definition, \"rename\" it or \"remove\" it.",
-            "alias_crated": "Your alias \"{}\" has been created successfully.",
+            "alias_created": "Your alias \"{}\" has been created successfully.",
             "command_dont_exist": "Cannot create alias! The command \"{}\" does not exist."
         },
         "Check": {
@@ -159,9 +160,7 @@
             ",",
             " "
         ],
-        "choice_separators": [
-            ",",
-            " ",
+        "additional_separators": [
             "or"
         ],
         "chosen_option": "{}"
@@ -171,6 +170,7 @@
     },
     "HyperTranslate": {
         "quantity_error": "You must specify the number of times the text will be translated. Example: `{}hypertranslate 10 <text>`",
+        "base_lang": "en",
         "starter_string": "Translating the text…",
         "unexpected_error": "The text could not be translated.",
         "translation": "{}"
@@ -234,6 +234,9 @@
         "option_not_recognized": "The valid options are only \"add\" \"check\" \"delete\""
     },
     "Lottery": {
+        "past": ["past"],
+        "current": ["current", "present"],
+
         "only_numbers": "Only send numbers from 1 to 60.",
         "duplicate_numbers": "Please choose non-duplicate numbers.",
         "not_enough_cookies": "You don't have enough cookies to place a bet. The minimum is 5 cookies.",
@@ -286,7 +289,15 @@
         "ranks": "the ranks are: {}",
         "top10_ish": "top {} {}: {} || You are in the {}th position in the ranking with {}.",
         "multiple_gift_plural": "you gifted @{} with {} cookies 🎁",
-        "gift_plural": "you gave @{} a cookies 🎁"
+        "gift_plural": "you gave @{} a cookies 🎁",
+        "format_cookie_count": {
+            "cookie_count":  "Have you already eaten {} cookies 🥠,",
+            "stocked_count": "has {} in stock,",
+            "received_count":  "was presented with {},",
+            "donated_count": "gifted {},",
+            "not_redeemed_count":  "and has a total of {} unredeemed.",
+            "total_count": "and there were a total of {} cookies that have already been added to the account."
+        }
     },
     "Markov": {
         "purge": "Purge dictionary in %0.2fs. %d words removed",
