@@ -2,8 +2,17 @@
     "SupportTools": {
         "mention": "you",
         "TimeTools": {
-            "strftime": "%m/%d/%Y %I:%M %p"
-        },
+            "strftime": "%m/%d/%Y %I:%M %p",
+            "Pattern_time": {
+                "years": ["years", "year", "y"],
+                "months": ["months", "month", "mo"],
+                "weeks": ["weeks", "week", "w"],
+                "days": ["days", "day", "d"],
+                "hours": ["hours", "hour", "h"],
+                "minutes": ["minutes", "minute", "min", "m"],
+                "seconds": ["seconds", "second", "secs", "sec", "s"]
+            }
+          },
         "Lottery": {
             "bet_or_consultation": [
                     "bet",

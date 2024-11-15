@@ -1,8 +1,17 @@
 {
     "SupportTools": {
         "TimeTools": {
-            "strftime": "%m/%d/%Y %I:%M %p"
-        },
+            "strftime": "%m/%d/%Y %I:%M %p",
+            "Pattern_time": {
+                "years": ["anos", "ano", "a"],
+                "months": ["meses", "mês", "mes", "mo"],
+                "weeks": ["semanas", "semana", "w"],
+                "days": ["dias", "dia", "d"],
+                "hours": ["horas", "hora", "h"],
+                "minutes": ["minutos", "minuto", "min", "m"],
+                "seconds": ["segundos", "segundo", "seg", "s"]
+            }
+          },
         "mention": "você",
         "Lottery": {
             "bet_or_consultation": {
@@ -26,7 +35,7 @@
             "lottery_seed": "Algo terrível aconteceu, contate '{}' aqui na twitch utilizando whispers."
         },
         "ToolsExceptions": {
-            "announcement": "algo deu errado com os anuncios. {}"
+            "announcement": "algo deu errado com os anúncios. {}"
         }
     },
     "Admin": {
