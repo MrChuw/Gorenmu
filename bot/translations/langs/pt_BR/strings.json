@@ -130,5 +130,11 @@
     "Nada": {
       "nada": "o comando executou com sucesso."
     }
+  },
+
+
+
+  "Weather": {
+    "TODO": "TODO"
   }
 }

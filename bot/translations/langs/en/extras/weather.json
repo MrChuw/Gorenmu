@@ -1,0 +1,401 @@
+{
+  "Weather": {
+    "Weather Codes": {
+      "0": {
+        "day": {
+          "description": "Sunny",
+          "emoji": "☀️"
+        },
+        "night": {
+          "description": "Clear",
+          "emoji": "🌙"
+        }
+      },
+      "1": {
+        "day": {
+          "description": "Mainly Sunny",
+          "emoji": "🌤️"
+        },
+        "night": {
+          "description": "Mainly Clear",
+          "emoji": "🌙"
+        }
+      },
+      "2": {
+        "day": {
+          "description": "Partly Cloudy",
+          "emoji": "⛅"
+        },
+        "night": {
+          "description": "Partly Cloudy",
+          "emoji": "⛅"
+        }
+      },
+      "3": {
+        "day": {
+          "description": "Cloudy",
+          "emoji": "☁️"
+        },
+        "night": {
+          "description": "Cloudy",
+          "emoji": "☁️"
+        }
+      },
+      "45": {
+        "day": {
+          "description": "Foggy",
+          "emoji": "🌫️"
+        },
+        "night": {
+          "description": "Foggy",
+          "emoji": "🌫️"
+        }
+      },
+      "48": {
+        "day": {
+          "description": "Rime Fog",
+          "emoji": "🌫️"
+        },
+        "night": {
+          "description": "Rime Fog",
+          "emoji": "🌫️"
+        }
+      },
+      "51": {
+        "day": {
+          "description": "Light Drizzle",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Light Drizzle",
+          "emoji": "🌧️"
+        }
+      },
+      "53": {
+        "day": {
+          "description": "Drizzle",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Drizzle",
+          "emoji": "🌧️"
+        }
+      },
+      "55": {
+        "day": {
+          "description": "Heavy Drizzle",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Heavy Drizzle",
+          "emoji": "🌧️"
+        }
+      },
+      "56": {
+        "day": {
+          "description": "Light Freezing Drizzle",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Light Freezing Drizzle",
+          "emoji": "🌧️"
+        }
+      },
+      "57": {
+        "day": {
+          "description": "Freezing Drizzle",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Freezing Drizzle",
+          "emoji": "🌧️"
+        }
+      },
+      "61": {
+        "day": {
+          "description": "Light Rain",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Light Rain",
+          "emoji": "🌧️"
+        }
+      },
+      "63": {
+        "day": {
+          "description": "Rain",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Rain",
+          "emoji": "🌧️"
+        }
+      },
+      "65": {
+        "day": {
+          "description": "Heavy Rain",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Heavy Rain",
+          "emoji": "🌧️"
+        }
+      },
+      "66": {
+        "day": {
+          "description": "Light Freezing Rain",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Light Freezing Rain",
+          "emoji": "🌧️"
+        }
+      },
+      "67": {
+        "day": {
+          "description": "Freezing Rain",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Freezing Rain",
+          "emoji": "🌧️"
+        }
+      },
+      "71": {
+        "day": {
+          "description": "Light Snow",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Light Snow",
+          "emoji": "🌧️"
+        }
+      },
+      "73": {
+        "day": {
+          "description": "Snow",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Snow",
+          "emoji": "🌧️"
+        }
+      },
+      "75": {
+        "day": {
+          "description": "Heavy Snow",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Heavy Snow",
+          "emoji": "🌧️"
+        }
+      },
+      "77": {
+        "day": {
+          "description": "Snow Grains",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Snow Grains",
+          "emoji": "🌧️"
+        }
+      },
+      "80": {
+        "day": {
+          "description": "Light Showers",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Light Showers",
+          "emoji": "🌧️"
+        }
+      },
+      "81": {
+        "day": {
+          "description": "Showers",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Showers",
+          "emoji": "🌧️"
+        }
+      },
+      "82": {
+        "day": {
+          "description": "Heavy Showers",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Heavy Showers",
+          "emoji": "🌧️"
+        }
+      },
+      "85": {
+        "day": {
+          "description": "Light Snow Showers",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Light Snow Showers",
+          "emoji": "🌧️"
+        }
+      },
+      "86": {
+        "day": {
+          "description": "Snow Showers",
+          "emoji": "🌧️"
+        },
+        "night": {
+          "description": "Snow Showers",
+          "emoji": "🌧️"
+        }
+      },
+      "95": {
+        "day": {
+          "description": "Thunderstorm",
+          "emoji": "⛈️"
+        },
+        "night": {
+          "description": "Thunderstorm",
+          "emoji": "⛈️"
+        }
+      },
+      "96": {
+        "day": {
+          "description": "Light Thunderstorms With Hail",
+          "emoji": "⛈️"
+        },
+        "night": {
+          "description": "Light Thunderstorms With Hail",
+          "emoji": "⛈️"
+        }
+      },
+      "99": {
+        "day": {
+          "description": "Thunderstorm With Hail",
+          "emoji": "⛈️"
+        },
+        "night": {
+          "description": "Thunderstorm With Hail",
+          "emoji": "⛈️"
+        }
+      },
+      "99999": {
+        "day": {
+          "description": "Unknown",
+          "emoji": "❓"
+        },
+        "night": {
+          "description": "Unknown",
+          "emoji": "❓"
+        }
+      }
+    },
+    "Cardinals": {
+      "North": {
+        "short": "N",
+        "long": "North",
+        "angles": [
+          337,
+          360
+        ]
+      },
+      "North2": {
+        "short": "N",
+        "long": "North",
+        "angles": [
+          0,
+          23
+        ]
+      },
+      "North-East": {
+        "short": "NE",
+        "long": "North-East",
+        "angles": [
+          23,
+          68
+        ]
+      },
+      "East": {
+        "short": "E",
+        "long": "East",
+        "angles": [
+          68,
+          113
+        ]
+      },
+      "South-East": {
+        "short": "SE",
+        "long": "South-East",
+        "angles": [
+          113,
+          158
+        ]
+      },
+      "South": {
+        "short": "S",
+        "long": "South",
+        "angles": [
+          158,
+          203
+        ]
+      },
+      "South-West": {
+        "short": "SW",
+        "long": "South-West",
+        "angles": [
+          203,
+          248
+        ]
+      },
+      "West": {
+        "short": "W",
+        "long": "West",
+        "angles": [
+          248,
+          293
+        ]
+      },
+      "North-West": {
+        "short": "NW",
+        "long": "North-West",
+        "angles": [
+          293,
+          337
+        ]
+      }
+    },
+    "WMO Codes": {
+      "0": "clear sky",
+      "1": "mainly clear",
+      "2": "partly cloudy",
+      "3": "overcast",
+      "45": "fog",
+      "48": "depositing rime fog",
+      "51": "light drizzle",
+      "53": "moderate drizzle",
+      "55": "dense drizzle",
+      "56": "light freezing drizzle",
+      "57": "dense freezing drizzle",
+      "61": "slight rain",
+      "63": "moderate rain",
+      "65": "heavy rain",
+      "66": "light freezing rain",
+      "67": "dense freezing rain",
+      "71": "slight snow fall",
+      "73": "moderate snow fall",
+      "75": "heavy snow fall",
+      "77": "snow grains",
+      "80": "slight rain showers",
+      "81": "moderate rain showers",
+      "82": "violent rain showers",
+      "85": "slight snow shower",
+      "86": "heavy snow showers",
+      "95": "thunderstorm",
+      "96": "thunderstorm with slight hail",
+      "99": "thunderstorm with heavy hail",
+      "99999": "unknown"
+    }
+  }
+}

@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 from typing import Any, List, Optional, TYPE_CHECKING
-from bot.models import User
 
 if TYPE_CHECKING:
     from bot.ext import Context
 
 
 class Response:
-    def __init__(self, data: dict):
+    def __init__(self, data: dict = None, response: str = None):
+        if data is None:
+            data = {}
+        if response is not None:
+            data["response"] = response
         self.ctx: Optional[Context] = data.get("ctx")
         self.success: Optional[bool] = data.get("success")
         self.response: Optional[str] = data.get("response")
@@ -65,6 +68,8 @@ class AdmonitionItem:
 
 
 class BaseFunctions:
+    ctx: Context
+
     def __init__(self, obj, fallback):
         if type(obj) is dict:
             self.obj = obj
@@ -73,17 +78,22 @@ class BaseFunctions:
             self.obj = obj[0]
             self.fallback = obj[1]
 
-    def get_object(self, key: str) -> dict | str | list:
-        try:
+    def get_object(self, key: str) -> [dict, dict]:
+        if key in self.obj:
             return self.obj[key]
-        except KeyError:
+        elif key in self.fallback:
             return self.fallback[key]
+        else:
+            raise KeyError(f"Key '{key}' not found in either base or fallback.")
 
-    def get_base(self, key: str) -> Any:
-        try:
+    def get_base(self, key: str) -> [dict, dict]:
+        if key in self.obj:
             return self.obj[key], self.fallback[key]
-        except KeyError:
+        elif key in self.fallback:
             return self.fallback[key], self.fallback[key]
+        else:
+            raise KeyError(f"Key '{key}' not found in either base or fallback.")
 
-    ctx: Context
-
+    def __iter__(self):
+        unique_keys = set(self.obj.keys()).union(self.fallback.keys())
+        return iter(unique_keys)
