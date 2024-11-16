@@ -1,5 +1,6 @@
 from datetime import datetime
 import humanize
+from .response import BaseFunctions
 
 
 class HumanizeContext:
@@ -14,9 +15,22 @@ class HumanizeContext:
         humanize.deactivate()
 
 
-class Humanize:
-    def __init__(self, data: tuple):
+class Humanize(BaseFunctions):
+    _years = ["months", "days", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
+    _months = ["years", "days", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
+    _weeks = ["years", "months", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
+    _days = ["years", "months", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
+    _hours = ["years", "months", "days", "minutes", "seconds", "milliseconds", "microseconds"]
+    _minutes = ["years", "months", "days", "hours", "seconds", "milliseconds", "microseconds"]
+    _seconds = ["years", "months", "days", "hours", "minutes", "milliseconds", "microseconds"]
+    _microseconds = ["years", "months", "days", "hours", "minutes", "seconds", "milliseconds"]
+    _milliseconds = ["years", "months", "days", "hours", "minutes", "seconds", "microseconds"]
+
+    def __init__(self, data: tuple, translation: dict, fallback: dict = None):
+        super().__init__(translation, fallback)
         self.lang = data[0]["language"] if data[0]["language"] is not None else data[1]["language"]
+        self.units = self._generate_options(self.get_object("Pattern time"))
+        del self.fallback, self.obj
 
     def precisedelta(self, value, minimum_unit="seconds", suppress=(), format="%0.2f") -> str:
         with HumanizeContext(self.lang):
@@ -43,3 +57,37 @@ class Humanize:
         with HumanizeContext(self.lang):
             response = humanize.naturalsize(value, binary=binary, gnu=gnu, format=format)
         return response
+
+    def _generate_options(self, units: dict):
+        options = {}  # NOQA
+        for value in units["years"]:
+            options[value] = self._years
+        for value in units["months"]:
+            options[value] = self._months
+        for value in units["weeks"]:
+            options[value] = self._weeks
+        for value in units["days"]:
+            options[value] = self._days
+        for value in units["hours"]:
+            options[value] = self._hours
+        for value in units["minutes"]:
+            options[value] = self._minutes
+        for value in units["seconds"]:
+            options[value] = self._seconds
+        for value in units["milliseconds"]:
+            options[value] = self._milliseconds
+        for value in units["microseconds"]:
+            options[value] = self._microseconds
+        options["time"] = ()
+        return options
+
+
+
+
+
+
+
+
+
+
+

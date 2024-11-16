@@ -1,88 +1,134 @@
 {
-    "SupportTools": {
-        "mention": "você",
-        "TimeTools": {
-            "strftime": "%d/%m/%Y às %H:%M:%S",
-            "Pattern time": {
-                "years": ["anos", "ano", "a"],
-                "months": ["meses", "mês", "mes", "mo"],
-                "weeks": ["semanas", "semana", "w"],
-                "days": ["dias", "dia", "d"],
-                "hours": ["horas", "hora", "h"],
-                "minutes": ["minutos", "minuto", "min", "m"],
-                "seconds": ["segundos", "segundo", "seg", "s"],
-                "milliseconds": ["milissegundos", "milissegundo", "milisecs", "milisec", "milli"],
-                "microseconds": ["microssegundos", "microssegundo", "micro", "us"]
-            },
-            "Time Units": {
-                "singular": {
-                    "years": "ano",
-                    "months": "mês",
-                    "weeks": "semana",
-                    "days": "dia",
-                    "hours": "hora",
-                    "minutes": "minuto",
-                    "seconds": "segundo",
-                    "milliseconds": "milissegundo",
-                    "microseconds": "microssegundo"
-                },
-                "plural": {
-                    "years": "anos",
-                    "months": "meses",
-                    "weeks": "semanas",
-                    "days": "dias",
-                    "hours": "horas",
-                    "minutes": "minutos",
-                    "seconds": "segundos",
-                    "milliseconds": "milissegundos",
-                    "microseconds": "microssegundos"
-                },
-                "short": {
-                  "years": "a",
-                  "months": "mo",
-                  "weeks": "w",
-                  "days": "d",
-                  "hours": "h",
-                  "minutes": "m",
-                  "seconds": "s",
-                  "milliseconds": "ms",
-                  "microseconds": "µs"
-                }
-            },
-            "Humanize": {
-                "language": "pt_BR"
-            }
-          },
-        "Lottery": {
-            "bet_or_consultation": [
-                    "aposta",
-                    "consultar"
-                ]
+  "SupportTools": {
+    "mention": "você",
+    "TimeTools": {
+      "strftime": "%d/%m/%Y às %H:%M:%S",
+      "Pattern time": {
+        "years": [
+          "anos",
+          "ano",
+          "a"
+        ],
+        "months": [
+          "meses",
+          "mês",
+          "mes",
+          "mo"
+        ],
+        "weeks": [
+          "semanas",
+          "semana",
+          "w"
+        ],
+        "days": [
+          "dias",
+          "dia",
+          "d"
+        ],
+        "hours": [
+          "horas",
+          "hora",
+          "h"
+        ],
+        "minutes": [
+          "minutos",
+          "minuto",
+          "min",
+          "m"
+        ],
+        "seconds": [
+          "segundos",
+          "segundo",
+          "seg",
+          "s"
+        ],
+        "milliseconds": [
+          "milissegundos",
+          "milissegundo",
+          "milisecs",
+          "milisec",
+          "milli"
+        ],
+        "microseconds": [
+          "microssegundos",
+          "microssegundo",
+          "micro",
+          "us"
+        ],
+        "time": [
+            "tempo",
+            "t"
+        ]
+      },
+      "Time Units": {
+        "singular": {
+          "years": "ano",
+          "months": "mês",
+          "weeks": "semana",
+          "days": "dia",
+          "hours": "hora",
+          "minutes": "minuto",
+          "seconds": "segundo",
+          "milliseconds": "milissegundo",
+          "microseconds": "microssegundo"
+        },
+        "plural": {
+          "years": "anos",
+          "months": "meses",
+          "weeks": "semanas",
+          "days": "dias",
+          "hours": "horas",
+          "minutes": "minutos",
+          "seconds": "segundos",
+          "milliseconds": "milissegundos",
+          "microseconds": "microssegundos"
+        },
+        "short": {
+          "years": "a",
+          "months": "mo",
+          "weeks": "w",
+          "days": "d",
+          "hours": "h",
+          "minutes": "m",
+          "seconds": "s",
+          "milliseconds": "ms",
+          "microseconds": "µs"
         }
+      },
+      "Humanize": {
+        "language": "pt_BR"
+      }
     },
-    "Exceptions": {
-        "ResponseExceptions": {
-            "pipe_response": "aqui está a resposta gerada pelo último comando: {}",
-            "error_on_response": "um erro aconteceu durante o comando '{}'",
-            "command_not_pipeble": "este comando não pôde ser utilizado com pipe."
-        },
-        "LotteryExceptions": {
-            "lottery_seed": "Algo terrível aconteceu, contate '{}' aqui na twitch utilizando whispers."
-        },
-        "ToolsExceptions": {
-            "announcement": "algo deu errado com os anúncios. {}"
-        }
-    },
-    "Admin": {
-        "Reload": {
-            "commands_reloaded": "Os comando foram recarregados com sucesso."
-        },
-        "Restart": {
-            "success": "O bot reinicio com sucesso.",
-            "unexpected_error": "Um erro aconteceu ao reiniciar o bot: {}"
-        },
-        "Nada": {
-            "nada": "o comando executou com sucesso."
-        }
+    "Lottery": {
+      "bet_or_consultation": [
+        "aposta",
+        "consultar"
+      ]
     }
+  },
+  "Exceptions": {
+    "ResponseExceptions": {
+      "pipe_response": "aqui está a resposta gerada pelo último comando: {}",
+      "error_on_response": "um erro aconteceu durante o comando '{}'",
+      "command_not_pipeble": "este comando não pôde ser utilizado com pipe."
+    },
+    "LotteryExceptions": {
+      "lottery_seed": "Algo terrível aconteceu, contate '{}' aqui na twitch utilizando whispers."
+    },
+    "ToolsExceptions": {
+      "announcement": "algo deu errado com os anúncios. {}"
+    }
+  },
+  "Admin": {
+    "Reload": {
+      "commands_reloaded": "Os comando foram recarregados com sucesso."
+    },
+    "Restart": {
+      "success": "O bot reinicio com sucesso.",
+      "unexpected_error": "Um erro aconteceu ao reiniciar o bot: {}"
+    },
+    "Nada": {
+      "nada": "o comando executou com sucesso."
+    }
+  }
 }
