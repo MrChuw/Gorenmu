@@ -2,25 +2,103 @@
     "SupportTools": {
         "mention": "you",
         "TimeTools": {
-            "strftime": "%m/%d/%Y %I:%M %p",
-            "Pattern_time": {
-                "years": ["years", "year", "y"],
-                "months": ["months", "month", "mo"],
-                "weeks": ["weeks", "week", "w"],
-                "days": ["days", "day", "d"],
-                "hours": ["hours", "hour", "h"],
-                "minutes": ["minutes", "minute", "min", "m"],
-                "seconds": ["seconds", "second", "secs", "sec", "s"]
+            "strftime": "%m/%d/%Y in %I:%M %p",
+            "Pattern time": {
+                "years": [
+                    "years",
+                    "year",
+                    "y"
+                ],
+                "months": [
+                    "months",
+                    "month",
+                    "mo"
+                ],
+                "weeks": [
+                    "weeks",
+                    "week",
+                    "w"
+                ],
+                "days": [
+                    "days",
+                    "day",
+                    "d"
+                ],
+                "hours": [
+                    "hours",
+                    "hour",
+                    "h"
+                ],
+                "minutes": [
+                    "minutes",
+                    "minute",
+                    "min",
+                    "m"
+                ],
+                "seconds": [
+                    "seconds",
+                    "second",
+                    "secs",
+                    "sec"
+                ],
+                "milliseconds": [
+                    "milliseconds",
+                    "millisecond",
+                    "millisecs",
+                    "millisec",
+                    "milli"
+                ],
+                "microseconds": [
+                    "microseconds",
+                    "microsecond",
+                    "micro",
+                    "us"
+                ]
+            },
+            "Time Units": {
+                "singular": {
+                    "years": "year",
+                    "months": "month",
+                    "weeks": "week",
+                    "days": "day",
+                    "hours": "hour",
+                    "minutes": "minute",
+                    "seconds": "second",
+                    "milliseconds": "millisecond",
+                    "microseconds": "microsecond"
+                },
+                "plural": {
+                    "years": "years",
+                    "months": "months",
+                    "weeks": "weeks",
+                    "days": "days",
+                    "hours": "hours",
+                    "minutes": "minutes",
+                    "seconds": "seconds",
+                    "milliseconds": "milliseconds",
+                    "microseconds": "microseconds"
+                },
+                "short": {
+                    "years": "y",
+                    "months": "mo",
+                    "weeks": "w",
+                    "days": "d",
+                    "hours": "h",
+                    "minutes": "m",
+                    "seconds": "s",
+                    "milliseconds": "ms",
+                    "microseconds": "µs"
+                }
+            },
+            "Humanize": {
+                "language": "en"
             }
-          },
+        },
         "Lottery": {
             "bet_or_consultation": [
                     "bet",
                     "consult"
                 ]
-        },
-        "Humanize": {
-            "language": "en"
         }
     },
     "Exceptions": {

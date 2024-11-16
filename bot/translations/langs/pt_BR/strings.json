@@ -1,28 +1,63 @@
 {
     "SupportTools": {
+        "mention": "você",
         "TimeTools": {
-            "strftime": "%m/%d/%Y %I:%M %p",
-            "Pattern_time": {
+            "strftime": "%d/%m/%Y às %H:%M:%S",
+            "Pattern time": {
                 "years": ["anos", "ano", "a"],
                 "months": ["meses", "mês", "mes", "mo"],
                 "weeks": ["semanas", "semana", "w"],
                 "days": ["dias", "dia", "d"],
                 "hours": ["horas", "hora", "h"],
                 "minutes": ["minutos", "minuto", "min", "m"],
-                "seconds": ["segundos", "segundo", "seg", "s"]
+                "seconds": ["segundos", "segundo", "seg", "s"],
+                "milliseconds": ["milissegundos", "milissegundo", "milisecs", "milisec", "milli"],
+                "microseconds": ["microssegundos", "microssegundo", "micro", "us"]
+            },
+            "Time Units": {
+                "singular": {
+                    "years": "ano",
+                    "months": "mês",
+                    "weeks": "semana",
+                    "days": "dia",
+                    "hours": "hora",
+                    "minutes": "minuto",
+                    "seconds": "segundo",
+                    "milliseconds": "milissegundo",
+                    "microseconds": "microssegundo"
+                },
+                "plural": {
+                    "years": "anos",
+                    "months": "meses",
+                    "weeks": "semanas",
+                    "days": "dias",
+                    "hours": "horas",
+                    "minutes": "minutos",
+                    "seconds": "segundos",
+                    "milliseconds": "milissegundos",
+                    "microseconds": "microssegundos"
+                },
+                "short": {
+                  "years": "a",
+                  "months": "mo",
+                  "weeks": "w",
+                  "days": "d",
+                  "hours": "h",
+                  "minutes": "m",
+                  "seconds": "s",
+                  "milliseconds": "ms",
+                  "microseconds": "µs"
+                }
+            },
+            "Humanize": {
+                "language": "pt_BR"
             }
           },
-        "mention": "você",
         "Lottery": {
-            "bet_or_consultation": {
-                "item": [
+            "bet_or_consultation": [
                     "aposta",
                     "consultar"
                 ]
-            }
-        },
-        "Humanize": {
-            "language": "pt_BR"
         }
     },
     "Exceptions": {

@@ -17,7 +17,6 @@ class HumanizeContext:
 class Humanize:
     def __init__(self, data: tuple):
         self.lang = data[0]["language"] if data[0]["language"] is not None else data[1]["language"]
-        ...
 
     def precisedelta(self, value, minimum_unit="seconds", suppress=(), format="%0.2f") -> str:
         with HumanizeContext(self.lang):

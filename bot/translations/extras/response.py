@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from typing import Any, List, Optional, TYPE_CHECKING
+from bot.models import User
 
 if TYPE_CHECKING:
-    from bot.ext.commands import Context
+    from bot.ext import Context
 
 
 class Response:
@@ -63,5 +64,26 @@ class AdmonitionItem:
         self.position = position
 
 
+class BaseFunctions:
+    def __init__(self, obj, fallback):
+        if type(obj) is dict:
+            self.obj = obj
+            self.fallback = obj if fallback is None else fallback
+        if type(obj) is tuple:
+            self.obj = obj[0]
+            self.fallback = obj[1]
 
+    def get_object(self, key: str) -> dict | str | list:
+        try:
+            return self.obj[key]
+        except KeyError:
+            return self.fallback[key]
+
+    def get_base(self, key: str) -> Any:
+        try:
+            return self.obj[key], self.fallback[key]
+        except KeyError:
+            return self.fallback[key], self.fallback[key]
+
+    ctx: Context
 
