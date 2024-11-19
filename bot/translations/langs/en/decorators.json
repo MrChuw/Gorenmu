@@ -5,12 +5,21 @@
     "template_part3": "## The way to use this command is:\n\n",
     "alias_template": "## All the alias available for {command_title} are:\n    - {aliases}\n\n",
     "command_template": "```text\n    user: {prefix}{command_name} {args}\n\n    bot: User, {response}\n```\n",
+    "admonition_template": "!!! {type} \"{title}\"\n    \n        {message}\n\n    ",
     "bucket_default": "user",
     "bucket_channel": "all user per channel",
     "bucket_member": "user per channel",
     "bucket_user": "user independent of channel",
     "bucket_subscriber": "subscriber",
-    "bucket_mod": "moderation"
+    "bucket_mod": "moderation",
+    "bucket_type": {
+      "default": "user",
+      "channel": "all user per channel",
+      "member": "user per channel",
+      "user": "user independent of channel",
+      "subscriber": "subscriber",
+      "mod": "moderation"
+    }
   },
   "Admin": {
     "Nada": {
@@ -385,7 +394,7 @@
     ],
     "admonitions": []
   },
-  "Hypertranslate": {
+  "HyperTranslate": {
     "helper": "Translates a text into random languages depending on how many times the user requests.",
     "usage": "To use: <prefix>hypertranslate <number of times> <text>",
     "description": "Command based on [ravbug](https://www.ravbug.com/hypertranslate/) that translates a text into random languages depending on how many times the user requests.",
@@ -669,7 +678,7 @@
     ]
   },
   "Cookies": {
-    "CookieCounter": {
+    "CookieCount": {
       "helper": "Gift someone your daily cookie.",
       "usage": "To use: {}gift <user_name>",
       "description": "Gift someone your daily cookie.",
