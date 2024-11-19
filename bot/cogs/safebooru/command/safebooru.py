@@ -7,10 +7,10 @@ from random import randint
 from bot.apis import booru
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
-from bot.translations import EnDecorators, Response
+from bot.translations import BaseDecorators, Response
 
 
-@base_decorator(EnDecorators.TypeChecking)
+@base_decorator(BaseDecorators.TypeChecking)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name='safebooru', aliases=['sfbo'])

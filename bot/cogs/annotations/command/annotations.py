@@ -4,10 +4,10 @@ import re
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
 from bot.models.User_extras import Annotation
-from bot.translations import EnDecorators, Response
+from bot.translations import BaseDecorators, Response
 
 
-@base_decorator(EnDecorators.Annotations)
+@base_decorator(BaseDecorators.Annotations)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name='annotations', aliases=['note', 'annotation'])

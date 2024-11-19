@@ -5,10 +5,10 @@ from typing import AsyncIterator
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
 from bot.models import Imgur
-from bot.translations import EnDecorators, Response
+from bot.translations import BaseDecorators, Response
 
 
-@base_decorator(EnDecorators.NSFW.ImgurRepeated)
+@base_decorator(BaseDecorators.NSFW.ImgurRepeated)
 @cooldown(rate=3, per=10, bucket=Bucket.mod)
 @check([])
 @command(name='imgur_repeated', aliases=[])

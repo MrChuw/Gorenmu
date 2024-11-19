@@ -7,10 +7,10 @@ from bot.apis.translate.constants import GOOGLE_LANGUAGES_TO_CODES as GOOGLE_LAN
 from bot.apis.translate.exceptions import TooManyRequests
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
-from bot.translations import EnDecorators, EnTranslations, Response
+from bot.translations import BaseDecorators, BaseTranslations, Response
 
 
-@base_decorator(EnDecorators.HyperTranslate)
+@base_decorator(BaseDecorators.HyperTranslate)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name='hypertranslate', aliases=['ht'])
@@ -29,7 +29,7 @@ async def command(ctx: Context, quantity: str = None, *, content: str = "") -> R
                 break
             await asyncio.sleep(sleep)
             target = (
-                    EnTranslations.HyperTranslate.lang if runs == quantity - 1 else translations.lang if runs == quantity else random.choice(
+                    BaseTranslations.HyperTranslate.lang if runs == quantity - 1 else translations.lang if runs == quantity else random.choice(
                         list(GOOGLE_LANGS.values())
                         ))
             translator = GoogleTranslator(session=session, target=target)

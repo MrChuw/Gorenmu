@@ -4,19 +4,19 @@ import datetime
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
 from bot.models import Status, User
-from bot.translations import EnDecorators, Response
-from bot.translations.en.extras import Activity
+from bot.translations import BaseDecorators, Response
+# from bot.translations.en.extras import Activity
 from bot.utils import StringTools
 
-afk_alias = [s for s in Activity().afks if s != "afk"]
-rafk_alias = ["rafk"] + [f"r{s}" for s in Activity.afks if s != "afk"]
-aliasas = afk_alias + rafk_alias + ["isafk"]
+# afk_alias = [s for s in Activity().afks if s != "afk"]
+# rafk_alias = ["rafk"] + [f"r{s}" for s in Activity.afks if s != "afk"]
+# aliasas = afk_alias + rafk_alias + ["isafk"]
 
 
-@base_decorator(EnDecorators.Afk)
+@base_decorator(BaseDecorators.Afk)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
-@command(name="afk", aliases=aliasas)
+@command(name="afk", aliases=[]) # TODO: injetar os alias após o comando for carregado
 async def command(ctx: Context, *, content: str = "") -> Response:
     invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
     if invoke_by in afk_alias + ["afk"]:
@@ -43,19 +43,19 @@ async def rafk(ctx: Context) -> Response:
     translations = ctx.translations.Afk
     afk = await ctx.bot.cache.get(f"{ctx.author.id}", namespace="status")  # NOQA
     if afk is None:
-        return translations.RAfk().time_expired.format_response(ctx, success=False)
+        return translations.RAfk.time_expired.format_response(ctx, success=False)
     elif afk["alias"] in translations.afks:
         status = translations.afks[afk["alias"]]
         await ctx.bot.cache.delete(f"Afk-{ctx.author.id}")
         await go_rafk(afk, ctx)
         if afk["content"] == "":
-            return translations.RAfk().is_afk.format_response(ctx, status.leave_again, status.emoji, pipe=False)
+            return translations.RAfk.is_afk.format_response(ctx, status.leave_again, status.emoji, pipe=False)
         else:
-            return translations.RAfk().is_afk.format_response(ctx, status.leave_again, status.emoji, afk["content"],
+            return translations.RAfk.is_afk.format_response(ctx, status.leave_again, status.emoji, afk["content"],
                                                               pipe=False
                                                               )
     else:
-        return translations.RAfk().is_not_afk.format_response(ctx, success=False, pipe=False)
+        return translations.RAfk.is_not_afk.format_response(ctx, success=False, pipe=False)
 
 
 async def isafk(ctx: Context, content: str) -> Response:

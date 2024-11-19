@@ -4,11 +4,11 @@ import sys
 
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
-from bot.translations import EnDecorators, Response
+from bot.translations import BaseDecorators, Response
 from bot.utils import Role
 
 
-@base_decorator(EnDecorators.Admin.Restart)
+@base_decorator(BaseDecorators.Admin.Restart)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([Role.dev])
 @command(name="restart", aliases=[])

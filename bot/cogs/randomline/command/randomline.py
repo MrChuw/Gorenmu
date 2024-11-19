@@ -4,7 +4,7 @@ import random
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
 from bot.models import Channel, MessagesLog, User
-from bot.translations import EnDecorators, Response
+from bot.translations import BaseDecorators, Response
 
 
 async def get_user(ctx: Context, user: str) -> User | None:
@@ -38,7 +38,7 @@ async def get_random_message(user=None, channel=None):
     return message, count
 
 
-@base_decorator(EnDecorators.RandomLine)
+@base_decorator(BaseDecorators.RandomLine)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name='randomline', aliases=['rl'])

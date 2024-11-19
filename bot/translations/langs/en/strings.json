@@ -381,6 +381,13 @@
     "top10_ish": "top {} {}: {} || You are in the {}th position in the ranking with {}.",
     "multiple_gift_plural": "you gifted @{} with {} cookies 🎁",
     "gift_plural": "you gave @{} a cookies 🎁",
+    "invalid_amount": "you are trying to bet {} but you only have {} unredeemed cookies.\n",
+    "daily_win": "[{}] you used your daily cookie and got {} cookies!\n",
+    "daily_single_loss":  "[{''.join(fruits)}] you lost your daily cookie...\n",
+    "not_daily_multiple_loss": "[{}] you used your daily unredeemed cookie and earned {} cookies!\n",
+    "not_daily_single_loss":  "[{}] you lost your unredeemed daily cookie...\n",
+    "not_daily_multiple_win": "you used {} daily unredeemed cookies and gained {} cookies from the following\n",
+    "not_daily_lost_everything":  "you used {} daily cookies and lost everything PoroSad\n",
     "format_cookie_count": {
       "cookie_count": "Have you already eaten {} cookies 🥠,",
       "stocked_count": "has {} in stock,",

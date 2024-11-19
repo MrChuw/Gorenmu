@@ -17,64 +17,94 @@ class Decorators(BaseFunctions):
         extras_fallback = fallback['extras'] if fallback else None
         extras = BaseFunctions(extras, extras_fallback)
         super().__init__(translation['decorators'], fallback_decorators)
-        decorator_names = ["Templates", "TypeChecking", "Admin", "Others", "Afk", "Alias", "Choice", "Count",
+        decorator_names = ["Templates", "TypeChecking", "Admin", "Others", "Afk", "Alias", "Chance", "Choice", "Count",
                            "HyperTranslate", "NSFW", "RandomColor", "Reverse", "RandomLine", "Scp", "UpSideDown",
                            "Wikihow", "Wikipedia", "Annotations", "Lottery", "Safebooru", "Cookies"
                            ]
 
         for name in decorator_names:
             if name == "TypeChecking":
-                base = (None, None)
+                base = None, None
             else:
                 base = self.get_base(name)
             decorator_class = getattr(BaseDecorators, name)
-            setattr(self, name, decorator_class(base))
+            setattr(self, name, decorator_class(base) if name != "TypeChecking" else decorator_class(None, None))
 
 
         self.decorators = {
-                'pipe': BaseDecorators.Others.Pipe,
-                'afk': BaseDecorators.Afk,
-                'alias': BaseDecorators.Alias,
-                'chance': BaseDecorators.Chance,
-                'choice': BaseDecorators.Choice,
-                'count': BaseDecorators.Count,
-                'hypertranslate': BaseDecorators.HyperTranslate,
-                'randomcolor': BaseDecorators.RandomColor,
-                'reverse': BaseDecorators.Reverse,
-                'randomline': BaseDecorators.RandomLine,
-                'rscp': BaseDecorators.Scp,
-                'upsidedown': BaseDecorators.UpSideDown,
-                'wikihow': BaseDecorators.Wikihow,
-                'annotations': BaseDecorators.Annotations,
-                'lottery': BaseDecorators.Lottery,
+                'pipe': self.Others.Pipe,
+                'afk': self.Afk,
+                'alias': self.Alias,
+                'chance': self.Chance,
+                'choice': self.Choice,
+                'count': self.Count,
+                'hypertranslate': self.HyperTranslate,
+                'randomcolor': self.RandomColor,
+                'reverse': self.Reverse,
+                'randomline': self.RandomLine,
+                'randomscp': self.Scp,
+                'upsidedown': self.UpSideDown,
+                'wikihow': self.Wikihow,
+                "wikipedia": self.Wikipedia,
+                'annotations': self.Annotations,
+                'lottery': self.Lottery,
+                'safebooru': self.Safebooru,
+                'cookies': self.Cookies,
 
 
                 'NSFW': {
-                        'imgur': BaseDecorators.NSFW.Imgur,
-                        'imgur_repeated': BaseDecorators.NSFW.ImgurRepeated,
+                        'imgur': self.NSFW.Imgur,
+                        'imgur_repeated': self.NSFW.ImgurRepeated,
+                        'booru': self.NSFW.Boru
                 },
 
                 'Dev': {
-                        'nada': BaseDecorators.Admin.Nada,
-                        'reload': BaseDecorators.Admin.Reload,
-                        'restart': BaseDecorators.Admin.Restart,
+                        'nada': self.Admin.Nada,
+                        'reload': self.Admin.Reload,
+                        'restart': self.Admin.Restart,
                 }
         }
 
         self.categories = ["NSFW", "Dev"]
         self.exclude_categories = ["NSFW"]
         del self.fallback, self.obj
-    ...
+
+    Templates: BaseDecorators.Templates
+    TypeChecking: BaseDecorators.TypeChecking
+    Admin: BaseDecorators.Admin
+    Others: BaseDecorators.Others
+    Afk: BaseDecorators.Afk
+    Alias: BaseDecorators.Alias
+    Chance: BaseDecorators.Chance
+    Choice: BaseDecorators.Choice
+    Count: BaseDecorators.Count
+    HyperTranslate: BaseDecorators.HyperTranslate
+    NSFW: BaseDecorators.NSFW
+    RandomColor: BaseDecorators.RandomColor
+    Reverse: BaseDecorators.Reverse
+    RandomLine: BaseDecorators.RandomLine
+    Scp: BaseDecorators.Scp
+    UpSideDown: BaseDecorators.UpSideDown
+    Wikihow: BaseDecorators.Wikihow
+    Wikipedia: BaseDecorators.Wikipedia
+    Annotations: BaseDecorators.Annotations
+    Lottery: BaseDecorators.Lottery
+    Safebooru: BaseDecorators.Safebooru
+    Cookies: BaseDecorators.Cookies
 
 
 
 class DecorationsFunctions(BaseFunctions):
     @classmethod
     def get_decorator(cls, ctx: Context) -> DecoratorType | None:
+        decorators = ctx.command.decorators[ctx.user.language]
+
+
         if "usage" in dir(cls):
             return cls  # NOQA
         decorator = ctx.command.decorators[ctx.user.language]
         for classe in dir(decorator):
+            if classe.startswith("__") or classe.startswith("get_"): continue
             invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
             if invoke_by == classe.lower():
                 return getattr(decorator, classe)
@@ -92,8 +122,8 @@ class DecorationsFunctions(BaseFunctions):
         return cls.get_decorator(ctx).description
 
     def get_object_or_false(self, key: str):
-        obj = self.get_object(key)
-        if len(obj) == 0:
+        obj = self.get_object_or_none(key)
+        if not obj or len(obj) == 0:
             return False
         return obj
 
@@ -175,29 +205,29 @@ class BaseDecorators:
             self.bucket_user = self.get_object("bucket_user")
             self.bucket_subscriber = self.get_object("bucket_subscriber")
             self.bucket_mod = self.get_object("bucket_mod")
+            self.bucket_type = self.get_object("bucket_type")
 
             del self.fallback, self.obj
 
-        @staticmethod
-        def get_bucket_type(bucket):
-            bucket_type = "geral"
+        def get_bucket_type(self, bucket):
+            bucket_type = self.bucket_type["default"]
             if bucket == Bucket.default:
-                bucket_type = "dont know"
+                bucket_type = self.bucket_type["default"]
 
             if bucket == Bucket.channel:
-                bucket_type = "all user per channel"
+                bucket_type = self.bucket_type["channel"]
 
             if bucket == Bucket.member:
-                bucket_type = "user per channel"
+                bucket_type = self.bucket_type["member"]
 
             if bucket == Bucket.user:
-                bucket_type = "user independent of channel"
+                bucket_type = self.bucket_type["user"]
 
             if bucket == Bucket.subscriber:
-                bucket_type = "subscriber"
+                bucket_type = self.bucket_type["subscriber"]
 
             if bucket == Bucket.mod:
-                bucket_type = "moderation"
+                bucket_type = self.bucket_type["mod"]
             return bucket_type
 
     class TypeChecking(BaseFunctions):
@@ -209,7 +239,7 @@ class BaseDecorators:
             decorator_names = ["Nada", "Reload", "Restart"]
             for name in decorator_names:
                 base = self.get_base(name)
-                decorator_class = getattr(BaseDecorators, name)
+                decorator_class = getattr(BaseDecorators.Admin, name)
                 setattr(self, name, decorator_class(base))
             del self.fallback, self.obj
 
@@ -235,7 +265,7 @@ class BaseDecorators:
             decorator_names = ["Pipe"]
             for name in decorator_names:
                 base = self.get_base(name)
-                decorator_class = getattr(BaseDecorators, name)
+                decorator_class = getattr(BaseDecorators.Others, name)
                 setattr(self, name, decorator_class(base))
             del self.fallback, self.obj
 
@@ -251,7 +281,7 @@ class BaseDecorators:
             decorator_names = ["Afk", "IsAfk", "RAfk"]
             for name in decorator_names:
                 base = self.get_base(name)
-                decorator_class = getattr(BaseDecorators, name)
+                decorator_class = getattr(BaseDecorators.Afk, name)
                 setattr(self, name, decorator_class(base))
             del self.fallback, self.obj
 
@@ -298,7 +328,7 @@ class BaseDecorators:
             decorator_names = ["Imgur", "ImgurRepeated", "Boru"]
             for name in decorator_names:
                 base = self.get_base(name)
-                decorator_class = getattr(BaseDecorators, name)
+                decorator_class = getattr(BaseDecorators.NSFW, name)
                 setattr(self, name, decorator_class(base))
             del self.fallback, self.obj
 
@@ -364,7 +394,7 @@ class BaseDecorators:
             decorator_names = ["CookieCount", "Gift", "SlotMachine", "Stock", "Top"]
             for name in decorator_names:
                 base = self.get_base(name)
-                decorator_class = getattr(BaseDecorators, name)
+                decorator_class = getattr(BaseDecorators.Cookies, name)
                 setattr(self, name, decorator_class(base))
             del self.fallback, self.obj
 

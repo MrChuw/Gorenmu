@@ -7,14 +7,14 @@ from twitchio.ext.commands import Command
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Context, cooldown
 from bot.models import Alias, User
-from bot.translations import EnDecorators, Response
+from bot.translations import BaseDecorators, Response
 
 ALIAS_NAME_REGEX = re.compile(
         r'^[-\w\u00a9\u00ae\u2000-\u3300\ud83c\ud000-\udfff\ud83d\ud000-\udfff\ud83e\ud000-\udfff]{2,30}$'
 )
 
 
-@base_decorator(EnDecorators.Alias)
+@base_decorator(BaseDecorators.Alias)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name='alias', aliases=[])

@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
-from bot.translations import EnDecorators, Response
+from bot.translations import BaseDecorators, Response
 
 
 async def get_scp(session: CachedSession) -> response:
@@ -18,7 +18,7 @@ async def get_scp(session: CachedSession) -> response:
     return await session.head(url)
 
 
-@base_decorator(EnDecorators.Scp)
+@base_decorator(BaseDecorators.Scp)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name='randomscp', aliases=['rscp'])

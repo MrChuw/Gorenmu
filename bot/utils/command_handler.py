@@ -22,11 +22,15 @@ from bot.utils.command_checks import Check
 def get_translations(command: Command):
     translations = TranslationManager()
     translations_decorators = {}
-    fallback = translations.languages["en"][0].decorators
+    fallback = translations.languages["en"].decorators
     categories = ["", "NSFW", "Dev"]
 
     for lang, lang_data in translations.languages.items():
-        translation = lang_data[0]
+        translation = lang_data.decorators
+
+        decorators_dict = translation.__dict__
+
+
         for category in categories:
             decorators = translation.decorators.get(category, translation.decorators)
             if command.name.lower() in decorators:
@@ -89,7 +93,7 @@ class CommandHandler:
                 module: types.ModuleType = import_module(name, package=package)
                 command: Command = module.command
                 command = get_translations(command)
-                command.docs = module.dynamic_description(command, bot)
+                # command.docs = module.dynamic_description(command, bot)
                 if "disabled" in module.__dict__:
                     continue
                 if command.name not in bot.commands:

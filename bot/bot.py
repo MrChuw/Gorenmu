@@ -219,7 +219,7 @@ class Gorenmu(Bot):
         # if self.config.DevelopmentConfig.development:
         #     return None
         ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or "en")
-        translations = ctx.translations.Exceptions.BotMainLoopExceptions()
+        translations = ctx.translations.Exceptions.BotMainLoopExceptions
         if isinstance(error, CommandNotFound):
             return None
         if isinstance(error, DevRequired):
@@ -231,14 +231,14 @@ class Gorenmu(Bot):
             return None
         if isinstance(error, CommandOnCooldown):
             cooldown_str = translations.command_on_cooldown.format(
-                    ctx.translations.SupportTools.Humanize.naturaltime(error.retry_after, future=True)
+                    ctx.translations.SupportTools.TimeTools.Humanize.naturaltime(error.retry_after, future=True)
             )
             return await ctx.simple_response(ctx, cooldown_str)
         if isinstance(error, NotImplementedError):
             return await ctx.simple_response(ctx, translations.not_implemented)
         if isinstance(error, InvalidArgument) and ctx.command:
             decorator = ctx.command.decorators[ctx.user.language]
-            return await ctx.reply(decorator.get_usage(ctx))
+            return await ctx.reply(decorator.usage)
         self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
         return await ctx.simple_response(ctx, translations.error_not_registered.format(self.dev_name))
 

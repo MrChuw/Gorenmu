@@ -10,7 +10,7 @@ from aiohttp_client_cache import CachedSession
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
 from bot.models import Imgur, ImgurAggregate
-from bot.translations import EnDecorators, Response
+from bot.translations import BaseDecorators, Response
 
 timeout_calc = lambda q: 250 + ((q // 500) * 120)  # NOQA
 
@@ -54,7 +54,7 @@ async def generate(ctx: Context, quantity: int, k: int) -> List[str]:
                                     )
 
 
-@base_decorator(EnDecorators.NSFW.Imgur)
+@base_decorator(BaseDecorators.NSFW.Imgur)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([])
 @command(name='imgur', aliases=['imgur7'])

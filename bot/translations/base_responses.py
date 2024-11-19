@@ -573,13 +573,13 @@ class BaseTranslations:
             self.top10_ish: Response = Response(response=self.get_object("top10_ish"))
             self.format_cookie_count: dict[str, str] = self.get_object("format_cookie_count")
 
-            self.invalid_amount: Response = Response({"response": self.get_object("invalid_amount")})
-            self.daily_win: Response = Response({"response": self.get_object("daily_win")})
-            self.daily_single_loss: Response = Response({"response": self.get_object("daily_single_loss")})
-            self.not_daily_multiple_loss: Response = Response({"response": self.get_object("not_daily_multiple_loss")})
-            self.not_daily_single_loss: Response = Response({"response": self.get_object("not_daily_single_loss")})
-            self.not_daily_multiple_win: Response = Response({"response": self.get_object("not_daily_multiple_win")})
-            self.not_daily_lost_everything: Response = Response({"response": self.get_object("not_daily_lost_everything")})
+            self.invalid_amount: Response = Response(response=self.get_object("invalid_amount"))
+            self.daily_win: Response = Response(response=self.get_object("daily_win"))
+            self.daily_single_loss: Response = Response(response=self.get_object("daily_single_loss"))
+            self.not_daily_multiple_loss: Response = Response(response=self.get_object("not_daily_multiple_loss"))
+            self.not_daily_single_loss: Response = Response(response=self.get_object("not_daily_single_loss"))
+            self.not_daily_multiple_win: Response = Response(response=self.get_object("not_daily_multiple_win"))
+            self.not_daily_lost_everything: Response = Response(response=self.get_object("not_daily_lost_everything"))
             del self.fallback
 
         def random_line(self):

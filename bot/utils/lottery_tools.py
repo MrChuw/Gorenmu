@@ -8,7 +8,7 @@ from twitchio import Message
 
 from bot.ext.commands import Context
 from bot.models import (Cookies as CookieModel, Lottery, LotteryBank)
-from bot.translations import EnDecorators
+from bot.translations import BaseTranslations
 from bot.translations import Response
 
 if TYPE_CHECKING:
@@ -41,7 +41,7 @@ class LotteryTools:  # TODO: Lottery.
         return False
 
     @staticmethod
-    def check_numbers(message: Message, ctx: Context, translations: EnDecorators.Lottery.Lottery) -> (
+    def check_numbers(message: Message, ctx: Context, translations: BaseTranslations.Lottery) -> (
             bool | Tuple[bool, List[int]]):
         if message.echo:
             return False
@@ -63,7 +63,7 @@ class LotteryTools:  # TODO: Lottery.
         return True, numbers
 
     @staticmethod
-    async def check_numbers_async(ctx: Context, translations: EnDecorators.Lottery.Bet) -> Response | List[int]:
+    async def check_numbers_async(ctx: Context, translations: BaseTranslations.Lottery) -> Response | List[int]:
         numbers = ctx.message.content.replace(",", "").split(" ")
         numbers.pop(0)
         if not all(map(lambda x: x.isdigit() and 1 <= int(x) <= 60, numbers)):
@@ -74,7 +74,7 @@ class LotteryTools:  # TODO: Lottery.
             return translations.minimum_bet.format_response(ctx, success=False)
         return numbers
 
-    async def bet(self, ctx: Context, translations: EnDecorators.Lottery.Lottery) -> Response:
+    async def bet(self, ctx: Context, translations: BaseTranslations.Lottery) -> Response:
         if (cookies := await CookieModel.get(id=int(ctx.author.id))).stocked < 5:
             return translations.not_enough_cookies.format_response(ctx, success=False)
         await ctx.simple_response(ctx, translations.bet_message)
@@ -114,7 +114,7 @@ class LotteryTools:  # TODO: Lottery.
             else:
                 return translations.too_much_numbers.format_response(ctx, success=False)
 
-    async def consultation(self, ctx: Context, translations: EnDecorators.Lottery.Lottery) -> Response:
+    async def consultation(self, ctx: Context, translations: BaseTranslations.Lottery) -> Response:
         ids = []
         value = 0
         await ctx.simple_response(ctx, translations.consultation_message)

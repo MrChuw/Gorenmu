@@ -4,13 +4,13 @@ from typing import List
 from bot.bot import Gorenmu
 from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
 from bot.models import Cookies, Lottery, LotteryBank
-from bot.translations import EnDecorators, Response
+from bot.translations import BaseDecorators, Response
 from bot.utils import Check
 from itertools import combinations
 import random
 
 
-@base_decorator(EnDecorators.Lottery)
+@base_decorator(BaseDecorators.Lottery)
 @cooldown(rate=100, per=10, bucket=Bucket.user)
 @check([Check.cookie_check, Check.lottery_seed])
 @command(name='lottery', aliases=[])

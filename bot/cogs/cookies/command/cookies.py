@@ -6,17 +6,17 @@ from bot.models import User, Channel, Cookies
 from bot.utils import Check, Role
 from typing import Dict, Any, List, Tuple, Optional, Coroutine, Callable
 from bot.ext.commands import Bucket, check, Context, cooldown, base_decorator, helper, usage, command
-from bot.translations import EnTranslations, EnDecorators, Response
+from bot.translations import  BaseDecorators, Response
 from bot.bot import Gorenmu
 from bot.ext.commands import Command
 from itertools import chain, repeat
 import random
 
 
-@base_decorator(EnDecorators.Cookies)
+@base_decorator(BaseDecorators.Cookies)
 @cooldown(rate=3, per=10, bucket=Bucket.user)
 @check([Check.cookie_check])
-@command(name='cookie', aliases=['sm', 'cookies', 'cc'])
+@command(name='cookies', aliases=['sm', 'cookie', 'cc'])
 async def command(ctx: Context, option: str = None, *args) -> Response:
     translations = ctx.translations.Cookies
     # if ctx.invoke_by in ["cookies"] and option != "eat":
@@ -60,7 +60,7 @@ async def eat(ctx: Context, args: tuple):
         return translations.negative_eat.format_response(ctx, amount, success=False)
     elif datetime.datetime.now(datetime.UTC) > cookie.cooldown:
         await cookie.daily_update(1)
-        choice = random.choice(ctx.translations.Cookies().cookie_file())
+        choice = random.choice(ctx.translations.Cookies.cookie_file())
         return translations.eat.format_response(ctx, choice)
     else:
         time = ctx.translations.SupportTools.Humanize.precisedelta(cookie_cooldown)

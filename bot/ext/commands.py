@@ -12,10 +12,9 @@ from twitchio.ext.commands import (
 from twitchio.ext.routines import routine
 
 from bot.models import User as UserModel, Alias
-from bot.translations import EnTranslations
-from bot.translations import EnDecorators, BaseClass
+from bot.translations import Translations
+from bot.translations import Decorators, BaseCommand
 from bot.translations import Response
-from bot.translations.en.decorators import BaseDecorator
 from typing import Type, TypeVar
 from twitchio.ext.commands.stringparser import StringParser
 from twitchio.ext.commands.errors import CommandNotFound
@@ -35,8 +34,8 @@ __all__ = (
 
 
 class Command(Command):
-    # decorators: dict[str, EnDecorators | BaseClass | BaseDecorator]
-    decorators_original: EnDecorators | BaseClass
+    decorators: dict[str, BaseCommand]
+    decorators_original: Decorators
     _cooldowns: Cooldown
     docs: dict[str, dict[str, str]]
 
@@ -176,8 +175,8 @@ class Bot(Bot):
 class Context(TwitchioContext):
     user: UserModel
     bot: Gorenmu
-    translations: EnTranslations
-    decorators: dict[str, EnDecorators | BaseClass | dict[str, EnDecorators | BaseClass]]
+    translations: Translations
+    decorators: dict[str, Decorators | dict[str, Decorators]]
     command: Command
     invoke_by: str | None = None
 
@@ -376,7 +375,7 @@ def helper(description: str) -> Callable[[Command], Command]:
     return decorator
 
 
-def base_decorator(base: BaseDecorator | Type[T]) -> Callable[[Command], Command]:
+def base_decorator(base: Decorators | Type[T]) -> Callable[[Command], Command]:
     def decorator(command: Command) -> Command:  # NOQA
         command.decorators_original = base
         return command
