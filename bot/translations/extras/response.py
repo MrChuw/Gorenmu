@@ -86,6 +86,14 @@ class BaseFunctions:
         else:
             raise KeyError(f"Key '{key}' not found in either base or fallback.")
 
+    def get_object_or_none(self, key: str) -> [dict, dict]:
+        if key in self.obj:
+            return self.obj[key]
+        elif key in self.fallback:
+            return self.fallback[key]
+        else:
+            return None
+
     def get_base(self, key: str) -> [dict, dict]:
         if key in self.obj:
             return self.obj[key], self.fallback[key]
@@ -97,3 +105,27 @@ class BaseFunctions:
     def __iter__(self):
         unique_keys = set(self.obj.keys()).union(self.fallback.keys())
         return iter(unique_keys)
+
+    def initialize_objects(self, names, cls):
+        for name, args in names:
+            base = self.get_object(name)
+            translation_class = getattr(cls, name)
+            setattr(self, name, translation_class(base, **args))
+
+    def initialize_bases(self, names, cls):
+        for name, args in names:
+            base = self.get_base(name)
+            translation_class = getattr(cls, name)
+            setattr(self, name, translation_class(base, **args))
+
+    def initialize_responses(self, names):
+        for name, args in names:
+            base = self.get_object(name)
+            setattr(self, name, Response(response=base, **args))
+
+
+
+
+
+
+

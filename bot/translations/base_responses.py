@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pathlib, json
 import random
-from typing import Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING, Callable
 
 from .extras import Activity as ActivityExtras
 from .extras import Response
@@ -20,51 +20,83 @@ if TYPE_CHECKING:
 
 # TODO: Lembrar dos pets, games, dungeons, Weather
 class Translations(BaseFunctions):
+    SupportTools: BaseTranslations.SupportTools
+    Exceptions: BaseTranslations.Exceptions
+    Admin: BaseTranslations.Admin
+    Others: BaseTranslations.Others
+    Afk: BaseTranslations.Afk
+    Alias: BaseTranslations.Alias
+    Chance: BaseTranslations.Chance
+    Choice: BaseTranslations.Choice
+    Count: BaseTranslations.Count
+    HyperTranslate: BaseTranslations.HyperTranslate
+    NSFW: BaseTranslations.NSFW
+    RandomColor: BaseTranslations.RandomColor
+    Reverse: BaseTranslations.Reverse
+    RandomLine: BaseTranslations.RandomLine
+    Scp: BaseTranslations.Scp
+    UpSideDown: BaseTranslations.UpSideDown
+    Wikihow: BaseTranslations.Wikihow
+    Wikipedia: BaseTranslations.Wikipedia
+    Annotations: BaseTranslations.Annotations
+    Lottery: BaseTranslations.Lottery
+    Cookies: BaseTranslations.Cookies
+
     def __init__(self, translation: dict, fallback: dict = None):
         fallback_strings = fallback['strings'] if fallback else None
         extras = translation['extras'] if 'extras' in translation else fallback['extras']
         extras_fallback = fallback['extras'] if fallback else None
         extras = BaseFunctions(extras, extras_fallback)
         super().__init__(translation['strings'], fallback_strings)
-        self.SupportTools = BaseTranslations.SupportTools(self.get_base("SupportTools"))
-        self.Exceptions = BaseTranslations.Exceptions(self.get_base("Exceptions"))
-        self.Admin = BaseTranslations.Admin(self.get_base("Admin"))
-        self.Others = BaseTranslations.Others(self.get_base("Others"))
-        self.Afk = BaseTranslations.Afk(self.get_base("Afk"), extras)
-        self.Alias = BaseTranslations.Alias(self.get_base("Alias"))
-        self.Chance = BaseTranslations.Chance(self.get_base("Chance"))
-        self.Choice = BaseTranslations.Choice(self.get_base("Choice"))
-        self.Count = BaseTranslations.Count(self.get_base("Count"))
-        self.HyperTranslate = BaseTranslations.HyperTranslate(self.get_base("HyperTranslate"))
-        self.NSFW = BaseTranslations.NSFW(self.get_base("NSFW"))
-        self.RandomColor = BaseTranslations.RandomColor(self.get_base("RandomColor"))
-        self.Reverse = BaseTranslations.Reverse(self.get_base("Reverse"))
-        self.RandomLine = BaseTranslations.RandomLine(self.get_base("RandomLine"))
-        self.Scp = BaseTranslations.Scp(self.get_base("Scp"))
-        self.UpSideDown = BaseTranslations.UpSideDown(self.get_base("UpSideDown"))
-        self.Wikihow = BaseTranslations.Wikihow(self.get_base("Wikihow"))
-        self.Wikipedia = BaseTranslations.Wikipedia(self.get_base("Wikipedia"))
-        self.Annotations = BaseTranslations.Annotations(self.get_base("Annotations"))
-        self.Lottery = BaseTranslations.Lottery(self.get_base("Lottery"))
-        self.Cookies = BaseTranslations.Cookies(self.get_base("Cookies"), extras)
+
+        translations_info = [
+            ("SupportTools", {}),
+            ("Exceptions", {}),
+            ("Admin", {}),
+            ("Others", {}),
+            ("Afk", {"extras": extras}),
+            ("Alias", {}),
+            ("Chance", {}),
+            ("Choice", {}),
+            ("Count", {}),
+            ("HyperTranslate", {}),
+            ("NSFW", {}),
+            ("RandomColor", {}),
+            ("Reverse", {}),
+            ("RandomLine", {}),
+            ("Scp", {}),
+            ("UpSideDown", {}),
+            ("Wikihow", {}),
+            ("Wikipedia", {}),
+            ("Annotations", {}),
+            ("Lottery", {}),
+            ("Cookies", {"extras": extras}),
+        ]
+
+        for name, args in translations_info:
+            base = self.get_base(name)
+            translation_class = getattr(BaseTranslations, name)
+            setattr(self, name, translation_class(base, **args))
 
         # TODO
         self.Markov = BaseTranslations.Markov(self.get_base("Markov"))
         self.Weather = BaseTranslations.Weather(self.get_base("Weather"), extras)
         del self.fallback, self.obj
 
+
+class BaseTranslations:
     class TypeChecking(BaseFunctions):
         response: Response
 
-
-class BaseTranslations:
     class SupportTools(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
+            translations_info = [
+                ("TimeTools", {}),
+                ("Lottery", {})]
+            self.initialize_bases(translations_info, BaseTranslations.SupportTools)
             self.mention: str = self.get_object("mention")
-            self.TimeTools = self.TimeTools(self.get_base("TimeTools"))
-            self.Lottery = self.Lottery(self.get_base("Lottery"))
-            self.Dicio: Dicio = Dicio  # NOQA
+            self.Dicio: Dicio = Dicio()
             del self.fallback, self.obj
 
         class TimeTools(BaseFunctions):
@@ -81,14 +113,19 @@ class BaseTranslations:
                 self.bet_or_consultation: list[str] = self.get_object("bet_or_consultation")
                 del self.fallback, self.obj
 
+        TimeTools: TimeTools
+        Lottery: Lottery
+
     class Exceptions(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.LotteryExceptions = self.LotteryExceptions(self.get_object("LotteryExceptions"))
-            self.ToolsExceptions = self.ToolsExceptions(self.get_object("ToolsExceptions"))
-            self.BotMainLoopExceptions = self.BotMainLoopExceptions(self.get_object("BotMainLoopExceptions"))
-            self.ResponseExceptions = self.ResponseExceptions(self.get_object("ResponseExceptions"))
-            del self.fallback, self.obj
+            translations_info = [
+                ("LotteryExceptions", {}),
+                ("ToolsExceptions", {}),
+                ("BotMainLoopExceptions", {}),
+                ("ResponseExceptions", {})]
+            self.initialize_objects(translations_info, BaseTranslations.Exceptions)
+
 
         class LotteryExceptions(BaseFunctions):
             def __init__(self, translation: dict):
@@ -120,13 +157,19 @@ class BaseTranslations:
                 self.command_not_pipeble: str = self.get_object("command_not_pipeble")
                 del self.fallback, self.obj
 
+        LotteryExceptions: LotteryExceptions
+        ToolsExceptions: ToolsExceptions
+        BotMainLoopExceptions: BotMainLoopExceptions
+        ResponseExceptions: ResponseExceptions
+
     class Admin(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.Nada = self.Nada(self.get_base("Nada"))
-            self.Reload = self.Reload(self.get_base("Reload"))
-            self.Restart = self.Restart(self.get_base("Restart"))
-            del self.fallback, self.obj
+            translations_info = [
+                ("Nada", {}),
+                ("Reload", {}),
+                ("Restart", {})]
+            self.initialize_objects(translations_info, BaseTranslations.Admin)
 
         class Nada(BaseFunctions):
             def __init__(self, translation: dict):
@@ -143,15 +186,20 @@ class BaseTranslations:
         class Restart(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.success: Response = Response({"response": self.get_object("success")})
+                self.success: Response = Response(response=self.get_object("success"))
                 self.unexpected_error: Response = Response(response=self.get_object("unexpected_error"))
                 del self.fallback, self.obj
+
+        Nada: Nada
+        Reload: Reload
+        Restart: Restart
 
     class Others(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.Pipe = self.Pipe(self.get_base("Pipe"))
-            del self.fallback, self.obj
+            translations_info = [
+                ("Pipe", {})]
+            self.initialize_objects(translations_info, BaseTranslations.Others)
 
         class Pipe(BaseFunctions):
             def __init__(self, translation: dict):
@@ -159,51 +207,58 @@ class BaseTranslations:
                 self.response: Response = Response(response=self.get_object("response"))
                 del self.fallback, self.obj
 
+        Pipe: Pipe
+
     class Afk(BaseFunctions):
         def __init__(self, translation: dict, extras: BaseFunctions,):
             super().__init__(translation, None)
             _activity = extras.get_object("activity")["Activity"]
             self.afks: dict[str, ActivityExtras.Status] = ActivityExtras(_activity).afks
-            self.Afk = self.Afk(self.get_base("Afk"))
-            self.IsAfk = self.IsAfk(self.get_base("IsAfk"))
-            self.RAfk = self.RAfk(self.get_base("RAfk"))
-            self.AfkListeners = self.AfkListeners(self.get_base("AfkListeners"))
-            del self.fallback, self.obj
+            translations_info = [
+                ("Afk", {}),
+                ("IsAfk", {}),
+                ("RAfk", {}),
+                ("AfkListeners", {})
+            ]
+            self.initialize_bases(translations_info, BaseTranslations.Afk)
 
         class Afk(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.message_too_long: Response = Response(response=self.get_object("message_too_long"))
-                self.afk_response: Response = Response(response=self.get_object("afk_response"))
-                self.afk_content_response: Response = Response(response=self.get_object("afk_content_response"))
-                del self.fallback, self.obj
+                self.message_too_long = Response(response=self.get_object("message_too_long"))
+                self.afk_response = Response(response=self.get_object("afk_response"))
+                self.afk_content_response = Response(response=self.get_object("afk_content_response"))
 
         class IsAfk(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.bot_nick: Response = Response(response=self.get_object("bot_nick"))
-                self.author_nick: Response = Response(response=self.get_object("author_nick"))
-                self.never_seen: Response = Response(response=self.get_object("never_seen"))
-                self.is_afk: Response = Response(response=self.get_object("is_afk"))
-                self.is_afk_content: Response = Response(response=self.get_object("is_afk_content"))
-                self.is_not_afk: Response = Response(response=self.get_object("is_not_afk"))
-                del self.fallback, self.obj
+                self.bot_nick = Response(response=self.get_object("bot_nick"))
+                self.author_nick = Response(response=self.get_object("author_nick"))
+                self.never_seen = Response(response=self.get_object("never_seen"))
+                self.is_afk = Response(response=self.get_object("is_afk"))
+                self.is_afk_content = Response(response=self.get_object("is_afk_content"))
+                self.is_not_afk = Response(response=self.get_object("is_not_afk"))
 
         class RAfk(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.time_expired: Response = Response(response=self.get_object("time_expired"))
-                self.is_afk: Response = Response(response=self.get_object("is_afk"))
-                self.is_afk_content: Response = Response(response=self.get_object("is_afk_content"))
-                self.is_not_afk: Response = Response(response=self.get_object("is_not_afk"))
-                del self.fallback, self.obj
+                self.time_expired = Response(response=self.get_object("time_expired"))
+                self.is_afk = Response(response=self.get_object("is_afk"))
+                self.is_afk_content = Response(response=self.get_object("is_afk_content"))
+                self.is_not_afk = Response(response=self.get_object("is_not_afk"))
+                del self.obj, self.fallback
 
         class AfkListeners(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.is_afk: Response = Response(response=self.get_object("is_afk"))
-                self.is_afk_content: Response = Response(response=self.get_object("is_afk_content"))
-                del self.fallback, self.obj
+                self.is_afk = Response(response=self.get_object("is_afk"))
+                self.is_afk_content = Response(response=self.get_object("is_afk_content"))
+                del self.obj, self.fallback
+
+        Afk: Afk
+        IsAfk: IsAfk
+        RAfk: RAfk
+        AfkListeners: AfkListeners
 
     class Alias(BaseFunctions):
         def __init__(self, translation: dict):
@@ -215,15 +270,17 @@ class BaseTranslations:
             self.alias_table_headers: list[str] = self.get_object("alias_table_headers")
             self.alias_table_replaces: list[str] = self.get_object("alias_table_replaces")
             self.alias_table_name: str = self.get_object("alias_table_name")
-            self.Add = self.Add(self.get_base("Add"))
-            self.Check = self.Check(self.get_base("Check"))
-            self.Copy = self.Copy(self.get_base("Copy"))
-            self.Describe = self.Describe(self.get_base("Describe"))
-            self.Edit = self.Edit(self.get_base("Edit"))
-            self.Link = self.Link(self.get_base("Link"))
-            self.Remove = self.Remove(self.get_base("Remove"))
-            self.Rename = self.Rename(self.get_base("Rename"))
-            del self.fallback, self.obj
+            translations_names = [
+                ("Add", {}),
+                ("Check", {}),
+                ("Copy", {}),
+                ("Describe", {}),
+                ("Edit", {}),
+                ("Link", {}),
+                ("Remove", {}),
+                ("Rename", {})
+            ]
+            self.initialize_bases(translations_names, BaseTranslations.Alias)
 
         class Add(BaseFunctions):
             def __init__(self, translation: dict):
@@ -305,6 +362,15 @@ class BaseTranslations:
                 self.alias_renamed: Response = Response(response=self.get_object("alias_renamed"))
                 del self.fallback, self.obj
 
+        Add: Add
+        Check: Check
+        Copy: Copy
+        Describe: Describe
+        Edit: Edit
+        Link: Link
+        Remove: Remove
+        Rename: Rename
+
     class Chance(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
@@ -339,19 +405,22 @@ class BaseTranslations:
     class NSFW(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.Imgur = self.Imgur(self.get_base("Imgur"))
-            self.ImgurRepeated = self.ImgurRepeated(self.get_base("ImgurRepeated"))
-            self.Boru = self.Boru(self.get_base("Boru"))
+            names = [
+                    ("Imgur", {}),
+                    ("ImgurRepeated", {}),
+                    ("Boru", {}),
+            ]
+            self.initialize_bases(names, BaseTranslations.NSFW)
             del self.fallback, self.obj
 
         class Imgur(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
                 self.links: Response = Response({})
+                self.timeout: Response = Response(response=self.get_object("timeout"))
                 self.time_message: str = self.get_object("time_message")
                 self.all_images_embed: str = self.get_object("all_images_embed")
                 self.all_images_embed_time: str = self.get_object("all_images_embed_time")
-                self.timeout: Response = Response(response=self.get_object("timeout"))
                 del self.fallback, self.obj
 
         class ImgurRepeated(BaseFunctions):
@@ -503,6 +572,14 @@ class BaseTranslations:
             self.ranks: Response = Response(response=self.get_object("ranks"))
             self.top10_ish: Response = Response(response=self.get_object("top10_ish"))
             self.format_cookie_count: dict[str, str] = self.get_object("format_cookie_count")
+
+            self.invalid_amount: Response = Response({"response": self.get_object("invalid_amount")})
+            self.daily_win: Response = Response({"response": self.get_object("daily_win")})
+            self.daily_single_loss: Response = Response({"response": self.get_object("daily_single_loss")})
+            self.not_daily_multiple_loss: Response = Response({"response": self.get_object("not_daily_multiple_loss")})
+            self.not_daily_single_loss: Response = Response({"response": self.get_object("not_daily_single_loss")})
+            self.not_daily_multiple_win: Response = Response({"response": self.get_object("not_daily_multiple_win")})
+            self.not_daily_lost_everything: Response = Response({"response": self.get_object("not_daily_lost_everything")})
             del self.fallback
 
         def random_line(self):
@@ -521,18 +598,6 @@ class BaseTranslations:
             response += translations["total_count"].format(cookie.total)
             return Response({"response": response})
 
-        class SlotMachine(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.daily_limit_reached: Response = Response({"response": self.get_object("daily_limit_reached")})
-                self.invalid_amount: Response = Response({"response": self.get_object("invalid_amount")})
-                self.daily_win: Response = Response({"response": self.get_object("daily_win")})
-                self.daily_single_loss: Response = Response({"response": self.get_object("daily_single_loss")})
-                self.not_daily_multiple_loss: Response = Response({"response": self.get_object("not_daily_multiple_loss")})
-                self.not_daily_single_loss: Response = Response({"response": self.get_object("not_daily_single_loss")})
-                self.not_daily_multiple_win: Response = Response({"response": self.get_object("not_daily_multiple_win")})
-                self.not_daily_lost_everything: Response = Response({"response": self.get_object("not_daily_lost_everything")})
-                del self.fallback, self.obj
 
 
 
