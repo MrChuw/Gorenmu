@@ -1,0 +1,624 @@
+{
+    "Pets Names": {
+        "bee": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "butterfly": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "shrimp": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "snail": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "ant": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "cricket": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "ladybug": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "caterpillar": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "spider": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "fish": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "scorpion": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "lizard": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "bird": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "chick": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "mouse": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "chicken": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "hamster": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "squid": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "bat": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "frog": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "goat": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "ram": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "rabbit": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "squirrel": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "sheep": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "octopus": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "hedgehog": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "duck": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "ox": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "buffalo": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "dog": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "camel": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "horse": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "cat": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "giraffe": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "boar": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "parrot": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "pig": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "cow": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "deer": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "turtle": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "zebra": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "eagle": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "owl": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "penguin": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "koala": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "snake": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "monkey": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "fox": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "whale": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "elephant": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "dolphin": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "crocodile": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "wolf": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "leopard": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "rhinoceros": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "tiger": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "shark": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "bear": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "gorilla": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "lion": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "panda": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "unicorn": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "dinosaur": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "t-rex": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "alien": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "dragon": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "robot": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "kangaroo": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "llama": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "peacock": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "hippopotamus": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "raccoon": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "crab": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "mosquito": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "bacteria": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "badger": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "swan": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "mammoth": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "dodo": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "sloth": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "otter": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "orangutan": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "skunk": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "flamingo": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "oyster": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "beaver": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "bison": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "seal": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "pigeon": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "puppy": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "poodle": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "turkey": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "black cat": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "caramel cat": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "worm": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "polar bear": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "fly": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "milky cow": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "house mouse": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "rooster": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "tropical fish": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "cockroach": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "pufferfish": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "beetle": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "dromedary": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "guide dog": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "ogre": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "supervillain": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "little devil": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "goblin": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "ghost": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "space invader": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "superhero": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "superheroine": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "zombie": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "genie": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "mermaid": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "merman": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "fairy": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "fairy man": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "troll": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "male vampire": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        },
+        "female vampire": {
+            "specie": "",
+            "emoji": "",
+            "price": ""
+        }
+    }
+}
