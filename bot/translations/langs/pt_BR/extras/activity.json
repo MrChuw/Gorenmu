@@ -1,27 +1,27 @@
 {
     "Activity": {
         "property": {
-            "current": "",
+            "current": "está",
             "leave": "você",
-            "leave_again": "",
-            "returned": ""
+            "leave_again": "você continuou",
+            "returned": "você"
         },
         "afks": {
             "afk": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "ausente",
+                "🏃⌨",
+                "ficou ausente",
+                "ausente",
+                "voltou",
+                "ausente"
             ],
             "read": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "ler",
+                "📖",
+                "foi ler",
+                "lendo",
+                "leu",
+                "lendo"
             ],
             "brb": [
                 "",
