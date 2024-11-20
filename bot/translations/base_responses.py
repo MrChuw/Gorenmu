@@ -228,6 +228,7 @@ class BaseTranslations:
                 self.message_too_long = Response(response=self.get_object("message_too_long"))
                 self.afk_response = Response(response=self.get_object("afk_response"))
                 self.afk_content_response = Response(response=self.get_object("afk_content_response"))
+                del self.obj, self.fallback
 
         class IsAfk(BaseFunctions):
             def __init__(self, translation: dict):
@@ -238,6 +239,7 @@ class BaseTranslations:
                 self.is_afk = Response(response=self.get_object("is_afk"))
                 self.is_afk_content = Response(response=self.get_object("is_afk_content"))
                 self.is_not_afk = Response(response=self.get_object("is_not_afk"))
+                del self.obj, self.fallback
 
         class RAfk(BaseFunctions):
             def __init__(self, translation: dict):

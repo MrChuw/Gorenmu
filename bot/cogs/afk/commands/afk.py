@@ -61,22 +61,22 @@ async def rafk(ctx: Context) -> Response:
 async def isafk(ctx: Context, content: str) -> Response:
     translations = ctx.translations.Afk
     name = StringTools.str2name(content.split()[0])
-    actions = {ctx.bot.nick: translations.IsAfk().bot_nick.format_response(ctx, success=False),
-               ctx.author.name: translations.IsAfk().author_nick.format_response(ctx, success=False)
+    actions = {ctx.bot.nick: translations.IsAfk.bot_nick.format_response(ctx, success=False),
+               ctx.author.name: translations.IsAfk.author_nick.format_response(ctx, success=False)
                }
     if name in actions:
         return actions[name]
     user = await User.get_or_none(name=name)
     if not user:
-        return translations.IsAfk().never_seen.format_response(ctx, name)
+        return translations.IsAfk.never_seen.format_response(ctx, name)
     await user.fetch_related("status")
     if not user.status:
-        return translations.IsAfk().is_not_afk.format_response(ctx, name)
+        return translations.IsAfk.is_not_afk.format_response(ctx, name)
     afk: Status = user.status[0]  # NOQA
     status = translations.afks[afk.alias]
     if not afk.message:
-        return translations.IsAfk().is_afk.format_response(ctx, name, status.current, status.emoji)
-    return translations.IsAfk().is_afk.format_response(ctx, name, status.current, status.emoji, afk.message)
+        return translations.IsAfk.is_afk.format_response(ctx, name, status.current, status.emoji)
+    return translations.IsAfk.is_afk.format_response(ctx, name, status.current, status.emoji, afk.message)
 
 
 async def go_afk(status, content, ctx):
