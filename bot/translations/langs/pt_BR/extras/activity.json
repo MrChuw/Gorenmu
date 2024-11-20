@@ -8,7 +8,7 @@
         },
         "afks": {
             "afk": [
-                "ausente",
+                "afk",
                 "🏃⌨",
                 "ficou ausente",
                 "ausente",
@@ -16,7 +16,7 @@
                 "ausente"
             ],
             "read": [
-                "ler",
+                "read",
                 "📖",
                 "foi ler",
                 "lendo",
@@ -24,100 +24,98 @@
                 "lendo"
             ],
             "brb": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "brb",
+                "🏃⌨",
+                "volta logo",
+                "ausente",
+                "voltou",
+                "ausente"
             ],
             "eat": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "food",
+                "🍽",
+                "foi comer",
+                "comendo",
+                "comeu",
+                "comendo"
             ],
             "food": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "food",
+                "🍽",
+                "foi comer",
+                "comendo",
+                "comeu",
+                "comendo"
             ],
             "play": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "game",
+                "🎮",
+                "foi jogar",
+                "jogando",
+                "jogou",
+                "jogando"
             ],
             "game": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "game",
+                "🎮",
+                "foi jogar",
+                "jogando",
+                "jogou",
+                "jogando"
             ],
             "sleep": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "gn",
+                "💤",
+                "foi dormir",
+                "dormindo",
+                "acordou",
+                "dormindo"
             ],
             "night": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "gn",
+                "💤",
+                "foi dormir",
+                "dormindo",
+                "acordou",
+                "dormindo"
             ],
             "study": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "study",
+                "📚",
+                "foi estudar",
+                "estudando",
+                "estudou",
+                "estudando"
             ],
             "art": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "art",
+                "🎨",
+                "foi desenhar",
+                "desenhando",
+                "desenhou",
+                "desenhando"
             ],
             "watch": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "watch",
+                "📺",
+                "foi assistir",
+                "assistindo",
+                "assistiu",
+                "assistindo"
             ],
             "shower": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "shower",
+                "🚿",
+                "foi tomar banho",
+                "no banho",
+                "tomou banho",
+                "no banho"
             ],
             "assist": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                null,
+                null,
+                null,
+                null
             ],
             "code": [
                 "",

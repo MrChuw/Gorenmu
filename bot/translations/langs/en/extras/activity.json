@@ -112,12 +112,10 @@
                 "the shower"
             ],
             "assist": [
-                "watch",
-                "📺",
-                "went to watch",
-                "watching",
-                "watched",
-                "watching"
+                null,
+                null,
+                null,
+                null
             ],
             "code": [
                 "code",
