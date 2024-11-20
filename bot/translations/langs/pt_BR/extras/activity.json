@@ -8,7 +8,7 @@
         },
         "afks": {
             "afk": [
-                null,
+                "afk",
                 "🏃⌨",
                 "ficou ausente",
                 "ausente",
@@ -40,7 +40,7 @@
                 "comendo"
             ],
             "food": [
-                "",
+                "food",
                 "🍽",
                 "foi comer",
                 "comendo",
@@ -48,68 +48,68 @@
                 "comendo"
             ],
             "play": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "game",
+                "🎮",
+                "foi jogar",
+                "jogando",
+                "jogou",
+                "jogando"
             ],
             "game": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "game",
+                "🎮",
+                "foi jogar",
+                "jogando",
+                "jogou",
+                "jogando"
             ],
             "sleep": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "gn",
+                "💤",
+                "foi dormir",
+                "dormindo",
+                "acordou",
+                "dormindo"
             ],
             "night": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "gn",
+                "💤",
+                "foi dormir",
+                "dormindo",
+                "acordou",
+                "dormindo"
             ],
             "study": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "study",
+                "📚",
+                "foi estudar",
+                "estudando",
+                "estudou",
+                "estudando"
             ],
             "art": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "art",
+                "🎨",
+                "foi desenhar",
+                "desenhando",
+                "desenhou",
+                "desenhando"
             ],
             "watch": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "watch",
+                "📺",
+                "foi assistir",
+                "assistindo",
+                "assistiu",
+                "assistindo"
             ],
             "shower": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "shower",
+                "🚿",
+                "foi tomar banho",
+                "no banho",
+                "tomou banho",
+                "no banho"
             ],
             "assist": [
                 null,
