@@ -89,6 +89,7 @@ class Dungeon:
         return dungeons[dungeon], dungeon
 
 
+    # TODO: Add the translations here.
     def resume_dungeon(self, player: Player, choice: str = None, multiplier: int = 1) -> Tuple[Player, str]:
         d = self.generate_dungeon(player.dungeon)[0]
         result = random.choices(["win", "lose"], weights=(0.90, 0.10), k=1)[0]

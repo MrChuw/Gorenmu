@@ -4,7 +4,7 @@
       "current": "it's",
       "leave": "you",
       "leave_again": "you continued",
-      "returned": "came back"
+      "returned": "you"
     },
     "afks": {
       "afk": ["afk", "🏃⌨", "went afk", "afk", "came back", "afk"],

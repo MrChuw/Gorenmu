@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from .extras.response import BaseFunctions
+from .extras.response import BaseFunctions, CommandExemples
 from twitchio.ext.commands import Bucket
 
 if TYPE_CHECKING:
@@ -128,20 +128,6 @@ class DecorationsFunctions(BaseFunctions):
         return obj
 
 
-class CommandExemples:
-    def __init__(self, data):
-        self.items = [CommandExemplesItem(**item) for item in data] if data else False
-
-    def __iter__(self):
-        return iter(self.items) if self.items else iter([])
-
-
-class CommandExemplesItem:
-    def __init__(self, args, response):
-        self.args = args
-        self.response = response
-
-
 class Admonitions:
     def __init__(self, admonitions):
         self.items = [AdmonitionItem(**item) for item in admonitions] if admonitions else False
@@ -179,7 +165,7 @@ class BaseCommand(DecoratorType, DecorationsFunctions):
         self.usage = self.get_object("usage")
         self.description = self.get_object("description")
         self.extras = self.get_object("extras")
-        self.commands = self.get_object_or_false("commands")
+        self.commands = CommandExemples(self.get_object_or_false("commands"))
         self.admonitions = self.get_object_or_false("admonitions")
         self.template = self.get_object_or_false("template")
         self.created = created
@@ -199,12 +185,6 @@ class BaseDecorators:
             self.command_template = self.get_object("command_template")
             self.admonition_template = self.get_object("admonition_template")
 
-            self.bucket_default = self.get_object("bucket_default")
-            self.bucket_channel = self.get_object("bucket_channel")
-            self.bucket_member = self.get_object("bucket_member")
-            self.bucket_user = self.get_object("bucket_user")
-            self.bucket_subscriber = self.get_object("bucket_subscriber")
-            self.bucket_mod = self.get_object("bucket_mod")
             self.bucket_type = self.get_object("bucket_type")
 
             del self.fallback, self.obj

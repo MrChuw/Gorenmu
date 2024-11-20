@@ -37,6 +37,8 @@ class Response:
 
 class CommandExemples:
     def __init__(self, data):
+        if not data:
+            return
         self.items = [CommandExemplesItem(**item) for item in data] if data else False
 
     def __iter__(self):
