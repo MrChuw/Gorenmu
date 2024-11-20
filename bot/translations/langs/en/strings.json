@@ -39,7 +39,8 @@
           "seconds",
           "second",
           "secs",
-          "sec"
+          "sec",
+          "s"
         ],
         "milliseconds": [
           "milliseconds",

@@ -12,7 +12,6 @@
         "months": [
           "meses",
           "mês",
-          "mes",
           "mo"
         ],
         "weeks": [
@@ -39,6 +38,7 @@
         "seconds": [
           "segundos",
           "segundo",
+          "segs",
           "seg",
           "s"
         ],
@@ -47,7 +47,7 @@
           "milissegundo",
           "milisecs",
           "milisec",
-          "milli"
+          "mili"
         ],
         "microseconds": [
           "microssegundos",
