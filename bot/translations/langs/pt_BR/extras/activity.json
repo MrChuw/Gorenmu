@@ -8,7 +8,7 @@
         },
         "afks": {
             "afk": [
-                "ausente",
+                "afk",
                 "🏃⌨",
                 "ficou ausente",
                 "ausente",
@@ -16,7 +16,7 @@
                 "ausente"
             ],
             "read": [
-                "ler",
+                "read",
                 "📖",
                 "foi ler",
                 "lendo",
@@ -24,15 +24,15 @@
                 "lendo"
             ],
             "brb": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "brb",
+                "🏃⌨",
+                "volta logo",
+                "ausente",
+                "voltou",
+                "ausente"
             ],
             "eat": [
-                "",
+                "food",
                 "",
                 "",
                 "",
