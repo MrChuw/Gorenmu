@@ -11,7 +11,7 @@
     "bucket_member": "user per channel",
     "bucket_user": "user independent of channel",
     "bucket_subscriber": "subscriber",
-    "bucket_mod": "moderation",
+    "bucket_mod": "moderation"
   },
   "Admin": {
     "Nada": {
