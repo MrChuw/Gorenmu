@@ -615,18 +615,6 @@
         "Female Angel"
       ]
 
-    },
-    "Strings": {
-      "Replace": [
-        "para",
-        "Você decide"
-      ],
-      "Level Up": ", alcançou level {} ⬆",
-      "Level Up Only": " e alcançou level {} ⬆",
-      "Class Change": " e pode se tornar {op1} ou {op2}!",
-      "Changed Class": " e se tornou {c}",
-      "XP": "XP"
-
     }
   }
 

@@ -1,28 +1,140 @@
 {
-  "Activity": {
-    "property": {
-      "current": "it's",
-      "leave": "you",
-      "leave_again": "you continued",
-      "returned": "you"
-    },
-    "afks": {
-      "afk": ["afk", "🏃⌨", "went afk", "afk", "came back", "afk"],
-      "read": ["read", "📖", "went to read", "reading", "read", "reading" ],
-      "brb": ["brb", "🏃⌨", "coming back soon", "away", "came back", "away"],
-      "eat":["food", "🍽", "went to eat", "eating", "ate", "eating"],
-      "food": ["food", "🍽", "went to eat", "eating", "ate", "eating"],
-      "play":["game", "🎮", "went to play", "playing", "played", "playing"],
-      "game": ["game", "🎮", "went to play", "playing", "played", "playing"],
-      "sleep":["gn", "💤", "went to sleep", "sleeping", "woke up", "sleeping"],
-      "night": ["gn", "💤", "went to sleep", "sleeping", "woke up", "sleeping"],
-      "study":["study", "📚", "went to study", "studying", "studied", "studying"],
-      "art": ["art", "🎨", "went to draw", "drawing", "drew", "drawing"],
-      "watch":["watch", "📺", "went to watch", "watching", "watched", "watching"],
-      "shower": ["shower", "🚿", "went to shower", "in the shower", "took a shower", "the shower"],
-      "assist":["watch", "📺", "went to watch", "watching", "watched", "watching"],
-      "code": ["code", "💻", "went to code", "coding", "coded", "coding"],
-      "work":["work", "💼", "went to work", "working", "worked", "working"]
+    "Activity": {
+        "property": {
+            "current": "it's",
+            "leave": "you",
+            "leave_again": "you continued",
+            "returned": "you"
+        },
+        "afks": {
+            "afk": [
+                "afk",
+                "🏃⌨",
+                "went afk",
+                "afk",
+                "came back",
+                "afk"
+            ],
+            "read": [
+                "read",
+                "📖",
+                "went to read",
+                "reading",
+                "read",
+                "reading"
+            ],
+            "brb": [
+                "brb",
+                "🏃⌨",
+                "coming back soon",
+                "away",
+                "came back",
+                "away"
+            ],
+            "eat": [
+                "food",
+                "🍽",
+                "went to eat",
+                "eating",
+                "ate",
+                "eating"
+            ],
+            "food": [
+                "food",
+                "🍽",
+                "went to eat",
+                "eating",
+                "ate",
+                "eating"
+            ],
+            "play": [
+                "game",
+                "🎮",
+                "went to play",
+                "playing",
+                "played",
+                "playing"
+            ],
+            "game": [
+                "game",
+                "🎮",
+                "went to play",
+                "playing",
+                "played",
+                "playing"
+            ],
+            "sleep": [
+                "gn",
+                "💤",
+                "went to sleep",
+                "sleeping",
+                "woke up",
+                "sleeping"
+            ],
+            "night": [
+                "gn",
+                "💤",
+                "went to sleep",
+                "sleeping",
+                "woke up",
+                "sleeping"
+            ],
+            "study": [
+                "study",
+                "📚",
+                "went to study",
+                "studying",
+                "studied",
+                "studying"
+            ],
+            "art": [
+                "art",
+                "🎨",
+                "went to draw",
+                "drawing",
+                "drew",
+                "drawing"
+            ],
+            "watch": [
+                "watch",
+                "📺",
+                "went to watch",
+                "watching",
+                "watched",
+                "watching"
+            ],
+            "shower": [
+                "shower",
+                "🚿",
+                "went to shower",
+                "in the shower",
+                "took a shower",
+                "the shower"
+            ],
+            "assist": [
+                "watch",
+                "📺",
+                "went to watch",
+                "watching",
+                "watched",
+                "watching"
+            ],
+            "code": [
+                "code",
+                "💻",
+                "went to code",
+                "coding",
+                "coded",
+                "coding"
+            ],
+            "work": [
+                "work",
+                "💼",
+                "went to work",
+                "working",
+                "worked",
+                "working"
+            ]
+        }
     }
-  }
 }
