@@ -105,95 +105,95 @@
             {
                 "quote": "You find a dog! 🐕 \"{}ed 1\" to pet it or \"{}ed 2\" to bark at it.",
                 "1": {
-                    "win": "Você consegue fazer carinho no cachorro e isso eleva seu espírito!",
-                    "lose": "O cachorro morde sua mão muito forte, te obrigando a retornar para se medicar."
+                    "win": "You manage to pet the dog, and it lifts your spirits!",
+                    "lose": "The dog bites your hand very hard, forcing you to return to get medical treatment."
                 },
                 "2": {
-                    "win": "Você late para o cachorro e ele late de volta. Isso enche você de coragem! ",
-                    "lose": "O cachorro se assusta e começa a te perseguir incessantemente, até você ir embora."
+                    "win": "You bark at the dog, and it barks back. This fills you with courage!",
+                    "lose": "The dog gets scared and starts chasing you relentlessly until you leave."
                 }
             },
             {
-                "quote": "Você encontra um druida bebendo refrigerante. 🥤 \"{}ed 1\" para pedir um refrigerante ou \"{}ed 2\" para pedir benção",
+                "quote": "You find a druid drinking soda. 🥤 \"{}ed 1\" to ask for a soda or \"{}ed 2\" to ask for a blessing.",
                 "1": {
-                    "win": "Você se senta para tomar um refrigerante com ele e isso cura todos seus ferimentos!",
-                    "lose": "O druida recusa seu pedido e cospe refrigerante em você."
+                    "win": "You sit down to have a soda with him, and it heals all your wounds!",
+                    "lose": "The druid refuses your request and spits soda at you."
                 },
                 "2": {
-                    "win": "O druida te concede um abençoamento e isso ajuda a completar a dungeon!",
-                    "lose": "O druida ri e não lhe concede nenhuma benção. Triste, você volta para casa."
+                    "win": "The druid grants you a blessing, and it helps you complete the dungeon!",
+                    "lose": "The druid laughs and does not grant you any blessing. Sad, you return home."
                 }
             },
             {
-                "quote": "Você encontra um gênio da lâmpada! 🧞 \"{}ed 1\" para fazer um pedido ou \"{}ed 2\" para libertá-lo da lâmpada",
+                "quote": "You find a lamp genie! 🧞 \"{}ed 1\" to make a wish or \"{}ed 2\" to free him from the lamp.",
                 "1": {
-                    "win": "Você pede para o gênio levá-lo até o final da dungeon e o desejo é concedido!",
-                    "lose": "Você pede muito dinheiro para o gênio. Assim, um milhão de moedas caí sobre você, te esmagando."
+                    "win": "You wish for the genie to take you to the end of the dungeon, and the wish is granted!",
+                    "lose": "You ask the genie for a lot of money. Suddenly, a million coins fall on you, crushing you."
                 },
                 "2": {
-                    "win": "Você liberta o gênio da lâmpada e, em troca de sua gentileza, ele te da muito ouro.",
-                    "lose": "Você liberta o gênio da lâmpada e ele se rebela, te aprisionando na lâmpada."
+                    "win": "You free the genie from the lamp, and in return for your kindness, he gives you a lot of gold.",
+                    "lose": "You free the genie from the lamp, and he rebels, trapping you in the lamp."
                 }
             },
             {
-                "quote": "Você encontra um guerreiro que insiste em te ajudar. 🛡️ \"{}ed 1\" para confiar no guerreiro ou \"{}ed 2\" para atacá-lo",
+                "quote": "You encounter a warrior who insists on helping you. 🛡️ \"{}ed 1\" to trust the warrior or \"{}ed 2\" to attack him.",
                 "1": {
-                    "win": "O guerreiro propõe uma grande ajuda e, unidos, finalizam a dungeon!",
-                    "lose": "O guerreiro te leva para caminhos desconhecidos e te abandona. Você fica perdido e sozinho."
+                    "win": "The warrior offers great help, and together, you finish the dungeon!",
+                    "lose": "The warrior takes you to unknown paths and abandons you. You are left lost and alone."
                 },
                 "2": {
-                    "win": "Com medo de ser traído, você ataca o guerreiro e o derrota, podendo atravessar a dungeon.",
-                    "lose": "Você tenta um golpe surpresa, mas o guerreiro é mais forte que você pensava e te nocauteia."
+                    "win": "Fearing betrayal, you attack the warrior and defeat him, allowing you to cross the dungeon.",
+                    "lose": "You attempt a surprise attack, but the warrior is stronger than you thought and knocks you out."
                 }
             },
             {
-                "quote": "Você encontra um homem tocando música clássica. 🍷 \"{}ed 1\" para dialogar ou \"{}ed 2\" para negociar",
+                "quote": "You find a man playing classical music. 🍷 \"{}ed 1\" to talk or \"{}ed 2\" to negotiate.",
                 "1": {
-                    "win": "O homem acaba gostando de você e te passa boas estratégias para a dungeon.",
-                    "lose": "O homem te acha insuportável e te fala coisas que abaixam seu ânimo."
+                    "win": "The man ends up liking you and shares good strategies for the dungeon.",
+                    "lose": "The man finds you unbearable and says things that lower your spirits."
                 },
                 "2": {
-                    "win": "Você consegue itens raros em troca de poucas moedas!",
-                    "lose": "O homem recusa todas as suas ofertas e você volta para casa, derrotado."
+                    "win": "You obtain rare items in exchange for a few coins!",
+                    "lose": "The man refuses all your offers, and you return home, defeated."
                 }
             },
             {
-                "quote": "Você encontra um lobo segurando uma espada na boca! 🐺 \"{}ed 1\" para domá-lo ou \"{}ed 2\" para pegar a espada dele",
+                "quote": "You find a wolf holding a sword in its mouth! 🐺 \"{}ed 1\" to tame it or \"{}ed 2\" to take the sword from it.",
                 "1": {
-                    "win": "Você consegue domar o lobo! Ele te acompanha e protege até o fim da dungeon. ",
-                    "lose": "Você tenta domá-lo, mas falha! Triste, você tenta continuar sozinho."
+                    "win": "You manage to tame the wolf! It accompanies and protects you until the end of the dungeon.",
+                    "lose": "You try to tame it, but fail! Sad, you attempt to continue alone."
                 },
                 "2": {
-                    "win": "Você consegue pegar a tão rara espada do lobo e se torna fácil completar a dungeon!",
-                    "lose": "Você segue o lobo aguardando a brecha para pegar sua espada, mas se perde no processo."
+                    "win": "You manage to take the rare sword from the wolf, making it easy to complete the dungeon!",
+                    "lose": "You follow the wolf, waiting for an opportunity to grab its sword, but get lost in the process."
                 }
             },
             {
-                "quote": "Você encontra uma bola de cristal mágica! 🔮 \"{}ed 1\" para tocá-la ou \"{}ed 2\" para coletá-la",
+                "quote": "You find a magical crystal ball! 🔮 \"{}ed 1\" to touch it or \"{}ed 2\" to collect it.",
                 "1": {
-                    "win": "Você toca a bola de cristal e é transportado para a saída da dungeon!",
-                    "lose": "Você toca nela e é transportado de volta para o início da dungeon."
+                    "win": "You touch the crystal ball and are transported to the exit of the dungeon!",
+                    "lose": "You touch it and are transported back to the beginning of the dungeon."
                 },
                 "2": {
-                    "win": "Você pega a bola de cristal e isso aumenta sua coleção de artefatos!",
-                    "lose": "A bola de cristal sente sua energia maléfica e te transporta para uma sala cheia de monstros."
+                    "win": "You collect the crystal ball, and it increases your collection of artifacts!",
+                    "lose": "The crystal ball senses your evil energy and transports you to a room full of monsters."
                 }
             },
             {
-                "quote": "Você encontra uma caixa! 📦 \"{}ed 1\" para abrí-la ou \"{}ed 2\" para ignorá-la ",
+                "quote": "You find a box! 📦 \"{}ed 1\" to open it or \"{}ed 2\" to ignore it.",
                 "1": {
-                    "win": "Você encontra diversas riquezas dentro dela que te ajudam a completar a dungeon!",
-                    "lose": "Existe outra caixa dentro da caixa. Você abre. Dentro de mais uma caixa, um papel escrito: \"Nada\"."
+                    "win": "You find various riches inside it that help you complete the dungeon!",
+                    "lose": "There is another box inside the box. You open it. Inside another box, there is a paper that says: \"Nothing.\""
                 },
                 "2": {
-                    "win": "Você ignora a caixa e continua sua jornada normalmente, até finalizá-la.",
-                    "lose": "A caixa era um monstro disfarçado e ele te ataca desprevenido!"
+                    "win": "You ignore the box and continue your journey normally until you finish it.",
+                    "lose": "The box was a disguised monster, and it attacks you unexpectedly!"
                 }
             },
             {
-                "quote": "Você encontra uma casa com muitas portas. 🏠 \"{}ed 1\" para entrar na casa ou \"{}ed 2\" para investigar atrás dela",
+                "quote": "You find a house with many doors. 🏠 \"{}ed 1\" to enter the house or \"{}ed 2\" to investigate behind it.",
                 "1": {
-                    "win": "Ao abrir uma das portas, você vê que era um atalho para a saída!",
+                    "win": "Upon opening one of the doors, you see that it was a shortcut to the exit!",
                     "lose": "Você abre uma das portas e cai em um buraco que estava disfarçado no piso."
                 },
                 "2": {
