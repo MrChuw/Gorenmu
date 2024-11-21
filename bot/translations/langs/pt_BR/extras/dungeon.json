@@ -29,7 +29,7 @@
                 "quote": "A dungeon está cheia de teias de aranha! 🕸 \"{}ed 1\" para tentar atravessá-las ou \"{}ed 2\" para pensar em outra alternativa.",
                 "1": {
                     "win": "Você passa facilmente pelas teias e encontra a saída!",
-                    "lose": "Você fica preso nas teias e fica horas sem conseguir sair dali."
+                    "lose": "Você fica preso nas teias e passa horas incapaze de sair de lá."
                 },
                 "2": {
                     "win": "Você joga uma bola de fogo nas teias, limpando a passagem e achando a saída!",
