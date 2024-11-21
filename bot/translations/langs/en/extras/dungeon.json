@@ -197,7 +197,7 @@
                     "lose": "You open one of the doors and fall into a hole that was disguised in the floor."
                 },
                 "2": {
-                    "win": "No terreno atrás da casa, você encontra um baú cheio de ouro!",
+                    "win": "In the ground behind the house, you find a chest full of gold!",
                     "lose": "Você se depara com um jacaré atrás da casa e precisa fugir da dungeon rapidamente."
                 }
             },
