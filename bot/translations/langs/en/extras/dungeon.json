@@ -367,76 +367,76 @@
                 }
             },
             {
-                "quote": "Você vê uma donzela sendo escoltada por vários cavaleiros. 😍 \"{}ed 1\" para seduzí-la ou \"{}ed 2\" para acenar",
+                "quote": "You see a maiden being escorted by several knights. 😍 \"{}ed 1\" to seduce her or \"{}ed 2\" to wave.",
                 "1": {
-                    "win": "Ela te corresponde com um sorriso tímido que aumenta sua motivação!",
-                    "lose": "Imediatamente todos guerreiros vão em sua direção e você se vê obrigado a fugir."
+                    "win": "She responds with a shy smile that boosts your motivation!",
+                    "lose": "Immediately, all the warriors head in your direction, and you find yourself forced to flee."
                 },
                 "2": {
-                    "win": "Ela acha que você está pedindo esmola e te dá algumas moedas de ouro.",
-                    "lose": "Um dos cavaleiros desce de seu cavalo e te dá uma surra."
+                    "win": "She thinks you are begging and gives you some gold coins.",
+                    "lose": "One of the knights dismounts from his horse and gives you a beating."
                 }
             },
             {
-                "quote": "Você vê um homem bonito e musculoso à frente. 💪 \"{}ed 1\" para flertar ou \"{}ed 2\" para pedir ajuda",
+                "quote": "You see a handsome, muscular man ahead. 💪 \"{}ed 1\" to flirt or \"{}ed 2\" to ask for help.",
                 "1": {
-                    "win": "Ele corresponde e o clima esquenta. Acontecem coisas que te deixam extremamente revigorado.",
-                    "lose": "Ele ri alto debochadamente e passa a te ignorar completamente."
+                    "win": "He responds, and the atmosphere heats up. Things happen that leave you extremely invigorated.",
+                    "lose": "He laughs loudly in a mocking way and completely ignores you."
                 },
                 "2": {
-                    "win": "Ele aponta para a saída da dungeon fazendo uma pose que realça todos os músculos! ",
-                    "lose": "Você pede ajuda, mas ele não te escuta. Quando você insiste, desperta do sonho."
+                    "win": "He points to the exit of the dungeon, striking a pose that highlights all his muscles!",
+                    "lose": "You ask for help, but he doesn't hear you. When you insist, you wake up from the dream."
                 }
             },
             {
-                "quote": "Você vê uma linda mulher ruiva à frente. 😍 \"{}ed 1\" para flertar ou \"{}ed 2\" para pedir ajuda",
+                "quote": "You see a beautiful red-haired woman ahead. 😍 \"{}ed 1\" to flirt or \"{}ed 2\" to ask for help.",
                 "1": {
-                    "win": "Ela corresponde e o clima esquenta. Acontecem coisas que te deixam extremamente revigorado.",
-                    "lose": "Ela ri alto debochadamente e passa a te ignorar completamente."
+                    "win": "She responds, and the atmosphere heats up. Things happen that leave you extremely invigorated.",
+                    "lose": "She laughs loudly in a mocking way and completely ignores you."
                 },
                 "2": {
-                    "win": "Ela compartilha uma das várias perólas de seu colar que te deixa incrivelmente hábil!",
-                    "lose": "Você pede ajuda, mas ela não te escuta. Quando você insiste, desperta do sonho."
+                    "win": "She shares one of the many pearls from her necklace, which makes you incredibly skilled!",
+                    "lose": "You ask for help, but she doesn't hear you. When you insist, you wake up from the dream."
                 }
             },
             {
-                "quote": "Há muitos sapos na dungeon! 🐸 \"{}ed 1\" para beijá-los ou \"{}ed 2\" para queimá-los",
+                "quote": "There are many frogs in the dungeon! 🐸 \"{}ed 1\" to kiss them or \"{}ed 2\" to burn them.",
                 "1": {
-                    "win": "Você pega um dos sapos e o beija, ganhando força extra!",
-                    "lose": "Você beija alguns sapos e começa a ficar confuso. Depois, se perde por horas em alucinações."
+                    "win": "You pick up one of the frogs and kiss it, gaining extra strength!",
+                    "lose": "You kiss several frogs and start to feel confused. Then, you get lost for hours in hallucinations."
                 },
                 "2": {
-                    "win": "Você incinera todos os sapos e vê que das cinzas deles consegue fazer alguns explosivos.",
-                    "lose": "Você tenta queimá-los, mas eles são imunes. Eles se revoltam e pulam em você, te atordoando."
+                    "win": "You incinerate all the frogs and see that from their ashes you can make some explosives.",
+                    "lose": "You try to burn them, but they are immune. They revolt and jump on you, stunning you."
                 }
             },
             {
-                "quote": "No meio da dungeon, você encontra um alienígena dançarino 👽 \"{}ed 1\" para dançar junto ou \"{}ed 2\" para desligar o som",
+                "quote": "In the middle of the dungeon, you find a dancing alien 👽 \"{}ed 1\" to dance along or \"{}ed 2\" to turn off the music.",
                 "1": {
-                    "win": "Vocês se divertem dançando e ele te dá uma poção de vigor em forma de agradecimento.",
-                    "lose": "Você desiste de completar a dungeon para dançar com ele."
+                    "win": "You both have fun dancing, and he gives you a vigor potion as a thank you.",
+                    "lose": "You give up on completing the dungeon to dance with him."
                 },
                 "2": {
-                    "win": "O alienígena te agradece e conta que estava há anos preso na maldição de não conseguir parar de dançar",
-                    "lose": "Enfurecido, o alienígena atira lasers dos dedos e você foge desesperamente."
+                    "win": "The alien thanks you and tells you that he has been trapped for years in the curse of not being able to stop dancing.",
+                    "lose": "Enraged, the alien shoots lasers from his fingers, and you flee desperately."
                 }
             },
             {
-                "quote": "Você vê um botão na entrada da dungeon. 🔘 \"{}ed 1\" para acioná-lo ou \"{}ed 2\" para acioná-lo com a ponta do nariz",
+                "quote": "You see a button at the entrance of the dungeon. 🔘 \"{}ed 1\" to press it or \"{}ed 2\" to press it with the tip of your nose.",
                 "1": {
-                    "win": "Uma cabine sobe do chão contendo uma espada brilhante.",
-                    "lose": "Diversas bombas explodem na entrada da dungeon, bloqueando a passagem."
+                    "win": "A cabin rises from the ground containing a shining sword.",
+                    "lose": "Several bombs explode at the entrance of the dungeon, blocking the way."
                 },
                 "2": {
-                    "win": "A parede ao lado do botão rotaciona, revelando uma armadura brilhante e poderosa.",
-                    "lose": "Diversas bombas explodem na entrada da dungeon, bloqueando a passagem. E seu nariz ficou sujo."
+                    "win": "The wall next to the button rotates, revealing a shining and powerful armor.",
+                    "lose": "Several bombs explode at the entrance of the dungeon, blocking the way. And your nose is left dirty."
                 }
             },
             {
-                "quote": "Um homem com um trompete aparece. 🎺 \"{}ed 1\" para pedir para ele tocar ou \"{}ed 2\" para ignorar",
+                "quote": "A man with a trumpet appears. 🎺 \"{}ed 1\" to ask him to play or \"{}ed 2\" to ignore him.",
                 "1": {
-                    "win": "A música dele te inspira e você se sente mais determinado!",
-                    "lose": "Ele toca mal e seus ouvidos começam a zunir. Isso te dá uma forte dor de cabeça."
+                    "win": "His music inspires you, and you feel more determined!",
+                    "lose": "He plays poorly, and your ears start to ring. This gives you a strong headache."
                 },
                 "2": {
                     "win": "Você percebe como deu sorte quando escuta ao longe sons terríveis de trompete.",
