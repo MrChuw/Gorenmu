@@ -14,15 +14,15 @@
             "warriors": "guerreiros",
             "warrior_f": "guerreiro (feminino)",
             "warriors_f": "guerreiros (feminino)",
-            "mage": "",
+            "mage": "mago",
             "mages": "magos",
-            "mage_f": "",
-            "mages_f": "",
+            "mage_f": "maga",
+            "mages_f": "magas",
             "archer": "arqueiro",
             "archers": "arqueiros",
-            "archer_f": "",
-            "archers_f": "",
-            "default": ""
+            "archer_f": "arqueira",
+            "archers_f": "arqueiras",
+            "default": "dungeons"
         },
         "Quotes": [
             {
@@ -455,7 +455,7 @@
                 }
             },
             {
-                "quote": "",
+                "quote": "Há uma guilda lutando contra um dragão enorme! 🐉  \"{}ed 1\" para ajudar ou \"{}ed 2\" para se esconder",
                 "1": {
                     "win": "O ataque é derrotado quando você dá o golpe final, levando a glória!",
                     "lose": "O bater de asas do ataque é forte suficiente para arremesá-los longe. Você bate a cabeça e desmaia."
@@ -466,7 +466,7 @@
                 }
             },
             {
-                "quote": "",
+                "quote": "Um homem alegre está servindo tortas. 🥧 \"{}ed 1\" para comer na hora ou \"{}ed 2\" para guardar",
                 "1": {
                     "win": "Com a energia extra da torta, você corre mais rápido pela masmorra!",
                     "lose": "Quando você se aproxima para pegar a torta, ele a joga na sua cara."
@@ -480,7 +480,7 @@
                 "quote": "Um animal está vindo em sua direção! \"{}ed 1\" para aguardar ele ou \"{}ed 2\" para correr dele",
                 "1": {
                     "win": "Um lindo unicórnio se aproxima e a magia de seu chifre the traz força extra. 🦄",
-                    "lose": ""
+                    "lose": "Um pássaro te traz uma mensagem: \"você nunca terá sucesso\". Você senta e chora. 🐦"
                 },
                 "2": {
                     "win": "Você corre, mas um macaco com perna minúsculas te alcança e joga um pó branco. Isso te deixa mais alerta. 🦍",
@@ -515,16 +515,16 @@
                 "Cavaleiro",
                 "Cavaleiro das Trevas",
                 "Guerreiro Arcano",
-                "",
-                ""
+                "Espadachim Demoníaco",
+                "Ascendente Imortal"
             ],
             "Female Warrior 1": [
-                "",
-                "",
-                "",
+                "Gerreira",
+                "Mercenária",
+                "Cavaleira",
                 "Senhora",
-                "",
-                "",
+                "Grande Mestra",
+                "Imperadora de Espada",
                 "Guardião Divino Feminino"
             ],
             "Female Warrior 2": [
