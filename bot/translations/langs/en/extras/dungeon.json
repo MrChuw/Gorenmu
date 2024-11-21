@@ -270,100 +270,100 @@
             {
                 "quote": "You hear two wizards talking. 🧙🧙 \"{}ed 1\" to sneak and listen to them or \"{}ed 2\" to show them your strength.",
                 "1": {
-                    "win": "Eles falam algo sobre poções e de repente você se torna invisível!",
-                    "lose": "Eles dizem algumas palavras de encantamento e você fica perdidamente apaixonado."
+                    "win": "They talk about potions, and suddenly you become invisible!",
+                    "lose": "They say some words of enchantment, and you become hopelessly in love."
                 },
                 "2": {
-                    "win": "Eles ficam com medo dos seus músculos incríveis e te dão uma poção!",
-                    "lose": "Eles riem da sua prepotência e te amaldiçoam."
+                    "win": "They become afraid of your incredible muscles and give you a potion!",
+                    "lose": "They laugh at your arrogance and curse you."
                 }
             },
             {
-                "quote": "Você encontra uma chave e vê duas portas. 🚪 \"{}ed 1\" para abrir a da esquerda ou \"{}ed 2\" para abrir a da direita",
+                "quote": "You find a key and see two doors. 🚪 \"{}ed 1\" to open the left one or \"{}ed 2\" to open the right one.",
                 "1": {
-                    "win": "Você liberta um drúida bêbado e o ajuda a lembrar como se trancou ali!",
-                    "lose": "Você solta uma criatura emplumada que tira suas roupas e desaparece."
+                    "win": "You free a drunken druid and help him remember how he got locked in there!",
+                    "lose": "You release a feathered creature that takes your clothes and disappears."
                 },
                 "2": {
-                    "win": "Você encontra a saída da dungeon!",
-                    "lose": "Você se depara com uma armadilha mágica que te deixa tonto por horas."
+                    "win": "You find the exit of the dungeon!",
+                    "lose": "You encounter a magical trap that leaves you dizzy for hours."
                 }
             },
             {
-                "quote": "Você encontra uma chave e um baú. 🔑 \"{}ed 1\" para abrí-lo ou \"{}ed 2\" para levar o baú sem abri-lo",
+                "quote": "You find a key and a chest. 🔑 \"{}ed 1\" to open it or \"{}ed 2\" to take the chest without opening it.",
                 "1": {
-                    "win": "Dentro havia um mapa com o caminho para o final da dungeon!",
-                    "lose": "O baú era um monstro mímico! Você foge da dungeon para sobreviver."
+                    "win": "Inside, there was a map with the path to the end of the dungeon!",
+                    "lose": "The chest was a mimic monster! You flee the dungeon to survive."
                 },
                 "2": {
-                    "win": "Você encontra um mago morto-vivo que só te deixa viver em troca do baú!",
-                    "lose": "O baú te deixa com dor nas costas por ser pesado demais e você precisa descansar."
+                    "win": "You encounter an undead wizard who only allows you to live in exchange for the chest!",
+                    "lose": "The chest gives you back pain because it's too heavy, and you need to rest."
                 }
             },
             {
-                "quote": "Sua tocha apaga e você cai em um buraco. 🕳 \"{}ed 1\" para escalar ou \"{}ed 2\" para voar",
+                "quote": "Your torch goes out, and you fall into a hole. 🕳 \"{}ed 1\" to climb or \"{}ed 2\" to fly.",
                 "1": {
-                    "win": "Você consegue escalar com facilidade usando a velocidade angular!",
-                    "lose": "Após várias tentativas, você desiste e chora em posição fetal esperando alguém."
+                    "win": "You manage to climb easily using angular speed!",
+                    "lose": "After several attempts, you give up and cry in a fetal position, waiting for someone."
                 },
                 "2": {
-                    "win": "Você se lembra dos treinamentos nos montes e realiza um voo incrível!",
-                    "lose": "Você se concentra por horas até finalmente perceber que não sabe voar."
+                    "win": "You remember the training in the mountains and perform an incredible flight!",
+                    "lose": "You concentrate for hours until you finally realize that you don't know how to fly."
                 }
             },
             {
-                "quote": "Você encontra um mapa com um \"X\" marcado. 🗺 \"{}ed 1\" para seguir o mapa ou \"{}ed 2\" para descartá-lo",
+                "quote": "You find a map with an \"X\" marked. 🗺 \"{}ed 1\" to follow the map or \"{}ed 2\" to discard it.",
                 "1": {
-                    "win": "O \"X\" te leva para a saída da dungeon!",
-                    "lose": "Você anda por horas até perceber que está caminhando em círculos."
+                    "win": "The \"X\" leads you to the exit of the dungeon!",
+                    "lose": "You walk for hours until you realize that you are walking in circles."
                 },
                 "2": {
-                    "win": "Você amassa o mapa e o joga longe, percebendo que ele atinge um baú perdido com ouro!",
-                    "lose": "Você segue seu caminho e para em um lugar sem saída. Talvez o mapa fosse útil..."
+                    "win": "You crumple the map and throw it away, realizing it hits a lost chest filled with gold!",
+                    "lose": "You continue on your path and stop in a dead end. Maybe the map would have been useful..."
                 }
             },
             {
-                "quote": "Você encontra um cavaleiro que te desafia! ⚔ \"{}ed 1\" para aceitar ou \"{}ed 2\" para recusar",
+                "quote": "You encounter a knight who challenges you! ⚔ \"{}ed 1\" to accept or \"{}ed 2\" to refuse.",
                 "1": {
-                    "win": "Você derrota o cavaleiro, se esquivando de todos os ataques!",
-                    "lose": "Ele te dá uma surra terrível e te deixa desacordado."
+                    "win": "You defeat the knight, dodging all of his attacks!",
+                    "lose": "He gives you a terrible beating and leaves you unconscious."
                 },
                 "2": {
-                    "win": "Ele, por pena da sua covardia, te dá uma nova espada para combates futuros.",
-                    "lose": "Você recusa o desafio e vai embora. Nada acontece."
+                    "win": "Out of pity for your cowardice, he gives you a new sword for future battles.",
+                    "lose": "You refuse the challenge and walk away. Nothing happens."
                 }
             },
             {
-                "quote": "Você encontra uma coruja falante. 🦉 \"{}ed 1\" para ouví-la ou \"{}ed 2\" para guardá-la na gaiola",
+                "quote": "You find a talking owl. 🦉 \"{}ed 1\" to listen to her or \"{}ed 2\" to put her in a cage.",
                 "1": {
-                    "win": "A coruja velha e sábia lhe dá o incentivo que precisava para lutar pela dungeon!",
-                    "lose": "Você cai em uma magia de ilusão da coruja e acorda horas depois."
+                    "win": "The old and wise owl gives you the encouragement you needed to fight through the dungeon!",
+                    "lose": "You fall into an illusion spell from the owl and wake up hours later."
                 },
                 "2": {
-                    "win": "Agora você tem uma coruja para conversar durante o percurso e pedir conselhos!",
-                    "lose": "Quando você se aproxima, a coruja se transforma em um mago que lhe dá uma surra."
+                    "win": "Now you have an owl to talk to during your journey and ask for advice!",
+                    "lose": "As you approach, the owl transforms into a wizard who gives you a beating."
                 }
             },
             {
-                "quote": "Você entra em uma caverna cheia de morcegos. 🦇  \"{}ed 1\" para avançar silenciosamente ou \"{}ed 2\" para atacá-los ",
+                "quote": "You enter a cave full of bats. 🦇 \"{}ed 1\" to advance silently or \"{}ed 2\" to attack them.",
                 "1": {
-                    "win": "Você esgueira-se para evitar alertá-los e consegue avançar!",
-                    "lose": "Seu silêncio não dura muito, você logo tropeça e trazendo todos os morcegos pra cima de você."
+                    "win": "You sneak to avoid alerting them and manage to advance!",
+                    "lose": "Your silence doesn't last long; you soon trip and bring all the bats down on you."
                 },
                 "2": {
-                    "win": "Você acaba com todos os morcegos sem dificuldade.",
-                    "lose": "Você derrota todos e resolve fazer uma sopa com eles, mas ela não te faz muito bem..."
+                    "win": "You take out all the bats with ease.",
+                    "lose": "You defeat all of them and decide to make a soup with them, but it doesn't sit well with you..."
                 }
             },
             {
-                "quote": "Você vê um rato gigante! 🐀 \"{}ed 1\" para atacá-lo ou \"{}ed 2\" para recuar e preparar uma armadilha",
+                "quote": "You see a giant rat! 🐀 \"{}ed 1\" to attack it or \"{}ed 2\" to retreat and set a trap.",
                 "1": {
-                    "win": "Em uma batalha épica você acaba com o rato e encontra luvas lendárias!",
-                    "lose": "Após diversos ataques, você fica exausto e ele te acerta um golpe em cheio."
+                    "win": "In an epic battle, you defeat the rat and find legendary gloves!",
+                    "lose": "After several attacks, you become exhausted, and it lands a solid hit on you."
                 },
                 "2": {
-                    "win": "Você elabora a armadilha perfeita com um saboroso queijo e ele é pego!",
-                    "lose": "Após montar a armadilha, você percebe que era apenas a sombra de um rato normal..."
+                    "win": "You set up the perfect trap with some tasty cheese, and it gets caught!",
+                    "lose": "After setting up the trap, you realize it was just the shadow of a regular rat..."
                 }
             },
             {
