@@ -194,7 +194,7 @@
                 "quote": "You find a house with many doors. 🏠 \"{}ed 1\" to enter the house or \"{}ed 2\" to investigate behind it.",
                 "1": {
                     "win": "Upon opening one of the doors, you see that it was a shortcut to the exit!",
-                    "lose": "Você abre uma das portas e cai em um buraco que estava disfarçado no piso."
+                    "lose": "You open one of the doors and fall into a hole that was disguised in the floor."
                 },
                 "2": {
                     "win": "No terreno atrás da casa, você encontra um baú cheio de ouro!",
