@@ -550,7 +550,7 @@
                 "Arqueiro",
                 "Arqueiro de elite",
                 "Sentinela",
-                "Hunter",
+                "Caçador",
                 "Assassino Arcano",
                 "Sombra viva",
                 "Deus do Crepúsculo"
@@ -563,16 +563,16 @@
                 "Caçadora de Demônios",
                 "Mestra dos Ventos",
                 "Deusa da Aurora",
-                "Deusa feminina Boa noite"
+                "Deusa da Noite"
             ],
             "Female Archer 2": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "Arqueira",
+                "Arqueira de Elite",
+                "Sentinela",
+                "Caçadora",
+                "Assassina Arcana",
+                "Sombra Viva",
+                "Deusa do Crepúsculo"
             ],
             "Mage 1": [
                 "",
