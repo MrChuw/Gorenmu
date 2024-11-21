@@ -580,16 +580,16 @@
                 "Mestre Elemental",
                 "Alquimista",
                 "Ladrão de Mentes",
-                "",
-                ""
+                "Necromante",
+                "Lich"
             ],
             "Mage 2": [
-                "",
-                "",
-                "",
+                "Mago",
+                "Feiticeiro",
+                "Mestre Elemental",
                 "Clérigo",
-                "",
-                "",
+                "Arcebispo",
+                "Conjurente Divino",
                 ""
             ],
             "Female Mage 1": [
