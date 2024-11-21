@@ -198,77 +198,77 @@
                 },
                 "2": {
                     "win": "In the ground behind the house, you find a chest full of gold!",
-                    "lose": "Você se depara com um jacaré atrás da casa e precisa fugir da dungeon rapidamente."
+                    "lose": "You encounter an alligator behind the house and need to escape the dungeon quickly."
                 }
             },
             {
-                "quote": "Você encontra uma estrela brilhante. ⭐ \"{}ed 1\" para tocá-la ou \"{}ed 2\" para socá-la",
+                "quote": "You find a shining star. ⭐ \"{}ed 1\" to touch it or \"{}ed 2\" to punch it.",
                 "1": {
-                    "win": "Você toca a estrela, absorvendo ela e tornando-se invencível por um curto tempo.",
-                    "lose": "Você toca a estrela, tomando um choque atordoador e adormecendo."
+                    "win": "You touch the star, absorbing it and becoming invincible for a short time.",
+                    "lose": "You touch the star, receiving a stunning shock and falling asleep."
                 },
                 "2": {
-                    "win": "A estrela se pulveriza com seu soco e o pó encanta seus punhos, tornando-o mais forte.",
-                    "lose": "Você percebe que a estrela é dura como pedra e acaba machucando as mãos ao socá-la."
+                    "win": "The star shatters with your punch, and the dust enchants your fists, making you stronger.",
+                    "lose": "You realize that the star is as hard as stone and end up hurting your hands by punching it."
                 }
             },
             {
-                "quote": "Você encontra uma máquina de cookies! 🍪 \"{}ed 1\" para chutá-la ou \"{}ed 2\" para investiga-lá",
+                "quote": "You find a cookie machine! 🍪 \"{}ed 1\" to kick it or \"{}ed 2\" to investigate it.",
                 "1": {
-                    "win": "Você decide chutá-la e isso libera um delicioso cookie!",
-                    "lose": "Você soca a máquina e ela, ofendida, devolve o soco dado por você."
+                    "win": "You decide to kick it, and this releases a delicious cookie!",
+                    "lose": "You punch the machine, and it, offended, returns the punch you gave it."
                 },
                 "2": {
-                    "win": "Você investiga a máquina e encontra moedas perdidas dentro dela!",
-                    "lose": "Você investiga a máquina por horas e apenas tem seu tempo desperdiçado!"
+                    "win": "You investigate the machine and find lost coins inside it!",
+                    "lose": "You investigate the machine for hours and only waste your time!"
                 }
             },
             {
-                "quote": "Você encontra uma mesa cheia de sanduíches. 🥪 \"{}ed 1\" para comer um ou \"{}ed 2\" para pegar todos",
+                "quote": "You find a table full of sandwiches. 🥪 \"{}ed 1\" to eat one or \"{}ed 2\" to take them all.",
                 "1": {
-                    "win": "Você come um sanduíche e isso eleva sua motivação!",
-                    "lose": "Você come um sanduíche e, tempo depois, sente uma dor de barriga insuportável."
+                    "win": "You eat a sandwich, and it boosts your motivation!",
+                    "lose": "You eat a sandwich, and after a while, you feel an unbearable stomachache."
                 },
                 "2": {
-                    "win": "Você guarda todos os sanduíches, aumentando seus suprimentos reservas!",
-                    "lose": "Ao esvaziar a mesa de sanduíches, uma armadilha é acionada e a saída fica bloqueada."
+                    "win": "You store all the sandwiches, increasing your reserve supplies!",
+                    "lose": "As you clear the table of sandwiches, a trap is triggered, and the exit becomes blocked."
                 }
             },
             {
-                "quote": "Você encontra uma televisão ligada. 📺 \"{}ed 1\" para assistir ou \"{}ed 2\" para desligá-la ",
+                "quote": "You find a television turned on. 📺 \"{}ed 1\" to watch it or \"{}ed 2\" to turn it off.",
                 "1": {
-                    "win": "Você decide assistir a televisão e encontra programas que aumentam sua autoestima.",
-                    "lose": "Uma menina sai da televisão e você foge da dungeon desesperado."
+                    "win": "You decide to watch the television and find shows that boost your self-esteem.",
+                    "lose": "A girl comes out of the television, and you flee the dungeon in a panic."
                 },
                 "2": {
-                    "win": "Você desliga a televisão e segue sua jornada normalmente até completá-la.",
-                    "lose": "Ao apertar o botão para desligá-la, você leva um choque que te deixa desacordado."
+                    "win": "You turn off the television and continue your journey normally until you complete it.",
+                    "lose": "As you press the button to turn it off, you receive a shock that leaves you unconscious."
                 }
             },
             {
-                "quote": "Você enxerga uma colônia enorme de abelhas! 🐝 \"{}ed 1\" para roubar o mel ou \"{}ed 2\" para fugir imediatamente",
+                "quote": "You see a huge colony of bees! 🐝 \"{}ed 1\" to steal the honey or \"{}ed 2\" to flee immediately.",
                 "1": {
-                    "win": "Você come o mel e ele te dá energia para finalizar a dungeon rapidamente!",
-                    "lose": "Ao se aproximar da colmeia, as abelhas te atacam e te deixam inconsciente."
+                    "win": "You eat the honey, and it gives you the energy to finish the dungeon quickly!",
+                    "lose": "As you approach the hive, the bees attack you and leave you unconscious."
                 },
                 "2": {
-                    "win": "O medo das abelhas te faz correr tão rápido que você chega do outro lado da dungeon!",
-                    "lose": "Ao tentar fugir, as abelhas vão atrás de você. As abelhas te atacam e te deixam inconsciente."
+                    "win": "The fear of the bees makes you run so fast that you reach the other side of the dungeon!",
+                    "lose": "As you try to escape, the bees chase after you. The bees attack you and leave you unconscious."
                 }
             },
             {
-                "quote": "Você esbarra em um homem com olhos vacilantes 👀 \"{}ed 1\" para encará-lo sem piscar ou \"{}ed 2\" para desviar o olhar",
+                "quote": "You bump into a man with wavering eyes 👀 \"{}ed 1\" to stare at him without blinking or \"{}ed 2\" to look away.",
                 "1": {
-                    "win": "Ele pisca para você e te dá um par de botas novo que te deixa mais rápido!",
-                    "lose": "Ao olhar no fundo dos olhos dele, você se torna extremamente azarado."
+                    "win": "He blinks at you and gives you a new pair of boots that make you faster!",
+                    "lose": "As you look deep into his eyes, you become extremely unlucky."
                 },
                 "2": {
-                    "win": "O homem percebe seu medo e, com pena, te dá um par de botas que te deixa mais rápido!",
-                    "lose": "Enquanto você não olha, ele se aproxima e rouba seus artefatos."
+                    "win": "The man notices your fear and, feeling sorry for you, gives you a pair of boots that make you faster!",
+                    "lose": "While you're not looking, he approaches and steals your artifacts."
                 }
             },
             {
-                "quote": "Você ouve dois magos conversando. 🧙🧙 \"{}ed 1\" para esgueirar-se e ouví-los ou \"{}ed 2\" para mostrar a eles sua força",
+                "quote": "You hear two wizards talking. 🧙🧙 \"{}ed 1\" to sneak and listen to them or \"{}ed 2\" to show them your strength.",
                 "1": {
                     "win": "Eles falam algo sobre poções e de repente você se torna invisível!",
                     "lose": "Eles dizem algumas palavras de encantamento e você fica perdidamente apaixonado."
