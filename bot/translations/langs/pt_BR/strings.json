@@ -181,8 +181,8 @@
     "Cookies": {
         "ranks": "",
         "daily_limit_reached": "Você ainda está em cooldown, espere {} até o próximo lote! ⌛",
-        "user_not_found": "",
-        "invalid_option": "",
+        "user_not_found": "o usuário {} ainda não foi registrado e não usou nenhum comando de cookie.",
+        "invalid_option": "Escolha entre uma das opções \"comer\", \"conta\", \"top\", \"gift\", \"stock\" ou \"sm\"",
         "cookie_not_found": "",
         "not_eat": "",
         "negative_eat": "",
