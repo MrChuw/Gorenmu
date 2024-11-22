@@ -270,7 +270,7 @@
             "is_not_afk": "@{} não é AFK."
         },
         "RAfk": {
-            "time_expired": "",
+            "time_expired": "O tempo para voltar já passou.",
             "is_afk": "{}: {}",
             "is_afk_content": "{} {} e deixou uma nota: {}",
             "is_not_afk": "você não esta AFK."
@@ -281,13 +281,13 @@
         }
     },
     "Alias": {
-        "user_not_found": "",
+        "user_not_found": "não há usuário com apelido {}.",
         "dont_have_alias": "Você não tem o alias \"{}\"!",
         "alias_invalid_name": "Seu nome de alias não é válido! Seu alias deve conter apenas letras, números e ter entre 2-30 caracteres de comprimento.",
         "user_has_no_alias": "O usuário {} não possui aliases registrados.",
         "alias_table_headers": [
-            "",
-            "",
+            "Nome de Alias",
+            "Descrição",
             "Invocação",
             "Argumentos",
             "Links para",
@@ -318,7 +318,7 @@
             "normal_message": "{} || Link: {}"
         },
         "Copy": {
-            "user_not_provided": "",
+            "user_not_provided": "Nenhum usuário alvo fornecido!",
             "alias_not_provided": "Nenhum alias de destino fornecido!",
             "target_alias_invalid_name": "O nome do alias copiado não é válido e portanto não pode ser copiado!",
             "no_alias_found": "Não consegui encontrar {} no usuário {}!",
@@ -361,12 +361,12 @@
     },
     "Choice": {
         "additional_separators": [
-            ""
+            "ou"
         ],
         "chosen_option": "{}"
     },
     "Count": {
-        "character_count": ""
+        "character_count": "Há um total de caracteres {}. Destes, {} são marcas de pontuação, {} são letras maiúsculas, e {} são caracteres especiais."
     },
     "HyperTranslate": {
         "base_lang": "",
