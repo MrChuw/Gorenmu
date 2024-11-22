@@ -180,7 +180,7 @@
     },
     "Cookies": {
         "ranks": "",
-        "daily_limit_reached": "",
+        "daily_limit_reached": "Ainda estás em cooldown, espera até ao próximo lote! ⌛",
         "user_not_found": "",
         "invalid_option": "",
         "cookie_not_found": "",
