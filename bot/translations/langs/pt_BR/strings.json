@@ -151,9 +151,9 @@
             "presente"
         ],
         "only_numbers": "Envie apenas números de 1 a 60.",
-        "not_enough_cookies": "Não tens biscoitos suficientes para fazer uma aposta. O mínimo é 5 cookies.",
-        "not_enough_cookies_more_five": "",
-        "bet_place": "",
+        "not_enough_cookies": "Você não tem cookies suficientes para fazer uma aposta. O mínimo são 5 biscoitos.",
+        "not_enough_cookies_more_five": "Você não tem cookies suficientes para fazer uma aposta. O número de cookies necessários é {}",
+        "bet_place": "A aposta foi feita com os números {} e um valor de {} cookies. (ID: {})",
         "lottery_lock": "Desculpe, a loteria é fechada enquanto os resultados estão sendo computados.",
         "timeout": "Demorou muito tempo para escolher uma opção.",
         "too_much_numbers": "Você não pode apostar em mais de 15 números.",
