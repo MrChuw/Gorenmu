@@ -379,8 +379,8 @@
         "Imgur": {
             "timeout": "Passaram-se 100 segundos e não consegui gerar. Por favor, espere um pouco e tente novamente.",
             "time_message": "Tempo: {}",
-            "all_images_embed": "",
-            "all_images_embed_time": ""
+            "all_images_embed": "Todas as imagens geradas: {}",
+            "all_images_embed_time": "Time: {} | Todas as imagens: {}"
         },
         "ImgurRepeated": {
             "links_repeated": "",
