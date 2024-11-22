@@ -119,7 +119,7 @@
             "announcement": "algo deu errado com os anúncios. {}"
         },
         "BotMainLoopExceptions": {
-            "dev_required": "",
+            "dev_required": "você precisa ser meu criador para executar este comando.",
             "owner_required": "",
             "command_on_cooldown": "",
             "not_implemented": "",
