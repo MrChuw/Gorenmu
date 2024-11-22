@@ -319,7 +319,7 @@
                 },
                 "2": {
                     "win": "Você amassa o mapa e o joga longe, percebendo que ele atinge um baú perdido com ouro!",
-                    "lose": "Você segue seu caminho e para em um lugar sem saída. Talvez o mapa fosse útil..."
+                    "lose": "Você segue seu caminho e para em um lugar sem saída. Talvez o mapa fosse útil…"
                 }
             },
             {
@@ -352,7 +352,7 @@
                 },
                 "2": {
                     "win": "Você acaba com todos os morcegos sem dificuldade.",
-                    "lose": "Você derrota todos e resolve fazer uma sopa com eles, mas ela não te faz muito bem..."
+                    "lose": "Você derrota todos e resolve fazer uma sopa com eles, mas ela não te faz muito bem…"
                 }
             },
             {
@@ -363,7 +363,7 @@
                 },
                 "2": {
                     "win": "Você elabora a armadilha perfeita com um saboroso queijo e ele é pego!",
-                    "lose": "Após montar a armadilha, você percebe que era apenas a sombra de um rato normal..."
+                    "lose": "Após montar a armadilha, você percebe que era apenas a sombra de um rato normal…"
                 }
             },
             {
