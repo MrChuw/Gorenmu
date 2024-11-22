@@ -143,11 +143,11 @@
     },
     "Lottery": {
         "past": [
-            ""
+            "passado"
         ],
         "duplicate_numbers": "",
         "current": [
-            "",
+            "corrente de corrente",
             ""
         ],
         "only_numbers": "",
