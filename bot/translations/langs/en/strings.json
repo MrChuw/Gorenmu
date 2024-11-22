@@ -245,7 +245,7 @@
         }
     },
     "Chance": {
-        "random_percentage": "{:.2f}%. "
+        "random_percentage": "{:.2f}%."
     },
     "Choice": {
         "additional_separators": [
