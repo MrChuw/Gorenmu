@@ -259,7 +259,7 @@
         "Afk": {
             "message_too_long": "Esta mensagem é muito longa.",
             "afk_response": "{}: {}",
-            "afk_content_response": "{} e deixou uma nota com: {}"
+            "afk_content_response": "{}: {} e deixou uma nota com: {}"
         },
         "IsAfk": {
             "bot_nick": "",
