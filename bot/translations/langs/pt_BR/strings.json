@@ -1,140 +1,409 @@
 {
-  "SupportTools": {
-    "mention": "você",
-    "TimeTools": {
-      "strftime": "%d/%m/%Y às %H:%M:%S",
-      "Pattern time": {
-        "years": [
-          "anos",
-          "ano",
-          "a"
-        ],
-        "months": [
-          "meses",
-          "mês",
-          "mo"
-        ],
-        "weeks": [
-          "semanas",
-          "semana",
-          "w"
-        ],
-        "days": [
-          "dias",
-          "dia",
-          "d"
-        ],
-        "hours": [
-          "horas",
-          "hora",
-          "h"
-        ],
-        "minutes": [
-          "minutos",
-          "minuto",
-          "min",
-          "m"
-        ],
-        "seconds": [
-          "segundos",
-          "segundo",
-          "segs",
-          "seg",
-          "s"
-        ],
-        "milliseconds": [
-          "milissegundos",
-          "milissegundo",
-          "milisecs",
-          "milisec",
-          "mili"
-        ],
-        "microseconds": [
-          "microssegundos",
-          "microssegundo",
-          "micro",
-          "us"
-        ],
-        "time": [
-            "tempo",
-            "t"
-        ]
-      },
-      "Time Units": {
-        "singular": {
-          "years": "ano",
-          "months": "mês",
-          "weeks": "semana",
-          "days": "dia",
-          "hours": "hora",
-          "minutes": "minuto",
-          "seconds": "segundo",
-          "milliseconds": "milissegundo",
-          "microseconds": "microssegundo"
+    "SupportTools": {
+        "mention": "você",
+        "TimeTools": {
+            "strftime": "%d/%m/%Y às %H:%M:%S",
+            "Pattern time": {
+                "years": [
+                    "anos",
+                    "ano",
+                    "a"
+                ],
+                "months": [
+                    "meses",
+                    "mês",
+                    "mo"
+                ],
+                "weeks": [
+                    "semanas",
+                    "semana",
+                    "w"
+                ],
+                "days": [
+                    "dias",
+                    "dia",
+                    "d"
+                ],
+                "hours": [
+                    "horas",
+                    "hora",
+                    "h"
+                ],
+                "minutes": [
+                    "minutos",
+                    "minuto",
+                    "min",
+                    "m"
+                ],
+                "seconds": [
+                    "segundos",
+                    "segundo",
+                    "segs",
+                    "seg",
+                    "s"
+                ],
+                "milliseconds": [
+                    "milissegundos",
+                    "milissegundo",
+                    "milisecs",
+                    "milisec",
+                    "mili"
+                ],
+                "microseconds": [
+                    "microssegundos",
+                    "microssegundo",
+                    "micro",
+                    "us"
+                ],
+                "time": [
+                    "tempo",
+                    "t"
+                ]
+            },
+            "Time Units": {
+                "singular": {
+                    "years": "ano",
+                    "months": "mês",
+                    "weeks": "semana",
+                    "days": "dia",
+                    "hours": "hora",
+                    "minutes": "minuto",
+                    "seconds": "segundo",
+                    "milliseconds": "milissegundo",
+                    "microseconds": "microssegundo"
+                },
+                "plural": {
+                    "years": "anos",
+                    "months": "meses",
+                    "weeks": "semanas",
+                    "days": "dias",
+                    "hours": "horas",
+                    "minutes": "minutos",
+                    "seconds": "segundos",
+                    "milliseconds": "milissegundos",
+                    "microseconds": "microssegundos"
+                },
+                "short": {
+                    "years": "a",
+                    "months": "mo",
+                    "weeks": "w",
+                    "days": "d",
+                    "hours": "h",
+                    "minutes": "m",
+                    "seconds": "s",
+                    "milliseconds": "ms",
+                    "microseconds": "µs"
+                }
+            },
+            "Humanize": {
+                "language": "pt_BR"
+            }
         },
-        "plural": {
-          "years": "anos",
-          "months": "meses",
-          "weeks": "semanas",
-          "days": "dias",
-          "hours": "horas",
-          "minutes": "minutos",
-          "seconds": "segundos",
-          "milliseconds": "milissegundos",
-          "microseconds": "microssegundos"
-        },
-        "short": {
-          "years": "a",
-          "months": "mo",
-          "weeks": "w",
-          "days": "d",
-          "hours": "h",
-          "minutes": "m",
-          "seconds": "s",
-          "milliseconds": "ms",
-          "microseconds": "µs"
+        "Lottery": {
+            "bet_or_consultation": [
+                "aposta",
+                "consultar"
+            ]
         }
-      },
-      "Humanize": {
-        "language": "pt_BR"
-      }
+    },
+    "Exceptions": {
+        "ResponseExceptions": {
+            "pipe_response": "aqui está a resposta gerada pelo último comando: {}",
+            "error_on_response": "um erro aconteceu durante o comando '{}'",
+            "command_not_pipeble": "este comando não pôde ser utilizado com pipe."
+        },
+        "LotteryExceptions": {
+            "lottery_seed": "Algo terrível aconteceu, contate '{}' aqui na twitch utilizando whispers."
+        },
+        "ToolsExceptions": {
+            "announcement": "algo deu errado com os anúncios. {}"
+        },
+        "BotMainLoopExceptions": {
+            "dev_required": "",
+            "owner_required": "",
+            "command_on_cooldown": "",
+            "not_implemented": "",
+            "error_not_registered": ""
+        }
+    },
+    "Admin": {
+        "Reload": {
+            "commands_reloaded": "Os comando foram recarregados com sucesso."
+        },
+        "Restart": {
+            "success": "O bot reinicio com sucesso.",
+            "unexpected_error": "Um erro aconteceu ao reiniciar o bot: {}"
+        },
+        "Nada": {
+            "nada": "o comando executou com sucesso."
+        }
+    },
+    "Weather": {
+        "TODO": "TODO"
     },
     "Lottery": {
-      "bet_or_consultation": [
-        "aposta",
-        "consultar"
-      ]
+        "past": [
+            ""
+        ],
+        "duplicate_numbers": "",
+        "current": [
+            "",
+            ""
+        ],
+        "only_numbers": "",
+        "not_enough_cookies": "",
+        "not_enough_cookies_more_five": "",
+        "bet_place": "",
+        "lottery_lock": "",
+        "timeout": "",
+        "too_much_numbers": "",
+        "minimum_bet": "",
+        "no_bet_id": "",
+        "ticket_info": "",
+        "no_old_bets_found": "",
+        "old_bets": "",
+        "no_active_bets_found": "",
+        "active_bets": "",
+        "no_bets": "",
+        "all_bets": "",
+        "unknown_option": "",
+        "lottery_announce_messages": [
+            "",
+            "",
+            "",
+            ""
+        ],
+        "winners": "",
+        "no_winners": "",
+        "lottery_result_announce": "",
+        "remind_message": ""
+    },
+    "Cookies": {
+        "ranks": "",
+        "daily_limit_reached": "",
+        "user_not_found": "",
+        "invalid_option": "",
+        "cookie_not_found": "",
+        "not_eat": "",
+        "negative_eat": "",
+        "multiple_eat": "",
+        "eat": "",
+        "cc_bot_nick": "",
+        "gift_bot_nick": "",
+        "gift_user_himself": "",
+        "gift_on_cooldown_no_stock": "",
+        "invalid_gift_amount": "",
+        "multiple_gift": "",
+        "gift": "",
+        "gift_not_enough_cookies": "",
+        "stock": "",
+        "stock_not_daily": "",
+        "stock_not_enough_cookies": "",
+        "top10_ish": "",
+        "multiple_gift_plural": "",
+        "gift_plural": "",
+        "invalid_amount": "",
+        "daily_win": "",
+        "daily_single_loss": "",
+        "not_daily_multiple_loss": "",
+        "not_daily_single_loss": "",
+        "not_daily_multiple_win": "",
+        "not_daily_lost_everything": "",
+        "format_cookie_count": {
+            "cookie_count": "",
+            "stocked_count": "",
+            "received_count": "",
+            "donated_count": "",
+            "not_redeemed_count": "",
+            "total_count": ""
+        }
+    },
+    "RandomLine": {
+        "random_line": "",
+        "channel_not_found": "",
+        "user_not_found": "",
+        "no_message_found": ""
+    },
+    "Scp": {
+        "unexpected_error": ""
+    },
+    "UpSideDown": {
+        "upsidedown": ""
+    },
+    "Wikihow": {
+        "url": "",
+        "unexpected_error": ""
+    },
+    "Wikipedia": {
+        "url": "",
+        "unexpected_error": ""
+    },
+    "Annotations": {
+        "too_much_characters": "",
+        "title_too_long": "",
+        "too_few_characters": "",
+        "annotation_created": "",
+        "no_annotations_with_id": "",
+        "all_annotations": "",
+        "annotation_content": "",
+        "deleted": "",
+        "id_not_provided": "",
+        "option_not_recognized": ""
+    },
+    "Others": {
+        "Pipe": {
+            "response": ""
+        }
+    },
+    "Afk": {
+        "Afk": {
+            "message_too_long": "",
+            "afk_response": "",
+            "afk_content_response": ""
+        },
+        "IsAfk": {
+            "bot_nick": "",
+            "author_nick": "",
+            "never_seen": "",
+            "is_afk": "",
+            "is_afk_content": "",
+            "is_not_afk": ""
+        },
+        "RAfk": {
+            "time_expired": "",
+            "is_afk": "",
+            "is_afk_content": "",
+            "is_not_afk": ""
+        },
+        "AfkListeners": {
+            "is_afk": "",
+            "is_afk_content": ""
+        }
+    },
+    "Alias": {
+        "user_not_found": "",
+        "dont_have_alias": "",
+        "alias_invalid_name": "",
+        "user_has_no_alias": "",
+        "alias_table_headers": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ],
+        "alias_table_replaces": [
+            "",
+            "",
+            ""
+        ],
+        "alias_table_name": "",
+        "Add": {
+            "no_command_to_add": "",
+            "alias_name_conflict": "",
+            "alias_created": "",
+            "command_dont_exist": ""
+        },
+        "Check": {
+            "user_alias_list": "",
+            "no_alias_found": "",
+            "list_of_alias_of": "",
+            "list_of_special_case": "",
+            "alias_not_found": "",
+            "appendix": "",
+            "alias_deleted": "",
+            "message": "",
+            "normal_message": ""
+        },
+        "Copy": {
+            "user_not_provided": "",
+            "alias_not_provided": "",
+            "target_alias_invalid_name": "",
+            "no_alias_found": "",
+            "link_to_a_link": "",
+            "copy_success": "",
+            "copy_with_name_of": ""
+        },
+        "Describe": {
+            "no_args_to_parse": "",
+            "description_updated": "",
+            "description_reverted": ""
+        },
+        "Edit": {
+            "no_args_provided": "",
+            "edit_link": "",
+            "edit_success": "",
+            "command_dont_exist": ""
+        },
+        "Link": {
+            "link_no_args": "",
+            "alias_name_already_exists": "",
+            "user_dont_has_alias": "",
+            "link_with_invalid_name": "",
+            "link_name_string": "",
+            "link_to_link": "",
+            "link_success": ""
+        },
+        "Remove": {
+            "no_alias_name_provided": "",
+            "alias_removed": ""
+        },
+        "Rename": {
+            "no_name_provided": "",
+            "alias_already_exists": "",
+            "alias_renamed": ""
+        }
+    },
+    "Chance": {
+        "random_percentage": ""
+    },
+    "Choice": {
+        "additional_separators": [
+            ""
+        ],
+        "chosen_option": ""
+    },
+    "Count": {
+        "character_count": ""
+    },
+    "HyperTranslate": {
+        "base_lang": "",
+        "quantity_error": "",
+        "starter_string": "",
+        "unexpected_error": "",
+        "translation": ""
+    },
+    "NSFW": {
+        "Imgur": {
+            "timeout": "",
+            "time_message": "",
+            "all_images_embed": "",
+            "all_images_embed_time": ""
+        },
+        "ImgurRepeated": {
+            "links_repeated": "",
+            "no_repeated": ""
+        },
+        "Boru": {
+            "original": "",
+            "preview": "",
+            "pls_wait": "",
+            "unexpected_error": "",
+            "success": "",
+            "too_much_tags": ""
+        }
+    },
+    "RandomColor": {
+        "response_url": ""
+    },
+    "Reverse": {
+        "reversed_string": ""
+    },
+    "Markov": {
+        "purge": "",
+        "replace": "",
+        "unlearn": ""
     }
-  },
-  "Exceptions": {
-    "ResponseExceptions": {
-      "pipe_response": "aqui está a resposta gerada pelo último comando: {}",
-      "error_on_response": "um erro aconteceu durante o comando '{}'",
-      "command_not_pipeble": "este comando não pôde ser utilizado com pipe."
-    },
-    "LotteryExceptions": {
-      "lottery_seed": "Algo terrível aconteceu, contate '{}' aqui na twitch utilizando whispers."
-    },
-    "ToolsExceptions": {
-      "announcement": "algo deu errado com os anúncios. {}"
-    }
-  },
-  "Admin": {
-    "Reload": {
-      "commands_reloaded": "Os comando foram recarregados com sucesso."
-    },
-    "Restart": {
-      "success": "O bot reinicio com sucesso.",
-      "unexpected_error": "Um erro aconteceu ao reiniciar o bot: {}"
-    },
-    "Nada": {
-      "nada": "o comando executou com sucesso."
-    }
-  },
-
-
-
-  "Weather": {
-    "TODO": "TODO"
-  }
 }
