@@ -439,63 +439,63 @@
                     "lose": "He plays poorly, and your ears start to ring. This gives you a strong headache."
                 },
                 "2": {
-                    "win": "Você percebe como deu sorte quando escuta ao longe sons terríveis de trompete.",
-                    "lose": "Ele te persegue e começa a tocar músicas extremamente mal."
+                    "win": "You realize how lucky you are when you hear terrible trumpet sounds in the distance.",
+                    "lose": "He chases you and starts playing music extremely badly."
                 }
             },
             {
-                "quote": "Um anão montado em um besouro se aproxima. 🐞 \"{}ed 1\" para conversar ou \"{}ed 2\" para empurrá-lo e roubar o besouro",
+                "quote": "A dwarf riding a beetle approaches. 🐞 \"{}ed 1\" to talk or \"{}ed 2\" to push them and steal the beetle.",
                 "1": {
-                    "win": "Vocês se tornam amigos e ele te entrega uma espécie de bússola para a dungeon.",
-                    "lose": "Ele insiste que você veja a coleção de besouros dele, te atrasando. "
+                    "win": "You become friends and he gives you a sort of compass for the dungeon.",
+                    "lose": "He insists that you see his beetle collection, delaying you."
                 },
                 "2": {
-                    "win": "Você derruba o anão do grande besouro e adquire uma montaria para percorrer a dungeon.",
-                    "lose": "O besouro contra ataca para proteger seu dono e te deixa atordoado."
+                    "win": "You knock the dwarf off the large beetle and acquire a mount to traverse the dungeon.",
+                    "lose": "The beetle counterattacks to protect its owner and leaves you stunned."
                 }
             },
             {
-                "quote": "Há uma guilda lutando contra um dragão enorme! 🐉  \"{}ed 1\" para ajudar ou \"{}ed 2\" para se esconder",
+                "quote": "There is a guild fighting against a huge dragon! 🐉 \"{}ed 1\" to help or \"{}ed 2\" to hide.",
                 "1": {
-                    "win": "O dragão é derrotado quando você dá o golpe final, levando a glória!",
-                    "lose": "O bater de asas do dragão é forte suficiente para arremesá-los longe. Você bate a cabeça e desmaia."
+                    "win": "The dragon is defeated when you deliver the final blow, bringing glory!",
+                    "lose": "The dragon's wing beat is strong enough to throw you far. You hit your head and pass out."
                 },
                 "2": {
-                    "win": "Você se esconde e, após ver o dragão matando todos, você volta para roubá-los! ",
-                    "lose": "Os membros da guilda derrotam o dragão e depois vão atrás de você, por não ter ajudado-os."
+                    "win": "You hide and, after seeing the dragon kill everyone, You Return to Avenge Them!",
+                    "lose": "The guild members defeat the dragon and then come after you for not helping them."
                 }
             },
             {
-                "quote": "Um homem alegre está servindo tortas. 🥧 \"{}ed 1\" para comer na hora ou \"{}ed 2\" para guardar",
+                "quote": "A cheerful man is serving pies. 🥧 \"{}ed 1\" to eat now or \"{}ed 2\" to save for later",
                 "1": {
-                    "win": "Com a energia extra da torta, você corre mais rápido pela dungeon!",
-                    "lose": "Quando você se aproxima para pegar a torta, ele a joga na sua cara."
+                    "win": "With the extra energy from the pie, you run faster through the dungeon!",
+                    "lose": "When you approach to take the pie, he throws it in your face."
                 },
                 "2": {
-                    "win": "Você a guarda e, tempo depois, comê-la fez suas energias retornarem completamente!",
-                    "lose": "Tempo depois, você vê que a torta que guardou sujou tudo em sua bolsa. Você perde tempo limpando as coisas."
+                    "win": "You save it and, some time later, eating it restores your energy completely!",
+                    "lose": "Some time later, you see that the pie you saved has messed everything up in your bag. You lose time cleaning things up."
                 }
             },
             {
-                "quote": "Um animal está vindo em sua direção! \"{}ed 1\" para aguardar ele ou \"{}ed 2\" para correr dele",
+                "quote": "An animal is coming your way! \"{}ed 1\" to wait for it or \"{}ed 2\" to run away",
                 "1": {
-                    "win": "Um lindo unicórnio se aproxima e a magia de seu chifre lhe traz força extra. 🦄",
-                    "lose": "Um pássaro te traz uma mensagem: \"você nunca terá sucesso\". Você senta e chora. 🐦"
+                    "win": "A beautiful unicorn approaches and the magic of its horn brings you extra strength. 🦄",
+                    "lose": "A bird delivers a message: \"You will never succeed.\" You sit and cry. 🐦"
                 },
                 "2": {
-                    "win": "Você corre, mas um macaco com pernas minúsculas te alcança e joga um pó branco. Isso te deixa mais alerta. 🦍",
-                    "lose": "Você corre, mas um pato sinistro te alcança e rouba suas roupas. Você é forçado retornar. 🦆"
+                    "win": "You run, but a monkey with tiny legs catches up to you and throws white powder. This makes you more alert. 🦍",
+                    "lose": "You run, but a sinister duck catches up to you and steals your clothes. You are forced to return. 🦆"
                 }
             },
             {
-                "quote": "A dungeon é assombrada por um fantasma! 👻 \"{}ed 1\" para tentar confrontá-lo ou \"{}ed 2\" para tentar evitá-lo",
+                "quote": "The dungeon is haunted by a ghost! 👻 \"{}ed 1\" to try to confront it or \"{}ed 2\" to try to avoid it",
                 "1": {
-                    "win": "Você expurga o fantasma, liberando a passagem para a saída!",
-                    "lose": "Você é derrotado pelo fantasma e acaba sendo amaldiçoado."
+                    "win": "You exorcise the ghost, clearing the path to the exit!",
+                    "lose": "You are defeated by the ghost and end up being cursed."
                 },
                 "2": {
-                    "win": "Você passa de mansinho pelo fantasma até chegar na saída!",
-                    "lose": "O fantasma nota sua presença e acaba te possuindo."
+                    "win": "You sneak past the ghost until you reach the exit!",
+                    "lose": "The ghost notices your presence and ends up possessing you."
                 }
             }
         ],
