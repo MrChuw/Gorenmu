@@ -169,14 +169,14 @@
         "unknown_option": "As opções de loteria são: \"create\" e \"check\".",
         "lottery_announce_messages": [
             "Em 30 minutos, a loteria começará a calcular os resultados. O prêmio total é {}, use {}lottery create <numbers> para participar.",
-            "",
-            "",
-            ""
+            "Em 15 minutos, a loteria começará a calcular os resultados.",
+            "Em 1 minuto, a loteria começará a calcular os resultados.",
+            "Lotaria fechada, começando a calcular os resultados."
         ],
-        "winners": "",
-        "no_winners": "",
-        "lottery_result_announce": "",
-        "remind_message": ""
+        "winners": "Os números sorteados foram: {}, todos os vencedores serão notificados com um lembrete com os valores e números sorteados.",
+        "no_winners": "Os números sorteados foram: {}, não houve vencedores, o prêmio de {} passou para o próximo sorteio.",
+        "lottery_result_announce": "A loteria acabou e aqui estão os resultados: {}",
+        "remind_message": "Ganhaste biscoitos na lotaria! Os bilhetes vencedores foram: {}"
     },
     "Cookies": {
         "ranks": "",
