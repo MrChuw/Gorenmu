@@ -225,23 +225,23 @@
         "no_message_found": "Não encontrei nenhuma mensagem de @{} in @{}."
     },
     "Scp": {
-        "unexpected_error": ""
+        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
     },
     "UpSideDown": {
         "upsidedown": "{}"
     },
     "Wikihow": {
         "url": "https://pt.wikihow.com/Especial:Randomizer",
-        "unexpected_error": ""
+        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
     },
     "Wikipedia": {
         "url": "https://pt.wikipedia.org/wiki/Special:Random",
-        "unexpected_error": ""
+        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
     },
     "Annotations": {
-        "too_much_characters": "",
-        "title_too_long": "",
-        "too_few_characters": "",
+        "too_much_characters": "A anotação deve ter um máximo de 450 caracteres.",
+        "title_too_long": "O título deve ter um máximo de 32 caracteres.",
+        "too_few_characters": "Esqueceu-se de enviar o conteúdo da anotação.",
         "annotation_created": "",
         "no_annotations_with_id": "",
         "all_annotations": "",
