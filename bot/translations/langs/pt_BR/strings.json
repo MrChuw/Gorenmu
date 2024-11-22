@@ -372,7 +372,7 @@
         "base_lang": "pt",
         "quantity_error": "Você deve especificar o número de vezes que o texto será traduzido. Exemplo: `{}hypertranslate 10 <texto>`",
         "starter_string": "Traduzindo o texto…",
-        "unexpected_error": "",
+        "unexpected_error": "O texto não poderia ser traduzido.",
         "translation": ""
     },
     "NSFW": {
