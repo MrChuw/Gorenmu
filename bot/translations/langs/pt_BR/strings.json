@@ -219,7 +219,7 @@
         }
     },
     "RandomLine": {
-        "random_line": "(sent {} atrás por @{})",
+        "random_line": "{} (enviado há {} por @{})",
         "channel_not_found": "Não encontrei nenhum canal chamado @{}.",
         "user_not_found": "Não encontrei nenhum usuário chamado @{}.",
         "no_message_found": "Não encontrei nenhuma mensagem de @{} in @{}."
@@ -228,14 +228,14 @@
         "unexpected_error": ""
     },
     "UpSideDown": {
-        "upsidedown": ""
+        "upsidedown": "{}"
     },
     "Wikihow": {
-        "url": "",
+        "url": "https://pt.wikihow.com/Especial:Randomizer",
         "unexpected_error": ""
     },
     "Wikipedia": {
-        "url": "",
+        "url": "https://pt.wikipedia.org/wiki/Special:Random",
         "unexpected_error": ""
     },
     "Annotations": {
