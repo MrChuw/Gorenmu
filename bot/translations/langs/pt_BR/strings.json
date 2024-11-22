@@ -244,11 +244,11 @@
         "too_few_characters": "Você se esqueceu de enviar o conteúdo da anotação.",
         "annotation_created": "Nota criada com sucesso. 📝 (ID: {})",
         "no_annotations_with_id": "Você não tem nenhuma anotação com ID {}.",
-        "all_annotations": "",
+        "all_annotations": "Suas anotações são aquelas com ID: {}",
         "annotation_content": "{}",
-        "deleted": "",
+        "deleted": "Sua anotação com ID {} foi excluída com sucesso. 🗑",
         "id_not_provided": "{} não é um ID válido.",
-        "option_not_recognized": ""
+        "option_not_recognized": "As opções válidas são apenas \"add\" \"check\" \"delete\""
     },
     "Others": {
         "Pipe": {
