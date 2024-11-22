@@ -2,17 +2,17 @@
     "Pets Names": {
         "bee": {
             "specie": "abelha",
-            "price": ""
+            "price": "10"
         },
         "butterfly": {
             "specie": "",
-            "emoji": "",
-            "price": ""
+            "emoji": "🦋️",
+            "price": "10"
         },
         "shrimp": {
             "specie": "",
-            "emoji": "",
-            "price": ""
+            "emoji": "🦐️",
+            "price": "10"
         },
         "snail": {
             "specie": "",
