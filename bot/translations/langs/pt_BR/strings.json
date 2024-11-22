@@ -369,7 +369,7 @@
         "character_count": "Há um total de caracteres {}. Destes, {} são sinais de pontuação, {} são letras maiúsculas, e {} são caracteres especiais."
     },
     "HyperTranslate": {
-        "base_lang": "",
+        "base_lang": "pt_BR",
         "quantity_error": "",
         "starter_string": "",
         "unexpected_error": "",
