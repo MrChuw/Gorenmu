@@ -166,7 +166,7 @@
         "active_bets": "Suas apostas atuais são: {}, com um valor total de {}.",
         "no_bets": "Você não fez nenhuma aposta até agora.",
         "all_bets": "Todas as suas apostas são: {}, com um valor total de {}.",
-        "unknown_option": "As opções de loteria são: \"criar\" e \"verificar\".",
+        "unknown_option": "As opções de loteria são: \"create\" e \"check\".",
         "lottery_announce_messages": [
             "",
             "",
