@@ -176,7 +176,7 @@
         "winners": "Os números sorteados foram: {}, todos os vencedores serão notificados com um lembrete com os valores e números sorteados.",
         "no_winners": "Os números sorteados foram: {}, não houve vencedores, o prêmio de {} passou para o próximo sorteio.",
         "lottery_result_announce": "A loteria acabou e aqui estão os resultados: {}",
-        "remind_message": "Ganhaste biscoitos na lotaria! Os bilhetes vencedores foram: {}"
+        "remind_message": "Você ganhou {} cookies na loteria! Os ingressos vencedores foram: {}"
     },
     "Cookies": {
         "ranks": "",
