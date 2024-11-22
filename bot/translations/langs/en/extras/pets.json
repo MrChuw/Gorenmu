@@ -2,7 +2,8 @@
     "Pets Names": {
         "bee": {
             "specie": "bee",
-            "price": 10
+            "price": 10,
+            "emoji": "🐝️"
         },
         "butterfly": {
             "specie": "butterfly",
