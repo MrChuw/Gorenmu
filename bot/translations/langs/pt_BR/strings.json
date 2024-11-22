@@ -252,13 +252,13 @@
     },
     "Others": {
         "Pipe": {
-            "response": "O tubo não é realmente um comando. Para mais informações, visite este link: {}"
+            "response": "Pipe não é realmente um comando. Para mais informações, visite este link: {}"
         }
     },
     "Afk": {
         "Afk": {
             "message_too_long": "",
-            "afk_response": "",
+            "afk_response": "{}: {}",
             "afk_content_response": ""
         },
         "IsAfk": {
