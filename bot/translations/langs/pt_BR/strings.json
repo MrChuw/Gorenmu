@@ -148,9 +148,9 @@
         "duplicate_numbers": "",
         "current": [
             "atual",
-            ""
+            "presente"
         ],
-        "only_numbers": "",
+        "only_numbers": "Apenas envie números de 1 a 60.",
         "not_enough_cookies": "",
         "not_enough_cookies_more_five": "",
         "bet_place": "",
