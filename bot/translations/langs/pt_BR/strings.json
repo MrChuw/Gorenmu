@@ -266,7 +266,7 @@
             "author_nick": "você não está trabalhando... obviamente.",
             "never_seen": "Não me lembro de ter visto nenhum {}.",
             "is_afk": "@{} {}: {}",
-            "is_afk_content": "",
+            "is_afk_content": "não. e deixou uma nota: {}",
             "is_not_afk": ""
         },
         "RAfk": {
