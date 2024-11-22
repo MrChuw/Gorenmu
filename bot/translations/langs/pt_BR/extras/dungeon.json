@@ -37,7 +37,7 @@
                 }
             },
             {
-                "quote": "A dungeon está cheia de zumbis! 🧟 \"{}ed 1\" para tentar eliminá-los ou \"{}ed 2\" para se disfarçar de morto-vivo",
+                "quote": "A dungeon está cheia de zumbis! 🧟 \"{}ed 1\" para tentar eliminá-los ou \"{}ed 2\" para se disfarçar de morto-vivo.",
                 "1": {
                     "win": "Você consegue lidar com todos os zumbis e continuar até a saída!",
                     "lose": "Você é incapaz de lidar com tantos zumbis e recua, ferido."
@@ -48,7 +48,7 @@
                 }
             },
             {
-                "quote": "A dungeon está infestada de aranhas! 🕷️ \"{}ed 1\" para tentar atravessar ou \"{}ed 2\" para conjurar uma magia",
+                "quote": "A dungeon está infestada de aranhas! 🕷️ \"{}ed 1\" para tentar atravessar ou \"{}ed 2\" para conjurar uma magia.",
                 "1": {
                     "win": "Você passa facilmente pelas aranhas e encontra a saída!",
                     "lose": "As aranhas te encurralam e você acaba sendo picado por elas."
@@ -59,7 +59,7 @@
                 }
             },
             {
-                "quote": "A dungeon está infestada de ratos! 🐀 \"{}ed 1\" para enfrentá-los ou \"{}ed 2\" para pensar em outro plano",
+                "quote": "A dungeon está infestada de ratos! 🐀 \"{}ed 1\" para enfrentá-los ou \"{}ed 2\" para pensar em outro plano.",
                 "1": {
                     "win": "Você consegue derrotar todos os ratos, encontrando a saída!",
                     "lose": "Surge mais ratos que você consegue lidar e você foge com medo da leptospirose."
@@ -70,7 +70,7 @@
                 }
             },
             {
-                "quote": "Ao entrar na dungeon, você encontra uma banana. 🍌 \"{}ed 1\" para come-lá ou \"{}ed 2\" para pisar nela ",
+                "quote": "Ao entrar na dungeon, você encontra uma banana. 🍌 \"{}ed 1\" para come-lá ou \"{}ed 2\" para pisar nela.",
                 "1": {
                     "win": "Você come a banana e isso te enche de determinação!",
                     "lose": "Você come a banana e, tempo depois, sente uma dor de barriga insuportável."
@@ -81,7 +81,7 @@
                 }
             },
             {
-                "quote": "Ao entrar na dungeon, você encontra um pergaminho. 📜 \"{}ed 1\" para ler ou \"{}ed 2\" para ignorá-lo",
+                "quote": "Ao entrar na dungeon, você encontra um pergaminho. 📜 \"{}ed 1\" para ler ou \"{}ed 2\" para ignorá-lo.",
                 "1": {
                     "win": "Você lê o pergaminho que continha dicas para achar a saída!",
                     "lose": "O pergaminho dizia \"Morte iminente\" e, por medo, você desiste da dungeon."
@@ -92,10 +92,10 @@
                 }
             },
             {
-                "quote": "Um ovo com pernas está tentando subir uma plataforma. 🥚 \"{}ed 1\" para ajudá-lo ou \"{}ed 2\" para empurrá-lo",
+                "quote": "Um ovo com pernas está tentando subir uma plataforma. 🥚 \"{}ed 1\" para ajudá-lo ou \"{}ed 2\" para empurrá-lo.",
                 "1": {
                     "win": "Você consegue ajudar o ovo e, em troca, recebe uma benção!",
-                    "lose": "Você acaba derrubando-o e o quebra. Imediatamente você é amaldiçoado."
+                    "lose": "Você acaba derrubando-o e o quebra. Imediatamente você é amaldiçoado!"
                 },
                 "2": {
                     "win": "Você estimula ovo e ele caiu da plataforma. Você acha engraçado e continua uma masmorra, feliz.",
@@ -103,18 +103,18 @@
                 }
             },
             {
-                "quote": "Você encontra um cachorro! 🐕 \"{}ed 1\" para fazer carinho ou \"{}ed 2\" para latir para ele",
+                "quote": "Você encontra um cachorro! 🐕 \"{}ed 1\" para fazer carinho ou \"{}ed 2\" para latir para ele.",
                 "1": {
                     "win": "Você consegue fazer carinho no cachorro e isso eleva seu espírito!",
                     "lose": "O cachorro morde sua mão muito forte, te obrigando a retornar para se medicar."
                 },
                 "2": {
-                    "win": "Você tarde para o cão e ele tarde de volta. Isso enche você de coragem! ",
+                    "win": "Você late para o cão e ele late de volta. Isso enche você de coragem!",
                     "lose": "O cachorro se assusta e começa a te perseguir incessantemente, até você ir embora."
                 }
             },
             {
-                "quote": "Você encontra um druida bebendo refrigerante. 🥤 \"{}ed 1\" para pedir um refrigerante ou \"{}ed 2\" para pedir benção",
+                "quote": "Você encontra um druida bebendo refrigerante. 🥤 \"{}ed 1\" para pedir um refrigerante ou \"{}ed 2\" para pedir benção.",
                 "1": {
                     "win": "Você se senta para tomar um refrigerante com ele e isso cura todos seus ferimentos!",
                     "lose": "O druida recusa seu pedido e cospe refrigerante em você."
@@ -125,7 +125,7 @@
                 }
             },
             {
-                "quote": "Você encontra um gênio da lâmpada! 🧞 \"{}ed 1\" para fazer um pedido ou \"{}ed 2\" para libertá-lo da lâmpada",
+                "quote": "Você encontra um gênio da lâmpada! 🧞 \"{}ed 1\" para fazer um pedido ou \"{}ed 2\" para libertá-lo da lâmpada.",
                 "1": {
                     "win": "Você pede para o gênio levá-lo até o final da dungeon e o desejo é concedido!",
                     "lose": "Você pede muito dinheiro para o gênio. Assim, um milhão de moedas caí sobre você, te esmagando."
@@ -136,7 +136,7 @@
                 }
             },
             {
-                "quote": "Você encontra um guerreiro que insiste em te ajudar. 🛡️ \"{}ed 1\" para confiar no guerreiro ou \"{}ed 2\" para atacá-lo",
+                "quote": "Você encontra um guerreiro que insiste em te ajudar. 🛡️ \"{}ed 1\" para confiar no guerreiro ou \"{}ed 2\" para atacá-lo.",
                 "1": {
                     "win": "O guerreiro propõe uma grande ajuda e, unidos, finalizam a dungeon!",
                     "lose": "O guerreiro te leva para caminhos desconhecidos e te abandona. Você fica perdido e sozinho."
@@ -147,7 +147,7 @@
                 }
             },
             {
-                "quote": "Você encontra um homem tocando música clássica. 🍷 \"{}ed 1\" para dialogar ou \"{}ed 2\" para negociar",
+                "quote": "Você encontra um homem tocando música clássica. 🍷 \"{}ed 1\" para dialogar ou \"{}ed 2\" para negociar.",
                 "1": {
                     "win": "O homem acaba gostando de você e te passa boas estratégias para a dungeon.",
                     "lose": "O homem te acha insuportável e te fala coisas que abaixam seu ânimo."
@@ -158,9 +158,9 @@
                 }
             },
             {
-                "quote": "Você encontra um lobo segurando uma espada na boca! 🐺 \"{}ed 1\" para domá-lo ou \"{}ed 2\" para pegar a espada dele",
+                "quote": "Você encontra um lobo segurando uma espada na boca! 🐺 \"{}ed 1\" para domá-lo ou \"{}ed 2\" para pegar a espada dele.",
                 "1": {
-                    "win": "Você consegue domar o lobo! Ele te acompanha e protege até o fim da dungeon. ",
+                    "win": "Você consegue domar o lobo! Ele te acompanha e protege até o fim da dungeon.",
                     "lose": "Você tenta domá-lo, mas falha! Triste, você tenta continuar sozinho."
                 },
                 "2": {
@@ -169,7 +169,7 @@
                 }
             },
             {
-                "quote": "Você encontra uma bola de cristal mágica! 🔮 \"{}ed 1\" para tocá-la ou \"{}ed 2\" para coletá-la",
+                "quote": "Você encontra uma bola de cristal mágica! 🔮 \"{}ed 1\" para tocá-la ou \"{}ed 2\" para coletá-la.",
                 "1": {
                     "win": "Você toca a bola de cristal e é transportado para a saída da dungeon!",
                     "lose": "Você toca nela e é transportado de volta para o início da dungeon."
@@ -180,10 +180,10 @@
                 }
             },
             {
-                "quote": "Você encontra uma caixa! 📦 \"{}ed 1\" para abrí-la ou \"{}ed 2\" para ignorá-la ",
+                "quote": "Você encontra uma caixa! 📦 \"{}ed 1\" para abrí-la ou \"{}ed 2\" para ignorá-la.",
                 "1": {
                     "win": "Você encontra diversas riquezas dentro dela que te ajudam a completar a dungeon!",
-                    "lose": "Existe outra caixa dentro da caixa. Você abre. Dentro de mais uma caixa, um papel escrito: \"Nada\"."
+                    "lose": "Existe outra caixa dentro da caixa. Você abre. Dentro de mais uma caixa, um papel escrito: \"Nada.\""
                 },
                 "2": {
                     "win": "Você ignora a caixa e continua sua jornada normalmente, até finalizá-la.",
@@ -191,7 +191,7 @@
                 }
             },
             {
-                "quote": "Você encontra uma casa com muitas portas. 🏠 \"{}ed 1\" para entrar na casa ou \"{}ed 2\" para investigar atrás dela",
+                "quote": "Você encontra uma casa com muitas portas. 🏠 \"{}ed 1\" para entrar na casa ou \"{}ed 2\" para investigar atrás dela.",
                 "1": {
                     "win": "Ao abrir uma das portas, você vê que era um atalho para a saída!",
                     "lose": "Você abre uma das portas e cai em um buraco que estava disfarçado no piso."
@@ -202,7 +202,7 @@
                 }
             },
             {
-                "quote": "Você encontra uma estrela brilhante. ⭐ \"{}ed 1\" para tocá-la ou \"{}ed 2\" para socá-la",
+                "quote": "Você encontra uma estrela brilhante. ⭐ \"{}ed 1\" para tocá-la ou \"{}ed 2\" para socá-la.",
                 "1": {
                     "win": "Você toca a estrela, absorvendo ela e tornando-se invencível por um curto tempo.",
                     "lose": "Você toca a estrela, tomando um choque atordoador e adormecendo."
@@ -213,7 +213,7 @@
                 }
             },
             {
-                "quote": "Você encontra uma máquina de cookies! 🍪 \"{}ed 1\" para chutá-la ou \"{}ed 2\" para investiga-lá",
+                "quote": "Você encontra uma máquina de cookies! 🍪 \"{}ed 1\" para chutá-la ou \"{}ed 2\" para investiga-lá.",
                 "1": {
                     "win": "Você decide chutá-la e isso libera um delicioso cookie!",
                     "lose": "Você soca a máquina e ela, ofendida, devolve o soco dado por você."
@@ -224,7 +224,7 @@
                 }
             },
             {
-                "quote": "Você encontra uma mesa cheia de sanduíches. 🥪 \"{}ed 1\" para comer um ou \"{}ed 2\" para pegar todos",
+                "quote": "Você encontra uma mesa cheia de sanduíches. 🥪 \"{}ed 1\" para comer um ou \"{}ed 2\" para pegar todos.",
                 "1": {
                     "win": "Você come um sanduíche e isso eleva sua motivação!",
                     "lose": "Você come um sanduíche e, tempo depois, sente uma dor de barriga insuportável."
@@ -235,7 +235,7 @@
                 }
             },
             {
-                "quote": "Você encontra uma televisão ligada. 📺 \"{}ed 1\" para assistir ou \"{}ed 2\" para desligá-la ",
+                "quote": "Você encontra uma televisão ligada. 📺 \"{}ed 1\" para assistir ou \"{}ed 2\" para desligá-la.",
                 "1": {
                     "win": "Você decide assistir a televisão e encontra programas que aumentam sua autoestima.",
                     "lose": "Uma menina sai da televisão e você foge da dungeon desesperado."
@@ -246,7 +246,7 @@
                 }
             },
             {
-                "quote": "Você enxerga uma colônia enorme de abelhas! 🐝 \"{}ed 1\" para roubar o mel ou \"{}ed 2\" para fugir imediatamente",
+                "quote": "Você enxerga uma colônia enorme de abelhas! 🐝 \"{}ed 1\" para roubar o mel ou \"{}ed 2\" para fugir imediatamente.",
                 "1": {
                     "win": "Você come o mel e ele te dá energia para finalizar a dungeon rapidamente!",
                     "lose": "Ao se aproximar da colmeia, as abelhas te atacam e te deixam inconsciente."
@@ -257,7 +257,7 @@
                 }
             },
             {
-                "quote": "Você esbarra em um homem com olhos vacilantes 👀 \"{}ed 1\" para encará-lo sem piscar ou \"{}ed 2\" para desviar o olhar",
+                "quote": "Você esbarra em um homem com olhos vacilantes 👀 \"{}ed 1\" para encará-lo sem piscar ou \"{}ed 2\" para desviar o olhar.",
                 "1": {
                     "win": "Ele pisca para você e te dá um par de botas novo que te deixa mais rápido!",
                     "lose": "Ao olhar no fundo dos olhos dele, você se torna extremamente azarado."
@@ -268,7 +268,7 @@
                 }
             },
             {
-                "quote": "Você ouve dois magos conversando. 🧙🧙 \"{}ed 1\" para esgueirar-se e ouví-los ou \"{}ed 2\" para mostrar a eles sua força",
+                "quote": "Você ouve dois magos conversando. 🧙🧙 \"{}ed 1\" para esgueirar-se e ouví-los ou \"{}ed 2\" para mostrar a eles sua força.",
                 "1": {
                     "win": "Eles falam algo sobre poções e de repente você se torna invisível!",
                     "lose": "Eles dizem algumas palavras de encantamento e você fica perdidamente apaixonado."
@@ -279,7 +279,7 @@
                 }
             },
             {
-                "quote": "Você encontra uma chave e vê duas portas. 🚪 \"{}ed 1\" para abrir a da esquerda ou \"{}ed 2\" para abrir a da direita",
+                "quote": "Você encontra uma chave e vê duas portas. 🚪 \"{}ed 1\" para abrir a da esquerda ou \"{}ed 2\" para abrir a da direita.",
                 "1": {
                     "win": "Você liberta um drúida bêbado e o ajuda a lembrar como se trancou ali!",
                     "lose": "Você solta uma criatura emplumada que tira suas roupas e desaparece."
@@ -290,7 +290,7 @@
                 }
             },
             {
-                "quote": "Você encontra uma chave e um baú. 🔑 \"{}ed 1\" para abrí-lo ou \"{}ed 2\" para levar o baú sem abri-lo",
+                "quote": "Você encontra uma chave e um baú. 🔑 \"{}ed 1\" para abrí-lo ou \"{}ed 2\" para levar o baú sem abri-lo.",
                 "1": {
                     "win": "Dentro havia um mapa com o caminho para o final da dungeon!",
                     "lose": "O baú era um monstro mímico! Você foge da dungeon para sobreviver."
@@ -301,7 +301,7 @@
                 }
             },
             {
-                "quote": "Sua tocha apaga e você cai em um buraco. 🕳 \"{}ed 1\" para escalar ou \"{}ed 2\" para voar",
+                "quote": "Sua tocha apaga e você cai em um buraco. 🕳 \"{}ed 1\" para escalar ou \"{}ed 2\" para voar.",
                 "1": {
                     "win": "Você consegue escalar com facilidade usando a velocidade angular!",
                     "lose": "Após várias tentativas, você desiste e chora em posição fetal esperando alguém."
@@ -312,7 +312,7 @@
                 }
             },
             {
-                "quote": "Você encontra um mapa com um \"X\" marcado. 🗺 \"{}ed 1\" para seguir o mapa ou \"{}ed 2\" para descartá-lo",
+                "quote": "Você encontra um mapa com um \"X\" marcado. 🗺 \"{}ed 1\" para seguir o mapa ou \"{}ed 2\" para descartá-lo.",
                 "1": {
                     "win": "O \"X\" te leva para a saída da dungeon!",
                     "lose": "Você anda por horas até perceber que está caminhando em círculos."
@@ -323,7 +323,7 @@
                 }
             },
             {
-                "quote": "Você encontra um cavaleiro que te desafia! ⚔ \"{}ed 1\" para aceitar ou \"{}ed 2\" para recusar",
+                "quote": "Você encontra um cavaleiro que te desafia! ⚔ \"{}ed 1\" para aceitar ou \"{}ed 2\" para recusar.",
                 "1": {
                     "win": "Você derrota o cavaleiro, se esquivando de todos os ataques!",
                     "lose": "Ele te dá uma surra terrível e te deixa desacordado."
@@ -334,7 +334,7 @@
                 }
             },
             {
-                "quote": "Você encontra uma coruja falante. 🦉 \"{}ed 1\" para ouví-la ou \"{}ed 2\" para guardá-la na gaiola",
+                "quote": "Você encontra uma coruja falante. 🦉 \"{}ed 1\" para ouví-la ou \"{}ed 2\" para guardá-la na gaiola.",
                 "1": {
                     "win": "A coruja velha e sábia lhe dá o incentivo que precisava para lutar pela dungeon!",
                     "lose": "Você cai em uma magia de ilusão da coruja e acorda horas depois."
@@ -345,7 +345,7 @@
                 }
             },
             {
-                "quote": "Você entra em uma caverna cheia de morcegos. 🦇  \"{}ed 1\" para avançar silenciosamente ou \"{}ed 2\" para atacá-los ",
+                "quote": "Você entra em uma caverna cheia de morcegos. 🦇 \"{}ed 1\" para avançar silenciosamente ou \"{}ed 2\" para atacá-los.",
                 "1": {
                     "win": "Você esgueira-se para evitar alertá-los e consegue avançar!",
                     "lose": "Seu silêncio não dura muito, você logo tropeça e trazendo todos os morcegos pra cima de você."
@@ -356,7 +356,7 @@
                 }
             },
             {
-                "quote": "Você vê um rato gigante! 🐀 \"{}ed 1\" para atacá-lo ou \"{}ed 2\" para recuar e preparar uma armadilha",
+                "quote": "Você vê um rato gigante! 🐀 \"{}ed 1\" para atacá-lo ou \"{}ed 2\" para recuar e preparar uma armadilha.",
                 "1": {
                     "win": "Em uma batalha épica você acaba com o rato e encontra luvas lendárias!",
                     "lose": "Após diversos ataques, você fica exausto e ele te acerta um golpe em cheio."
@@ -367,7 +367,7 @@
                 }
             },
             {
-                "quote": "Você vê uma donzela sendo escoltada por vários cavaleiros. 😍 \"{}ed 1\" para seduzí-la ou \"{}ed 2\" para acenar",
+                "quote": "Você vê uma donzela sendo escoltada por vários cavaleiros. 😍 \"{}ed 1\" para seduzí-la ou \"{}ed 2\" para acenar.",
                 "1": {
                     "win": "Ela te corresponde com um sorriso tímido que aumenta sua motivação!",
                     "lose": "Imediatamente todos guerreiros vão em sua direção e você se vê obrigado a fugir."
@@ -378,18 +378,18 @@
                 }
             },
             {
-                "quote": "Você vê um homem bonito e musculoso à frente. 💪 \"{}ed 1\" para flertar ou \"{}ed 2\" para pedir ajuda",
+                "quote": "Você vê um homem bonito e musculoso à frente. 💪 \"{}ed 1\" para flertar ou \"{}ed 2\" para pedir ajuda.",
                 "1": {
                     "win": "Ele corresponde e o clima esquenta. Acontecem coisas que te deixam extremamente revigorado.",
                     "lose": "Ele ri alto debochadamente e passa a te ignorar completamente."
                 },
                 "2": {
-                    "win": "Ele aponta para a saída da dungeon fazendo uma pose que realça todos os músculos! ",
+                    "win": "Ele aponta para a saída da dungeon fazendo uma pose que realça todos os músculos!",
                     "lose": "Você pede ajuda, mas ele não te escuta. Quando você insiste, desperta do sonho."
                 }
             },
             {
-                "quote": "Você vê uma linda mulher ruiva à frente. 😍 \"{}ed 1\" para flertar ou \"{}ed 2\" para pedir ajuda",
+                "quote": "Você vê uma linda mulher ruiva à frente. 😍 \"{}ed 1\" para flertar ou \"{}ed 2\" para pedir ajuda.",
                 "1": {
                     "win": "Ela corresponde e o clima esquenta. Acontecem coisas que te deixam extremamente revigorado.",
                     "lose": "Ela ri alto debochadamente e passa a te ignorar completamente."
@@ -400,7 +400,7 @@
                 }
             },
             {
-                "quote": "Há muitos sapos na dungeon! 🐸 \"{}ed 1\" para beijá-los ou \"{}ed 2\" para queimá-los",
+                "quote": "Há muitos sapos na dungeon! 🐸 \"{}ed 1\" para beijá-los ou \"{}ed 2\" para queimá-los.",
                 "1": {
                     "win": "Você pega um dos sapos e o beija, ganhando força extra!",
                     "lose": "Você beija alguns sapos e começa a ficar confuso. Depois, se perde por horas em alucinações."
@@ -411,18 +411,18 @@
                 }
             },
             {
-                "quote": "No meio da dungeon, você encontra um alienígena dançarino 👽 \"{}ed 1\" para dançar junto ou \"{}ed 2\" para desligar o som",
+                "quote": "No meio da dungeon, você encontra um alienígena dançarino 👽 \"{}ed 1\" para dançar junto ou \"{}ed 2\" para desligar o som.",
                 "1": {
                     "win": "Vocês se divertem dançando e ele te dá uma poção de vigor em forma de agradecimento.",
                     "lose": "Você desiste de completar a dungeon para dançar com ele."
                 },
                 "2": {
-                    "win": "O alienígena te agradece e conta que estava há anos preso na maldição de não conseguir parar de dançar",
+                    "win": "O alienígena te agradece e conta que estava há anos preso na maldição de não conseguir parar de dançar.",
                     "lose": "Enfurecido, o alienígena atira lasers dos dedos e você foge desesperamente."
                 }
             },
             {
-                "quote": "Você vê um botão na entrada da dungeon. 🔘 \"{}ed 1\" para acioná-lo ou \"{}ed 2\" para acioná-lo com a ponta do nariz",
+                "quote": "Você vê um botão na entrada da dungeon. 🔘 \"{}ed 1\" para acioná-lo ou \"{}ed 2\" para acioná-lo com a ponta do nariz.",
                 "1": {
                     "win": "Uma cabine sobe do chão contendo uma espada brilhante.",
                     "lose": "Diversas bombas explodem na entrada da dungeon, bloqueando a passagem."
@@ -433,7 +433,7 @@
                 }
             },
             {
-                "quote": "Um homem com um trompete aparece. 🎺 \"{}ed 1\" para pedir para ele tocar ou \"{}ed 2\" para ignorar",
+                "quote": "Um homem com um trompete aparece. 🎺 \"{}ed 1\" para pedir para ele tocar ou \"{}ed 2\" para ignorar.",
                 "1": {
                     "win": "A música dele te inspira e você se sente mais determinado!",
                     "lose": "Ele toca mal e seus ouvidos começam a zunir. Isso te dá uma forte dor de cabeça."
@@ -444,10 +444,10 @@
                 }
             },
             {
-                "quote": "Um anão montado em um besouro se aproxima. 🐞 \"{}ed 1\" para conversar ou \"{}ed 2\" para empurrá-lo e roubar o besouro",
+                "quote": "Um anão montado em um besouro se aproxima. 🐞 \"{}ed 1\" para conversar ou \"{}ed 2\" para empurrá-lo e roubar o besouro.",
                 "1": {
                     "win": "Vocês se tornam amigos e ele te entrega uma espécie de bússola para a dungeon.",
-                    "lose": "Ele insiste que você veja a coleção de besouros dele, te atrasando. "
+                    "lose": "Ele insiste que você veja a coleção de besouros dele, te atrasando."
                 },
                 "2": {
                     "win": "Você derruba o anão do grande besouro e adquire uma montaria para percorrer a dungeon.",
@@ -455,18 +455,18 @@
                 }
             },
             {
-                "quote": "Há uma guilda lutando contra um dragão enorme! 🐉  \"{}ed 1\" para ajudar ou \"{}ed 2\" para se esconder",
+                "quote": "Há uma guilda lutando contra um dragão enorme! 🐉 \"{}ed 1\" para ajudar ou \"{}ed 2\" para se esconder.",
                 "1": {
                     "win": "O dragão é derrotado quando você dá o golpe final, levando a glória!",
                     "lose": "O bater de asas do dragão é forte suficiente para arremesá-los longe. Você bate a cabeça e desmaia."
                 },
                 "2": {
-                    "win": "Você se esconde e, após ver o dragão matando todos, você volta para roubá-los! ",
+                    "win": "Você se esconde e, após ver o dragão matando todos, você volta para roubá-los!",
                     "lose": "Os membros da guilda derrotam o dragão e depois vão atrás de você, por não ter ajudado-os."
                 }
             },
             {
-                "quote": "Um homem alegre está servindo tortas. 🥧 \"{}ed 1\" para comer na hora ou \"{}ed 2\" para guardar",
+                "quote": "Um homem alegre está servindo tortas. 🥧 \"{}ed 1\" para comer na hora ou \"{}ed 2\" para guardar.",
                 "1": {
                     "win": "Com a energia extra da torta, você corre mais rápido pela dungeon!",
                     "lose": "Quando você se aproxima para pegar a torta, ele a joga na sua cara."
@@ -477,7 +477,7 @@
                 }
             },
             {
-                "quote": "Um animal está vindo em sua direção! \"{}ed 1\" para aguardar ele ou \"{}ed 2\" para correr dele",
+                "quote": "Um animal está vindo em sua direção! \"{}ed 1\" para aguardar ele ou \"{}ed 2\" para correr dele.",
                 "1": {
                     "win": "Um lindo unicórnio se aproxima e a magia de seu chifre lhe traz força extra. 🦄",
                     "lose": "Um pássaro te traz uma mensagem: \"você nunca terá sucesso\". Você senta e chora. 🐦"
@@ -488,7 +488,7 @@
                 }
             },
             {
-                "quote": "A dungeon é assombrada por um fantasma! 👻 \"{}ed 1\" para tentar confrontá-lo ou \"{}ed 2\" para tentar evitá-lo",
+                "quote": "A dungeon é assombrada por um fantasma! 👻 \"{}ed 1\" para tentar confrontá-lo ou \"{}ed 2\" para tentar evitá-lo.",
                 "1": {
                     "win": "Você expurga o fantasma, liberando a passagem para a saída!",
                     "lose": "Você é derrotado pelo fantasma e acaba sendo amaldiçoado."
