@@ -319,7 +319,7 @@
                 },
                 "2": {
                     "win": "You crumple the map and throw it away, realizing it hits a lost chest filled with gold!",
-                    "lose": "You continue on your path and stop in a dead end. Maybe the map would have been useful..."
+                    "lose": "You continue on your path and stop in a dead end. Maybe the map would have been useful…"
                 }
             },
             {
@@ -352,7 +352,7 @@
                 },
                 "2": {
                     "win": "You take out all the bats with ease.",
-                    "lose": "You defeat all of them and decide to make a soup with them, but it doesn't sit well with you..."
+                    "lose": "You defeat all of them and decide to make a soup with them, but it doesn't sit well with you…"
                 }
             },
             {
@@ -363,7 +363,7 @@
                 },
                 "2": {
                     "win": "You set up the perfect trap with some tasty cheese, and it gets caught!",
-                    "lose": "After setting up the trap, you realize it was just the shadow of a regular rat..."
+                    "lose": "After setting up the trap, you realize it was just the shadow of a regular rat…"
                 }
             },
             {
