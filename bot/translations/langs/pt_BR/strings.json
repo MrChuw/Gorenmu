@@ -145,13 +145,13 @@
         "past": [
             "passado"
         ],
-        "duplicate_numbers": "",
+        "duplicate_numbers": "Por favor, escolha números não duplicados.",
         "current": [
             "atual",
             "presente"
         ],
         "only_numbers": "Apenas envie números de 1 a 60.",
-        "not_enough_cookies": "",
+        "not_enough_cookies": "Não tens biscoitos suficientes para fazer uma aposta. O mínimo é 5 cookies.",
         "not_enough_cookies_more_five": "",
         "bet_place": "",
         "lottery_lock": "",
