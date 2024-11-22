@@ -164,7 +164,7 @@
         "old_bets": "Suas apostas anteriores são: {}, com um valor total de {}.",
         "no_active_bets_found": "Você não tem nenhuma aposta ativa na rodada atual.",
         "active_bets": "Suas apostas atuais são: {}, com um valor total de {}.",
-        "no_bets": "Não fizeste apostas até agora.",
+        "no_bets": "Você não fez nenhuma aposta até agora.",
         "all_bets": "",
         "unknown_option": "",
         "lottery_announce_messages": [
