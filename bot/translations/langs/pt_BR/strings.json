@@ -168,7 +168,7 @@
         "all_bets": "Todas as suas apostas são: {}, com um valor total de {}.",
         "unknown_option": "As opções de loteria são: \"create\" e \"check\".",
         "lottery_announce_messages": [
-            "Em 30 minutos, a loteria começará a calcular os resultados. O prêmio total é {}, use {}lottery create <numbers> para participar.",
+            "Em 30 minutos, a loteria começará a calcular os resultados. O prêmio total é {}, use {}lottery create <números> para participar.",
             "Em 15 minutos, a loteria começará a calcular os resultados.",
             "Em 1 minuto, a loteria começará a calcular os resultados.",
             "Lotaria fechada, começando a calcular os resultados."
