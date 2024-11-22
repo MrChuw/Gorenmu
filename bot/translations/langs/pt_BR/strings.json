@@ -121,7 +121,7 @@
         "BotMainLoopExceptions": {
             "dev_required": "você precisa ser meu criador para executar este comando.",
             "owner_required": "comandos reservados para o proprietário do bot.",
-            "command_on_cooldown": "para usar o comando novamente, volte para dentro {}.",
+            "command_on_cooldown": "para usar o comando novamente, volte em {}.",
             "not_implemented": "",
             "error_not_registered": ""
         }
