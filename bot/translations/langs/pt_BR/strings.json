@@ -370,7 +370,7 @@
     },
     "HyperTranslate": {
         "base_lang": "pt",
-        "quantity_error": "",
+        "quantity_error": "Você deve especificar o número de vezes que o texto será traduzido. Exemplo: `{}hypertranslate 10 <text>`",
         "starter_string": "",
         "unexpected_error": "",
         "translation": ""
