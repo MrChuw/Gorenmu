@@ -277,10 +277,10 @@
         "Boru": {
             "original": "Original",
             "preview": "Preview",
-            "pls_wait": "por favor espera um pouco, estou gerando os links.",
+            "pls_wait": "Please wait a bit, I'm generating the links.",
             "unexpected_error": "{}",
             "success": "{}",
-            "too_much_tags": "Quantidade de tags ultrapassou o limite permitido de {}."
+            "too_much_tags": "Number of tags exceeded the allowed limit of {}."
         }
     },
     "RandomColor": {
