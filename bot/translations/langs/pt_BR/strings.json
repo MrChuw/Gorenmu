@@ -191,7 +191,7 @@
         "cc_bot_nick": "Tenho cookies infinitos e dou uma fração deles para você.",
         "gift_bot_nick": "Não quero a seu cookie.",
         "gift_user_himself": "você tentou presentear você mesmo, uau!",
-        "gift_on_cooldown_no_stock": "",
+        "gift_on_cooldown_no_stock": "você não tem nenhum cookie armazenado e o cooldown dura outro {}.",
         "invalid_gift_amount": "",
         "multiple_gift": "",
         "gift": "",
