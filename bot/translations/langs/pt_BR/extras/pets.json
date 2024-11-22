@@ -2,112 +2,113 @@
     "Pets Names": {
         "bee": {
             "specie": "abelha",
-            "price": "10"
+            "price": "10",
+            "emoji": "🐝️"
         },
         "butterfly": {
-            "specie": "",
+            "specie": "borboleta",
             "emoji": "🦋️",
             "price": "10"
         },
         "shrimp": {
-            "specie": "",
+            "specie": "camarão",
             "emoji": "🦐️",
             "price": "10"
         },
         "snail": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "caracol",
+            "emoji": "🐌️",
+            "price": "10"
         },
         "ant": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "formiga",
+            "emoji": "🐜️",
+            "price": "10"
         },
         "cricket": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "grilo",
+            "emoji": "🦗️",
+            "price": "10"
         },
         "ladybug": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "joaninha",
+            "emoji": "🐞️",
+            "price": "10"
         },
         "caterpillar": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "lagarta",
+            "emoji": "🐛️",
+            "price": "10"
         },
         "spider": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "aranha",
+            "emoji": "🕷️",
+            "price": "20"
         },
         "fish": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "peixe",
+            "emoji": "🐟️",
+            "price": "20"
         },
         "scorpion": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "escorpião",
+            "emoji": "🦂️",
+            "price": "20"
         },
         "lizard": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "lagarto",
+            "emoji": "🦎️",
+            "price": "20"
         },
         "bird": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "pássaro",
+            "emoji": "🐦️",
+            "price": "20"
         },
         "chick": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "pintinho",
+            "emoji": "🐤️",
+            "price": "20"
         },
         "mouse": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "camundongo",
+            "emoji": "🐭️",
+            "price": "20"
         },
         "chicken": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "frango",
+            "emoji": "🐔️",
+            "price": "30"
         },
         "hamster": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "hamster",
+            "emoji": "🐹️",
+            "price": "30"
         },
         "squid": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "lula",
+            "emoji": "🦑️",
+            "price": "30"
         },
         "bat": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "morcego",
+            "emoji": "🦇️",
+            "price": "30"
         },
         "frog": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "sapo",
+            "emoji": "🐸️",
+            "price": "30"
         },
         "goat": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "cabra",
+            "emoji": "🐐️",
+            "price": "40"
         },
         "ram": {
-            "specie": "",
-            "emoji": "",
-            "price": ""
+            "specie": "carneiro",
+            "emoji": "🐏️",
+            "price": "40"
         },
         "rabbit": {
             "specie": "",
