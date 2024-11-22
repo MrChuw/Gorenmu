@@ -158,7 +158,7 @@
         "timeout": "Demorou muito tempo para escolher uma opção.",
         "too_much_numbers": "Você não pode apostar em mais de 15 números.",
         "minimum_bet": "Por favor, escolha pelo menos 3 números.",
-        "no_bet_id": "Não tens nenhuma aposta com esta identificação.",
+        "no_bet_id": "Você não tem nenhuma aposta com este ID.",
         "ticket_info": "",
         "no_old_bets_found": "",
         "old_bets": "",
