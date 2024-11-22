@@ -201,21 +201,21 @@
         "stock_not_enough_cookies": "você só pode estocar {}.",
         "top10_ish": "top {} {}: {} || Você está na {}ª posição na classificação com {}.",
         "multiple_gift_plural": "você presenteou @{} com {} cookies 🎁",
-        "gift_plural": "você deu @{} um cookies",
-        "invalid_amount": "",
-        "daily_win": "",
-        "daily_single_loss": "",
-        "not_daily_multiple_loss": "",
-        "not_daily_single_loss": "",
-        "not_daily_multiple_win": "",
-        "not_daily_lost_everything": "",
+        "gift_plural": "você deu @{} um cookie 🎁",
+        "invalid_amount": "você está tentando apostar {} mas só tem {} cookies não resgatados.",
+        "daily_win": "{} você usou seu cookie diário e recebeu {} cookies!",
+        "daily_single_loss": "{} você perdeu seu cookie diário…",
+        "not_daily_multiple_loss": "{} você usou seu cookie diário não resgatado e ganhou {} cookies!",
+        "not_daily_single_loss": "{} você perdeu seu cookie diário não resgatado…",
+        "not_daily_multiple_win": "você usou {} cookies diários não resgatados e ganhou {} cookies dos seguintes itens.",
+        "not_daily_lost_everything": "você usou {} cookies diários e perdeu tudo PoroSad",
         "format_cookie_count": {
-            "cookie_count": "",
-            "stocked_count": "",
-            "received_count": "",
-            "donated_count": "",
-            "not_redeemed_count": "",
-            "total_count": ""
+            "cookie_count": "Você já comeu {} biscoitos 🥠,",
+            "stocked_count": "tem {} em estoque,",
+            "received_count": "foi apresentado com {},",
+            "donated_count": "presenteou {},",
+            "not_redeemed_count": "e tem um total de {} não resgatados.",
+            "total_count": "e um total de {} cookies já foram adicionados à conta."
         }
     },
     "RandomLine": {
@@ -402,8 +402,8 @@
         "reversed_string": "{}"
     },
     "Markov": {
-        "purge": "",
-        "replace": "",
-        "unlearn": ""
+        "purge": "Dicionários limpos em %0.2fs. %d palavras removidas.",
+        "replace": "%d casos de %s substituídos por %",
+        "unlearn": "Desaprender feito em %0.2fs"
     }
 }
