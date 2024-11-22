@@ -95,7 +95,7 @@
                 "quote": "An egg with legs is trying to climb a platform. 🥚 \"{}ed 1\" to help it or \"{}ed 2\" to push it.",
                 "1": {
                     "win": "You manage to help the egg, and in return, you receive a blessing!",
-                    "lose": "You manage to help the egg, and in return, you receive a blessing!"
+                    "lose": "You end up knocking it down and breaking it. Immediately, you are cursed!"
                 },
                 "2": {
                     "win": "You push the egg, and it falls off the platform. You find it funny and continue the dungeon, happy.",
@@ -466,7 +466,7 @@
                 }
             },
             {
-                "quote": "A cheerful man is serving pies. 🥧 \"{}ed 1\" to eat now or \"{}ed 2\" to save for later",
+                "quote": "A cheerful man is serving pies. 🥧 \"{}ed 1\" to eat now or \"{}ed 2\" to save for later.",
                 "1": {
                     "win": "With the extra energy from the pie, you run faster through the dungeon!",
                     "lose": "When you approach to take the pie, he throws it in your face."
@@ -477,7 +477,7 @@
                 }
             },
             {
-                "quote": "An animal is coming your way! \"{}ed 1\" to wait for it or \"{}ed 2\" to run away",
+                "quote": "An animal is coming your way! \"{}ed 1\" to wait for it or \"{}ed 2\" to run away.",
                 "1": {
                     "win": "A beautiful unicorn approaches and the magic of its horn brings you extra strength. 🦄",
                     "lose": "A bird delivers a message: \"You will never succeed.\" You sit and cry. 🐦"
@@ -488,7 +488,7 @@
                 }
             },
             {
-                "quote": "The dungeon is haunted by a ghost! 👻 \"{}ed 1\" to try to confront it or \"{}ed 2\" to try to avoid it",
+                "quote": "The dungeon is haunted by a ghost! 👻 \"{}ed 1\" to try to confront it or \"{}ed 2\" to try to avoid it.",
                 "1": {
                     "win": "You exorcise the ghost, clearing the path to the exit!",
                     "lose": "You are defeated by the ghost and end up being cursed."
