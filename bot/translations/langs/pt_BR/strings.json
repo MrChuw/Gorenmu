@@ -192,7 +192,7 @@
         "gift_bot_nick": "Não quero a seu cookie.",
         "gift_user_himself": "você tentou presentear você mesmo, uau!",
         "gift_on_cooldown_no_stock": "você não tem nenhum cookie armazenado e o cooldown dura mais {}.",
-        "invalid_gift_amount": "",
+        "invalid_gift_amount": "enviar uma quantidade válida para doação e não {}.",
         "multiple_gift": "você presenteou @{} com {} biscoito 🎁",
         "gift": "",
         "gift_not_enough_cookies": "",
