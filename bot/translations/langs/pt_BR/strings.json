@@ -380,7 +380,7 @@
             "timeout": "Passaram-se 100 segundos e não consegui gerar. Por favor, espere um pouco e tente novamente.",
             "time_message": "Tempo: {}",
             "all_images_embed": "Todas as imagens geradas: {}",
-            "all_images_embed_time": "Time: {} | Todas as imagens: {}"
+            "all_images_embed_time": "Tempo: {} | Todas as imagens: {}"
         },
         "ImgurRepeated": {
             "links_repeated": "",
@@ -388,18 +388,18 @@
         },
         "Boru": {
             "original": "",
-            "preview": "",
-            "pls_wait": "",
-            "unexpected_error": "",
-            "success": "",
-            "too_much_tags": ""
+            "preview": "Prévia",
+            "pls_wait": "Aguarde um pouco, estou gerando os links.",
+            "unexpected_error": "{}",
+            "success": "{}",
+            "too_much_tags": "Quantidade de tags ultrapassou o limite permitido de {}."
         }
     },
     "RandomColor": {
-        "response_url": ""
+        "response_url": "#{} é {}. {}"
     },
     "Reverse": {
-        "reversed_string": ""
+        "reversed_string": "{}"
     },
     "Markov": {
         "purge": "",
