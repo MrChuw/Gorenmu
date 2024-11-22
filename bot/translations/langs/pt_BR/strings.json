@@ -377,8 +377,8 @@
     },
     "NSFW": {
         "Imgur": {
-            "timeout": "",
-            "time_message": "",
+            "timeout": "Passaram-se 100 segundos e não consegui gerar. Por favor, espere um pouco e tente novamente.",
+            "time_message": "Tempo:",
             "all_images_embed": "",
             "all_images_embed_time": ""
         },
