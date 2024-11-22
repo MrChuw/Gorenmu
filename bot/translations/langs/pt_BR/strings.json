@@ -159,7 +159,7 @@
         "too_much_numbers": "Você não pode apostar em mais de 15 números.",
         "minimum_bet": "Por favor, escolha pelo menos 3 números.",
         "no_bet_id": "Você não tem nenhuma aposta com este ID.",
-        "ticket_info": "",
+        "ticket_info": "Bilhete com números: {} vale {} criado {} atrás.",
         "no_old_bets_found": "",
         "old_bets": "",
         "no_active_bets_found": "",
