@@ -241,13 +241,13 @@
     "Annotations": {
         "too_much_characters": "A anotação deve ter um máximo de 450 caracteres.",
         "title_too_long": "O título deve ter um máximo de 32 caracteres.",
-        "too_few_characters": "Esqueceu-se de enviar o conteúdo da anotação.",
-        "annotation_created": "",
-        "no_annotations_with_id": "",
+        "too_few_characters": "Você se esqueceu de enviar o conteúdo da anotação.",
+        "annotation_created": "Nota criada com sucesso. 📝 (ID: {})",
+        "no_annotations_with_id": "Você não tem nenhuma anotação com ID {}.",
         "all_annotations": "",
-        "annotation_content": "",
+        "annotation_content": "{}",
         "deleted": "",
-        "id_not_provided": "",
+        "id_not_provided": "{} não é um ID válido.",
         "option_not_recognized": ""
     },
     "Others": {
