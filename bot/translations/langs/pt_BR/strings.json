@@ -266,104 +266,104 @@
             "author_nick": "você não está trabalhando... obviamente.",
             "never_seen": "Não me lembro de ter visto nenhum {}.",
             "is_afk": "@{} {}: {}",
-            "is_afk_content": "não. e deixou uma nota: {}",
-            "is_not_afk": ""
+            "is_afk_content": "@{} {} e deixou uma nota: {}",
+            "is_not_afk": "@{} não é AFK."
         },
         "RAfk": {
             "time_expired": "",
-            "is_afk": "",
-            "is_afk_content": "",
-            "is_not_afk": ""
+            "is_afk": "{}: {}",
+            "is_afk_content": "{} {} e deixou uma nota: {}",
+            "is_not_afk": "você não esta AFK."
         },
         "AfkListeners": {
-            "is_afk": "",
-            "is_afk_content": ""
+            "is_afk": "{}: {} (estava ausente por {} {})",
+            "is_afk_content": "{} {} e deixou uma nota: {} (estava ausente por {} {})"
         }
     },
     "Alias": {
         "user_not_found": "",
-        "dont_have_alias": "",
-        "alias_invalid_name": "",
-        "user_has_no_alias": "",
+        "dont_have_alias": "Você não tem o alias \"{}\"!",
+        "alias_invalid_name": "Seu nome de alias não é válido! Seu alias deve conter apenas letras, números e ter entre 2-30 caracteres de comprimento.",
+        "user_has_no_alias": "O usuário {} não possui aliases registrados.",
         "alias_table_headers": [
             "",
             "",
-            "",
-            "",
-            "",
-            "",
-            ""
+            "Invocação",
+            "Argumentos",
+            "Links para",
+            "Atualizado",
+            "Criado"
         ],
         "alias_table_replaces": [
-            "",
-            "",
-            ""
+            "Nenhuma descrição",
+            "Sem argumentos",
+            "Nada"
         ],
-        "alias_table_name": "",
+        "alias_table_name": "{} aliases",
         "Add": {
-            "no_command_to_add": "",
-            "alias_name_conflict": "",
-            "alias_created": "",
-            "command_dont_exist": ""
+            "no_command_to_add": "Você não enviou um comando! Use: {}alias add (nome) (comando) (…argumentos)",
+            "alias_name_conflict": "Não é possível adicionar o alias \"{}\" - você já possui um! Você pode “editar” sua definição, “renomeá-la” ou “removê-la”.",
+            "alias_created": "Seu alias \"{}\" foi criado com sucesso.",
+            "command_dont_exist": "Não é possível criar um alias! O comando \"{}\" não existe."
         },
         "Check": {
-            "user_alias_list": "",
-            "no_alias_found": "",
-            "list_of_alias_of": "",
-            "list_of_special_case": "",
-            "alias_not_found": "",
-            "appendix": "",
-            "alias_deleted": "",
-            "message": "",
-            "normal_message": ""
+            "user_alias_list": "Lista dos seus aliases: {} | Lista detalhada: {}",
+            "no_alias_found": "Não foi possível encontrar {} em {} aliases ou em qualquer um dos seus aliases!",
+            "list_of_alias_of": "Lista de aliases de {}: {}",
+            "list_of_special_case": "Caso especial!\nSeu alias \"{0}\": {1}\nLista dos aliases de {0}: {2}",
+            "alias_not_found": "{} não tem o alias \"{}\"!",
+            "appendix": "Este alias é um link para \"{}\" feito por {}.",
+            "alias_deleted": "{} alias é um link para um alias diferente, mas o original foi excluído.",
+            "message": "{} alias \"{}\" tem os argumentos: {} {}",
+            "normal_message": "{} || Link: {}"
         },
         "Copy": {
             "user_not_provided": "",
-            "alias_not_provided": "",
-            "target_alias_invalid_name": "",
-            "no_alias_found": "",
-            "link_to_a_link": "",
-            "copy_success": "",
-            "copy_with_name_of": ""
+            "alias_not_provided": "Nenhum alias de destino fornecido!",
+            "target_alias_invalid_name": "O nome do alias copiado não é válido e portanto não pode ser copiado!",
+            "no_alias_found": "Não consegui encontrar {} no usuário {}!",
+            "link_to_a_link": "Você não pode copiar links para outros aliases. Em vez disso, use {}alias copy {} {}",
+            "copy_success": "Alias \"{}\" copiado com sucesso.",
+            "copy_with_name_of": "Alias \"{}\" copiado com sucesso. Com o nome \"{}\"."
         },
         "Describe": {
-            "no_args_to_parse": "",
-            "description_updated": "",
-            "description_reverted": ""
+            "no_args_to_parse": "Você não forneceu um alias ou uma descrição! Use: {}alias describe (nome) (…descrição)",
+            "description_updated": "A descrição do alias \"{}\" foi atualizada com sucesso.",
+            "description_reverted": "A descrição do alias \"{}\" foi redefinida com sucesso."
         },
         "Edit": {
-            "no_args_provided": "",
-            "edit_link": "",
-            "edit_success": "",
-            "command_dont_exist": ""
+            "no_args_provided": "Nenhum alias ou nome de comando fornecido!",
+            "edit_link": "Você não pode editar links para outros aliases!",
+            "edit_success": "Seu alias \"{}\" foi editado com sucesso.",
+            "command_dont_exist": "Não é possível editar o alias! O comando \"{}\" não existe."
         },
         "Link": {
-            "link_no_args": "",
-            "alias_name_already_exists": "",
-            "user_dont_has_alias": "",
-            "link_with_invalid_name": "",
-            "link_name_string": "",
-            "link_to_link": "",
-            "link_success": ""
+            "link_no_args": "Você não forneceu um nome de usuário ou alias! Use: {}alias link (usuário) (nome do alias)",
+            "alias_name_already_exists": "Não é possível vincular um novo alias - você já possui um alias com esse nome!",
+            "user_dont_has_alias": "O usuário fornecido não possui o alias \"{}\"!",
+            "link_with_invalid_name": "O nome alternativo vinculado não é válido! {}",
+            "link_name_string": ", com um nome personalizado de \"{}\".",
+            "link_to_link": "Você tentou criar um link a partir de um alias vinculado (alias {} por {}), então usei o original como modelo. Quando o original mudar, o seu também mudará.",
+            "link_success": "Alias vinculado com sucesso{} Quando o original for alterado, o seu também será."
         },
         "Remove": {
-            "no_alias_name_provided": "",
-            "alias_removed": ""
+            "no_alias_name_provided": "Nenhum nome alternativo fornecido!",
+            "alias_removed": "Seu alias \"{}\" foi removido com sucesso."
         },
         "Rename": {
-            "no_name_provided": "",
-            "alias_already_exists": "",
-            "alias_renamed": ""
+            "no_name_provided": "Você deve fornecer o nome alternativo atual e o novo!",
+            "alias_already_exists": "Você já tem o alias \"{}\"!",
+            "alias_renamed": "Seu alias \"{}\" foi renomeado com sucesso para \"{}\"."
         }
     },
     "Chance": {
-        "random_percentage": ""
+        "random_percentage": "{:.2f}%."
     },
     "Choice": {
         "additional_separators": [
             ""
         ],
-        "chosen_option": ""
+        "chosen_option": "{}"
     },
     "Count": {
         "character_count": ""
