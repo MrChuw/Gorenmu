@@ -262,10 +262,10 @@
             "afk_content_response": "{}: {} e deixou uma nota com: {}"
         },
         "IsAfk": {
-            "bot_nick": "Estou sempre aqui... a ver.",
-            "author_nick": "",
-            "never_seen": "",
-            "is_afk": "",
+            "bot_nick": "Estou sempre aqui... assistindo.",
+            "author_nick": "você não está trabalhando... obviamente.",
+            "never_seen": "Não me lembro de ter visto nenhum {}.",
+            "is_afk": "@{} {}: {}",
             "is_afk_content": "",
             "is_not_afk": ""
         },
