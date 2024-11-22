@@ -219,10 +219,10 @@
         }
     },
     "RandomLine": {
-        "random_line": "",
-        "channel_not_found": "",
-        "user_not_found": "",
-        "no_message_found": ""
+        "random_line": "(sent {} atrás por @{})",
+        "channel_not_found": "Não encontrei nenhum canal chamado @{}.",
+        "user_not_found": "Não encontrei nenhum usuário chamado @{}.",
+        "no_message_found": "Não encontrei nenhuma mensagem de @{} in @{}."
     },
     "Scp": {
         "unexpected_error": ""
@@ -383,11 +383,11 @@
             "all_images_embed_time": "Tempo: {} | Todas as imagens: {}"
         },
         "ImgurRepeated": {
-            "links_repeated": "",
-            "no_repeated": ""
+            "links_repeated": "Número total de imagens repetidas: {} | Imagens: {}",
+            "no_repeated": "Sem imagens repetidas."
         },
         "Boru": {
-            "original": "",
+            "original": "Original",
             "preview": "Prévia",
             "pls_wait": "Aguarde um pouco, estou gerando os links.",
             "unexpected_error": "{}",
