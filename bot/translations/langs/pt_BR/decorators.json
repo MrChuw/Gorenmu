@@ -79,7 +79,7 @@
             "description": "Este comando define seu status para AFK.",
             "commands": [
                 {
-                    "response": "você foi AFK:"
+                    "response": "você foi AFK: 🏃 ⌨️"
                 }
             ]
         }
