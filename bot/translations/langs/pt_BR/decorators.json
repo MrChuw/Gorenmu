@@ -45,6 +45,9 @@
             "commands": [
                 {
                     "args": "{prefix}comando_exemplo_1 <command options> | comando_exemplo_2"
+                },
+                {
+                    "args": "{prefix}example_command_1 <command options> | example_command_2 <command 2 options> {output} <remaining command 2 options>"
                 }
             ]
         }
