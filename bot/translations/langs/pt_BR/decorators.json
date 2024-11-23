@@ -2,6 +2,6 @@
     "Templates": {
         "template_part1": "#{command_title}\n\n## Este comando pode ser usado {rate} vezes seguidas, com um tempo de espera de {per} por {cooldown_type}.\n\n",
         "template_part2": "{description}\n\n{aliases}\n\n",
-        "template_part3": "# A maneira de usar este comando é:\n\n"
+        "template_part3": "## A maneira de usar este comando é:\n\n"
     }
 }
