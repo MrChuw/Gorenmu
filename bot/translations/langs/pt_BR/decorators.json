@@ -3,13 +3,17 @@
         "template_part1": "#{command_title}\n\n## Este comando pode ser usado {rate} vezes seguidas, com um tempo de espera de {per} por {cooldown_type}.\n\n",
         "template_part2": "{description}\n\n{aliases}\n\n",
         "template_part3": "## A maneira de usar este comando é:\n\n",
-        "alias_template": "# Todos os alias disponíveis para {command_title} são:\n- Não.\n\n",
+        "alias_template": "## Todos os alias disponíveis para {command_title} são:\n    - {aliases}\n\n",
         "bucket_type": {
             "channel": "todos os usuários por canal",
             "member": "usuário por canal",
             "user": "usuário independente de canal",
-            "mod": "moderação"
-        }
+            "mod": "moderação",
+            "default": "usuário",
+            "subscriber": "subscriber"
+        },
+        "command_template": "```text\n    usuário: {prefix}{command_name} {args}\n\n    bot: Usuário, {response}\n```\n",
+        "admonition_template": "!!! {type} \"{title}\"\n    \n        {message}\n\n    "
     },
     "Admin": {
         "Nada": {
