@@ -59,7 +59,9 @@
                 },
                 {
                     "title": "Pipe",
-                    "position": "bottom"
+                    "position": "bottom",
+                    "type": "info",
+                    "message": "O Pipe é representado pelo personagem '|' (bar vertical), e é usado para encaminhar a saída de um comando para outro."
                 }
             ]
         }
