@@ -54,7 +54,8 @@
                 {
                     "type": "warning",
                     "title": "Cooldown!",
-                    "position": "top"
+                    "position": "top",
+                    "message": "O cooldown para o tubo será o mesmo que o cooldown dos comandos usados."
                 }
             ]
         }
