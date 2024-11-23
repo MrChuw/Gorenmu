@@ -33,7 +33,13 @@
         },
         "Restart": {
             "helper": "Reinicia o bot.",
-            "usage": "Para usar: {}restart"
+            "usage": "Para usar: {}restart",
+            "description": "Reinicia o bot."
+        }
+    },
+    "Others": {
+        "Pipe": {
+            "helper": "O tubo não é realmente um comando. Para mais informações, visite o site."
         }
     }
 }
