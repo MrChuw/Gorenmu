@@ -65,8 +65,9 @@
                 },
                 {
                     "type": "info",
-                    "title": "Como o tubo funciona:",
-                    "message": "# O passo-a-passo do bot será: \\n- Execute `example_command_1` com `<command options>` se houver. \\n- Então executará `example_command_2` com a resposta de `example_command_1` adicionado como um argumento. \\n - Se você usar `{output}`, ele colocará a resposta de `example_command_1` na posição especificada.\n.\n"
+                    "title": "Como o pipe funciona:",
+                    "message": "# O passo-a-passo do bot será: \\n- Execute `example_command_1` com `<command options>` se houver. \\n- Então executará `example_command_2` com a resposta de `example_command_1` adicionado como um argumento. \\n - Se você usar `{output}`, ele colocará a resposta de `example_command_1` na posição especificada.\n.\n",
+                    "position": "bottom"
                 }
             ]
         }
