@@ -71,5 +71,11 @@
                 }
             ]
         }
+    },
+    "Afk": {
+        "Afk": {
+            "helper": "Comando para definir seu status.",
+            "usage": "Como usar: {}Afk <message>"
+        }
     }
 }
