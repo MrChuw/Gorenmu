@@ -80,6 +80,9 @@
             "commands": [
                 {
                     "response": "você foi AFK: 🏃 ⌨️"
+                },
+                {
+                    "args": "Texto que você quer sair para quando você retornar ou que as pessoas verão quando usarem {prefix}isafk."
                 }
             ]
         }
