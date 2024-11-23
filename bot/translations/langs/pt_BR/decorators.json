@@ -39,7 +39,8 @@
     },
     "Others": {
         "Pipe": {
-            "helper": "O Pipe não é realmente um comando. Para mais informações, visite o site."
+            "helper": "O Pipe não é realmente um comando. Para mais informações, visite o site.",
+            "usage": "O tubo não é realmente um comando. Para mais informações, visite o site."
         }
     }
 }
