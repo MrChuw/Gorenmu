@@ -62,6 +62,10 @@
                     "position": "bottom",
                     "type": "info",
                     "message": "O Pipe é representado pelo caractere '|' (barra vertical), e é usado para encaminhar a saída de um comando para outro."
+                },
+                {
+                    "type": "info",
+                    "title": "Como o tubo funciona:"
                 }
             ]
         }
