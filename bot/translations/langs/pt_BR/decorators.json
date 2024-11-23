@@ -75,7 +75,13 @@
     "Afk": {
         "Afk": {
             "helper": "Comando para definir seu status.",
-            "usage": "Como usar: {}Afk <mensagem>"
+            "usage": "Como usar: {}Afk <mensagem>",
+            "description": "Este comando define seu status para AFK.",
+            "commands": [
+                {
+                    "response": "você foi AFK:"
+                }
+            ]
         }
     }
 }
