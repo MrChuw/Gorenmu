@@ -44,7 +44,7 @@
             "description": "Pipe não é realmente um comando. Para mais informações, visite o site.",
             "commands": [
                 {
-                    "args": "{prefix}example_command_1 <command options> | example_command_2"
+                    "args": "{prefix}comando_exemplo_1 <command options> | comando_exemplo_2"
                 }
             ]
         }
