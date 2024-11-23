@@ -33,7 +33,7 @@
         },
         "Restart": {
             "helper": "Reinicia o bot.",
-            "usage": "Para usar:"
+            "usage": "Para usar: {}restart"
         }
     }
 }
