@@ -47,7 +47,14 @@
                     "args": "{prefix}comando_exemplo_1 <command options> | comando_exemplo_2"
                 },
                 {
-                    "args": "{prefix}example_command_1 <command options> | example_command_2 <command 2 options> {output} <remaining command 2 options>"
+                    "args": "{prefix}comando_exemplo_1 <command options> | comando_exemplo_2 <opções para o comando 2> {output do comando 1 } <opções restantes do comando 2>"
+                }
+            ],
+            "admonitions": [
+                {
+                    "type": "warning",
+                    "title": "Cooldown!",
+                    "position": "top"
                 }
             ]
         }
