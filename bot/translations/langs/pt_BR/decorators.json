@@ -3,6 +3,33 @@
         "template_part1": "#{command_title}\n\n## Este comando pode ser usado {rate} vezes seguidas, com um tempo de espera de {per} por {cooldown_type}.\n\n",
         "template_part2": "{description}\n\n{aliases}\n\n",
         "template_part3": "## A maneira de usar este comando é:\n\n",
-        "alias_template": "# Todos os alias disponíveis para {command_title} são:\n- Não.\n\n"
+        "alias_template": "# Todos os alias disponíveis para {command_title} são:\n- Não.\n\n",
+        "bucket_type": {
+            "channel": "todos os usuários por canal",
+            "member": "usuário por canal",
+            "user": "usuário independente de canal",
+            "mod": "moderação"
+        }
+    },
+    "Admin": {
+        "Nada": {
+            "helper": "Este comando é usado para testes.",
+            "usage": "Como usar: {}nada <text>",
+            "description": "Este comando é usado para testes."
+        },
+        "Reload": {
+            "helper": "Recarregar os comandos.",
+            "usage": "Como usar: {}reload",
+            "description": "Este comando é usado para recarregar todos os comandos bot. Se algum tiver sido atualizado e não precisar de um reinício completo.",
+            "commands": [
+                {
+                    "response": "os comandos foram recarregados com sucesso."
+                }
+            ]
+        },
+        "Restart": {
+            "helper": "Reinicia o bot.",
+            "usage": "Para usar:"
+        }
     }
 }
