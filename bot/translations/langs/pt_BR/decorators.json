@@ -128,9 +128,15 @@
             ],
             "admonitions": [
                 {
-                    "admonition_type": "warning"
+                    "admonition_type": "warning",
+                    "title": "Tempo máximo!",
+                    "message": "A partir do momento em que você envia uma mensagem no chat, você tem 2 minutos para retornar ao status AFK. "
                 }
             ]
         }
+    },
+    "Alias": {
+        "helper": "Comando usado para gerir aliases.",
+        "usage": "Para usar: {}alias add|check|copy|describe|edit|link|remove|rename <options>"
     }
 }
