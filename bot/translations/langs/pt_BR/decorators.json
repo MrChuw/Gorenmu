@@ -137,6 +137,10 @@
     },
     "Alias": {
         "helper": "Comando usado para gerir aliases.",
-        "usage": "Para usar: {}alias add|check|copy|describe|edit|link|remove|rename <options>"
+        "usage": "Para usar: {}alias add|check|copy|describe|edit|link|remove|rename <opções>",
+        "description": "Este comando gerencia aliases personalizados para comandos. Com ele, você pode:\n\n - Adicionar um novo alias para um comando existente.\n - Verificar ou listar aliases existentes.\n - Copiar aliases de outro usuário.\n - Descrever um alias com uma descrição personalizada.\n - Editar um alias existente, atualizando o comando associado.\n - Linkar um alias a outro alias ou criar um alias baseado em um alias existente.\n - Remover um alias.\n - Renomear um alias.\n\nUse o comando seguido por uma ação (add, check, copy, describe, edit, link, remove, rename) para realizar a tarefa desejada.\n",
+        "template": [
+            "# {command_title}"
+        ]
     }
 }
