@@ -184,7 +184,101 @@
             "Usuário: {prefix}{command_name} edit cool_name choice 123 1234 12345 | count",
             "bot: Usuário, o alias \"cool_name\" foi editado com sucesso.",
             "```",
-            "No exemplo acima, o comando foi editado alterando os argumentos de `1234 123456` para `123 1234 12345`. Para atualizar, você precisa enviar o comando completo e apenas alterar a parte que deseja atualizar."
+            "No exemplo acima, o comando foi editado alterando os argumentos de `1234 123456` para `123 1234 12345`. Para atualizar, você precisa enviar o comando completo e apenas alterar a parte que deseja atualizar.",
+            "## Como lincar um alias:",
+            "```text",
+            "Usuário: {prefix}{command_name} link <usuário> cool_name",
+            "bot: Usuário, alias vinculado com sucesso. Quando o original mudar, o seu também mudará.",
+            "```",
+            "Também é possível criar um link e alterar o nome do alias.",
+            "```text",
+            "Usuário: {prefix}{command_name} link <usuário> cool_name new_cool_name",
+            "bot: Usuário, alias linkado com sucesso, com um nome personalizado \"new_cool_name\". Quando o original mudar, o seu também mudará.",
+            "```",
+            "E se for um link para um link:",
+            "```text",
+            "Usuário: {prefix}{command_name} link <usuário> cool_name",
+            "bot: Usuário, você tentou criar um link de um alias já linkado (alias cool_name by <usuário>), então eu usei o original como seu modelo. Quando o original mudar, o seu também mudará.",
+            "```",
+            "## Para remover um alias:",
+            "```text",
+            "usuário: {prefix}{command_name} remove cool_name",
+            "bot: User, seu alias \"cool_name\" foi removido com sucesso.",
+            "```",
+            "Ao excluir um alias, os links para este alias continuarão a existir e funcionar.",
+            "## Para renomear um alias:",
+            "```text",
+            "usuário: {prefix}{command_name} rename cool_name novo_cool_name",
+            "bot: Usuário, seu alias \"cool_name\" foi renomeado com sucesso para \"novo_cool_name\".",
+            "```",
+            "## Uso avançado de alias:",
+            "## Primeiro, vamos criar um alias:",
+            "```text",
+            "usuário: {prefix}{command_name} add advanced_usage choice 1234 123456 | count {0}",
+            "bot: Usuário, seu alias \"advanced_usage\" foi criado com sucesso.",
+            "```",
+            "# Como usar este tipo de alias:",
+            "```text",
+            "usuário: {prefix}{prefix}advanced_usage texto",
+            "bot: Há um total de 10 caracteres. Entre eles, 0 são pontuação, 0 são letras maiúsculas, e 0 são caracteres especiais.",
+            "```",
+            "A resposta normal do comando seria: `Há um total de 4 caracteres. etc` ou `Há um total de 6 caracteres. etc., como \"escolha\" selecionaria entre \"1234` ou \"123456`, e então a contagem retornaria o número de caracteres.",
+            "Mas, devido à adição de `{0}` após a count, ele vai pegar o conteúdo do que foi enviado ao invocar o alias e substituir `{0}`.",
+            "# Outras opções ao criar o alias são:",
+            " - `{output}`: ele colocará a saída do último comando na posição `{output}`.",
+            " - `{channel}`: substituirá com o nome do canal atual.",
+            " - `{user}`: ele substituirá com seu nome de usuário do Twitch.",
+            " - `{0}`, `{1}`, `{2}` etc., você também pode usar `{3+}`, que irá pegar todo o texto enviado ao invocar o alias e substituir.",
+            "## Um exemplo mostrando tudo seria:",
+            "```text",
+            "usuário: {prefix}{command_name} add advanced_usage2 choice 1234 123456 | count {0} {channel} {output} {user} {1+}",
+            "bot: Usuário, seu alias \"advanced_usage2\" foi criado com sucesso.",
+            "```",
+            "Vamos imaginar que você usou o comando como este: `{prefix}{prefix}advanced_usage2 something_here e no final`:",
+            "## O processo passo a passo do bot será:",
+            " - Substituir `{0}` com `something_here`.",
+            " - Substituir '{1+} com 'e no final'.",
+            " - Substituir `{channel}` com o canal ao qual a mensagem foi enviada, por exemplo, `gorenmu`.",
+            " - Substituir `{user}` com seu nome de usuário, por exemplo, `xXNickOriginalXx`.",
+            " - O comando completo seria `choice 1234 123456 | count something_here gorenmu {output} xXNickOriginalXx` que seria processado pelo manipulador do pipe.",
+            "## O manipulador do pipe, fará:",
+            " - Processar a primeira parte: `choice 1234 123456` (como exemplo, digamos escolha selecionada `1234`).",
+            " - Processar a segunda parte: `contar something_here gorenmu {output} xXNickOriginalXx e no final`; ao processar a segunda parte, ele substituirá `{output}` com `1234`.",
+            " - Então, os argumentos que serão enviados para o count serão `something_here gorenmu 1234 xXNickOriginal Xx e no final. `",
+            " - E a resposta será 'Há um total de 57 caracteres. Entre eles, 1 é pontuação, 4 são letras maiúsculas, e 0 são caracteres especiais. \""
         ]
+    },
+    "Chance": {
+        "commands": [
+            {
+                "response": "34%"
+            }
+        ],
+        "helper": "Retorna uma porcentagem aleatória.",
+        "usage": "Para usar: {}chance",
+        "description": "Este comando gera e retorna uma porcentagem aleatória, representando um valor entre 0% e 100%."
+    },
+    "Choice": {
+        "helper": "Escolhe uma opção das opções fornecidas pelo usuário.",
+        "usage": "Para usar: {}choice <opção1> ou <opção2>",
+        "description": "Escolhe uma opção das opções fornecidas pelo usuário.",
+        "commands": [
+            {
+                "args": "dados ou casa ou moeda",
+                "response": "casa"
+            },
+            {
+                "args": "dice casa moeda",
+                "response": "dados"
+            },
+            {
+                "args": "dados, casa, moeda",
+                "response": "moeda"
+            }
+        ]
+    },
+    "Count": {
+        "helper": "Conta o número de símbolos em um texto ou uma URL.",
+        "usage": "Para usar: {}count <texto> ou type:url <quantas URLs você quiser>"
     }
 }
