@@ -165,7 +165,26 @@
             "Para usar o alias, basta usar `{prefix}{prefix}` seguido pelo nome do alias ({prefix} é o prefixo padrão do bot, se o prefixo do chat é diferente, basta repeti-lo 2 (dois) vezes e então o nome do alias).",
             "## Como verificar um alias:",
             "```text",
-            "usuário: {prefix}{command_name} check cool_name"
+            "usuário: {prefix}{command_name} check cool_name",
+            "bot: Usuário, o alias \"cool_name\" tem os argumentos: choice 1234 123456 | count || Link: <url>",
+            "```",
+            "## Como copiar um alias:",
+            "```text",
+            "Usuário: {prefix}{command_name}Copy <usuário> cool_name",
+            "bot: Usuário, alias \"cool_name\" copiado com sucesso.",
+            "```",
+            "Para copiar um alias, você só precisa do nome de usuário e do nome de alias.",
+            "## Como adicionar uma descrição a um alias:",
+            "```text",
+            "Usuário: {prefix}{command_name} description cool_name <nova descrição>",
+            "bot: Usuário, a descrição para alias \"cool_name\" foi atualizada com sucesso.",
+            "```",
+            "## Como editar o comando/argumentos de um alias:",
+            "```text",
+            "Usuário: {prefix}{command_name} edit cool_name choice 123 1234 12345 | count",
+            "bot: Usuário, o alias \"cool_name\" foi editado com sucesso.",
+            "```",
+            "No exemplo acima, o comando foi editado alterando os argumentos de `1234 123456` para `123 1234 12345`. Para atualizar, você precisa enviar o comando completo e apenas alterar a parte que deseja atualizar."
         ]
     }
 }
