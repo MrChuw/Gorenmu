@@ -342,5 +342,92 @@
             "usage": "Para usar: {}booru <quantidade>",
             "description": "Envia um ou mais links aleatórios de uma lista de boorus."
         }
+    },
+    "RandomColor": {
+        "usage": "Para usar: {}random_color",
+        "description": "Este comando responde com o código HEX de uma cor aleatória e um link para uma imagem da cor.",
+        "commands": [
+            {
+                "response": "#<HEX> <Nome da cor> <Link para a imagem da cor>"
+            }
+        ],
+        "helper": "Envia uma cor aleatória."
+    },
+    "Reverse": {
+        "helper": "Inverte um texto.",
+        "usage": "Para usar: {}reverse <texto>",
+        "description": "Este comando reverte o texto enviado.",
+        "commands": [
+            {
+                "args": "o texto enviado.",
+                "response": ".odaivne otxet o"
+            }
+        ]
+    },
+    "RandomLine": {
+        "commands": [
+            {
+                "response": "<ele enviará uma mensagem aleatória do chat atual>"
+            },
+            {
+                "response": "<ele enviará uma mensagem aleatória do usuário através todos canais>",
+                "args": "user: <nome do usuário>"
+            },
+            {
+                "args": "channel: <nome do canal>",
+                "response": "<ele enviará uma mensagem aleatória de um canal específico>"
+            },
+            {
+                "args": "channel:<nome do canal> user:<nome do usuário>",
+                "response": "<ele enviará uma mensagem aleatória de um usuário em um canal específico>"
+            }
+        ],
+        "helper": "Pega uma mensagem aleatória do canal ou de um usuário em um canal.",
+        "usage": "Para usar: `{0}rl channel:<nome do canal>` or `{0}rl user:<nome do usuário>` or `{0}rl` or`{0}rl channel:<nome do canal> user:<nome do usuário> \"",
+        "description": "Este comando seleciona uma mensagem aleatória dependendo das opções fornecidas."
+    },
+    "Scp": {
+        "helper": "Envia um SCP aleatório.",
+        "usage": "Para usar: {}scp <quantidade>",
+        "commands": [
+            {
+                "response": "<link de um SCP aleatório>"
+            },
+            {
+                "args": "5",
+                "response": "<5 links de SCP aleatorios>"
+            }
+        ],
+        "description": "Este comando usa o aleatório de [SCP](https://scp-wiki.wikidot.com) para gerar links aleatórios de SCP."
+    },
+    "UpSideDown": {
+        "helper": "Vira o texto de cabeça para baixo.",
+        "usage": "Para usar: {}upsidedown <texto>",
+        "description": "Este comando inverte e vira o texto fornecido de cabeça para baixo.",
+        "commands": [
+            {
+                "args": "testes",
+                "response": "sǝʇsǝʇ"
+            }
+        ]
+    },
+    "Wikihow": {
+        "helper": "Envia um wikihow aleatório.",
+        "usage": "Para usar: {}wikihow <quantidade>",
+        "description": "Este comando usa o aleatório de [Wikihow](https://wikihow.com) para gerar links aleatórios.",
+        "commands": [
+            {
+                "response": "<link aleatório para o wikihow>"
+            },
+            {
+                "args": "5",
+                "response": "<links aleatorios para o wikihow>"
+            }
+        ]
+    },
+    "Wikipedia": {
+        "helper": "Envia uma wikipedia aleatória.",
+        "usage": "Para usar: {}wikihow",
+        "description": "Este comando usa o aleatório de [Wikipedia](https://wikipedia.com) para gerar links aleatórios."
     }
 }
