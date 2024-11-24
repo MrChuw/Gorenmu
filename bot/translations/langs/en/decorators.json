@@ -431,7 +431,6 @@
         "description": "This command uses the random from [Wikipedia](https://wikipedia.com) to generate random links.",
         "commands": [
             {
-                "args": "argumento",
                 "response": "<random wikipedia link>"
             }
         ]
