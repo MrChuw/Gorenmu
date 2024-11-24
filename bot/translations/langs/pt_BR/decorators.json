@@ -428,6 +428,80 @@
     "Wikipedia": {
         "helper": "Envia uma wikipedia aleatória.",
         "usage": "Para usar: {}wikihow",
-        "description": "Este comando usa o aleatório de [Wikipedia](https://wikipedia.com) para gerar links aleatórios."
+        "description": "Este comando usa o aleatório de [Wikipedia](https://wikipedia.com) para gerar links aleatórios.",
+        "commands": [
+            {
+                "response": "<link aleatório para o wikipedia>"
+            }
+        ]
+    },
+    "Annotations": {
+        "admonitions": [
+            {
+                "admonition_type": "warning",
+                "position": "bottom",
+                "title": "Comprimento máximo para 'add'!",
+                "message": "A mensagem não pode exceder 450 caracteres; se o fizer, um erro será retornado."
+            },
+            {
+                "admonition_type": "warning",
+                "position": "bottom",
+                "title": "Comprimento máximo para o título em 'add'!",
+                "message": "O título não pode exceder 32 caracteres; se o fizer, um erro será retornado."
+            },
+            {
+                "message": "Use aliases e notas juntos para criar comandos personalizados. Por exemplo, com +alias add cakes note check <id>, você pode usar ++cakes para que o bot envie automaticamente o conteúdo da nota, sem precisar usar o comando completo +note check <id>.",
+                "position": "top",
+                "title": "Notas e Aliases",
+                "admonition_type": "tip"
+            }
+        ],
+        "helper": "Cria notas permanentes para o usuário.",
+        "usage": "Para usar: {}note add/check/delete",
+        "description": "Este comando é usado para criar notas permanentes.",
+        "commands": [
+            {
+                "args": "add Uma nota sobre algo que eu quero ser capaz de verificar para sempre.",
+                "response": "Nota criada com sucesso. 📝 (ID: <ID da nota>)"
+            },
+            {
+                "args": "add title:\"Título para facilitar a lembrança do conteúdo\" Uma nota sobre algo que quero poder verificar para sempre.",
+                "response": "Nota criada com sucesso. 📝 (ID: <ID da nota>)"
+            },
+            {
+                "response": "Suas notas são aquelas com ID: <title se disponível [id]>",
+                "args": "check"
+            },
+            {
+                "args": "check <id>",
+                "response": "<Conteúdo da anotação.>"
+            },
+            {
+                "args": "delete <id>",
+                "response": "Sua nota com ID <id> foi excluída com sucesso. 🗑"
+            }
+        ]
+    },
+    "Lottery": {
+        "helper": "Usado para criar ou verificar apostas.",
+        "usage": "Para usar: {}bet <numbers que você quer apostar>",
+        "commands": [
+            {
+                "response": "A aposta foi criada com os números [1, 2, 3, 4, 5, 6] e o custo de 5 cookies. (ID: 1)",
+                "args": "create 1, 2, 3, 4, 5, 6"
+            },
+            {
+                "response": "A aposta foi criada com os números [números aleatórios entre 1 e 60] e o custo de 5 cookies. (ID: <id>)",
+                "args": "create random"
+            },
+            {
+                "args": "check",
+                "response": "Suas apostas atuais são: [IDs], com um valor total de <Total>."
+            },
+            {
+                "args": "check <ID>"
+            }
+        ],
+        "description": "Este comando é usado para criar ou verificar apostas. As apostas devem ser feitas usando números entre 1 e 60, com até 6 números por aposta, ao custo de 5 cookies (as apostas com mais de 6 números são permitidas, mas são mais caras)."
     }
 }
