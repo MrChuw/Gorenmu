@@ -355,7 +355,7 @@
     },
     "Reverse": {
         "helper": "Reverses a text.",
-        "usage": "Para usar: {}reverse <texto>",
+        "usage": "To use: {}reverse <text>",
         "description": "This command reverses the sent text.",
         "commands": [
             {
