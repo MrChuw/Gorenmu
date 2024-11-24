@@ -112,6 +112,16 @@
                 }
             ],
             "description": "Este comando verifica se um usuário é AFK ou não."
+        },
+        "RAfk": {
+            "helper": "Retornar ao status AFK.",
+            "usage": "Para usar: {}rafk",
+            "description": "Este comando é usado para retornar ao status AFK.",
+            "commands": [
+                {
+                    "response": "@user2 você permaneceu AFK: : :"
+                }
+            ]
         }
     }
 }
