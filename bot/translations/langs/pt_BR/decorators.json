@@ -89,9 +89,14 @@
             "admonitions": [
                 {
                     "admonition_type": "warning",
-                    "title": "Tamanho máximo!"
+                    "title": "Tamanho máximo!",
+                    "message": "A mensagem não poderia ser mais de 450 caracteres, se for mais longa, um erro será retornado."
                 }
             ]
+        },
+        "IsAfk": {
+            "helper": "Digite o comando e o nome do usuário para ver se eles são AFK.",
+            "usage": "Como usar: {}IsAfk <username>"
         }
     }
 }
