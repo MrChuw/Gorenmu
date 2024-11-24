@@ -89,7 +89,7 @@
             "admonitions": [
                 {
                     "admonition_type": "warning",
-                    "title": "Comprimento máximo!"
+                    "title": "Tamanho máximo!"
                 }
             ]
         }
