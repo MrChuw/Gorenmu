@@ -105,6 +105,9 @@
                 {
                     "args": "usuário3",
                     "response": "@usuário3 está AFK."
+                },
+                {
+                    "args": "usuário4"
                 }
             ],
             "description": "Este comando verifica se um usuário é AFK ou não."
