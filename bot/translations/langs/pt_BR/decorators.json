@@ -99,7 +99,7 @@
             "usage": "Como usar: {}IsAfk <nome de usuário>",
             "commands": [
                 {
-                    "response": "@user2 não é AFK.",
+                    "response": "@usuário2 não está AFK.",
                     "args": "usuário2"
                 }
             ],
