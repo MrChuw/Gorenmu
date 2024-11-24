@@ -143,11 +143,12 @@
             "# {command_title}",
             "## Este comando pode ser usado {rate} vezes em sucessão, com um cooldown de {per} por {cooldown_type}.",
             "!!! warning \"Restrições para nomes de aliases!\"",
-            null,
+            "    - Deve ter entre 2 e 30 caracteres.",
             "    - Pode conter letras, números, hífens (-), underscores (_), e uma ampla gama de caracteres Unicode (©), incluindo emojis (🔥).",
             "!!! warning \"Cooldown para aliases criados!\"",
             "    Ao criar um alias, o tempo de espera (cooldown) do alias será o maior tempo de espera entre os comandos utilizados no alias. Portanto, se um comando pode ser usado 1x a cada 5 segundos e outro 3x a cada 10 segundos, o tempo de espera do alias será 1x a cada 5 segundos.",
-            "{description}"
+            "{description}",
+            "# Como criar um alias:"
         ]
     }
 }
