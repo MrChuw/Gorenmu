@@ -159,7 +159,8 @@
             "```text",
             "usuário: {prefix}{prefix}cool_name",
             "bot: User, há um total de 4 caracteres. Entre eles, 0 são marcas de pontuação, 0 são letras maiúsculas, e 0 são caracteres especiais.",
-            "ou"
+            "ou",
+            "bot: User, há um total de 6 caracteres. Entre eles, 0 são marcas de pontuação, 0 são letras maiúsculas, e 0 são caracteres especiais."
         ]
     }
 }
