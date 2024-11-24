@@ -144,7 +144,7 @@
             "## This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.",
             "!!! warning \"Restrictions for alias names!\"",
             "    - Must be between 2 and 30 characters long.",
-            "    - Can contain letters, numbers, dashes, underscores, and a wide range of Unicode characters, including emojis.",
+            "    - Can contain letters, numbers, dashes (-), underscores (_), and a wide range of Unicode characters (©), including emojis (🔥 ).",
             "!!! warning \"Cooldown for created aliases!\"",
             "    When creating an alias, the alias cooldown will be the cooldown of the commands used in the alias. Therefore, if one command can be used 1x every 5 seconds and another 3x every 10 seconds, the alias cooldown will be 1x every 5 seconds.",
             "{description}",
