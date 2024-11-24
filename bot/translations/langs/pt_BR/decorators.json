@@ -148,7 +148,7 @@
             "!!! warning \"Cooldown para aliases criados!\"",
             "    Ao criar um alias, o tempo de espera (cooldown) do alias será o maior tempo de espera entre os comandos utilizados no alias. Portanto, se um comando pode ser usado 1x a cada 5 segundos e outro 3x a cada 10 segundos, o tempo de espera do alias será 1x a cada 5 segundos.",
             "{description}",
-            "# Como criar um alias:",
+            "## Como criar um alias:",
             " ? aviso \"Cooldown para aliases criados!\""
         ]
     }
