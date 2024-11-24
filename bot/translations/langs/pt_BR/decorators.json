@@ -119,7 +119,7 @@
             "description": "Este comando é usado para retornar ao status AFK.",
             "commands": [
                 {
-                    "response": "@user2 você permaneceu AFK: : :"
+                    "response": "@usuário2 você permaneceu AFK: 🏃 ⌨️"
                 }
             ]
         }
