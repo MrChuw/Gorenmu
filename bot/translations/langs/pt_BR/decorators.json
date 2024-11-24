@@ -103,7 +103,7 @@
                     "args": "usuário2"
                 },
                 {
-                    "args": "utilizador3"
+                    "args": "usuário3"
                 }
             ],
             "description": "Este comando verifica se um usuário é AFK ou não."
