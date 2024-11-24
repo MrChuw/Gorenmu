@@ -156,7 +156,8 @@
             "```",
             "No exemplo acima, criamos um alias chamado `cool_name`. O alias invocará o comando `choice` com os argumentos \"1234\" e \"123456\", e o resultado de `choice` será enviado para o comando `count`.",
             "## Para usar o alias:",
-            "```text"
+            "```text",
+            "usuário: {prefix}{prefix}cool_name"
         ]
     }
 }
