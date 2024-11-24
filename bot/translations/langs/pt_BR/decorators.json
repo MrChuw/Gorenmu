@@ -82,7 +82,8 @@
                     "response": "você foi AFK: 🏃 ⌨️"
                 },
                 {
-                    "args": "Texto que você deseja deixar para quando retornar ou que as pessoas verão quando usarem {prefix}isafk."
+                    "args": "Texto que você deseja deixar para quando retornar ou que as pessoas verão quando usarem {prefix}isafk.",
+                    "response": "você foi AFK: :  and e deixou uma nota com: Texto que você quer sair para quando você retornar ou que as pessoas verão quando usarem {prefix}isafk."
                 }
             ]
         }
