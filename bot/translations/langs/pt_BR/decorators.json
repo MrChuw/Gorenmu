@@ -152,7 +152,8 @@
             " - O exemplo a seguir usa [pipe](pipe.md) para passar a resposta de um comando para outro.",
             "```text",
             "usuário: {prefix}{command_name} add cool_name choice 1234 123456 | count",
-            "bot: User, seu alias \"cool_name\" foi criado com sucesso."
+            "bot: Usuário, seu alias \"cool_name\" foi criado com sucesso.",
+            "```"
         ]
     }
 }
