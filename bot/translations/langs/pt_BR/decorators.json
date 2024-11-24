@@ -83,7 +83,12 @@
                 },
                 {
                     "args": "Texto que você deseja deixar para quando retornar ou que as pessoas verão quando usarem {prefix}isafk.",
-                    "response": "você foi AFK: :  and e deixou uma nota com: Texto que você quer sair para quando você retornar ou que as pessoas verão quando usarem {prefix}isafk."
+                    "response": "você ficou AFK: 🏃 ️ e deixou um bilhete com: Texto que você quer deixar para quando voltar ou que as pessoas verão quando usarem {prefix}isafk."
+                }
+            ],
+            "admonitions": [
+                {
+                    "admonition_type": "warning"
                 }
             ]
         }
