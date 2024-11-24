@@ -302,7 +302,7 @@
     },
     "HyperTranslate": {
         "helper": "Translates a text into random languages depending on how many times the user requests.",
-        "usage": "To use: <prefix>hypertranslate <number of times> <text>",
+        "usage": "To use: {}hypertranslate <number of times> <text>",
         "description": "Command based on [ravbug](https://www.ravbug.com/hypertranslate/) that translates a text into random languages depending on how many times the user requests.",
         "commands": [
             {
@@ -315,7 +315,7 @@
         "Imgur": {
             "helper": "Sends a random Imgur link. (Might be NSFW)",
             "usage": "To use: {}imgur or {}imgur7 <quantity>",
-            "description": "This command generates random Imgur links with 5 characters, from before 2014, and using imgur7 for links from 2014 up to now.",
+            "description": "This command generates random Imgur links with 5 characters, from before ~2014, and using imgur7 for links from ~2014 up to now.",
             "commands": [
                 {
                     "args": " <number of images>",
