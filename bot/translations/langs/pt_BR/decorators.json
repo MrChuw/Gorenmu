@@ -163,7 +163,7 @@
             "bot: User, há um total de 6 caracteres. Entre eles, 0 são marcas de pontuação, 0 são letras maiúsculas, e 0 são caracteres especiais.",
             "```",
             "Para usar o alias, basta usar `{prefix}{prefix}` seguido pelo nome do alias ({prefix} é o prefixo padrão do bot, se o prefixo do chat é diferente, basta repeti-lo 2 (dois) vezes e então o nome do alias).",
-            "# Como verificar um alias:"
+            "## Como verificar um alias:"
         ]
     }
 }
