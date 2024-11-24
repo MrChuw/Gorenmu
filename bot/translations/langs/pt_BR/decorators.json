@@ -96,7 +96,7 @@
         },
         "IsAfk": {
             "helper": "Digite o comando e o nome do usuário para ver se eles são AFK.",
-            "usage": "Como usar: {}IsAfk <username>",
+            "usage": "Como usar: {}IsAfk <nome de usuário>",
             "commands": [
                 {
                     "response": "@user2 não é AFK.",
