@@ -108,7 +108,7 @@
                 },
                 {
                     "args": "usuário4",
-                    "response": "@user4 é AFK e deixou uma nota: <message>"
+                    "response": "@usuário4 está AFK e deixou uma nota: <message>"
                 }
             ],
             "description": "Este comando verifica se um usuário é AFK ou não."
