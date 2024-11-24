@@ -151,7 +151,8 @@
             "## Como criar um alias:",
             " - O exemplo a seguir usa [pipe](pipe.md) para passar a resposta de um comando para outro.",
             "```text",
-            "usuário: {prefix}{command_name} add cool_name choice 1234 123456 | count"
+            "usuário: {prefix}{command_name} add cool_name choice 1234 123456 | count",
+            "bot: User, seu alias \"cool_name\" foi criado com sucesso."
         ]
     }
 }
