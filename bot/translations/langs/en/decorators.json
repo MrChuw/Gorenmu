@@ -240,18 +240,18 @@
             " - Replace `{1+}` with `and in the end`.",
             " - Replace `{channel}` with the channel to which the message was sent, for example, `gorenmu`.",
             " - Replace `{user}` with your username, for example, `xXNickOriginalXx`.",
-            " - Send the result `choice 1234 123456 | count something_here gorenmu {output} xXNickOriginalXx` and in the end to be processed by the pipe.",
-            "## When it reaches the pipe, it will:",
+            " - The full command would be `choice 1234 123456 | count something_here gorenmu {output} xXNickOriginalXx` which would be processed by the pipe handler.",
+            "## The pipe handle, will do:",
             " - Process the first part: `choice 1234 123456` (as an example, let's say choice selected `1234`).",
             " - Process the second part: `count something_here gorenmu {output} xXNickOriginalXx and in the end`; when processing the second part, it will replace `{output}` with `1234`.",
-            " - Then, the command that will be sent to count will be `count something_here gorenmu 1234 xXNickOriginalXx and in the end.`",
+            " - Then, the arguments that will be sent to count will be `something_here gorenmu 1234 xXNickOriginalXx and in the end.`",
             " - And the response will be `There are a total of 50 characters. Among them, 1 is punctuation, 4 are uppercase letters, and 0 are special characters.`"
         ]
     },
     "Chance": {
         "helper": "Returns a random percentage.",
         "usage": "To use: {}chance",
-        "description": "This command generates and returns a random percentage, representing a chance between 0% and 100%.",
+        "description": "This command generates and returns a random percentage, representing a value between 0% and 100%.",
         "commands": [
             {
                 "response": "34%"
