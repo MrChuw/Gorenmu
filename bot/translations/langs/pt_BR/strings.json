@@ -1,140 +1,409 @@
 {
-  "SupportTools": {
-    "mention": "você",
-    "TimeTools": {
-      "strftime": "%d/%m/%Y às %H:%M:%S",
-      "Pattern time": {
-        "years": [
-          "anos",
-          "ano",
-          "a"
-        ],
-        "months": [
-          "meses",
-          "mês",
-          "mo"
-        ],
-        "weeks": [
-          "semanas",
-          "semana",
-          "w"
-        ],
-        "days": [
-          "dias",
-          "dia",
-          "d"
-        ],
-        "hours": [
-          "horas",
-          "hora",
-          "h"
-        ],
-        "minutes": [
-          "minutos",
-          "minuto",
-          "min",
-          "m"
-        ],
-        "seconds": [
-          "segundos",
-          "segundo",
-          "segs",
-          "seg",
-          "s"
-        ],
-        "milliseconds": [
-          "milissegundos",
-          "milissegundo",
-          "milisecs",
-          "milisec",
-          "mili"
-        ],
-        "microseconds": [
-          "microssegundos",
-          "microssegundo",
-          "micro",
-          "us"
-        ],
-        "time": [
-            "tempo",
-            "t"
-        ]
-      },
-      "Time Units": {
-        "singular": {
-          "years": "ano",
-          "months": "mês",
-          "weeks": "semana",
-          "days": "dia",
-          "hours": "hora",
-          "minutes": "minuto",
-          "seconds": "segundo",
-          "milliseconds": "milissegundo",
-          "microseconds": "microssegundo"
+    "SupportTools": {
+        "mention": "você",
+        "TimeTools": {
+            "strftime": "%d/%m/%Y às %H:%M:%S",
+            "Pattern time": {
+                "years": [
+                    "anos",
+                    "ano",
+                    "a"
+                ],
+                "months": [
+                    "meses",
+                    "mês",
+                    "mo"
+                ],
+                "weeks": [
+                    "semanas",
+                    "semana",
+                    "w"
+                ],
+                "days": [
+                    "dias",
+                    "dia",
+                    "d"
+                ],
+                "hours": [
+                    "horas",
+                    "hora",
+                    "h"
+                ],
+                "minutes": [
+                    "minutos",
+                    "minuto",
+                    "min",
+                    "m"
+                ],
+                "seconds": [
+                    "segundos",
+                    "segundo",
+                    "segs",
+                    "seg",
+                    "s"
+                ],
+                "milliseconds": [
+                    "milissegundos",
+                    "milissegundo",
+                    "milisecs",
+                    "milisec",
+                    "mili"
+                ],
+                "microseconds": [
+                    "microssegundos",
+                    "microssegundo",
+                    "micro",
+                    "us"
+                ],
+                "time": [
+                    "tempo",
+                    "t"
+                ]
+            },
+            "Time Units": {
+                "singular": {
+                    "years": "ano",
+                    "months": "mês",
+                    "weeks": "semana",
+                    "days": "dia",
+                    "hours": "hora",
+                    "minutes": "minuto",
+                    "seconds": "segundo",
+                    "milliseconds": "milissegundo",
+                    "microseconds": "microssegundo"
+                },
+                "plural": {
+                    "years": "anos",
+                    "months": "meses",
+                    "weeks": "semanas",
+                    "days": "dias",
+                    "hours": "horas",
+                    "minutes": "minutos",
+                    "seconds": "segundos",
+                    "milliseconds": "milissegundos",
+                    "microseconds": "microssegundos"
+                },
+                "short": {
+                    "years": "a",
+                    "months": "mo",
+                    "weeks": "w",
+                    "days": "d",
+                    "hours": "h",
+                    "minutes": "m",
+                    "seconds": "s",
+                    "milliseconds": "ms",
+                    "microseconds": "µs"
+                }
+            },
+            "Humanize": {
+                "language": "pt_BR"
+            }
         },
-        "plural": {
-          "years": "anos",
-          "months": "meses",
-          "weeks": "semanas",
-          "days": "dias",
-          "hours": "horas",
-          "minutes": "minutos",
-          "seconds": "segundos",
-          "milliseconds": "milissegundos",
-          "microseconds": "microssegundos"
-        },
-        "short": {
-          "years": "a",
-          "months": "mo",
-          "weeks": "w",
-          "days": "d",
-          "hours": "h",
-          "minutes": "m",
-          "seconds": "s",
-          "milliseconds": "ms",
-          "microseconds": "µs"
+        "Lottery": {
+            "bet_or_consultation": [
+                "aposta",
+                "consultar"
+            ]
         }
-      },
-      "Humanize": {
-        "language": "pt_BR"
-      }
+    },
+    "Exceptions": {
+        "ResponseExceptions": {
+            "pipe_response": "aqui está a resposta gerada pelo último comando: {}",
+            "error_on_response": "um erro aconteceu durante o comando '{}'",
+            "command_not_pipeble": "este comando não pôde ser utilizado com pipe."
+        },
+        "LotteryExceptions": {
+            "lottery_seed": "Algo terrível aconteceu, contate '{}' aqui na twitch utilizando whispers."
+        },
+        "ToolsExceptions": {
+            "announcement": "algo deu errado com os anúncios. {}"
+        },
+        "BotMainLoopExceptions": {
+            "dev_required": "você precisa ser meu criador para executar este comando.",
+            "owner_required": "comandos reservados para o proprietário do bot.",
+            "command_on_cooldown": "para usar o comando novamente, volte em {}.",
+            "not_implemented": "este comando está temporariamente desativado.",
+            "error_not_registered": "um erro inesperado ocorreu, por favor informe o erro para @{}."
+        }
+    },
+    "Admin": {
+        "Reload": {
+            "commands_reloaded": "Os comando foram recarregados com sucesso."
+        },
+        "Restart": {
+            "success": "O bot reinicio com sucesso.",
+            "unexpected_error": "Um erro aconteceu ao reiniciar o bot: {}"
+        },
+        "Nada": {
+            "nada": "o comando executou com sucesso."
+        }
+    },
+    "Weather": {
+        "TODO": "TODO"
     },
     "Lottery": {
-      "bet_or_consultation": [
-        "aposta",
-        "consultar"
-      ]
+        "past": [
+            "passado"
+        ],
+        "duplicate_numbers": "Por favor, escolha números não duplicados.",
+        "current": [
+            "atual",
+            "presente"
+        ],
+        "only_numbers": "Envie apenas números de 1 a 60.",
+        "not_enough_cookies": "Você não tem cookies suficientes para fazer uma aposta. O mínimo são 5 biscoitos.",
+        "not_enough_cookies_more_five": "Você não tem cookies suficientes para fazer uma aposta. O número de cookies necessários é {}",
+        "bet_place": "A aposta foi feita com os números {} e um valor de {} cookies. (ID: {})",
+        "lottery_lock": "Desculpe, a loteria é fechada enquanto os resultados estão sendo computados.",
+        "timeout": "Demorou muito tempo para escolher uma opção.",
+        "too_much_numbers": "Você não pode apostar em mais de 15 números.",
+        "minimum_bet": "Por favor, escolha pelo menos 3 números.",
+        "no_bet_id": "Você não tem nenhuma aposta com este ID.",
+        "ticket_info": "Bilhete com números: {} no valor de {} criado {} atrás.",
+        "no_old_bets_found": "Você não tem nenhuma aposta passada/fechada.",
+        "old_bets": "Suas apostas anteriores são: {}, com um valor total de {}.",
+        "no_active_bets_found": "Você não tem nenhuma aposta ativa na rodada atual.",
+        "active_bets": "Suas apostas atuais são: {}, com um valor total de {}.",
+        "no_bets": "Você não fez nenhuma aposta até agora.",
+        "all_bets": "Todas as suas apostas são: {}, com um valor total de {}.",
+        "unknown_option": "As opções de loteria são: \"create\" e \"check\".",
+        "lottery_announce_messages": [
+            "Em 30 minutos, a loteria começará a calcular os resultados. O prêmio total é {}, use {}lottery create <números> para participar.",
+            "Em 15 minutos, a loteria começará a calcular os resultados.",
+            "Em 1 minuto, a loteria começará a calcular os resultados.",
+            "Lotaria fechada, começando a calcular os resultados."
+        ],
+        "winners": "Os números sorteados foram: {}, todos os vencedores serão notificados com um lembrete com os valores e números sorteados.",
+        "no_winners": "Os números sorteados foram: {}, não houve vencedores, o prêmio de {} passou para o próximo sorteio.",
+        "lottery_result_announce": "A loteria acabou e aqui estão os resultados: {}",
+        "remind_message": "Você ganhou {} cookies na loteria! Os ingressos vencedores foram: {}"
+    },
+    "Cookies": {
+        "ranks": "os categoria são: {}",
+        "daily_limit_reached": "Você ainda está em cooldown, espere {} até o próximo lote! ⌛",
+        "user_not_found": "o usuário {} ainda não foi registrado e não usou nenhum comando de cookie.",
+        "invalid_option": "Escolha entre uma das opções \"eat\", \"count\", \"top\", \"gift\", \"stock\" ou \"sm\"",
+        "cookie_not_found": "O usuário {} ainda não usou nenhum comando relacionado aos cookies.",
+        "not_eat": "Você não comeu nada, nossa!",
+        "negative_eat": "Para comer {} cookies, você deve primeiro saber como reverter entropia.",
+        "multiple_eat": "você comeu {} cookies de uma só vez. 🥠",
+        "eat": "{}",
+        "cc_bot_nick": "Tenho cookies infinitos e dou uma fração deles para você.",
+        "gift_bot_nick": "Não quero a seu cookie.",
+        "gift_user_himself": "você tentou presentear você mesmo, uau!",
+        "gift_on_cooldown_no_stock": "você não tem nenhum cookie armazenado e o cooldown dura mais {}.",
+        "invalid_gift_amount": "envie um valor válido para presentear e não {}.",
+        "multiple_gift": "você presenteou @{} com {} cookie 🎁",
+        "gift": "você deu um cookie para @{} 🎁",
+        "gift_not_enough_cookies": "Para presente, você deve primeiro resgatar o cookie.",
+        "stock": "você estocou {} cookies 🍪, o próximo sai em 6h.",
+        "stock_not_daily": "você estocou {} cookies 🍪.",
+        "stock_not_enough_cookies": "você só pode estocar {}.",
+        "top10_ish": "top {} {}: {} || Você está na {}ª posição na classificação com {}.",
+        "multiple_gift_plural": "você presenteou @{} com {} cookies 🎁",
+        "gift_plural": "você deu @{} um cookie 🎁",
+        "invalid_amount": "você está tentando apostar {} mas só tem {} cookies não resgatados.",
+        "daily_win": "{} você usou seu cookie diário e recebeu {} cookies!",
+        "daily_single_loss": "{} você perdeu seu cookie diário…",
+        "not_daily_multiple_loss": "{} você usou seu cookie diário não resgatado e ganhou {} cookies!",
+        "not_daily_single_loss": "{} você perdeu seu cookie diário não resgatado…",
+        "not_daily_multiple_win": "você usou {} cookies diários não resgatados e ganhou {} cookies dos seguintes itens.",
+        "not_daily_lost_everything": "você usou {} cookies diários e perdeu tudo PoroSad",
+        "format_cookie_count": {
+            "cookie_count": "Você já comeu {} biscoitos 🥠,",
+            "stocked_count": "tem {} em estoque,",
+            "received_count": "foi apresentado com {},",
+            "donated_count": "presenteou {},",
+            "not_redeemed_count": "e tem um total de {} não resgatados.",
+            "total_count": "e um total de {} cookies já foram adicionados à conta."
+        }
+    },
+    "RandomLine": {
+        "random_line": "{} (enviado há {} por @{})",
+        "channel_not_found": "Não encontrei nenhum canal chamado @{}.",
+        "user_not_found": "Não encontrei nenhum usuário chamado @{}.",
+        "no_message_found": "Não encontrei nenhuma mensagem de @{} in @{}."
+    },
+    "Scp": {
+        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
+    },
+    "UpSideDown": {
+        "upsidedown": "{}"
+    },
+    "Wikihow": {
+        "url": "https://pt.wikihow.com/Especial:Randomizer",
+        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
+    },
+    "Wikipedia": {
+        "url": "https://pt.wikipedia.org/wiki/Special:Random",
+        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
+    },
+    "Annotations": {
+        "too_much_characters": "A anotação deve ter um máximo de 450 caracteres.",
+        "title_too_long": "O título deve ter um máximo de 32 caracteres.",
+        "too_few_characters": "Você se esqueceu de enviar o conteúdo da anotação.",
+        "annotation_created": "Nota criada com sucesso. 📝 (ID: {})",
+        "no_annotations_with_id": "Você não tem nenhuma anotação com ID {}.",
+        "all_annotations": "Suas anotações são aquelas com ID: {}",
+        "annotation_content": "{}",
+        "deleted": "Sua anotação com ID {} foi excluída com sucesso. 🗑",
+        "id_not_provided": "{} não é um ID válido.",
+        "option_not_recognized": "As opções válidas são apenas \"add\" \"check\" \"delete\""
+    },
+    "Others": {
+        "Pipe": {
+            "response": "Pipe não é realmente um comando. Para mais informações, visite este link: {}"
+        }
+    },
+    "Afk": {
+        "Afk": {
+            "message_too_long": "Esta mensagem é muito longa.",
+            "afk_response": "{}: {}",
+            "afk_content_response": "{}: {} e deixou uma nota com: {}"
+        },
+        "IsAfk": {
+            "bot_nick": "Estou sempre aqui... assistindo.",
+            "author_nick": "você não está trabalhando... obviamente.",
+            "never_seen": "Não me lembro de ter visto nenhum {}.",
+            "is_afk": "@{} {}: {}",
+            "is_afk_content": "@{} {} e deixou uma nota: {}",
+            "is_not_afk": "@{} não é AFK."
+        },
+        "RAfk": {
+            "time_expired": "O tempo para voltar já passou.",
+            "is_afk": "{}: {}",
+            "is_afk_content": "{} {} e deixou uma nota: {}",
+            "is_not_afk": "você não esta AFK."
+        },
+        "AfkListeners": {
+            "is_afk": "{}: {} (estava ausente por {} {})",
+            "is_afk_content": "{} {} e deixou uma nota: {} (estava ausente por {} {})"
+        }
+    },
+    "Alias": {
+        "user_not_found": "não há usuário com apelido {}.",
+        "dont_have_alias": "Você não tem o alias \"{}\"!",
+        "alias_invalid_name": "Seu nome de alias não é válido! Seu alias deve conter apenas letras, números e ter entre 2-30 caracteres de comprimento.",
+        "user_has_no_alias": "O usuário {} não possui aliases registrados.",
+        "alias_table_headers": [
+            "Nome de Alias",
+            "Descrição",
+            "Invocação",
+            "Argumentos",
+            "Links para",
+            "Atualizado",
+            "Criado"
+        ],
+        "alias_table_replaces": [
+            "Nenhuma descrição",
+            "Sem argumentos",
+            "Nada"
+        ],
+        "alias_table_name": "{} aliases",
+        "Add": {
+            "no_command_to_add": "Você não enviou um comando! Use: {}alias add (nome) (comando) (…argumentos)",
+            "alias_name_conflict": "Não é possível adicionar o alias \"{}\" - você já possui um! Você pode “editar” sua definição, “renomeá-la” ou “removê-la”.",
+            "alias_created": "Seu alias \"{}\" foi criado com sucesso.",
+            "command_dont_exist": "Não é possível criar um alias! O comando \"{}\" não existe."
+        },
+        "Check": {
+            "user_alias_list": "Lista dos seus aliases: {} | Lista detalhada: {}",
+            "no_alias_found": "Não foi possível encontrar {} em {} aliases ou em qualquer um dos seus aliases!",
+            "list_of_alias_of": "Lista de aliases de {}: {}",
+            "list_of_special_case": "Caso especial!\nSeu alias \"{0}\": {1}\nLista dos aliases de {0}: {2}",
+            "alias_not_found": "{} não tem o alias \"{}\"!",
+            "appendix": "Este alias é um link para \"{}\" feito por {}.",
+            "alias_deleted": "{} alias é um link para um alias diferente, mas o original foi excluído.",
+            "message": "{} alias \"{}\" tem os argumentos: {} {}",
+            "normal_message": "{} || Link: {}"
+        },
+        "Copy": {
+            "user_not_provided": "Nenhum usuário alvo fornecido!",
+            "alias_not_provided": "Nenhum alias de destino fornecido!",
+            "target_alias_invalid_name": "O nome do alias copiado não é válido e portanto não pode ser copiado!",
+            "no_alias_found": "Não consegui encontrar {} no usuário {}!",
+            "link_to_a_link": "Você não pode copiar links para outros aliases. Em vez disso, use {}alias copy {} {}",
+            "copy_success": "Alias \"{}\" copiado com sucesso.",
+            "copy_with_name_of": "Alias \"{}\" copiado com sucesso. Com o nome \"{}\"."
+        },
+        "Describe": {
+            "no_args_to_parse": "Você não forneceu um alias ou uma descrição! Use: {}alias describe (nome) (…descrição)",
+            "description_updated": "A descrição do alias \"{}\" foi atualizada com sucesso.",
+            "description_reverted": "A descrição do alias \"{}\" foi redefinida com sucesso."
+        },
+        "Edit": {
+            "no_args_provided": "Nenhum alias ou nome de comando fornecido!",
+            "edit_link": "Você não pode editar links para outros aliases!",
+            "edit_success": "Seu alias \"{}\" foi editado com sucesso.",
+            "command_dont_exist": "Não é possível editar o alias! O comando \"{}\" não existe."
+        },
+        "Link": {
+            "link_no_args": "Você não forneceu um nome de usuário ou alias! Use: {}alias link (usuário) (nome do alias)",
+            "alias_name_already_exists": "Não é possível vincular um novo alias - você já possui um alias com esse nome!",
+            "user_dont_has_alias": "O usuário fornecido não possui o alias \"{}\"!",
+            "link_with_invalid_name": "O nome alternativo vinculado não é válido! {}",
+            "link_name_string": ", com um nome personalizado de \"{}\".",
+            "link_to_link": "Você tentou criar um link a partir de um alias vinculado (alias {} por {}), então usei o original como modelo. Quando o original mudar, o seu também mudará.",
+            "link_success": "Alias vinculado com sucesso{} Quando o original for alterado, o seu também será."
+        },
+        "Remove": {
+            "no_alias_name_provided": "Nenhum nome alternativo fornecido!",
+            "alias_removed": "Seu alias \"{}\" foi removido com sucesso."
+        },
+        "Rename": {
+            "no_name_provided": "Você deve fornecer o nome alternativo atual e o novo!",
+            "alias_already_exists": "Você já tem o alias \"{}\"!",
+            "alias_renamed": "Seu alias \"{}\" foi renomeado com sucesso para \"{}\"."
+        }
+    },
+    "Chance": {
+        "random_percentage": "{:.2f}%."
+    },
+    "Choice": {
+        "additional_separators": [
+            "ou"
+        ],
+        "chosen_option": "{}"
+    },
+    "Count": {
+        "character_count": "Há um total de caracteres {}. Destes, {} são sinais de pontuação, {} são letras maiúsculas, e {} são caracteres especiais."
+    },
+    "HyperTranslate": {
+        "base_lang": "pt",
+        "quantity_error": "Você deve especificar o número de vezes que o texto será traduzido. Exemplo: `{}hypertranslate 10 <texto>`",
+        "starter_string": "Traduzindo o texto…",
+        "unexpected_error": "O texto não pôde ser traduzido.",
+        "translation": "{}"
+    },
+    "NSFW": {
+        "Imgur": {
+            "timeout": "Passaram-se 100 segundos e não consegui gerar. Por favor, espere um pouco e tente novamente.",
+            "time_message": "Tempo: {}",
+            "all_images_embed": "Todas as imagens geradas: {}",
+            "all_images_embed_time": "Tempo: {} | Todas as imagens: {}"
+        },
+        "ImgurRepeated": {
+            "links_repeated": "Número total de imagens repetidas: {} | Imagens: {}",
+            "no_repeated": "Sem imagens repetidas."
+        },
+        "Boru": {
+            "original": "Original",
+            "preview": "Prévia",
+            "pls_wait": "Aguarde um pouco, estou gerando os links.",
+            "unexpected_error": "{}",
+            "success": "{}",
+            "too_much_tags": "Quantidade de tags ultrapassou o limite permitido de {}."
+        }
+    },
+    "RandomColor": {
+        "response_url": "#{} é {}. {}"
+    },
+    "Reverse": {
+        "reversed_string": "{}"
+    },
+    "Markov": {
+        "purge": "Dicionários limpos em %0.2fs. %d palavras removidas.",
+        "replace": "%d casos de %s substituídos por %",
+        "unlearn": "Desaprender feito em %0.2fs"
     }
-  },
-  "Exceptions": {
-    "ResponseExceptions": {
-      "pipe_response": "aqui está a resposta gerada pelo último comando: {}",
-      "error_on_response": "um erro aconteceu durante o comando '{}'",
-      "command_not_pipeble": "este comando não pôde ser utilizado com pipe."
-    },
-    "LotteryExceptions": {
-      "lottery_seed": "Algo terrível aconteceu, contate '{}' aqui na twitch utilizando whispers."
-    },
-    "ToolsExceptions": {
-      "announcement": "algo deu errado com os anúncios. {}"
-    }
-  },
-  "Admin": {
-    "Reload": {
-      "commands_reloaded": "Os comando foram recarregados com sucesso."
-    },
-    "Restart": {
-      "success": "O bot reinicio com sucesso.",
-      "unexpected_error": "Um erro aconteceu ao reiniciar o bot: {}"
-    },
-    "Nada": {
-      "nada": "o comando executou com sucesso."
-    }
-  },
-
-
-
-  "Weather": {
-    "TODO": "TODO"
-  }
 }
