@@ -499,9 +499,82 @@
                 "response": "Suas apostas atuais são: [IDs], com um valor total de <Total>."
             },
             {
-                "args": "check <ID>"
+                "args": "check <ID>",
+                "response": "Aposta com os números: [1, 2, 3, 4, 5, 6] custando 5, criado <Tempo> atrás."
+            },
+            {
+                "args": "check passadas",
+                "response": "Suas apostas anteriores são: <IDs>, com um valor total de <Total>."
+            },
+            {
+                "args": "check novo",
+                "response": "Suas apostas atuais são: <IDs>, com um valor total de <Total>."
+            },
+            {
+                "args": "check",
+                "response": "Todas as suas apostas são: <IDs>, com um valor total de <Total>."
             }
         ],
-        "description": "Este comando é usado para criar ou verificar apostas. As apostas devem ser feitas usando números entre 1 e 60, com até 6 números por aposta, ao custo de 5 cookies (as apostas com mais de 6 números são permitidas, mas são mais caras)."
+        "description": "Este comando é usado para criar ou verificar apostas. As apostas devem ser feitas usando números entre 1 e 60, com até 6 números por aposta, ao custo de 5 cookies (as apostas com mais de 6 números são permitidas, mas são mais caras).",
+        "admonitions": [
+            {
+                "message": "Para desativar notificações de loteria em seu canal, você pode usar \"[disable] (disable.md) lottery notice\".",
+                "admonition_type": "info",
+                "position": "bottom",
+                "title": "Desativar notificações."
+            }
+        ]
+    },
+    "Cookies": {
+        "Top": {
+            "usage": "Para usar: {}top ou passe uma das opções stocked | streak | consumed | donated | received | total",
+            "helper": "Veja quem são os melhores comedores de cookies ou doadores.",
+            "description": "Veja quem são os melhores comedores de cookie ou doadores."
+        },
+        "Gift": {
+            "usage": "Para usar: {}slotmachine <all pode ser usado para apostar todos os cookies não reclamados rapidamente>",
+            "description": "Aposte seu cookie diário por uma chance de ganhar mais.",
+            "helper": "Aposta seu cookie diário por uma chance de ganhar mais."
+        },
+        "CookieCount": {
+            "usage": "Para usar: {}gift <nome do usuário>",
+            "description": "Dê a alguém o seu cookie diário.",
+            "helper": "Dê a alguém o seu cookie diário."
+        },
+        "SlotMachine": {
+            "helper": "TODO",
+            "usage": "TODO",
+            "description": "TODO"
+        },
+        "Stock": {
+            "helper": "Estoque seu cookie diário.",
+            "usage": "Para usar: {}stock <all pode ser usado para estocar todos os cookies não reclamados rapidamente>",
+            "description": "Estoque seu cookie diário."
+        }
+    },
+    "Safebooru": {
+        "helper": "Comando usado para gerar imagens aleatórias de Safebooru.",
+        "usage": "Para usar: {}safebooru <quantidade> <tags>",
+        "description": "Este comando é usado para gerar imagens aleatórias de Safebooru e encurtá-las para conveniência.",
+        "commands": [
+            {
+                "response": "Original: <URL> | Preview: <URL>"
+            },
+            {
+                "args": "3",
+                "response": "Original: <URL> ||  Preview: <URL> Original: <URL> ||  Preview: <URL> Original: <URL> ||  Preview: <URL>"
+            },
+            {
+                "args": "some_tag",
+                "response": "Original: <URL> | Preview: <URL>"
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "warning",
+                "title": "Tags!",
+                "message": "Para tags contendo espaços, o espaço deve ser substituído por \"_\"."
+            }
+        ]
     }
 }
