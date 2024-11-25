@@ -553,11 +553,11 @@
     "Cookies": {
         "CookieCount": {
             "helper": "Gift someone your daily cookie.",
-            "usage": "To use: {}gift <user_name>",
+            "usage": "To use: {}gift <user name>",
             "description": "Gift someone your daily cookie."
         },
         "Gift": {
-            "helper": "Bet your daily cookie for a chance to win others.",
+            "helper": "Bet your daily cookie for a chance to win more.",
             "usage": "To use: {}slotmachine <all can be used to bet all unclaimed cookies quickly>",
             "description": "Bet your daily cookie for a chance to win others."
         },
