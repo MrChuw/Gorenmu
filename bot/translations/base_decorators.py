@@ -93,13 +93,14 @@ class Decorators(BaseFunctions):
     Cookies: BaseDecorators.Cookies
 
 
+    decorators: dict
+    categories: list
+    exclude_categories: list
+
 
 class DecorationsFunctions(BaseFunctions):
     @classmethod
     def get_decorator(cls, ctx: Context) -> DecoratorType | None:
-        decorators = ctx.command.decorators[ctx.user.language]
-
-
         if "usage" in dir(cls):
             return cls  # NOQA
         decorator = ctx.command.decorators[ctx.user.language]
@@ -109,17 +110,6 @@ class DecorationsFunctions(BaseFunctions):
             if invoke_by == classe.lower():
                 return getattr(decorator, classe)
 
-    @classmethod
-    def get_helper(cls, ctx: Context) -> str:
-        return cls.get_decorator(ctx).helper.format(ctx.prefix)
-
-    @classmethod
-    def get_usage(cls, ctx: Context) -> str:
-        return cls.get_decorator(ctx).usage.format(ctx.prefix)
-
-    @classmethod
-    def get_description(cls, ctx: Context | DecoratorType) -> str:
-        return cls.get_decorator(ctx).description
 
     def get_object_or_false(self, key: str):
         obj = self.get_object_or_none(key)
@@ -164,7 +154,7 @@ class BaseCommand(DecoratorType, DecorationsFunctions):
         self.helper = self.get_object("helper")
         self.usage = self.get_object("usage")
         self.description = self.get_object("description")
-        self.extras = self.get_object("extras")
+        self.extras = self.get_object_or_none("extras")
         self.commands = CommandExemples(self.get_object_or_false("commands"))
         self.admonitions = self.get_object_or_false("admonitions")
         self.template = self.get_object_or_false("template")
@@ -178,14 +168,14 @@ class BaseDecorators:
     class Templates(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.template_part1 = self.get_object("template_part1")
-            self.template_part2 = self.get_object("template_part2")
-            self.template_part3 = self.get_object("template_part3")
-            self.alias_template = self.get_object("alias_template")
-            self.command_template = self.get_object("command_template")
-            self.admonition_template = self.get_object("admonition_template")
+            self.template_part1: str = self.get_object("template_part1")
+            self.template_part2: str = self.get_object("template_part2")
+            self.template_part3: str = self.get_object("template_part3")
+            self.alias_template: str = self.get_object("alias_template")
+            self.command_template: str = self.get_object("command_template")
+            self.admonition_template: str = self.get_object("admonition_template")
 
-            self.bucket_type = self.get_object("bucket_type")
+            self.bucket_type: dict[str, str] = self.get_object("bucket_type")
 
             del self.fallback, self.obj
 

@@ -93,7 +93,13 @@ class CommandHandler:
                 module: types.ModuleType = import_module(name, package=package)
                 command: Command = module.command
                 command = get_translations(command)
-                # command.docs = module.dynamic_description(command, bot)
+                if command.name.lower() in ["afk", "isafk", "rafk"]:
+                    command.docs = bot.docs_handler.afk_description(command)
+                elif command.name.lower() in ["alias"]:
+                    command.docs = bot.docs_handler.template_description(command)
+                else:
+                    command.docs = bot.docs_handler.normal_description(command)
+
                 if "disabled" in module.__dict__:
                     continue
                 if command.name not in bot.commands:

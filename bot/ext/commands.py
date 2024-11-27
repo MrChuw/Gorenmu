@@ -329,7 +329,7 @@ class Context(TwitchioContext):
         if not alias:
             return None
         message.content = f"{external_ctx.prefix}{alias.invocation} {' '.join(alias.arguments)}"
-
+        # Add `m_user` for when the commando is invoked on a response.
         if "{channel}" in message.content:
             message.content = message.content.replace("{channel}", external_ctx.channel.name)
         if "{user}" in message.content:

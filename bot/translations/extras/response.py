@@ -38,17 +38,19 @@ class Response:
 class CommandExemples:
     def __init__(self, data):
         if not data:
+            self.items = []
             return
-        self.items = [CommandExemplesItem(**item) for item in data] if data else False
+        self.items = [CommandExemplesItem(item) for item in data] if data else False
 
     def __iter__(self):
         return iter(self.items) if self.items else iter([])
 
 
+
 class CommandExemplesItem:
-    def __init__(self, args, response):
-        self.args = args
-        self.response = response
+    def __init__(self, data: dict):
+        self.args = data.get("args", "")
+        self.response = data.get("response", "")
 
 
 class Admonitions:

@@ -14,6 +14,7 @@ def open_file(filepath: pathlib.Path, fallback=None):
         return json.load(file)
 
 
+# TODO: Lidar com acentos,
 def load_langs():
     base_path = pathlib.Path("bot/translations/langs")
     langs = {}
@@ -62,8 +63,8 @@ def load_langs():
 
 class Translation:
     def __init__(self, decorators, strings):
-        self.decorators = decorators
-        self.strings = strings
+        self.decorators: Decorators = decorators
+        self.strings: Translations = strings
 
 
 class TranslationManager:

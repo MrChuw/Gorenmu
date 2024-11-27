@@ -26,6 +26,7 @@ from bot.utils import (
 )
 from bot.utils.caches import (Cache, SessionsCaches)
 from bot.utils.command_handler import CommandHandler
+from bot.utils.dynamic_descriptions import DynamicDescriptions
 
 
 class Gorenmu(Bot):
@@ -43,6 +44,8 @@ class Gorenmu(Bot):
         self.boot: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
         self.timezone: datetime.timezone = datetime.timezone(datetime.timedelta(hours=-3))
         self.config: Config
+        self.TranslationManager: TranslationManager = TranslationManager(self.config.mock)
+        self.docs_handler: DynamicDescriptions = DynamicDescriptions(self)
         self.CommandHandler: CommandHandler = CommandHandler()
         self.SessionsCaches: SessionsCaches = SessionsCaches(self)
         self.MarkovProcessor: MarkovProcessor | None = None
@@ -52,7 +55,6 @@ class Gorenmu(Bot):
         self.LotteryTools: LotteryTools = LotteryTools(self)
         self.CookieTools: CookieTools = CookieTools(self)
         self.lottery_lock: asyncio.Lock = asyncio.Lock()
-        self.TranslationManager: TranslationManager = TranslationManager(self.config.mock)
         self.reconnection_attempts: dict[str, int] = {}
         self.bots_ids: list[int] = []
         self.dev_name: str = ""
@@ -284,7 +286,7 @@ class Gorenmu(Bot):
             except InvalidArgument:
                 if ctx.command and hasattr(ctx.command, "usage"):
                     decorator = ctx.command.decorators[ctx.user.language]
-                    return await ctx.reply(decorator.get_usage(ctx))
+                    return await ctx.reply(decorator.usage)
                 return await ctx.simple_response(ctx,
                                                  ctx.translations.Exceptions.BotMainLoopExceptions.error_not_registered
                                                  .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))
@@ -306,7 +308,7 @@ class Gorenmu(Bot):
             except InvalidArgument:
                 if ctx.command and hasattr(ctx.command, "usage"):
                     decorator = ctx.command.decorators[ctx.user.language]
-                    return await ctx.reply(decorator.get_usage(ctx, ctx))
+                    return await ctx.reply(decorator.usage)
                 return await ctx.simple_response(ctx,
                                                  ctx.translations.Exceptions.BotMainLoopExceptions.error_not_registered
                                                  .format(self.fetch_users([self.config.BotConfig.dev_userid])[0]))
