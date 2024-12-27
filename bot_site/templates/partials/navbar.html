@@ -1,0 +1,15 @@
+<!-- Nav Bar for all pages -->
+<div class="nav-bar">
+    <a href="/home" hx-get="/home?partial=true" hx-push-url="/home" hx-target="#container">Home</a>
+    <a href="/changelog" hx-get="/changelog?partial=true" hx-push-url="/changelog" hx-target="#container">Changelog</a>
+    <a href="/commands" hx-get="/commands?partial=true" hx-push-url="/commands" hx-target="#container">Commands</a>
+    <a href="/dashboard" hx-get="/dashboard?partial=true" hx-push-url="/dashboard" hx-target="#container">Dashboard</a>
+    <div class="language_selector">
+        <img src="/images/svg/language.svg">
+        <select name="lang" hx-get="/changeLangs" hx-target="#body" hx-indicator=".htmx-indicator">
+            <option value="en">English</option>
+            <option value="pt_br">Português</option>
+            <option value="es">Espanol</option>
+        </select>
+    </div>
+</div>

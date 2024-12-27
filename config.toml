@@ -27,6 +27,7 @@ api_client_secret = "${API_CLIENT_SECRET}"
 api_client_id = "${API_CLIENT_ID}"
 pastbin_url="https://bin.mrchuw.com.br/documents"
 file_upload_url = "${FILE_UPLOAD_URL}"
+enable_site_endpoints = true
 
 [database]
 type = "mariadb"

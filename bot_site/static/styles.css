@@ -1,0 +1,151 @@
+/* styles.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply font-sans;
+    @apply m-0;
+    @apply bg-orange-600;
+    @apply flex flex-col;
+    @apply min-h-screen;
+}
+
+/* NavBar | Footer */
+
+.nav-bar {
+    @apply flex;
+    @apply justify-center;
+    @apply gap-4;
+    @apply p-4;
+    @apply bg-gray-800;
+    @apply text-white;
+}
+
+.footer {
+    @apply flex justify-center;
+    @apply gap-4;
+    @apply p-4;
+    @apply bg-gray-800;
+    @apply text-white;
+    @apply sticky;
+    @apply top-[100vh];
+    @apply mt-10;
+}
+
+.language_selector {
+    @apply flex;
+    @apply justify-center;
+    @apply right-5;
+    @apply absolute;
+}
+
+.language_selector img {
+    @apply w-7;
+    @apply h-7;
+    @apply gap-1;
+}
+
+
+.language_selector select {
+    @apply bg-gray-800;
+    @apply text-white;
+}
+
+.language_selector > select:nth-child(2) {
+    @apply ml-2;
+}
+
+
+
+
+.title {
+    @apply text-3xl;
+    @apply font-bold;
+    @apply text-center;
+    @apply text-white;
+}
+
+.subtitle {
+    @apply text-3xl;
+    @apply font-bold;
+    @apply text-white;
+}
+
+
+
+
+.flex-container {
+    @apply grid;
+    @apply gap-4;
+    @apply grid-cols-auto-fill-100;
+    @apply grid-cols-auto-fit-100;
+    @apply contain-inline-size;
+}
+
+.flex-child {
+    @apply flex-1;
+    @apply border-2;
+    @apply border-solid;
+    @apply border-yellow-400;
+    min-inline-size: min(1rem, 100%);
+}
+
+.flex-child.description {
+    @apply mr-2.5;
+    @apply ml-2.5;
+}
+
+.flex-child.chat {
+    @apply mr-2.5;
+    @apply ml-2.5;
+    @apply bg-[rebeccapurple];
+    @apply h-[80vh];
+    @apply sticky;
+    @apply top-2.5;
+}
+
+
+
+
+
+
+form {
+    @apply w-1/2;
+    @apply mx-auto;
+    @apply p-5 border;
+    @apply border-gray-300;
+    @apply rounded-lg; 
+    @apply shadow-md;
+    @apply bg-green-900;
+    
+}
+
+label {
+    @apply block mb-2;
+}
+
+input[type="text"],
+input[type="email"] {
+    @apply w-full h-10 mb-5 p-2 border border-gray-300;
+}
+
+button[type="submit"] {
+    @apply bg-blue-500 text-black py-2 px-4 rounded cursor-pointer;
+}
+
+button[type="submit"]:hover {
+    @apply bg-green-600;
+}
+
+
+.htmx-settling img {
+    @apply opacity-0
+}
+
+img {
+    @apply transition-opacity delay-300 ease-in;
+}
+
+
+
