@@ -402,7 +402,7 @@
     },
     "UpSideDown": {
         "helper": "Vira o texto de cabeça para baixo.",
-        "usage": "Para usar: {}upsidedown <texto.>",
+        "usage": "Para usar: {}upsidedown <texto>",
         "description": "Este comando inverte e vira o texto fornecido de cabeça para baixo.",
         "commands": [
             {
