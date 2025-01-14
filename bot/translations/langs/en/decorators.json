@@ -33,7 +33,7 @@
         },
         "Restart": {
             "helper": "Restarts the bot.",
-            "usage": "Para usar: {}restart",
+            "usage": "To use: {}restart",
             "description": "Restarts the bot."
         }
     },
