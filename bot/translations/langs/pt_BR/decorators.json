@@ -565,7 +565,7 @@
                 "response": "Original: <URL> ||  Preview: <URL> Original: <URL> ||  Preview: <URL> Original: <URL> ||  Preview: <URL>"
             },
             {
-                "args": "some_tag",
+                "args": "alguma_tag",
                 "response": "Original: <URL> | Preview: <URL>"
             }
         ],
