@@ -1,10 +1,13 @@
+#!/bin/bash
+
+echo "Activate venv"
+source .venv_site/bin/activate
+
 echo "Installing requirements"
-python -m pip install -r requirements.txt
-python -m pip install -r site-requirements.txt
+# pip install -r requirements.txt
+pip install -r site-requirements.txt
 
-echo "Generating Site"
-python site/generate.py
+echo "Starting Server"
+python site_start.py
 
-echo "Starting server..."
-python -m http.server 3400 --directory ./site/generated
 

@@ -1,0 +1,43 @@
+{
+  "General": {
+    "language_name": "English",
+    "home_name": "Home",
+    "commands_name": "Commands",
+    "blog_name": "Blog",
+    "changelogs_name": "Changelogs",
+    "about_name": "About",
+    "search_name": "Search",
+
+
+
+    "authors": {
+      "mrchuw": {
+        "reference": "mrchuw",
+        "name": "MrChuw",
+        "description_tipe": "Creator",
+        "avatar": "https://github.com/mrchuw.png"
+      }
+    },
+
+    "authors_descriptions": {
+      "Creator": "Creator",
+      "Translator": "Translator",
+      "Contributor": "Contributor",
+      "Maintainer": "Maintainer"
+    }
+  },
+
+  "Home": {
+
+  },
+
+  "blog_index": {
+
+  },
+
+  "changelogs": {
+    "26-11-2024": {
+
+    }
+  }
+}

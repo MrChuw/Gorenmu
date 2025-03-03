@@ -105,6 +105,8 @@ class BotConfig:
     def __init__(self, data: Dict[str, dict]) -> None:
         self.color: str = data.get("color", "#000000")
         self.dev_userid: str = data.get("dev_userid", "Exemple")
+        self.dev_name: str = data.get("dev_name", "Exemple")
+        self.dev_display_name: str = data.get("dev_display_name", "Exemple")
         self.prefix: List[str] = [data.get("default_prefix", "+")]
         allowed_prefix: str | None = data.get("allowed_prefix_list", None)
         if allowed_prefix:
@@ -134,6 +136,7 @@ class ApisConfig:
         self.image_carousel_api_key: str = data.get("image_carousel_api_key", "api_exemple")
         self.file_upload_url: str = data.get("file_upload_url", "https://upload.exemple.org")
         self.pastbin_url: str = data.get('pastbin_url', "https://bit.exemple.org")
+        self.enable_site_endpoints: bool = data.get("enable_site_endpoints", False)
 
 
 class DatabaseConfig:

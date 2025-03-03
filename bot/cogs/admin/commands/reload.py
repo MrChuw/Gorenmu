@@ -16,7 +16,7 @@ async def command(ctx: Context, module: str = "") -> Response:
     if module:
         reload_module_and_dependencies(module)
     ctx.bot.CommandHandler.reload_cogs(ctx.bot)
-    return ctx.translations.Admin.Reload().commands_reloaded.format_response(ctx)
+    return ctx.translations.Admin.Reload.commands_reloaded.format_response(ctx)
 
 
 def reload_module_and_dependencies(module_name):
