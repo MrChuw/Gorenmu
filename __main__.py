@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
+from loguru import logger
 
 from bot.bot import Gorenmu
 from bot.ext.config import Config
-
-# from bot.logger import log
-from loguru import logger
+from bot.api import api, api_start
 
 config_yml = os.path.join(os.path.dirname(__file__), "config.toml")
 
@@ -17,17 +16,17 @@ __license__ = ""
 __copyright__ = ""
 __version__ = Configs.version
 
-log = logger
-
 if __name__ == "__main__":
-    log.info("Ligando bot", exc_info=True)
+    logger.info("Ligando bot", exc_info=True)
     quantidade = 0
 
     while True:
         quantidade += 1
-        log.info(quantidade)
+        logger.info(quantidade)
         try:
-            bot = Gorenmu(configs=Configs, case_insensitive=True, retain_cache=True, log=log)
+            bot = Gorenmu(configs=Configs, case_insensitive=True, retain_cache=True, log=logger)
+            bot.site = api
+            bot.api_start = api_start
             bot.start()
             bot.loop.run_forever()
         except KeyboardInterrupt:
@@ -35,5 +34,5 @@ if __name__ == "__main__":
             # bot.loop.close()
             break
         except BaseException as e:
-            log.exception(e, extra={"locals": locals()})
-            log.info(f"{quantidade}: BaseException")  # finally:  #     bot.loop.run_until_complete(bot.stop())
+            logger.exception(e, extra={"locals": locals()})
+            logger.info(f"{quantidade}: BaseException")  # finally:  #     bot.loop.run_until_complete(bot.stop())

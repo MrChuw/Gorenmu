@@ -103,3 +103,25 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
                                      )
 
             return user
+
+
+
+    @staticmethod
+    async def create_or_none(id: int, name: str, **kwargs) -> Optional[User]:
+        if not await User.get_or_none(id=id):
+            user = {
+                    "id": id,
+                    "name": name,
+                    "channel": name,
+                    "content": "",
+                    "timestamp": 0,
+                    **kwargs,
+                    }
+            user = await User.create(**user)
+            await NickHistory.create(user=user, nicks=user.name)
+            return user
+        else:
+            return None
+
+
+

@@ -14,6 +14,17 @@ if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 
+class BaseAdmonitions:
+    def __init__(self, data: dict):
+        self.admonition_type = data.get("admonition_type")
+        self.position = data.get("position")
+        self.title = data.get("title")
+        self.message = data.get("message")
+
+    @staticmethod
+    def from_list(data: list):
+        return [BaseAdmonitions(d) for d in data]
+
 def custom_format(template, **kwargs):
     # List of allowed placeholders
     placeholders = [
@@ -65,10 +76,13 @@ class DynamicDescriptions:
         # TODO
         return {}
 
+    def cookies_description(self, command_data: Command, ctx: Context = None) -> dict[str, dict[str, str]]:  # NOQA
+        # TODO
+        return {}
 
     def template_description(self, command_data: Command, ctx: Context = None) -> dict[str, dict[str, str]]:
         responses = defaultdict(dict)
-        cooldown_ = command_._cooldowns[0]  # NOQA
+        cooldown_ = command_data._cooldowns[0]  # NOQA
         per = cooldown_._per  # NOQA
         rate = cooldown_._rate  # NOQA
         prefix = ctx.prefix if ctx else self.bot.config.BotConfig.prefix[0]
@@ -77,7 +91,8 @@ class DynamicDescriptions:
             description = decorator.description
             language: Translation = self.bot.TranslationManager.languages[lang]
             cooldown_type = language.decorators.Templates.get_bucket_type(cooldown_.bucket)
-            template = custom_format(decorator.template, rate=rate, per=per,
+            template = "\n\n".join(decorator.template) # TODO: make a better solution for template like descriptions.
+            template = custom_format(template=template, rate=rate, per=per,
                                      cooldown_type=cooldown_type, description=description,
                                      command_title=command_data.name.capitalize(), command_name=command_data.name.lower(),
                                      prefix=prefix, aliases=", ".join([])
@@ -86,19 +101,6 @@ class DynamicDescriptions:
             responses[lang][command_data.name.lower()] = template
 
         return responses
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -137,8 +139,9 @@ class DynamicDescriptions:
     def _add_admonitions(admonitions, position, admonition_template: str):
         if not admonitions:
             return ""
+        admonitions = BaseAdmonitions.from_list(admonitions)
         return "".join(
-            admonition_template.format(type=admonition.type, title=admonition.title, message=admonition.message)
+            admonition_template.format(type=admonition.admonition_type, title=admonition.title, message=admonition.message)
             for admonition in admonitions if admonition.position == position
         )
 

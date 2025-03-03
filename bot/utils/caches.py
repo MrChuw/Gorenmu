@@ -73,7 +73,7 @@ class SessionsCaches:
         self.ToolsCachedSession: SessionsCaches.ToolsCachedSession = self.ToolsCachedSession(bot)
 
 
-        self.UserAgent: str = self.UserAgent(bot).user_agent
+        self.UserAgent: str = "Mozilla/5.0 (compatible; Gorenmu/2.0; +https://gorenmu.vercel.app/)"
         self.AliasCachedSession: SessionsCaches.AliasCachedSession = self.AliasCachedSession(bot, self.UserAgent)
         self.CountCachedSession: SessionsCaches.CountCachedSession = self.CountCachedSession(bot, self.UserAgent)
         self.TranslateCachedSession: SessionsCaches.TranslateCachedSession = self.TranslateCachedSession(bot, self.UserAgent)
@@ -219,32 +219,7 @@ class SessionsCaches:
             self.session: CachedSession = CachedSession(cache=self.cache)
 
 
-    class UserAgent:
-        def __init__(self, bot: Gorenmu):
-            self.bot = bot
-            self.urls_expire_after = {"*/*": timedelta(weeks=4)}
-            self.allowed_methods = ("GET", "HEAD", "POST")
-            self.allowed_codes = (200,)
-            if "redis" in bot.__dict__:
-                self.cache = RedisBackend(cache_name=f"{bot.config.CacheConfig.namespace}-UserAgent_requests",
-                                          urls_expire_after=self.urls_expire_after,
-                                          allowed_methods=self.allowed_methods, include_headers=True,
-                                          allowed_codes=self.allowed_codes)
-            else:
-                self.cache: SQLiteBackend = SQLiteBackend(cache_name=".cache/aiohttp-UserAgent-requests.db",
-                                                          urls_expire_after=self.urls_expire_after,
-                                                          allowed_methods=self.allowed_methods, include_headers=True,
-                                                          allowed_codes=self.allowed_codes)
 
-            self.session: CachedSession = CachedSession(cache=self.cache)
-            url = 'https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome'
-            response = bot.loop.run_until_complete(self.session.get(url))
-            text = bot.loop.run_until_complete(response.text())
-            bot.loop.run_until_complete(self.session.close())
-
-            soup = BeautifulSoup(text, 'html.parser')
-            chrome_td = soup.find('td', text='Chrome (Standard)')
-            self.user_agent = chrome_td.find_next('span', class_='code').get_text()
 
 
     class AliasCachedSession:

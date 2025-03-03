@@ -6,6 +6,8 @@ development = true
 [bot]
 color = 0x9147FF
 dev_userid = 411010313
+dev_name = "mr_chuw"  # This name will be replaced by twitch name when bot fully starts, its used on start to create the channel on database, so put the our twitch nick
+dev_display_name = "MrChuw"
 default_prefix = "+"
 allowed_prefix_list = false
 allowed_prefix_size = 10
@@ -27,6 +29,7 @@ api_client_secret = "${API_CLIENT_SECRET}"
 api_client_id = "${API_CLIENT_ID}"
 pastbin_url="https://bin.mrchuw.com.br/documents"
 file_upload_url = "${FILE_UPLOAD_URL}"
+enable_site_endpoints = true
 
 [database]
 type = "mariadb"

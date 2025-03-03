@@ -85,16 +85,20 @@ class CommandHandler:
                 continue
             try:
                 # if filename.name in ['imgur.py', 'imgur_repeated.py', 'nada.py', 'reload.py']:
-                if filename.name in ['afk.py']:
+                if filename.name in ['cookies.py']:
                     pass
                 local: str = os.path.join(path, filename.name)
                 name: str = local[:-3].replace("/", ".")
                 package: str = ".".join(filename.parts)
                 module: types.ModuleType = import_module(name, package=package)
                 command: Command = module.command
+                if command.name == "cookies":
+                    pass
                 command = get_translations(command)
                 if command.name.lower() in ["afk", "isafk", "rafk"]:
                     command.docs = bot.docs_handler.afk_description(command)
+                elif command.name.lower() in ["cookies"]:
+                    command.docs = bot.docs_handler.cookies_description(command)
                 elif command.name.lower() in ["alias"]:
                     command.docs = bot.docs_handler.template_description(command)
                 else:

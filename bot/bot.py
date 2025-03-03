@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+from typing import TYPE_CHECKING
 import asyncio
 import datetime
 import os
@@ -11,6 +13,7 @@ from aiocache.backends.memory import SimpleMemoryCache
 from aiocache.backends.redis import RedisCache
 from loguru import logger
 from tortoise import Tortoise
+from tortoise.exceptions import DoesNotExist
 from twitchio.ext.routines import Routine
 
 from bot.exceptions import (
@@ -27,6 +30,9 @@ from bot.utils import (
 from bot.utils.caches import (Cache, SessionsCaches)
 from bot.utils.command_handler import CommandHandler
 from bot.utils.dynamic_descriptions import DynamicDescriptions
+
+if TYPE_CHECKING:
+    from bot.api import api, api_start
 
 
 class Gorenmu(Bot):
@@ -57,9 +63,12 @@ class Gorenmu(Bot):
         self.lottery_lock: asyncio.Lock = asyncio.Lock()
         self.reconnection_attempts: dict[str, int] = {}
         self.bots_ids: list[int] = []
-        self.dev_name: str = ""
+        self.dev_name: str
+        self.dev_display_name: str
         self.restart = 0
         self.alias_cache: SimpleMemoryCache = Cache.create_cache()
+        self.api: api | None = None
+        self.api_start: api_start = None
 
     async def fetch_channels(self) -> None:
         for channel in await ChannelModel.filter(removed=False):
@@ -160,6 +169,15 @@ class Gorenmu(Bot):
     async def connect_db(self) -> None:
         await Tortoise.init(config=self.config.DatabaseConfig.DB_CONFIG)
         await Tortoise.generate_schemas()
+        try:
+            user = await UserModel.get(id=self.config.BotConfig.dev_userid)
+        except DoesNotExist:
+            user = await UserModel.create_or_none(self.config.BotConfig.dev_userid, self.dev_name)
+        try:
+            await ChannelModel.get(user=user)
+        except DoesNotExist:
+            await ChannelModel.create(user=user)
+
 
     @staticmethod
     async def close_db() -> None:
@@ -182,6 +200,9 @@ class Gorenmu(Bot):
         self.loop.create_task(self.MarkovProcessor.process_message(), name="process_message")
         self.loop.run_until_complete(self.after_connect())
         CommandHandler.load_cogs(self, "bot/cogs")
+        if self.config.ApisConfig.enable_site_endpoints:
+            self.loop.run_until_complete(self.api_start(self))
+
 
     def stop(self) -> None:
         self.loop.run_until_complete(self.close_db())
@@ -197,6 +218,8 @@ class Gorenmu(Bot):
                 python_executable = sys.executable
             os.execv(python_executable, [python_executable] + sys.argv)
         self.dev_name = (await self.fetch_users(ids=[self.config.BotConfig.dev_userid]))[0].display_name
+        self.dev_display_name = self.config.BotConfig.dev_display_name
+        self.config.BotConfig.dev_name = self.dev_name
         await self.join_channels([self.dev_name])
         await asyncio.sleep(1)
         self.log.info(
