@@ -248,7 +248,6 @@ class Gorenmu(Bot):
 
         try:
             channel = self.channels[payload.broadcaster.name]
-            # self.CommandHandler.load_language(ctx)
             if not channel.online and "start" not in payload.text:
                 return None
             response: Response | None = None

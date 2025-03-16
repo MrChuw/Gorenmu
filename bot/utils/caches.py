@@ -115,22 +115,9 @@ class BaseCachedSession:
 class SessionsCaches:
     def __init__(self, bot):
         self.UserAgent: str = "Mozilla/5.0 (compatible; Gorenmu/2.0; +https://gorenmu.vercel.app/)"
-        self.AdminCachedSession = self.AdminCachedSession(bot, useragent=self.UserAgent)
-        self.NSFWCachedSession = self.NSFWCachedSession(bot, useragent=self.UserAgent)
-        self.RandomCachedSession = self.RandomCachedSession(bot, useragent=self.UserAgent)
-        self.GeneralCachedSession = self.GeneralCachedSession(bot, useragent=self.UserAgent)
-        self.InfoCachedSession = self.InfoCachedSession(bot, useragent=self.UserAgent)
-        self.ToolsCachedSession = self.ToolsCachedSession(bot, useragent=self.UserAgent)
-
-        self.AliasCachedSession = self.AliasCachedSession(bot, self.UserAgent)
-        self.CountCachedSession = self.CountCachedSession(bot, self.UserAgent)
-        self.TranslateCachedSession = self.TranslateCachedSession(bot, self.UserAgent)
-        self.ImgurCachedSession = self.ImgurCachedSession(bot, self.UserAgent)
-        self.ColorCachedSession = self.ColorCachedSession(bot, self.UserAgent)
-        self.ScpCachedSession = self.ScpCachedSession(bot, self.UserAgent)
-        self.WikihowCachedSession = self.WikihowCachedSession(bot, self.UserAgent)
-        self.WikipediaCachedSession = self.WikipediaCachedSession(bot, self.UserAgent)
-        self.BooruCachedSession = self.BooruCachedSession(bot, self.UserAgent)
+        for name, cls in vars(self.__class__).items():
+            if isinstance(cls, type) and issubclass(cls, BaseCachedSession):
+                setattr(self, name, cls(bot, useragent=self.UserAgent))  # NOQA
 
 
     async def close_all_sessions(self):
@@ -148,6 +135,7 @@ class SessionsCaches:
                     "im.mrchuw.com.br/api/files/*": timedelta(days=100),
                     "static-cdn.jtvnw.net/previews-ttv/*": timedelta(days=1),
             }
+    AdminCachedSession: AdminCachedSession
 
     class NSFWCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -174,6 +162,7 @@ class SessionsCaches:
                     "http://behoimi.org/": timedelta(hours=1),
                     "https://rule34.paheal.net/": timedelta(hours=1),
                 }
+    NSFWCachedSession: NSFWCachedSession
 
     class RandomCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -186,6 +175,7 @@ class SessionsCaches:
                     "https://pt.wikihow.com/Especial:Randomizer": 1,
                     "https://pt.wikipedia.org/wiki/Special:Random": 1,
             }
+    RandomCachedSession: RandomCachedSession
 
     class GeneralCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -193,6 +183,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {"*.dicio.com": timedelta(days=120)}
+    GeneralCachedSession: GeneralCachedSession
 
     class InfoCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -200,6 +191,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {"*.jtvnw.net/*": timedelta(minutes=30)}
+    InfoCachedSession: InfoCachedSession
 
     class ToolsCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -212,6 +204,7 @@ class SessionsCaches:
                     "api.open-meteo.com/v1/forecast": timedelta(minutes=5),
                     "https://api.mathjs.org": timedelta(days=100),
                 }
+    ToolsCachedSession: ToolsCachedSession
 
     class AliasCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -220,6 +213,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {"*/*": timedelta(hours=1000)}
+    AliasCachedSession: AliasCachedSession
 
     class CountCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -228,6 +222,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {"*/*": timedelta(minutes=30)}
+    CountCachedSession: CountCachedSession
 
     class TranslateCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -236,6 +231,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {"*/*": timedelta(weeks=4*6)}
+    TranslateCachedSession: TranslateCachedSession
 
     class ImgurCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -244,6 +240,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {"*/*": timedelta(weeks=4*6)}
+    ImgurCachedSession: ImgurCachedSession
 
     class ColorCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -252,6 +249,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {"thecolorapi.com": timedelta(days=30)}
+    ColorCachedSession: ColorCachedSession
 
     class ScpCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -260,6 +258,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {"scp-wiki.wikidot.com/*": timedelta(weeks=4)}
+    ScpCachedSession: ScpCachedSession
 
     class WikihowCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -268,6 +267,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {"*.wikihow.com/*": timedelta(weeks=4)}
+    WikihowCachedSession: WikihowCachedSession
 
     class WikipediaCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -276,6 +276,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {"*.wikipedia.com/*": timedelta(weeks=4)}
+    WikipediaCachedSession: WikipediaCachedSession
 
     class BooruCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -307,11 +308,6 @@ class SessionsCaches:
                     "http://behoimi.org/": timedelta(hours=1),
                     "https://rule34.paheal.net/": timedelta(hours=1),
                     }
-
-
-
-
-
-
+    BooruCachedSession: BooruCachedSession
 
 

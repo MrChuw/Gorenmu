@@ -172,4 +172,6 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
                     setattr(self, name, base)
                 else:
                     setattr(self, name, Response(response=base))
+            if type(base) is list:
+                setattr(self, name, base)
             ...

@@ -81,25 +81,26 @@ class BaseTranslations:
         def __init__(self, translation: dict):
             super().__init__(translation, None)
             self.populate_subclasses(base_cls=self)
-            self.mention: str = self.get_object("mention")
+            self.populate_responses()
             self.Dicio: Dicio = Dicio()
+        Dicio: Dicio
+        mention: str
 
         class TimeTools(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
+                self.populate_responses()
                 self.TimeTools: TimeTools = TimeTools(self.obj, self.fallback)
                 self.Humanize: Humanize = Humanize(self.get_object("Humanize"), self.get_object("Pattern time"))  # NOQA
-                self.strftime: str = self.get_object("strftime")
+            strftime: str
+        TimeTools: TimeTools
 
         class Lottery(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.bet_or_consultation: list[str] = self.get_object("bet_or_consultation")
-
-        TimeTools: TimeTools
+                self.populate_responses()
+            bet_or_consultation: list[str]
         Lottery: Lottery
-        Dicio: Dicio
-        mention: str
 
     class Exceptions(BaseFunctions):
         def __init__(self, translation: dict):
@@ -109,31 +110,35 @@ class BaseTranslations:
         class LotteryExceptions(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.lottery_seed: str = self.get_object("lottery_seed")
+                self.populate_responses()
+                lottery_seed: str
+        LotteryExceptions: LotteryExceptions
 
         class ToolsExceptions(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.announcement: str = self.get_object("announcement")
+                self.populate_responses()
+                announcement: str
+        ToolsExceptions: ToolsExceptions
 
         class BotMainLoopExceptions(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.dev_required: str = self.get_object("dev_required")
-                self.owner_required: str = self.get_object("owner_required")
-                self.command_on_cooldown: str = self.get_object("command_on_cooldown")
-                self.not_implemented: str = self.get_object("not_implemented")
-                self.error_not_registered: str = self.get_object("error_not_registered")
+                self.populate_responses()
+            dev_required: str
+            owner_required: str
+            command_on_cooldown: str
+            not_implemented: str
+            error_not_registered: str
+        BotMainLoopExceptions: BotMainLoopExceptions
 
         class ResponseExceptions(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.error_on_response: str = self.get_object("error_on_response")
-                self.pipe_response: str = self.get_object("pipe_response")
-                self.command_not_pipeble: str = self.get_object("command_not_pipeble")
-        LotteryExceptions: LotteryExceptions
-        ToolsExceptions: ToolsExceptions
-        BotMainLoopExceptions: BotMainLoopExceptions
+                self.populate_responses()
+            error_on_response: str
+            pipe_response: str
+            command_not_pipeble: str
         ResponseExceptions: ResponseExceptions
 
     class Pipe(BaseFunctions):
@@ -183,14 +188,15 @@ class BaseTranslations:
     class Alias(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.user_not_found: Response = Response(response=self.get_object("user_not_found"))
-            self.dont_have_alias: Response = Response(response=self.get_object("dont_have_alias"))
-            self.alias_invalid_name: Response = Response(response=self.get_object("alias_invalid_name"))
-            self.user_has_no_alias: Response = Response(response=self.get_object("user_has_no_alias"))
-            self.alias_table_headers: list[str] = self.get_object("alias_table_headers")
-            self.alias_table_replaces: list[str] = self.get_object("alias_table_replaces")
-            self.alias_table_name: str = self.get_object("alias_table_name")
             self.populate_subclasses(base_cls=self)
+            self.populate_responses()
+        user_not_found: Response
+        dont_have_alias: Response
+        alias_invalid_name: Response
+        user_has_no_alias: Response
+        alias_table_headers: list[str]
+        alias_table_replaces: list[str]
+        alias_table_name: str
 
         class Add(BaseFunctions):
             def __init__(self, translation: dict):
@@ -200,79 +206,92 @@ class BaseTranslations:
             alias_name_conflict: Response
             alias_created: Response
             command_dont_exist: Response
+        Add: Add
 
         class Check(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.user_alias_list: Response = Response(response=self.get_object("user_alias_list"))
-                self.no_alias_found: Response = Response(response=self.get_object("no_alias_found"))
-                self.list_of_alias_of: Response = Response(response=self.get_object("list_of_alias_of"))
-                self.list_of_special_case: Response = Response(response=self.get_object("list_of_special_case"))
-                self.alias_not_found: Response = Response(response=self.get_object("alias_not_found"))
-                self.appendix: str = self.get_object("appendix")
-                self.alias_deleted: Response = Response(response=self.get_object("alias_deleted"))
-                self.appendix_message: Response
-                self.message: str = self.get_object("message")
-                self.normal_message: Response = Response(response=self.get_object("normal_message"))
+                self.populate_responses()
+
+
+            user_alias_list: Response
+            no_alias_found: Response
+            list_of_alias_of: Response
+            list_of_special_case: Response
+            alias_not_found: Response
+            alias_deleted: Response
+            normal_message: Response
+            appendix_message: Response
+            appendix: str
+            message: str
+        Check: Check
 
         class Copy(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.user_not_provided: Response = Response(response=self.get_object("user_not_provided"))
-                self.alias_not_provided: Response = Response(response=self.get_object("alias_not_provided"))
-                self.target_alias_invalid_name: Response = Response(response=self.get_object("target_alias_invalid_name"))
-                self.no_alias_found: Response = Response(response=self.get_object("no_alias_found"))
-                self.link_to_a_link: Response = Response(response=self.get_object("link_to_a_link"))
-                self.copy_success: Response = Response(response=self.get_object("copy_success"))
-                self.copy_with_name_of: Response = Response(response=self.get_object("copy_with_name_of"))
+                self.populate_responses()
+
+            user_not_provided: Response
+            alias_not_provided: Response
+            target_alias_invalid_name: Response
+            no_alias_found: Response
+            link_to_a_link: Response
+            copy_success: Response
+            copy_with_name_of: Response
+        Copy: Copy
 
         class Describe(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.no_args_to_parse: Response = Response(response=self.get_object("no_args_to_parse"))
-                self.description_updated: Response = Response(response=self.get_object("description_updated"))
-                self.description_reverted: Response = Response(response=self.get_object("description_reverted"))
+                self.populate_responses()
+
+            no_args_to_parse: Response
+            description_updated: Response
+            description_reverted: Response
+        Describe: Describe
 
         class Edit(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.no_args_provided: Response = Response(response=self.get_object("no_args_provided"))
-                self.edit_link: Response = Response(response=self.get_object("edit_link"))
-                self.edit_success: Response = Response(response=self.get_object("edit_success"))
-                self.command_dont_exist: Response = Response(response=self.get_object("command_dont_exist"))
+                self.populate_responses()
+
+            no_args_provided: Response
+            edit_link: Response
+            edit_success: Response
+            command_dont_exist: Response
+        Edit: Edit
 
         class Link(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.link_no_args: Response = Response(response=self.get_object("link_no_args"))
-                self.alias_name_already_exists: Response = Response(response=self.get_object("alias_name_already_exists"))
-                self.user_dont_has_alias: Response = Response(response=self.get_object("user_dont_has_alias"))
-                self.link_with_invalid_name: Response = Response(response=self.get_object("link_with_invalid_name"))
-                self.link_name_string: str = self.get_object("link_name_string")
-                self.link_to_link: Response = Response(response=self.get_object("link_to_link"))
-                self.link_success: Response = Response(response=self.get_object("link_success"))
+                self.populate_responses()
+
+            link_no_args: Response
+            alias_name_already_exists: Response
+            user_dont_has_alias: Response
+            link_with_invalid_name: Response
+            link_to_link: Response
+            link_success: Response
+            link_name_string: str
+        Link: Link
 
         class Remove(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.no_alias_name_provided: Response = Response(response=self.get_object("no_alias_name_provided"))
-                self.alias_removed: Response = Response(response=self.get_object("alias_removed"))
+                self.populate_responses()
+
+            no_alias_name_provided: Response
+            alias_removed: Response
+        Remove: Remove
 
         class Rename(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.no_name_provided: Response = Response(response=self.get_object("no_name_provided"))
-                self.alias_already_exists: Response = Response(response=self.get_object("alias_already_exists"))
-                self.alias_renamed: Response = Response(response=self.get_object("alias_renamed"))
-                
+                self.populate_responses()
 
-        Add: Add
-        Check: Check
-        Copy: Copy
-        Describe: Describe
-        Edit: Edit
-        Link: Link
-        Remove: Remove
+            no_name_provided: Response
+            alias_already_exists: Response
+            alias_renamed: Response
         Rename: Rename
 
     class Chance(BaseFunctions):
@@ -488,36 +507,39 @@ class BaseTranslations:
         class Nada(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.nada: Response = Response(response=self.get_object("nada"))
+                self.populate_responses()
+            nada: Response
+            vazio: Response
+        Nada: Nada
 
         class Reload(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.commands_reloaded: Response = Response(response=self.get_object("commands_reloaded"))
-                self.command_not_found: Response = Response(response=self.get_object("command_not_found"))
-                self.command_reloaded: Response = Response(response=self.get_object("command_reloaded"))
-                self.command_reloaded_error: Response = Response(response=self.get_object("command_reloaded_error"))
+                self.populate_responses()
+            commands_reloaded: Response
+            command_not_found: Response
+            command_reloaded: Response
+            command_reloaded_error: Response
+        Reload: Reload
 
         class Restart(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.success: Response = Response(response=self.get_object("success"))
-                self.unexpected_error: Response = Response(response=self.get_object("unexpected_error"))
+                self.populate_responses()
+            success: Response
+            unexpected_error: Response
+        Restart: Restart
 
         class DisableNSFW(BaseFunctions):
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
-                self.success: Response = Response(response=self.get_object("success"))
-                self.unexpected_error: Response = Response(response=self.get_object("unexpected_error"))
-
-
-        Nada: Nada
-        Reload: Reload
-        Restart: Restart
+                self.populate_responses()
+            success: Response
+            unexpected_error: Response
         DisableNSFW: DisableNSFW
 
 
-    # Afk: Afk
+
 
 
     # TODO

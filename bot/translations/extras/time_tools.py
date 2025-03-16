@@ -36,7 +36,7 @@ class TimeUnits:
 class ParseTime(BaseFunctions):
     def __init__(self, translation: dict, fallback=None) -> None:
         super().__init__(translation, fallback)
-        self.strftime = self.get_object('strftime')  # NOQA
+        self.strftime = self.get_object('strftime_str')  # NOQA
         self.dayfirst = self._day_first()  # NOQA
         self.yearfirst = self._year_first()  # NOQA
         self.parserinfo = dateutil.parser.parserinfo(dayfirst=self.dayfirst, yearfirst=self.yearfirst)  # NOQA
@@ -83,7 +83,7 @@ class ParseTime(BaseFunctions):
 class TimeTools(BaseFunctions):
     def __init__(self, translation: dict, fallback=None) -> None:
         super().__init__(translation, fallback)
-        self.strftime = self.get_object("strftime")
+        self.strftime = self.get_object("strftime_str")
         self.PATTERN_TIME = self.generate_time_regex(self.get_object("Pattern time"))
         self.time_units = TimeUnits(self.get_object("Time Units"))
         self.parse_time = ParseTime(self.obj, self.fallback)
