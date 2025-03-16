@@ -15,30 +15,7 @@
             "mod": "moderation"
         }
     },
-    "Admin": {
-        "Nada": {
-            "helper": "This command is used for testing.",
-            "usage": "How to use: {}nada <text>",
-            "description": "This command is used for testing."
-        },
-        "Reload": {
-            "helper": "Reloads the commands.",
-            "usage": "How to use: {}reload",
-            "description": "This command is used to reload all bot commands. If any have been updated and don't require a full restart.",
-            "commands": [
-                {
-                    "response": "the commands have been successfully reloaded."
-                }
-            ]
-        },
-        "Restart": {
-            "helper": "Restarts the bot.",
-            "usage": "Para usar: {}restart",
-            "description": "Restarts the bot."
-        }
-    },
-    "Others": {
-        "Pipe": {
+    "Pipe": {
             "helper": "Pipe is not really a command. For more information, visit the website.",
             "usage": "Pipe is not really a command. For more information, visit the website.",
             "description": "Pipe is not really a command. For more information, visit the website.",
@@ -70,70 +47,67 @@
                     "message": "## The bot's step-by-step will be:  \\n- Execute `example_command_1` with `<command options>` if any.  \\n- Then it will execute `example_command_2` with the response from `example_command_1` added as an argument.  \\n  - If you use `{output}`, it will place the response from `example_command_1` in the specified position.\n"
                 }
             ]
-        }
-    },
+        },
     "Afk": {
-        "Afk": {
-            "helper": "Command to set your status.",
-            "usage": "How to use: {}Afk <message>",
-            "description": "This command sets your status to AFK.",
-            "commands": [
-                {
-                    "response": "you went AFK: 🏃 ⌨️"
-                },
-                {
-                    "args": "Text you want to leave for when you return or that people will see when they use {prefix}isafk.",
-                    "response": "you went AFK: 🏃 ⌨️ and left a note with: Text you want to leave for when you return or that people will see when they use {prefix}isafk."
-                }
-            ],
-            "admonitions": [
-                {
-                    "admonition_type": "warning",
-                    "title": "Maximum length!",
-                    "message": "The message could not be longer than 450 characters, if it is longer, an error will be returned."
-                }
-            ]
-        },
-        "IsAfk": {
-            "helper": "Type the command and the user's name to see if they are AFK.",
-            "usage": "How to use: {}IsAfk <username>",
-            "description": "This command checks if a user is AFK or not.",
-            "commands": [
-                {
-                    "args": "user2",
-                    "response": "@user2 is not AFK."
-                },
-                {
-                    "args": "user3",
-                    "response": "@user3 is AFK."
-                },
-                {
-                    "args": "user4",
-                    "response": "@user4 is AFK and left a note: <message>"
-                }
-            ]
-        },
-        "RAfk": {
-            "helper": "Return to AFK status.",
-            "usage": "To use: {}rafk",
-            "description": "This command is used to return to AFK status.",
-            "commands": [
-                {
-                    "response": "@user2 you remained AFK: 🏃 ⌨️"
-                },
-                {
-                    "args": "<message>",
-                    "response": "@user2 you remained AFK: 🏃 ⌨️ and left a note: <message>"
-                }
-            ],
-            "admonitions": [
-                {
-                    "admonition_type": "warning",
-                    "title": "Maximum Time!",
-                    "message": "From the moment you send a message in the chat, you have 2 minutes to return to AFK status. "
-                }
-            ]
-        }
+        "helper": "Command to set your status.",
+        "usage": "How to use: {}Afk <message>",
+        "description": "This command sets your status to AFK.",
+        "commands": [
+            {
+                "response": "you went AFK: 🏃 ⌨️"
+            },
+            {
+                "args": "Text you want to leave for when you return or that people will see when they use {prefix}isafk.",
+                "response": "you went AFK: 🏃 ⌨️ and left a note with: Text you want to leave for when you return or that people will see when they use {prefix}isafk."
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "warning",
+                "title": "Maximum length!",
+                "message": "The message could not be longer than 450 characters, if it is longer, an error will be returned."
+            }
+        ]
+    },
+    "IsAfk": {
+        "helper": "Type the command and the user's name to see if they are AFK.",
+        "usage": "How to use: {}IsAfk <username>",
+        "description": "This command checks if a user is AFK or not.",
+        "commands": [
+            {
+                "args": "user2",
+                "response": "@user2 is not AFK."
+            },
+            {
+                "args": "user3",
+                "response": "@user3 is AFK."
+            },
+            {
+                "args": "user4",
+                "response": "@user4 is AFK and left a note: <message>"
+            }
+        ]
+    },
+    "RAfk": {
+        "helper": "Return to AFK status.",
+        "usage": "To use: {}rafk",
+        "description": "This command is used to return to AFK status.",
+        "commands": [
+            {
+                "response": "@user2 you remained AFK: 🏃 ⌨️"
+            },
+            {
+                "args": "<message>",
+                "response": "@user2 you remained AFK: 🏃 ⌨️ and left a note: <message>"
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "warning",
+                "title": "Maximum Time!",
+                "message": "From the moment you send a message in the chat, you have 2 minutes to return to AFK status. "
+            }
+        ]
     },
     "Alias": {
         "helper": "Command used to manage aliases.",
@@ -310,38 +284,6 @@
                 "response": "<some random text.>"
             }
         ]
-    },
-    "NSFW": {
-        "Imgur": {
-            "helper": "Sends a random Imgur link. (Might be NSFW)",
-            "usage": "To use: {}imgur or {}imgur7 <quantity>",
-            "description": "This command generates random Imgur links with 5 characters, from before ~2014, and using imgur7 for links from ~2014 up to now.",
-            "commands": [
-                {
-                    "args": " <number of images>",
-                    "response": "<link to the image or link to a site with all the images>"
-                },
-                {
-                    "args": "7 <number of images>",
-                    "response": "<link to the image or link to a site with all the images>"
-                }
-            ]
-        },
-        "ImgurRepeated": {
-            "helper": "Checks the number of repeated Imgur images.",
-            "usage": "To use: {}imgur_repeated",
-            "description": "This command is simple; it counts all the images that have been generated by [imgur](imgur.md).",
-            "commands": [
-                {
-                    "response": "Total number of repeated images: <Number of repeated images> || Images: <Link to the images>"
-                }
-            ]
-        },
-        "Boru": {
-            "helper": "Sends one or more random links from a list of boorus.",
-            "usage": "To use: {}booru <quantity>",
-            "description": "Sends one or more random links from a list of boorus."
-        }
     },
     "RandomColor": {
         "helper": "Sends a random color.",
@@ -575,6 +517,66 @@
             "helper": "See who are the top cookie eaters or donors.",
             "usage": "To use: {}top or pass one of the options stocked | streak | consumed | donated | received | total",
             "description": "See who are the top cookie eaters or donors."
+        }
+    },
+
+    "NSFW": {
+        "Imgur": {
+            "helper": "Sends a random Imgur link. (Might be NSFW)",
+            "usage": "To use: {}imgur or {}imgur7 <quantity>",
+            "description": "This command generates random Imgur links with 5 characters, from before ~2014, and using imgur7 for links from ~2014 up to now.",
+            "commands": [
+                {
+                    "args": " <number of images>",
+                    "response": "<link to the image or link to a site with all the images>"
+                },
+                {
+                    "args": "7 <number of images>",
+                    "response": "<link to the image or link to a site with all the images>"
+                }
+            ]
+        },
+        "ImgurRepeated": {
+            "helper": "Checks the number of repeated Imgur images.",
+            "usage": "To use: {}imgur_repeated",
+            "description": "This command is simple; it counts all the images that have been generated by [imgur](imgur.md).",
+            "commands": [
+                {
+                    "response": "Total number of repeated images: <Number of repeated images> || Images: <Link to the images>"
+                }
+            ]
+        },
+        "Boru": {
+            "helper": "Sends one or more random links from a list of boorus.",
+            "usage": "To use: {}booru <quantity>",
+            "description": "Sends one or more random links from a list of boorus."
+        }
+    },
+    "Admin": {
+        "Nada": {
+            "helper": "This command is used for testing.",
+            "usage": "How to use: {}nada <text>",
+            "description": "This command is used for testing."
+        },
+        "Reload": {
+            "helper": "Reloads the commands using all or command name.",
+            "usage": "How to use: {}reload <all> or <command name>",
+            "description": "This command is used to reload all bot commands. If any have been updated and don't require a full restart.",
+            "commands": [
+                {
+                    "response": "the commands have been successfully reloaded."
+                }
+            ]
+        },
+        "Restart": {
+            "helper": "Restarts the bot.",
+            "usage": "Para usar: {}restart",
+            "description": "Restarts the bot."
+        },
+        "DisableNSFW": {
+            "helper": "Disable all NSFW commands across all channels.",
+            "usage": "Para usar: {}disable_nsfw",
+            "description": "Disable all NSFW commands across all channels."
         }
     }
 }

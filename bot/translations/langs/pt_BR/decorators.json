@@ -37,8 +37,7 @@
             "description": "Reinicia o bot."
         }
     },
-    "Others": {
-        "Pipe": {
+    "Pipe": {
             "helper": "Pipe não é realmente um comando. Para mais informações, visite o site.",
             "usage": "Pipe não é realmente um comando. Para mais informações, visite o site.",
             "description": "Pipe não é realmente um comando. Para mais informações, visite o site.",
@@ -70,70 +69,67 @@
                     "position": "bottom"
                 }
             ]
-        }
-    },
+        },
     "Afk": {
-        "Afk": {
-            "helper": "Comando para definir seu status.",
-            "usage": "Como usar: {}Afk <mensagem>",
-            "description": "Este comando define seu status para AFK.",
-            "commands": [
-                {
-                    "response": "você foi AFK: 🏃 ⌨️"
-                },
-                {
-                    "args": "Texto que você deseja deixar para quando retornar ou que as pessoas verão quando usarem {prefix}isafk.",
-                    "response": "você ficou AFK: 🏃 ️ e deixou um bilhete com: Texto que você quer deixar para quando voltar ou que as pessoas verão quando usarem {prefix}isafk."
-                }
-            ],
-            "admonitions": [
-                {
-                    "admonition_type": "warning",
-                    "title": "Tamanho máximo!",
-                    "message": "A mensagem não poderia ser mais de 450 caracteres, se for mais longa, um erro será retornado."
-                }
-            ]
-        },
-        "IsAfk": {
-            "helper": "Digite o comando e o nome do usuário para ver se eles são AFK.",
-            "usage": "Como usar: {}IsAfk <nome de usuário>",
-            "commands": [
-                {
-                    "response": "@usuário2 não está AFK.",
-                    "args": "usuário2"
-                },
-                {
-                    "args": "usuário3",
-                    "response": "@usuário3 está AFK."
-                },
-                {
-                    "args": "usuário4",
-                    "response": "@usuário4 está AFK e deixou uma nota: <message>"
-                }
-            ],
-            "description": "Este comando verifica se um usuário é AFK ou não."
-        },
-        "RAfk": {
-            "helper": "Retornar ao status AFK.",
-            "usage": "Para usar: {}rafk",
-            "description": "Este comando é usado para retornar ao status AFK.",
-            "commands": [
-                {
-                    "response": "@usuário2 você permaneceu AFK: 🏃 ⌨️"
-                },
-                {
-                    "args": "<mensagem>",
-                    "response": "@usuário2 você permaneceu AFK: 🏃 ⌨️ e deixou uma nota: <mensagem>"
-                }
-            ],
-            "admonitions": [
-                {
-                    "admonition_type": "warning",
-                    "title": "Tempo máximo!",
-                    "message": "A partir do momento em que você envia uma mensagem no chat, você tem 2 minutos para retornar ao status AFK. "
-                }
-            ]
-        }
+        "helper": "Comando para definir seu status.",
+        "usage": "Como usar: {}Afk <mensagem>",
+        "description": "Este comando define seu status para AFK.",
+        "commands": [
+            {
+                "response": "você foi AFK: 🏃 ⌨️"
+            },
+            {
+                "args": "Texto que você deseja deixar para quando retornar ou que as pessoas verão quando usarem {prefix}isafk.",
+                "response": "você ficou AFK: 🏃 ️ e deixou um bilhete com: Texto que você quer deixar para quando voltar ou que as pessoas verão quando usarem {prefix}isafk."
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "warning",
+                "title": "Tamanho máximo!",
+                "message": "A mensagem não poderia ser mais de 450 caracteres, se for mais longa, um erro será retornado."
+            }
+        ]
+    },
+    "IsAfk": {
+        "helper": "Digite o comando e o nome do usuário para ver se eles são AFK.",
+        "usage": "Como usar: {}IsAfk <nome de usuário>",
+        "commands": [
+            {
+                "response": "@usuário2 não está AFK.",
+                "args": "usuário2"
+            },
+            {
+                "args": "usuário3",
+                "response": "@usuário3 está AFK."
+            },
+            {
+                "args": "usuário4",
+                "response": "@usuário4 está AFK e deixou uma nota: <message>"
+            }
+        ],
+        "description": "Este comando verifica se um usuário é AFK ou não."
+    },
+    "RAfk": {
+        "helper": "Retornar ao status AFK.",
+        "usage": "Para usar: {}rafk",
+        "description": "Este comando é usado para retornar ao status AFK.",
+        "commands": [
+            {
+                "response": "@usuário2 você permaneceu AFK: 🏃 ⌨️"
+            },
+            {
+                "args": "<mensagem>",
+                "response": "@usuário2 você permaneceu AFK: 🏃 ⌨️ e deixou uma nota: <mensagem>"
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "warning",
+                "title": "Tempo máximo!",
+                "message": "A partir do momento em que você envia uma mensagem no chat, você tem 2 minutos para retornar ao status AFK. "
+            }
+        ]
     },
     "Alias": {
         "helper": "Comando usado para gerir aliases.",

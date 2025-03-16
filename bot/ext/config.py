@@ -103,6 +103,7 @@ class DevelopmentConfig:
 
 class BotConfig:
     def __init__(self, data: Dict[str, dict]) -> None:
+        self.bot_id: int = data.get("bot_id", 0000000)
         self.color: str = data.get("color", "#000000")
         self.dev_userid: str = data.get("dev_userid", "Exemple")
         self.dev_name: str = data.get("dev_name", "Exemple")
@@ -221,6 +222,7 @@ class Config:
         self.CacheConfig = CacheConfig(config["cache"])
         self.DevelopmentConfig = DevelopmentConfig(config["development"])
         self.mock = mock
+        self.default_lang = 'en'
 
 
 imgur_permitidos = ["beyxo_", "mr_chuw"]

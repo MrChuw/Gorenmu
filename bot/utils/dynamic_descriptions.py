@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 import datetime
 
 
-from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
+from bot.ext.commands import base_decorator, Bucket, command, Command, Context, cooldown
 from bot.translations import BaseDecorators, Response, BaseCommand, Translation
 from bot.utils import Role
 from collections import defaultdict
@@ -55,14 +55,13 @@ class DynamicDescriptions:
         self.bot: Gorenmu = bot
 
 
-    def normal_description(self, command_data: Command, ctx: Context = None) -> dict[str, dict[str, str]]:
+    def normal_description(self, command_data: Command) -> dict[str, dict[str, str]]:
         responses = defaultdict(dict)
-        cooldown_ = command_data._cooldowns[0]  # NOQA
-
+        cooldown_ = command_data._buckets[0]  # NOQA
         for lang in command_data.decorators:
             language: Translation = self.bot.TranslationManager.languages[lang]
             decorator: BaseCommand = command_data.decorators[lang]
-            cooldown_type = language.decorators.Templates.get_bucket_type(cooldown_.bucket)
+            cooldown_type = language.decorators.Templates.get_bucket_type(cooldown_._key)  # NOQA
 
             aliases = self._format_aliases(command_data, language.decorators.Templates.alias_template)
             command_body = self._build_command_body(command_data, cooldown_type, aliases, decorator, language)
@@ -82,27 +81,29 @@ class DynamicDescriptions:
 
     def template_description(self, command_data: Command, ctx: Context = None) -> dict[str, dict[str, str]]:
         responses = defaultdict(dict)
-        cooldown_ = command_data._cooldowns[0]  # NOQA
-        per = cooldown_._per  # NOQA
-        rate = cooldown_._rate  # NOQA
+        cooldown_ = command_data._buckets[0]  # NOQA
+        per = cooldown_._cooldown._per  # NOQA
+        rate = cooldown_._cooldown._rate  # NOQA
         prefix = ctx.prefix if ctx else self.bot.config.BotConfig.prefix[0]
         for lang in command_data.decorators:
             decorator: BaseCommand = command_data.decorators[lang]
             description = decorator.description
             language: Translation = self.bot.TranslationManager.languages[lang]
-            cooldown_type = language.decorators.Templates.get_bucket_type(cooldown_.bucket)
-            template = "\n\n".join(decorator.template) # TODO: make a better solution for template like descriptions.
-            template = custom_format(template=template, rate=rate, per=per,
-                                     cooldown_type=cooldown_type, description=description,
-                                     command_title=command_data.name.capitalize(), command_name=command_data.name.lower(),
-                                     prefix=prefix, aliases=", ".join([])
-                                     )
+            cooldown_type = language.decorators.Templates.get_bucket_type(cooldown_._key)  # NOQA
+            template = "\n\n".join(decorator.template)  # TODO: make a better solution for template like descriptions.
+            template = custom_format(
+                    template=template,
+                    rate=rate, per=per,
+                    cooldown_type=cooldown_type,
+                    description=description,
+                    command_title=command_data.name.capitalize(),
+                    command_name=command_data.name.lower(),
+                    prefix=prefix, aliases=", ".join([])
+            )
 
             responses[lang][command_data.name.lower()] = template
 
         return responses
-
-
 
 
     @staticmethod
@@ -113,8 +114,8 @@ class DynamicDescriptions:
         return ""
 
     def _build_command_body(self, command_data: Command, cooldown_type, aliases, decorator: BaseCommand, language: Translation):
-        rate: int = command_data._cooldowns[0]._rate  # NOQA
-        per: int = command_data._cooldowns[0]._per  # NOQA
+        rate: int = command_data._buckets[0]._cooldown._rate  # NOQA
+        per: int = command_data._buckets[0]._cooldown._per  # NOQA
         command_name: str = command_data.name
         prefix = self.bot.config.BotConfig.prefix[0]
         command_body = language.decorators.Templates.template_part1.format(command_title=command_name.capitalize(), rate=rate, per=per, cooldown_type=cooldown_type)

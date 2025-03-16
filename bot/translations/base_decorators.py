@@ -2,12 +2,17 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
+
 from .extras.response import BaseFunctions, CommandExemples
-from twitchio.ext.commands import Bucket
+from twitchio.ext.commands import BucketType
+
+
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
-
+    from bot.ext import Command
+    from bot.translations import TranslationManager
 
 
 class Decorators(BaseFunctions):
@@ -17,23 +22,17 @@ class Decorators(BaseFunctions):
         extras_fallback = fallback['extras'] if fallback else None
         extras = BaseFunctions(extras, extras_fallback)
         super().__init__(translation['decorators'], fallback_decorators)
-        decorator_names = ["Templates", "TypeChecking", "Admin", "Others", "Afk", "Alias", "Chance", "Choice", "Count",
-                           "HyperTranslate", "NSFW", "RandomColor", "Reverse", "RandomLine", "Scp", "UpSideDown",
-                           "Wikihow", "Wikipedia", "Annotations", "Lottery", "Safebooru", "Cookies"
-                           ]
 
-        for name in decorator_names:
-            if name == "TypeChecking":
-                base = None, None
-            else:
-                base = self.get_base(name)
-            decorator_class = getattr(BaseDecorators, name)
-            setattr(self, name, decorator_class(base) if name != "TypeChecking" else decorator_class(None, None))
+        self.populate_subclasses(
+                base_cls=BaseDecorators(),
+                add_to_self=True
+        )
 
-
-        self.decorators = {
-                'pipe': self.Others.Pipe,
+        self.decorators: dict[str, BaseDecorators] = {
+                'pipe': self.Pipe,
                 'afk': self.Afk,
+                'isafk': self.IsAfk,
+                'rafk': self.RAfk,
                 'alias': self.Alias,
                 'chance': self.Chance,
                 'choice': self.Choice,
@@ -62,24 +61,24 @@ class Decorators(BaseFunctions):
                         'nada': self.Admin.Nada,
                         'reload': self.Admin.Reload,
                         'restart': self.Admin.Restart,
+                        'disable_nsfw': self.Admin.DisableNSFW,
                 }
         }
 
-        self.categories = ["NSFW", "Dev"]
-        self.exclude_categories = ["NSFW"]
-        del self.fallback, self.obj
+        self.categories: list[str] = ["NSFW", "Dev"]
+        self.exclude_categories: list[str] = ["NSFW"]
 
     Templates: BaseDecorators.Templates
     TypeChecking: BaseDecorators.TypeChecking
-    Admin: BaseDecorators.Admin
-    Others: BaseDecorators.Others
+    Pipe: BaseDecorators.Pipe
     Afk: BaseDecorators.Afk
+    IsAfk: BaseDecorators.IsAfk
+    RAfk: BaseDecorators.RAfk
     Alias: BaseDecorators.Alias
     Chance: BaseDecorators.Chance
     Choice: BaseDecorators.Choice
     Count: BaseDecorators.Count
     HyperTranslate: BaseDecorators.HyperTranslate
-    NSFW: BaseDecorators.NSFW
     RandomColor: BaseDecorators.RandomColor
     Reverse: BaseDecorators.Reverse
     RandomLine: BaseDecorators.RandomLine
@@ -92,10 +91,8 @@ class Decorators(BaseFunctions):
     Safebooru: BaseDecorators.Safebooru
     Cookies: BaseDecorators.Cookies
 
-
-    decorators: dict
-    categories: list
-    exclude_categories: list
+    NSFW: BaseDecorators.NSFW
+    Admin: BaseDecorators.Admin
 
 
 class DecorationsFunctions(BaseFunctions):
@@ -106,7 +103,7 @@ class DecorationsFunctions(BaseFunctions):
         decorator = ctx.command.decorators[ctx.user.language]
         for classe in dir(decorator):
             if classe.startswith("__") or classe.startswith("get_"): continue
-            invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
+            invoke_by = ctx.message.text.partition(" ")[0][len(ctx.prefix):].lower()
             if invoke_by == classe.lower():
                 return getattr(decorator, classe)
 
@@ -181,96 +178,36 @@ class BaseDecorators:
 
         def get_bucket_type(self, bucket):
             bucket_type = self.bucket_type["default"]
-            if bucket == Bucket.default:
+            if bucket == BucketType.default:
                 bucket_type = self.bucket_type["default"]
 
-            if bucket == Bucket.channel:
+            if bucket == BucketType.channel:
                 bucket_type = self.bucket_type["channel"]
 
-            if bucket == Bucket.member:
-                bucket_type = self.bucket_type["member"]
-
-            if bucket == Bucket.user:
+            if bucket == BucketType.user:
                 bucket_type = self.bucket_type["user"]
 
-            if bucket == Bucket.subscriber:
-                bucket_type = self.bucket_type["subscriber"]
-
-            if bucket == Bucket.mod:
-                bucket_type = self.bucket_type["mod"]
             return bucket_type
 
     class TypeChecking(BaseFunctions):
-        pass
+        PlaceHolder: Decorators
 
-    class Admin(BaseFunctions):
+
+    class Pipe(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            decorator_names = ["Nada", "Reload", "Restart"]
-            for name in decorator_names:
-                base = self.get_base(name)
-                decorator_class = getattr(BaseDecorators.Admin, name)
-                setattr(self, name, decorator_class(base))
-            del self.fallback, self.obj
+            super().__init__(translation, "2024-09-09", "2024-09-09")
 
-        class Nada(BaseCommand):
-            def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
-
-        class Reload(BaseCommand):
-            def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
-
-        class Restart(BaseCommand):
-            def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-18T18:25:27.911-03:00", "2024-09-18T18:25:27.911-03:00")
-
-        Nada: Nada
-        Reload: Reload
-        Restart: Restart
-
-    class Others(BaseFunctions):
+    class Afk(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            decorator_names = ["Pipe"]
-            for name in decorator_names:
-                base = self.get_base(name)
-                decorator_class = getattr(BaseDecorators.Others, name)
-                setattr(self, name, decorator_class(base))
-            del self.fallback, self.obj
+            super().__init__(translation, "2024-09-09", "2024-09-09")
 
-        class Pipe(BaseCommand):
-            def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
-
-        Pipe: Pipe
-
-    class Afk(BaseFunctions):
+    class IsAfk(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            decorator_names = ["Afk", "IsAfk", "RAfk"]
-            for name in decorator_names:
-                base = self.get_base(name)
-                decorator_class = getattr(BaseDecorators.Afk, name)
-                setattr(self, name, decorator_class(base))
-            del self.fallback, self.obj
+            super().__init__(translation, "2024-09-09", "2024-09-09")
 
-
-        class Afk(BaseCommand):
-            def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
-
-        class IsAfk(BaseCommand):
-            def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
-
-        class RAfk(BaseCommand):
-            def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
-
-        Afk: Afk
-        IsAfk: IsAfk
-        RAfk: RAfk
+    class RAfk(BaseCommand):
+        def __init__(self, translation: dict):
+            super().__init__(translation, "2024-09-09", "2024-09-09")
 
     class Alias(BaseCommand):
         def __init__(self, translation: dict):
@@ -291,32 +228,6 @@ class BaseDecorators:
     class HyperTranslate(BaseCommand):
         def __init__(self, translation: dict):
             super().__init__(translation, "2024-09-09", "2024-09-09")
-
-    class NSFW(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            decorator_names = ["Imgur", "ImgurRepeated", "Boru"]
-            for name in decorator_names:
-                base = self.get_base(name)
-                decorator_class = getattr(BaseDecorators.NSFW, name)
-                setattr(self, name, decorator_class(base))
-            del self.fallback, self.obj
-
-        class Imgur(BaseCommand):
-            def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
-
-        class ImgurRepeated(BaseCommand):
-            def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
-
-        class Boru(BaseCommand):
-            def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
-
-        Imgur: Imgur
-        ImgurRepeated: ImgurRepeated
-        Boru: Boru
 
     class RandomColor(BaseCommand):
         def __init__(self, translation: dict):
@@ -361,12 +272,7 @@ class BaseDecorators:
     class Cookies(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            decorator_names = ["CookieCount", "Gift", "SlotMachine", "Stock", "Top"]
-            for name in decorator_names:
-                base = self.get_base(name)
-                decorator_class = getattr(BaseDecorators.Cookies, name)
-                setattr(self, name, decorator_class(base))
-            del self.fallback, self.obj
+            self.populate_subclasses(base_cls=self)
 
         class CookieCount(BaseCommand):
             def __init__(self, translation: dict):
@@ -395,46 +301,73 @@ class BaseDecorators:
         Top: Top
 
 
+    class NSFW(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_subclasses(base_cls=self)
+
+        class Imgur(BaseCommand):
+            def __init__(self, translation: dict):
+                super().__init__(translation, "2024-09-09", "2024-09-09")
+
+        class ImgurRepeated(BaseCommand):
+            def __init__(self, translation: dict):
+                super().__init__(translation, "2024-09-09", "2024-09-09")
+
+        class Boru(BaseCommand):
+            def __init__(self, translation: dict):
+                super().__init__(translation, "2024-09-09", "2024-09-09")
+
+        Imgur: Imgur
+        ImgurRepeated: ImgurRepeated
+        Boru: Boru
+
+    class Admin(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_subclasses(base_cls=self)
+
+        class Nada(BaseCommand):
+            def __init__(self, translation: dict):
+                super().__init__(translation, "2024-09-09", "2024-09-09")
+
+        class Reload(BaseCommand):
+            def __init__(self, translation: dict):
+                super().__init__(translation, "2024-09-09", "2024-09-09")
+
+        class Restart(BaseCommand):
+            def __init__(self, translation: dict):
+                super().__init__(translation, "2024-09-18T18:25:27.911-03:00", "2024-09-18T18:25:27.911-03:00")
+
+        class DisableNSFW(BaseCommand):
+            def __init__(self, translation: dict):
+                super().__init__(translation, "2025-03-14T13:19:12.370-03:00", "2025-03-14T13:19:12.370-03:00")
+
+        Nada: Nada
+        Reload: Reload
+        Restart: Restart
 
 
 
+def inject_translations(command: Command, translations: TranslationManager):
+    translations_decorators = {}
+    fallback = translations.languages["en"].decorators
+    categories = ["", "NSFW", "Dev"]
 
+    for lang, lang_data in translations.languages.items():
+        translation = lang_data.decorators
+        decorators_dict = translation.__dict__
+        for category in categories:
+            decorators = translation.decorators.get(category, translation.decorators)
+            if command.name.lower() in decorators:
+                translations_decorators[lang] = decorators[command.name.lower()]
+                break
+        else:
+            for category in categories:
+                fallback_decorators = fallback.get(category, translation.decorators)
+                if command.name.lower() in fallback_decorators:
+                    translations_decorators[lang] = fallback_decorators[command.name.lower()]
+                    break
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    command.decorators = translations_decorators
+    return command

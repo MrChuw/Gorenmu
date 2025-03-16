@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Union
 
-import humanize as Humanize
+from bot.translations.extras import humanize as bot_humanize
 from tortoise import fields, Model
+import pytz
 
 
-Union[str, fields.TextField]
 CharFieldStr = Union[str, fields.CharField]
 IntFieldInt = Union[int, fields.IntField]
 DatetimeTzField = Union[datetime, fields.DatetimeField]
-
-import pytz
 
 
 
@@ -32,18 +30,17 @@ class TimestampMixin:
 
     @property
     def created_ago(self):
-        return datetime.utcnow() - self.created_at
+        return datetime.now(pytz.utc) - self.created_at
 
     @property
     def updated_ago(self):
-        return datetime.utcnow() - self.updated_at
+        return datetime.now(pytz.utc) - self.updated_at
 
 
-    def created_a_time(self, humanize: Humanize, timezone):
+    def created_a_time(self, humanize: bot_humanize.Humanize, timezone=UTC):
         return humanize.precisedelta(datetime.now(timezone) - self.created_at.astimezone(timezone))
 
-
-    def updated_a_time(self, humanize: Humanize, timezone):
+    def updated_a_time(self, humanize: bot_humanize.Humanize, timezone=UTC):
         return humanize.precisedelta(datetime.now(timezone) - self.updated_at.astimezone(timezone))
 
     @property

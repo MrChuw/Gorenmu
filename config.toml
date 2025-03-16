@@ -4,6 +4,7 @@ version = "2.0.0"
 development = true
 
 [bot]
+bot_id = 707980467
 color = 0x9147FF
 dev_userid = 411010313
 dev_name = "mr_chuw"  # This name will be replaced by twitch name when bot fully starts, its used on start to create the channel on database, so put the our twitch nick
@@ -25,8 +26,10 @@ access_token = "${ACCESS_TOKEN}"
 access_oauth_token = "${ACCESS_OAUTH_TOKEN}"
 refresh_token = "${REFRESH_TOKEN}"
 client_id = "${CLIENT_ID}"
-api_client_secret = "${API_CLIENT_SECRET}"
+
 api_client_id = "${API_CLIENT_ID}"
+api_client_secret = "${API_CLIENT_SECRET}"
+
 pastbin_url="https://bin.mrchuw.com.br/documents"
 file_upload_url = "${FILE_UPLOAD_URL}"
 enable_site_endpoints = true
@@ -40,7 +43,7 @@ port = 3307
 name = "${DB_NAME}"
 
 [cache]
-type = "valkey"
+type = "memory"
 host = "${REDIS_HOST}"
 port = "${REDIS_PORT}"
 password = "${REDIS_PASSWORD}"

@@ -15,7 +15,7 @@ class HumanizeContext:
         humanize.deactivate()
 
 
-class Humanize(BaseFunctions):
+class Humanize:
     _years = ["months", "days", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
     _months = ["years", "days", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
     _weeks = ["years", "months", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
@@ -26,11 +26,9 @@ class Humanize(BaseFunctions):
     _microseconds = ["years", "months", "days", "hours", "minutes", "seconds", "milliseconds"]
     _milliseconds = ["years", "months", "days", "hours", "minutes", "seconds", "microseconds"]
 
-    def __init__(self, data: tuple, translation: dict, fallback: dict = None):
-        super().__init__(translation, fallback)
-        self.lang = data[0]["language"] if data[0]["language"] is not None else data[1]["language"]
-        self.units = self._generate_options(self.get_object("Pattern time"))
-        del self.fallback, self.obj
+    def __init__(self, data: dict, pattern_time: dict):
+        self.lang = data["language"] if data["language"] is not None else data["language"]
+        self.units = self._generate_options(pattern_time)
 
     def precisedelta(self, value, minimum_unit="seconds", suppress=(), format="%0.2f") -> str:
         with HumanizeContext(self.lang):

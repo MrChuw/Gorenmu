@@ -4,7 +4,7 @@ from __future__ import annotations
 import asyncio
 from typing import List, Tuple, TYPE_CHECKING
 
-from twitchio import Message
+from twitchio import ChatMessage
 
 from bot.ext.commands import Context
 from bot.models import (Cookies as CookieModel, Lottery, LotteryBank)
@@ -27,29 +27,25 @@ class LotteryTools:  # TODO: Lottery.
         self.lock: asyncio.Lock = asyncio.Lock()
 
     @staticmethod
-    def check_bet_or_consultation(message: Message, ctx: Context):
-        if message.echo:
+    def check_bet_or_consultation(message: ChatMessage, ctx: Context):
+        if message.broadcaster.name != ctx.channel.name:
             return False
-        if message.channel.name != ctx.channel.name:
+        if message.chatter.id != ctx.author.id:
             return False
-        if message.author.id != ctx.author.id:
-            return False
-        if message.content.lower() in ctx.translations.SupportTools.Lottery.bet_or_consultation:
+        if message.text.lower() in ctx.translations.SupportTools.Lottery.bet_or_consultation:
             return True
-        if message.content.lower().startswith("ticket"):
+        if message.text.lower().startswith("ticket"):
             return True
         return False
 
     @staticmethod
-    def check_numbers(message: Message, ctx: Context, translations: BaseTranslations.Lottery) -> (
+    def check_numbers(message: ChatMessage, ctx: Context, translations: BaseTranslations.Lottery) -> (
             bool | Tuple[bool, List[int]]):
-        if message.echo:
+        if message.broadcaster.name != ctx.channel.name:
             return False
-        if message.channel.name != ctx.channel.name:
+        if message.chatter.id != ctx.author.id:
             return False
-        if message.author.id != ctx.author.id:
-            return False
-        numbers = message.content.replace(",", "").split(" ")
+        numbers = message.text.replace(",", "").split(" ")
         # Não sei se isso de simple response funciona.
         if not all(map(lambda x: x.isdigit() and 1 <= int(x) <= 60, numbers)):
             ctx.bot.loop.create_task(ctx.simple_response(ctx, translations.only_numbers.response))
@@ -79,15 +75,15 @@ class LotteryTools:  # TODO: Lottery.
             return translations.not_enough_cookies.format_response(ctx, success=False)
         await ctx.simple_response(ctx, translations.bet_message)
 
-        def check_numbers_proxy(message: Message):
+        async def check_numbers_proxy(message: ChatMessage):
             return self.check_numbers(message, ctx, translations)
 
         try:
-            response = await self.bot.wait_for("message", check_numbers_proxy, timeout=30)
+            response = await self.bot.wait_for("message", predicate=check_numbers_proxy, timeout=30)
         except asyncio.TimeoutError:
             return translations.timeout.format_response(ctx, success=False)
         else:
-            response: Message = response[0]
+            response: ChatMessage = response[0]
             numbers = list(map(int, response.content.split(" ")))
             last_bet = await LotteryBank.get(closed=False)
             if len(numbers) <= 6:
@@ -120,7 +116,7 @@ class LotteryTools:  # TODO: Lottery.
         await ctx.simple_response(ctx, translations.consultation_message)
 
         # Removido
-        def checkPassadasAtuaisProxy(message: Message):
+        def checkPassadasAtuaisProxy(message: ChatMessage):
             # return self.check_passadas_ou_atuais(message, ctx)
             ...
 
@@ -129,7 +125,7 @@ class LotteryTools:  # TODO: Lottery.
         except asyncio.TimeoutError:
             return translations.timeout.format_response(ctx, success=False)
         else:
-            response: Message = response[0]
+            response: ChatMessage = response[0]
             if response.content.lower() == translations.past:
                 bets = await Lottery.filter(user=ctx.user, encerrada=True)
                 for bet in bets:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from .User import User  # NOQA
+from .User import TwitchTokens  # NOQA
 from .Channel import Channel  # NOQA
 from .User_extras import Status  # NOQA
 from .User_extras import Annotation  # NOQA

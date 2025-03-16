@@ -1,10 +1,8 @@
 ## Here will only be the endpoints of things for the site to use.
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from fastapi import FastAPI, Request, Response
-from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
-from starlette.middleware.sessions import SessionMiddleware
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 import uvicorn
 from logging import getLogger, StreamHandler
 

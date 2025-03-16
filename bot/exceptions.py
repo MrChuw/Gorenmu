@@ -1,80 +1,84 @@
 # -*- coding: utf-8 -*-
-from twitchio.ext.commands.errors import (  # NOQA
+from twitchio.ext.commands import (  # NOQA
     BadArgument,
-    CheckFailure,
+    GuardFailure,
     CommandNotFound,
     CommandOnCooldown,
     MissingRequiredArgument,
-    TwitchCommandError,
-    InvalidCogMethod,
-    InvalidCog,
-    ArgumentParsingFailed,
+    CommandInvokeError,
+    CommandExistsError,
+    ModuleLoadFailure,
+    ModuleAlreadyLoadedError,
+    # TwitchCommandError,
+    # InvalidCogMethod,
+    # InvalidCog,
+    # ArgumentParsingFailed,
 )
 
 # TODO: Limpar os erros.
-InvalidArgument = (ArgumentParsingFailed, BadArgument, MissingRequiredArgument)
+InvalidArgument = (BadArgument, MissingRequiredArgument)
 
 
 class InvalidUsername(BadArgument):
     """Username invalido."""
 
 
-class AlreadyPlaying(CheckFailure):
+class AlreadyPlaying(GuardFailure):
     """Um jogo ja esta rodando nesse canal."""
 
 
-class BotOffline(CheckFailure):
+class BotOffline(GuardFailure):
     """Bot offline neste canal."""
 
 
-class CommandDisabled(CheckFailure):
+class CommandDisabled(GuardFailure):
     """Comando esta disablilitado neste canal."""
 
 
-class InappropriateMessage(CheckFailure):
+class InappropriateMessage(GuardFailure):
     """Mensagem contem conteúdo inapropriado para o canal."""
 
 
-class ModRequired(CheckFailure):
+class ModRequired(GuardFailure):
     """Usuário não é autorizado a usar este comando no canal."""
 
 
-class PremiumRequired(CheckFailure):
+class PremiumRequired(GuardFailure):
     """Usuário não é autorizado a usar este comando no canal."""
 
 
-class DevRequired(CheckFailure):
+class DevRequired(GuardFailure):
     """Usuário não é autorizado a usar este comando."""
 
 
-class OwnerRequired(CheckFailure):
+class OwnerRequired(GuardFailure):
     """Usuário não é autorizado a usar este comando."""
 
 
-class ConfRequired(CheckFailure):
+class ConfRequired(GuardFailure):
     """Você precisa receber a confiança para usar este comando."""
 
 
-class UserIsNotAllowed(CheckFailure):
+class UserIsNotAllowed(GuardFailure):
     """ """
 
 
-class ContentHasBanword(CheckFailure):
+class ContentHasBanword(GuardFailure):
     """ """
 
 
-class GameIsAlreadyRunning(CheckFailure):
+class GameIsAlreadyRunning(GuardFailure):
     """ """
 
 
-class VipRequired(CheckFailure):
+class VipRequired(GuardFailure):
     """ """
 
 
-class SubRequired(CheckFailure):
+class SubRequired(GuardFailure):
     """ """
 
 
-class UnknownError(CheckFailure):
+class UnknownError(GuardFailure):
     """ """
 

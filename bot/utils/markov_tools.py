@@ -9,6 +9,7 @@ from nltk.tokenize import WhitespaceTokenizer
 from urlextract import URLExtract
 
 from bot.ext.commands import User
+from bot.ext import Context
 from bot.models import (
     Channel as ChannelModel, MarkovChannels, MarkovUserChannel, MarkovUsers,
 )
@@ -24,11 +25,8 @@ class MarkovProcessor:
         most_common_word_count = Counter(message.split()).most_common(1)[0][1]
         return most_common_word_count / len(message.split()) > threshold
 
-    async def put_markov_queue(self, ctx):
-        words = WhitespaceTokenizer().tokenize(text=ctx.message.content)
-        if not self.is_repetitive(ctx.message.content) and len(words) >= 3:
-            await self.message_queue.async_q.put((ctx.message.content, ctx.bot.channels[ctx.channel.name], ctx.user))
-        del words
+    async def put_markov_queue(self, ctx: Context):
+        await self.message_queue.async_q.put((ctx.message.text, ctx.bot.channels[ctx.channel.name], ctx.user))
 
     @staticmethod
     async def _get_current_state(curr_state: str, **kwargs):
@@ -111,6 +109,10 @@ class MarkovProcessor:
         while True:
             try:
                 message, channel, user = await self.message_queue.async_q.get()
+
+                words = WhitespaceTokenizer().tokenize(text=message)
+                if not self.is_repetitive(message) and len(words) <= 3:
+                    return
 
                 if self.message_queue.async_q.qsize() > 100:
                     logger.info(f"Queue size: {self.message_queue.async_q.qsize()}")

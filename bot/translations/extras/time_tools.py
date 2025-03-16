@@ -41,7 +41,7 @@ class ParseTime(BaseFunctions):
         self.yearfirst = self._year_first()  # NOQA
         self.parserinfo = dateutil.parser.parserinfo(dayfirst=self.dayfirst, yearfirst=self.yearfirst)  # NOQA
         self.parser = dateutil.parser.parser(self.parserinfo)
-        del self.fallback, self.obj
+
 
     def __call__(self, target: str) -> Optional[datetime]:
         now = datetime.now(timezone.utc)
@@ -87,7 +87,7 @@ class TimeTools(BaseFunctions):
         self.PATTERN_TIME = self.generate_time_regex(self.get_object("Pattern time"))
         self.time_units = TimeUnits(self.get_object("Time Units"))
         self.parse_time = ParseTime(self.obj, self.fallback)
-        del self.fallback, self.obj
+
 
     @staticmethod
     def generate_time_regex(time_units: dict) -> re.Pattern:

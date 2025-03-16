@@ -46,7 +46,6 @@ class CommandExemples:
         return iter(self.items) if self.items else iter([])
 
 
-
 class CommandExemplesItem:
     def __init__(self, data: dict):
         self.args = data.get("args", "")
@@ -71,16 +70,33 @@ class AdmonitionItem:
         self.position = position
 
 
-class BaseFunctions:
+class BaseFunctionsMeta(type):
+    def __call__(cls, *args, **kwargs):
+        instance = super().__call__(*args, **kwargs)
+        if cls is not BaseFunctions:
+            # Only delete attributes if it's a subclass
+            if hasattr(instance, 'fallback'):
+                del instance.fallback
+            if hasattr(instance, 'obj'):
+                del instance.obj
+
+        return instance
+
+
+class BaseFunctions(metaclass=BaseFunctionsMeta):
     ctx: Context
 
-    def __init__(self, obj, fallback):
+    def __init__(self, obj, fallback=None):
         if type(obj) is dict:
             self.obj = obj
             self.fallback = obj if fallback is None else fallback
         if type(obj) is tuple:
             self.obj = obj[0]
             self.fallback = obj[1]
+
+    def __iter__(self):
+        unique_keys = set(self.obj.keys()).union(self.fallback.keys())
+        return iter(unique_keys)
 
     def get_object(self, key: str) -> [dict, dict]:
         if key in self.obj:
@@ -106,10 +122,6 @@ class BaseFunctions:
         else:
             raise KeyError(f"Key '{key}' not found in either base or fallback.")
 
-    def __iter__(self):
-        unique_keys = set(self.obj.keys()).union(self.fallback.keys())
-        return iter(unique_keys)
-
     def initialize_objects(self, names, cls):
         for name, args in names:
             base = self.get_object(name)
@@ -127,9 +139,37 @@ class BaseFunctions:
             base = self.get_object(name)
             setattr(self, name, Response(response=base, **args))
 
+    def populate_subclasses(
+            self,
+            extras: BaseFunctions = None,
+            extras_fields: Optional[set[str]] = None,
+            base_cls: Optional[object] = None,
+            add_to_self: Optional[bool] = False
+    ):
+        if extras_fields is None:
+            extras_fields = set()
+        if base_cls is None:
+            base_cls = self.__class__
 
+        for name, cls in vars(base_cls.__class__).items():
+            if isinstance(cls, type) and issubclass(cls, BaseFunctions):
+                if name in ['TypeChecking']:
+                    continue
+                params = (self.get_base(name), extras) if name in extras_fields else (self.get_base(name),)
+                if add_to_self:
+                    setattr(self, name, cls(*params))
+                else:
+                    setattr(base_cls, name, cls(*params))
 
-
-
-
-
+    def populate_responses(
+            self
+    ):
+        for name in self:
+            name: str
+            base = self.get_object(name)
+            if type(base) is str:
+                if name.endswith("_str"):
+                    setattr(self, name, base)
+                else:
+                    setattr(self, name, Response(response=base))
+            ...

@@ -1,14 +1,28 @@
 # -*- coding: utf-8 -*-
+import asyncio
+import logging
 import os
-from loguru import logger
+
+import twitchio
+from twitchio.web import StarletteAdapter
+
+
 
 from bot.bot import Gorenmu
 from bot.ext.config import Config
 from bot.api import api, api_start
 
-config_yml = os.path.join(os.path.dirname(__file__), "config.toml")
+DEBUG = os.getenv("DEBUG", "1") == "1"
+Configs = Config(os.path.join(os.path.dirname(__file__), "config.toml"))
 
-Configs = Config(config_yml)
+if DEBUG:
+    import logging
+    log = logging.getLogger()
+    twitchio.utils.setup_logging(level=logging.INFO)
+else:
+    from loguru import logger as log
+    from bot.logger import InterceptHandler
+    twitchio.utils.setup_logging(handler=InterceptHandler(), level=logging.INFO)
 
 __title__ = "Gorenmu-bot"
 __author__ = "MrChuw"
@@ -17,22 +31,20 @@ __copyright__ = ""
 __version__ = Configs.version
 
 if __name__ == "__main__":
-    logger.info("Ligando bot", exc_info=True)
-    quantidade = 0
+    log.info("Ligando bot", exc_info=True)
 
-    while True:
-        quantidade += 1
-        logger.info(quantidade)
-        try:
-            bot = Gorenmu(configs=Configs, case_insensitive=True, retain_cache=True, log=logger)
-            bot.site = api
-            bot.api_start = api_start
-            bot.start()
-            bot.loop.run_forever()
-        except KeyboardInterrupt:
-            # bot.loop.run_until_complete(bot.stop())
-            # bot.loop.close()
-            break
-        except BaseException as e:
-            logger.exception(e, extra={"locals": locals()})
-            logger.info(f"{quantidade}: BaseException")  # finally:  #     bot.loop.run_until_complete(bot.stop())
+    async def runner() -> None:
+        adapter: StarletteAdapter = StarletteAdapter(host="0.0.0.0")
+        bot: Gorenmu = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
+        bot.site = api
+        bot.api_start = api_start
+        await bot.setup_database()
+        await bot.setup()
+        await bot.start()
+
+    try:
+        asyncio.run(runner())
+    except KeyboardInterrupt:
+        log.warning("Shutting down due to KeyboardInterrupt...")
+
+

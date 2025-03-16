@@ -4,47 +4,16 @@ from __future__ import annotations
 import os
 import pathlib
 import types
-from importlib import import_module, reload
+from importlib import import_module
 from typing import TYPE_CHECKING
 
 from loguru import logger
-from twitchio.ext.commands import Bucket
+from twitchio.ext.commands import BucketType
 from bot.ext import Routine
-from bot.translations import TranslationManager
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context, Command
-
-from bot.utils.command_checks import Check
-
-
-def get_translations(command: Command):
-    translations = TranslationManager()
-    translations_decorators = {}
-    fallback = translations.languages["en"].decorators
-    categories = ["", "NSFW", "Dev"]
-
-    for lang, lang_data in translations.languages.items():
-        translation = lang_data.decorators
-
-        decorators_dict = translation.__dict__
-
-
-        for category in categories:
-            decorators = translation.decorators.get(category, translation.decorators)
-            if command.name.lower() in decorators:
-                translations_decorators[lang] = decorators[command.name.lower()]
-                break
-        else:
-            for category in categories:
-                fallback_decorators = fallback.get(category, translation.decorators)
-                if command.name.lower() in fallback_decorators:
-                    translations_decorators[lang] = fallback_decorators[command.name.lower()]
-                    break
-
-    command.decorators = translations_decorators
-    return command
+    from bot.ext import Context
 
 
 class CommandHandler:
@@ -63,15 +32,15 @@ class CommandHandler:
 
     DEFAULT_COOLDOWN_PER = 5
     DEFAULT_COOLDOWN_RATE = 2
-    DEFAULT_COOLDOWN_BUCKET = Bucket.user
+    DEFAULT_COOLDOWN_BUCKET = BucketType.user
 
     @staticmethod
-    def start_routines(self: Gorenmu) -> None:  # TODO: Melhorar as mensagens.
+    def start_routines(self: Gorenmu) -> None:
         for routine in self.routines:
             routine.start(self)
 
     @staticmethod
-    def stop_routines(self: Gorenmu) -> None:  # TODO: Melhorar as mensagens.
+    def stop_routines(self: Gorenmu) -> None:
         try:
             for routine in self.routines:
                 routine.cancel()
@@ -79,7 +48,7 @@ class CommandHandler:
             logger.error(e)
 
     @staticmethod
-    def load_commands(bot: Gorenmu, path: pathlib.Path) -> None:
+    async def load_commands(bot: Gorenmu, path: pathlib.Path) -> None:
         for filename in path.iterdir():
             if not filename.suffix == ".py" or filename.name.startswith("__"):
                 continue
@@ -91,35 +60,21 @@ class CommandHandler:
                 name: str = local[:-3].replace("/", ".")
                 package: str = ".".join(filename.parts)
                 module: types.ModuleType = import_module(name, package=package)
-                command: Command = module.command
-                if command.name == "cookies":
-                    pass
-                command = get_translations(command)
-                if command.name.lower() in ["afk", "isafk", "rafk"]:
-                    command.docs = bot.docs_handler.afk_description(command)
-                elif command.name.lower() in ["cookies"]:
-                    command.docs = bot.docs_handler.cookies_description(command)
-                elif command.name.lower() in ["alias"]:
-                    command.docs = bot.docs_handler.template_description(command)
-                else:
-                    command.docs = bot.docs_handler.normal_description(command)
-
-                if "disabled" in module.__dict__:
+                if not getattr(module, "setup"):
                     continue
-                if command.name not in bot.commands:
-                    bot.add_command(command)
+                command_name = [modulo for modulo in module.__dict__ if modulo.endswith('Cmd') or modulo.endswith('Cmds')][0]
+                if not bot.get_component(command_name):
+                    await bot.load_module(name)
                 else:
-                    module = reload(module)
-                    command: Command = module.command
-                    bot.remove_command(command.name)
-                    bot.add_command(command)
+                    await bot.reload_module(name)
+
 
             except Exception as e:
                 logger.error(f"Command '{filename.name[:-3]}' failed to load: {e} in {filename.joinpath()}",
                              extra={"locals": locals()}, )
 
     @staticmethod
-    def load_event_message_listeners(bot: Gorenmu, path: pathlib.Path) -> None:
+    def load_manual_event_message(bot: Gorenmu, path: pathlib.Path) -> None:
         for filename in path.iterdir():
             if not filename.suffix == ".py" or filename.name.startswith("__"):
                 continue
@@ -128,13 +83,13 @@ class CommandHandler:
                 name: str = local[:-3].replace("/", ".")
                 package: str = ".".join(filename.parts)
                 module: types.ModuleType = import_module(name, package=package)
-                bot.event_message_listeners.append(module.listener)
+                if hasattr(module, "event_message"):
+                    bot.manual_event_message.append(module.event_message)
             except Exception as e:
                 logger.error(f"Listener '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     @staticmethod
     def load_routines(bot: Gorenmu, path: pathlib.Path) -> None:
-        bot.routines = []
         for filename in path.iterdir():
             if not filename.suffix == ".py" or filename.name.startswith("__"):
                 continue
@@ -149,21 +104,22 @@ class CommandHandler:
                 logger.error(f"Routine '{filename.name[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     @staticmethod
-    def load_cogs(bot: Gorenmu, base: str) -> None:
-        global_checks = [Check.online, Check.enabled, Check.banword]
-        [bot.check(check) for check in global_checks]
+    async def load_cogs(bot: Gorenmu, base: str) -> None: # TODO: Mudar para lidar com os novos comandos
         cogs = pathlib.Path(base)
         try:
             for cog in cogs.iterdir():
+                cog: pathlib.Path
                 if ".example" in cog.name:
+                    continue
+                if cog.is_file():
                     continue
                 for folder in cog.iterdir():
                     if folder.name == "__pycache__" or folder.name == "data":
                         continue
                     if "commands" in folder.name or "command" in folder.name:
-                        CommandHandler.load_commands(bot, folder.joinpath())
-                    elif "event_message_listeners" in folder.name:
-                        CommandHandler.load_event_message_listeners(bot, folder.joinpath())
+                        await CommandHandler.load_commands(bot, folder.joinpath())
+                    elif "manual_event_message" in folder.name:
+                        CommandHandler.load_manual_event_message(bot, folder.joinpath())
                     elif "routines" in folder.name:
                         CommandHandler.load_routines(bot, folder.joinpath())
             CommandHandler.start_routines(bot)
@@ -171,19 +127,22 @@ class CommandHandler:
             logger.error(e)
 
     @staticmethod
-    def reload_cogs(bot: Gorenmu, base: str = "bot/cogs") -> None:
+    async def reload_cogs(bot: Gorenmu, base: str = "bot/cogs") -> None:
         CommandHandler.stop_routines(bot)
         cogs = pathlib.Path(base)
         for cog in cogs.iterdir():
+            cog: pathlib.Path
             if ".example" in cog.name:
+                continue
+            if cog.is_file():
                 continue
             for folder in cog.iterdir():
                 if folder.name == "__pycache__" or folder.name == "data":
                     continue
                 if "commands" in folder.name or "command" in folder.name:
-                    CommandHandler.load_commands(bot, folder.joinpath())
-                if "event_message_listeners" in folder.name:
-                    CommandHandler.load_event_message_listeners(bot, folder.joinpath())
+                    await CommandHandler.load_commands(bot, folder.joinpath())
+                if "manual_event_message" in folder.name:
+                    CommandHandler.load_manual_event_message(bot, folder.joinpath())
                 if "routines" in folder.name:
                     CommandHandler.load_routines(bot, folder.joinpath())
         CommandHandler.start_routines(bot)
@@ -193,4 +152,4 @@ class CommandHandler:
         channel = ctx.channel.name
         channel = ctx.bot.channels[channel]
         ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or channel.language or "en")
-        ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or channel.language or "en")
+        # ctx.decorators = ctx.bot.TranslationManager.get_decorator(ctx.user.language or channel.language or "en")

@@ -126,159 +126,31 @@
             "error_not_registered": "um erro inesperado ocorreu, por favor informe o erro para @{}."
         }
     },
-    "Admin": {
-        "Reload": {
-            "commands_reloaded": "Os comando foram recarregados com sucesso."
-        },
-        "Restart": {
-            "success": "O bot reinicio com sucesso.",
-            "unexpected_error": "Um erro aconteceu ao reiniciar o bot: {}"
-        },
-        "Nada": {
-            "nada": "o comando executou com sucesso."
-        }
-    },
-    "Weather": {
-        "TODO": "TODO"
-    },
-    "Lottery": {
-        "past": [
-            "passado"
-        ],
-        "duplicate_numbers": "Por favor, escolha números não duplicados.",
-        "current": [
-            "atual",
-            "presente"
-        ],
-        "only_numbers": "Envie apenas números de 1 a 60.",
-        "not_enough_cookies": "Você não tem cookies suficientes para fazer uma aposta. O mínimo são 5 biscoitos.",
-        "not_enough_cookies_more_five": "Você não tem cookies suficientes para fazer uma aposta. O número de cookies necessários é {}",
-        "bet_place": "A aposta foi feita com os números {} e um valor de {} cookies. (ID: {})",
-        "lottery_lock": "Desculpe, a loteria é fechada enquanto os resultados estão sendo computados.",
-        "timeout": "Demorou muito tempo para escolher uma opção.",
-        "too_much_numbers": "Você não pode apostar em mais de 15 números.",
-        "minimum_bet": "Por favor, escolha pelo menos 3 números.",
-        "no_bet_id": "Você não tem nenhuma aposta com este ID.",
-        "ticket_info": "Bilhete com números: {} no valor de {} criado {} atrás.",
-        "no_old_bets_found": "Você não tem nenhuma aposta passada/fechada.",
-        "old_bets": "Suas apostas anteriores são: {}, com um valor total de {}.",
-        "no_active_bets_found": "Você não tem nenhuma aposta ativa na rodada atual.",
-        "active_bets": "Suas apostas atuais são: {}, com um valor total de {}.",
-        "no_bets": "Você não fez nenhuma aposta até agora.",
-        "all_bets": "Todas as suas apostas são: {}, com um valor total de {}.",
-        "unknown_option": "As opções de loteria são: \"create\" e \"check\".",
-        "lottery_announce_messages": [
-            "Em 30 minutos, a loteria começará a calcular os resultados. O prêmio total é {}, use {}lottery create <números> para participar.",
-            "Em 15 minutos, a loteria começará a calcular os resultados.",
-            "Em 1 minuto, a loteria começará a calcular os resultados.",
-            "Lotaria fechada, começando a calcular os resultados."
-        ],
-        "winners": "Os números sorteados foram: {}, todos os vencedores serão notificados com um lembrete com os valores e números sorteados.",
-        "no_winners": "Os números sorteados foram: {}, não houve vencedores, o prêmio de {} passou para o próximo sorteio.",
-        "lottery_result_announce": "A loteria acabou e aqui estão os resultados: {}",
-        "remind_message": "Você ganhou {} cookies na loteria! Os ingressos vencedores foram: {}"
-    },
-    "Cookies": {
-        "ranks": "os categoria são: {}",
-        "daily_limit_reached": "Você ainda está em cooldown, espere {} até o próximo lote! ⌛",
-        "user_not_found": "o usuário {} ainda não foi registrado e não usou nenhum comando de cookie.",
-        "invalid_option": "Escolha entre uma das opções \"eat\", \"count\", \"top\", \"gift\", \"stock\" ou \"sm\"",
-        "cookie_not_found": "O usuário {} ainda não usou nenhum comando relacionado aos cookies.",
-        "not_eat": "Você não comeu nada, nossa!",
-        "negative_eat": "Para comer {} cookies, você deve primeiro saber como reverter entropia.",
-        "multiple_eat": "você comeu {} cookies de uma só vez. 🥠",
-        "eat": "{}",
-        "cc_bot_nick": "Tenho cookies infinitos e dou uma fração deles para você.",
-        "gift_bot_nick": "Não quero a seu cookie.",
-        "gift_user_himself": "você tentou presentear você mesmo, uau!",
-        "gift_on_cooldown_no_stock": "você não tem nenhum cookie armazenado e o cooldown dura mais {}.",
-        "invalid_gift_amount": "envie um valor válido para presentear e não {}.",
-        "multiple_gift": "você presenteou @{} com {} cookie 🎁",
-        "gift": "você deu um cookie para @{} 🎁",
-        "gift_not_enough_cookies": "Para presente, você deve primeiro resgatar o cookie.",
-        "stock": "você estocou {} cookies 🍪, o próximo sai em 6h.",
-        "stock_not_daily": "você estocou {} cookies 🍪.",
-        "stock_not_enough_cookies": "você só pode estocar {}.",
-        "top10_ish": "top {} {}: {} || Você está na {}ª posição na classificação com {}.",
-        "multiple_gift_plural": "você presenteou @{} com {} cookies 🎁",
-        "gift_plural": "você deu @{} um cookie 🎁",
-        "invalid_amount": "você está tentando apostar {} mas só tem {} cookies não resgatados.",
-        "daily_win": "{} você usou seu cookie diário e recebeu {} cookies!",
-        "daily_single_loss": "{} você perdeu seu cookie diário…",
-        "not_daily_multiple_loss": "{} você usou seu cookie diário não resgatado e ganhou {} cookies!",
-        "not_daily_single_loss": "{} você perdeu seu cookie diário não resgatado…",
-        "not_daily_multiple_win": "você usou {} cookies diários não resgatados e ganhou {} cookies dos seguintes itens.",
-        "not_daily_lost_everything": "você usou {} cookies diários e perdeu tudo PoroSad",
-        "format_cookie_count": {
-            "cookie_count": "Você já comeu {} biscoitos 🥠,",
-            "stocked_count": "tem {} em estoque,",
-            "received_count": "foi apresentado com {},",
-            "donated_count": "presenteou {},",
-            "not_redeemed_count": "e tem um total de {} não resgatados.",
-            "total_count": "e um total de {} cookies já foram adicionados à conta."
-        }
-    },
-    "RandomLine": {
-        "random_line": "{} (enviado há {} por @{})",
-        "channel_not_found": "Não encontrei nenhum canal chamado @{}.",
-        "user_not_found": "Não encontrei nenhum usuário chamado @{}.",
-        "no_message_found": "Não encontrei nenhuma mensagem de @{} in @{}."
-    },
-    "Scp": {
-        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
-    },
-    "UpSideDown": {
-        "upsidedown": "{}"
-    },
-    "Wikihow": {
-        "url": "https://pt.wikihow.com/Especial:Randomizer",
-        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
-    },
-    "Wikipedia": {
-        "url": "https://pt.wikipedia.org/wiki/Special:Random",
-        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
-    },
-    "Annotations": {
-        "too_much_characters": "A anotação deve ter um máximo de 450 caracteres.",
-        "title_too_long": "O título deve ter um máximo de 32 caracteres.",
-        "too_few_characters": "Você se esqueceu de enviar o conteúdo da anotação.",
-        "annotation_created": "Nota criada com sucesso. 📝 (ID: {})",
-        "no_annotations_with_id": "Você não tem nenhuma anotação com ID {}.",
-        "all_annotations": "Suas anotações são aquelas com ID: {}",
-        "annotation_content": "{}",
-        "deleted": "Sua anotação com ID {} foi excluída com sucesso. 🗑",
-        "id_not_provided": "{} não é um ID válido.",
-        "option_not_recognized": "As opções válidas são apenas \"add\" \"check\" \"delete\""
-    },
-    "Others": {
-        "Pipe": {
+    "Pipe": {
             "response": "Pipe não é realmente um comando. Para mais informações, visite este link: {}"
-        }
-    },
+        },
     "Afk": {
-        "Afk": {
-            "message_too_long": "Esta mensagem é muito longa.",
-            "afk_response": "{}: {}",
-            "afk_content_response": "{}: {} e deixou uma nota com: {}"
-        },
-        "IsAfk": {
-            "bot_nick": "Estou sempre aqui... assistindo.",
-            "author_nick": "você não está trabalhando... obviamente.",
-            "never_seen": "Não me lembro de ter visto nenhum {}.",
-            "is_afk": "@{} {}: {}",
-            "is_afk_content": "@{} {} e deixou uma nota: {}",
-            "is_not_afk": "@{} não é AFK."
-        },
-        "RAfk": {
-            "time_expired": "O tempo para voltar já passou.",
-            "is_afk": "{}: {}",
-            "is_afk_content": "{} {} e deixou uma nota: {}",
-            "is_not_afk": "você não esta AFK."
-        },
-        "AfkListeners": {
-            "is_afk": "{}: {} (estava ausente por {} {})",
-            "is_afk_content": "{} {} e deixou uma nota: {} (estava ausente por {} {})"
-        }
+        "message_too_long": "Esta mensagem é muito longa.",
+        "afk_response": "{}: {}",
+        "afk_content_response": "{}: {} e deixou uma nota com: {}"
+    },
+    "IsAfk": {
+        "bot_nick": "Estou sempre aqui... assistindo.",
+        "author_nick": "você não está trabalhando... obviamente.",
+        "never_seen": "Não me lembro de ter visto nenhum {}.",
+        "is_afk": "@{} {}: {}",
+        "is_afk_content": "@{} {} e deixou uma nota: {}",
+        "is_not_afk": "@{} não é AFK."
+    },
+    "RAfk": {
+        "time_expired": "O tempo para voltar já passou.",
+        "is_afk": "{}: {}",
+        "is_afk_content": "{} {} e deixou uma nota: {}",
+        "is_not_afk": "você não esta AFK."
+    },
+    "AfkListeners": {
+        "is_afk": "{}: {} (estava ausente por {} {})",
+        "is_afk_content": "{} {} e deixou uma nota: {} (estava ausente por {} {})"
     },
     "Alias": {
         "user_not_found": "não há usuário com apelido {}.",
@@ -375,6 +247,132 @@
         "unexpected_error": "O texto não pôde ser traduzido.",
         "translation": "{}"
     },
+    "RandomColor": {
+        "response_url": "#{} é {}. {}"
+    },
+    "Reverse": {
+        "reversed_string": "{}"
+    },
+    "RandomLine": {
+        "random_line": "{} (enviado há {} por @{})",
+        "channel_not_found": "Não encontrei nenhum canal chamado @{}.",
+        "user_not_found": "Não encontrei nenhum usuário chamado @{}.",
+        "no_message_found": "Não encontrei nenhuma mensagem de @{} in @{}."
+    },
+    "Scp": {
+        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
+    },
+    "UpSideDown": {
+        "upsidedown": "{}"
+    },
+    "Wikihow": {
+        "url": "https://pt.wikihow.com/Especial:Randomizer",
+        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
+    },
+    "Wikipedia": {
+        "url": "https://pt.wikipedia.org/wiki/Special:Random",
+        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
+    },
+    "Annotations": {
+        "too_much_characters": "A anotação deve ter um máximo de 450 caracteres.",
+        "title_too_long": "O título deve ter um máximo de 32 caracteres.",
+        "too_few_characters": "Você se esqueceu de enviar o conteúdo da anotação.",
+        "annotation_created": "Nota criada com sucesso. 📝 (ID: {})",
+        "no_annotations_with_id": "Você não tem nenhuma anotação com ID {}.",
+        "all_annotations": "Suas anotações são aquelas com ID: {}",
+        "annotation_content": "{}",
+        "deleted": "Sua anotação com ID {} foi excluída com sucesso. 🗑",
+        "id_not_provided": "{} não é um ID válido.",
+        "option_not_recognized": "As opções válidas são apenas \"add\" \"check\" \"delete\""
+    },
+    "Lottery": {
+        "past": [
+            "passado"
+        ],
+        "duplicate_numbers": "Por favor, escolha números não duplicados.",
+        "current": [
+            "atual",
+            "presente"
+        ],
+        "only_numbers": "Envie apenas números de 1 a 60.",
+        "not_enough_cookies": "Você não tem cookies suficientes para fazer uma aposta. O mínimo são 5 biscoitos.",
+        "not_enough_cookies_more_five": "Você não tem cookies suficientes para fazer uma aposta. O número de cookies necessários é {}",
+        "bet_place": "A aposta foi feita com os números {} e um valor de {} cookies. (ID: {})",
+        "lottery_lock": "Desculpe, a loteria é fechada enquanto os resultados estão sendo computados.",
+        "timeout": "Demorou muito tempo para escolher uma opção.",
+        "too_much_numbers": "Você não pode apostar em mais de 15 números.",
+        "minimum_bet": "Por favor, escolha pelo menos 3 números.",
+        "no_bet_id": "Você não tem nenhuma aposta com este ID.",
+        "ticket_info": "Bilhete com números: {} no valor de {} criado {} atrás.",
+        "no_old_bets_found": "Você não tem nenhuma aposta passada/fechada.",
+        "old_bets": "Suas apostas anteriores são: {}, com um valor total de {}.",
+        "no_active_bets_found": "Você não tem nenhuma aposta ativa na rodada atual.",
+        "active_bets": "Suas apostas atuais são: {}, com um valor total de {}.",
+        "no_bets": "Você não fez nenhuma aposta até agora.",
+        "all_bets": "Todas as suas apostas são: {}, com um valor total de {}.",
+        "unknown_option": "As opções de loteria são: \"create\" e \"check\".",
+        "lottery_announce_messages": [
+            "Em 30 minutos, a loteria começará a calcular os resultados. O prêmio total é {}, use {}lottery create <números> para participar.",
+            "Em 15 minutos, a loteria começará a calcular os resultados.",
+            "Em 1 minuto, a loteria começará a calcular os resultados.",
+            "Lotaria fechada, começando a calcular os resultados."
+        ],
+        "winners": "Os números sorteados foram: {}, todos os vencedores serão notificados com um lembrete com os valores e números sorteados.",
+        "no_winners": "Os números sorteados foram: {}, não houve vencedores, o prêmio de {} passou para o próximo sorteio.",
+        "lottery_result_announce": "A loteria acabou e aqui estão os resultados: {}",
+        "remind_message": "Você ganhou {} cookies na loteria! Os ingressos vencedores foram: {}"
+    },
+    "Cookies": {
+        "ranks": "os categoria são: {}",
+        "daily_limit_reached": "Você ainda está em cooldown, espere {} até o próximo lote! ⌛",
+        "user_not_found": "o usuário {} ainda não foi registrado e não usou nenhum comando de cookie.",
+        "invalid_option": "Escolha entre uma das opções \"eat\", \"count\", \"top\", \"gift\", \"stock\" ou \"sm\"",
+        "cookie_not_found": "O usuário {} ainda não usou nenhum comando relacionado aos cookies.",
+        "not_eat": "Você não comeu nada, nossa!",
+        "negative_eat": "Para comer {} cookies, você deve primeiro saber como reverter entropia.",
+        "multiple_eat": "você comeu {} cookies de uma só vez. 🥠",
+        "eat": "{}",
+        "cc_bot_nick": "Tenho cookies infinitos e dou uma fração deles para você.",
+        "gift_bot_nick": "Não quero a seu cookie.",
+        "gift_user_himself": "você tentou presentear você mesmo, uau!",
+        "gift_on_cooldown_no_stock": "você não tem nenhum cookie armazenado e o cooldown dura mais {}.",
+        "invalid_gift_amount": "envie um valor válido para presentear e não {}.",
+        "multiple_gift": "você presenteou @{} com {} cookie 🎁",
+        "gift": "você deu um cookie para @{} 🎁",
+        "gift_not_enough_cookies": "Para presente, você deve primeiro resgatar o cookie.",
+        "stock": "você estocou {} cookies 🍪, o próximo sai em 6h.",
+        "stock_not_daily": "você estocou {} cookies 🍪.",
+        "stock_not_enough_cookies": "você só pode estocar {}.",
+        "top10_ish": "top {} {}: {} || Você está na {}ª posição na classificação com {}.",
+        "multiple_gift_plural": "você presenteou @{} com {} cookies 🎁",
+        "gift_plural": "você deu @{} um cookie 🎁",
+        "invalid_amount": "você está tentando apostar {} mas só tem {} cookies não resgatados.",
+        "daily_win": "{} você usou seu cookie diário e recebeu {} cookies!",
+        "daily_single_loss": "{} você perdeu seu cookie diário…",
+        "not_daily_multiple_loss": "{} você usou seu cookie diário não resgatado e ganhou {} cookies!",
+        "not_daily_single_loss": "{} você perdeu seu cookie diário não resgatado…",
+        "not_daily_multiple_win": "você usou {} cookies diários não resgatados e ganhou {} cookies dos seguintes itens.",
+        "not_daily_lost_everything": "você usou {} cookies diários e perdeu tudo PoroSad",
+        "format_cookie_count": {
+            "cookie_count": "Você já comeu {} biscoitos 🥠,",
+            "stocked_count": "tem {} em estoque,",
+            "received_count": "foi apresentado com {},",
+            "donated_count": "presenteou {},",
+            "not_redeemed_count": "e tem um total de {} não resgatados.",
+            "total_count": "e um total de {} cookies já foram adicionados à conta."
+        }
+    },
+    "Markov": {
+        "purge": "Dicionários limpos em %0.2fs. %d palavras removidas.",
+        "replace": "%d casos de %s substituídos por %",
+        "unlearn": "Desaprender feito em %0.2fs"
+    },
+    "Weather": {
+        "TODO": "TODO"
+    },
+
+
+
     "NSFW": {
         "Imgur": {
             "timeout": "Passaram-se 100 segundos e não consegui gerar. Por favor, espere um pouco e tente novamente.",
@@ -395,15 +393,16 @@
             "too_much_tags": "Quantidade de tags ultrapassou o limite permitido de {}."
         }
     },
-    "RandomColor": {
-        "response_url": "#{} é {}. {}"
-    },
-    "Reverse": {
-        "reversed_string": "{}"
-    },
-    "Markov": {
-        "purge": "Dicionários limpos em %0.2fs. %d palavras removidas.",
-        "replace": "%d casos de %s substituídos por %",
-        "unlearn": "Desaprender feito em %0.2fs"
+    "Admin": {
+        "Reload": {
+            "commands_reloaded": "Os comando foram recarregados com sucesso."
+        },
+        "Restart": {
+            "success": "O bot reinicio com sucesso.",
+            "unexpected_error": "Um erro aconteceu ao reiniciar o bot: {}"
+        },
+        "Nada": {
+            "nada": "o comando executou com sucesso."
+        }
     }
 }

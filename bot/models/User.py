@@ -18,6 +18,7 @@ from datetime import datetime
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
+    from bot.translations import Translations
 
 
 class User(Base, UserMixin, TimestampMixin, ContentMixin):
@@ -33,26 +34,28 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     language: CharFieldStr = fields.CharField(max_length=32, null=True)
     timezone: CharFieldStr = fields.CharField(max_length=50, default="UTC")
     cookies: List[Cookies] = fields.ReverseRelation["Cookies"]
-    player: Coroutine[List[Player]] = fields.ReverseRelation["Player"]
-    pets: Coroutine[List[Pets]] = fields.ReverseRelation["Pets"]
-    player_torre: Coroutine[List[PlayerTower]] = fields.ReverseRelation["Player_torre"]
-    suggest: Coroutine[List[Suggest]] = fields.ReverseRelation["Suggest"]
-    bug: Coroutine[List[Bug]] = fields.ReverseRelation["Bug"]
-    annotation: Coroutine[List[Annotation]] = fields.ReverseRelation["Annotation"]
-    nick_history: Coroutine[List[Union[NickHistory, str]]] = fields.ReverseRelation["NickHistory"]
-    status: Coroutine[List[Status]] = fields.ReverseRelation["Status"]
+    player: List[Player] = fields.ReverseRelation["Player"]
+    pets: List[Pets] = fields.ReverseRelation["Pets"]
+    player_torre: List[PlayerTower] = fields.ReverseRelation["Player_torre"]
+    suggest: List[Suggest] = fields.ReverseRelation["Suggest"]
+    bug: List[Bug] = fields.ReverseRelation["Bug"]
+    annotation: List[Annotation] = fields.ReverseRelation["Annotation"]
+    nick_history: List[Union[NickHistory, str]] = fields.ReverseRelation["NickHistory"]
+    status: List[Status] = fields.ReverseRelation["Status"]
     user_1: User = fields.ReverseRelation["user_1"]
     user_2: User = fields.ReverseRelation["user_2"]
-    reminder: Coroutine[List[Reminder]] = fields.ReverseRelation["Reminder"]
+    reminder: List[Reminder] = fields.ReverseRelation["Reminder"]
     reminder_to: User = fields.ReverseRelation["reminder_to"]
-    copypasta: Coroutine[List[Copypasta]] = fields.ReverseRelation["Copypasta"]
-    messages: Coroutine[List[MessagesLog]] = fields.ReverseRelation["MessagesLog"]
+    copypasta: List[Copypasta] = fields.ReverseRelation["Copypasta"]
+    messages: List[MessagesLog] = fields.ReverseRelation["MessagesLog"]
     lottery: lottery = fields.ReverseRelation["Lottery"]
-    imgur_aggregate: Coroutine[List[ImgurAggregate]] = fields.ReverseRelation["ImgurAggregate"]
-    imgur: Coroutine[List[Imgur]] = fields.ReverseRelation["Imgur"]
+    imgur_aggregate: List[ImgurAggregate] = fields.ReverseRelation["ImgurAggregate"]
+    imgur: List[Imgur] = fields.ReverseRelation["Imgur"]
 
     markov = fields.ReverseRelation["MarkovUsers"]
     markov_channels = fields.ReverseRelation["MarkovUserChannel"]
+
+    translations: Translations = None
 
 
     class Meta:
@@ -65,44 +68,64 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     def timezone_(self):
         return ZoneInfo(self.timezone)
 
+
     @staticmethod
-    async def create_or_update(ctx: Context, **kwargs) -> Optional[User]:
+    async def create_or_update(ctx: Context) -> Optional[User]:
         if instance := await User.get_or_none(id=int(ctx.author.id)):
-            attrs = {"name": ctx.author.name, "channel": ctx.channel.name,  # "saved_color": ctx.author.colour,
-                     "content": ctx.message.content.replace("ACTION", "", 1), "timestamp": ctx.message.timestamp,
-                     }
-            update_fields = []
-            if instance.name != ctx.author.name:
-                await NickHistory.create(user=instance, nicks=instance.name)
+            return await User.update_user(instance, ctx)
+        return await User.create_user(ctx)
 
-            message_type = "message_link" if URLExtract().find_urls(text=ctx.message.content) else "message"
-            await MessagesLog.create(user=instance, content=ctx.message.content[:500], type=message_type,
-                                     channel=ctx.bot.channels[ctx.channel.name]
-                                     )
 
-            for attr, value in attrs.items():
-                if attr == "content" and len(value) > 500:
-                    value = value[:500]
-                if getattr(instance, attr) != value:
-                    setattr(instance, attr, value)
-                    update_fields.append(attr)
-            if update_fields:
-                update_fields.append("updated_at")
-                await instance.save(update_fields=update_fields)
-            return instance
-        else:
-            user = {"id": ctx.author.id, "name": ctx.author.name, "channel": ctx.channel.name,
-                    "saved_color": ctx.author.colour, "content": ctx.message.content.replace("ACTION", "", 1),
-                    "timestamp": ctx.message.timestamp, **kwargs,
-                    }
-            user = await User.create(**user)
-            await NickHistory.create(user=user, nicks=user.name)
-            message_type = "message_link" if URLExtract().find_urls(text=ctx.message.content) else "message"
-            await MessagesLog.create(user=user, content=ctx.message.content[:500], type=message_type,
-                                     channel=ctx.bot.channels[ctx.channel.name]
-                                     )
+    @staticmethod
+    async def update_user(instance: User, ctx: Context) -> User:
+        attrs = {
+                "name": ctx.author.name,
+                "channel": ctx.channel.name,
+                "content": ctx.message.text.replace("ACTION", "", 1),
+                "timestamp": ctx.message.timestamp,
+        }
+        update_fields = []
 
-            return user
+        if instance.name != ctx.author.name:
+            await NickHistory.create(user=instance, nicks=instance.name)
+        await User.log_message(instance, ctx)
+        for attr, value in attrs.items():
+            if attr == "content" and len(value) > 500:
+                value = value[:500]
+            if getattr(instance, attr) != value:
+                setattr(instance, attr, value)
+                update_fields.append(attr)
+
+        if update_fields:
+            update_fields.append("updated_at")
+            await instance.save(update_fields=update_fields)
+
+        return instance
+
+    @staticmethod
+    async def create_user(ctx: Context) -> User:
+        user_data = {
+                "id": ctx.author.id,
+                "name": ctx.author.name,
+                "channel": ctx.channel.name,
+                "saved_color": ctx.author.colour,
+                "content": ctx.message.text.replace("ACTION", "", 1),
+                "timestamp": ctx.message.timestamp,
+        }
+        user = await User.create(**user_data)
+        await NickHistory.create(user=user, nicks=user.name)
+        await User.log_message(user, ctx)
+        return user
+
+    @staticmethod
+    async def log_message(user: User, ctx: Context):
+        message_type = "message_link" if URLExtract().find_urls(text=ctx.message.text) else "message"
+        await MessagesLog.create(
+                user=user,
+                content=ctx.message.text[:500],
+                type=message_type,
+                channel=ctx.bot.channels[ctx.channel.name],
+        )
 
 
 
@@ -125,3 +148,10 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
 
 
 
+class TwitchTokens(Base, TimestampMixin):
+    user = fields.ForeignKeyField("models.User", related_name="TwitchTokens", unique=True)
+    token = fields.CharField(max_length=255)
+    refresh = fields.CharField(max_length=255)
+
+    class Meta:
+        table = "twitch_tokens"

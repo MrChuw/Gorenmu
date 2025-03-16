@@ -30,19 +30,19 @@ class Role:
 
     @staticmethod
     def admin(ctx: Context) -> bool:
-        if ctx.author.is_mod or Role.owner(ctx) or Role.dev(ctx):
+        if ctx.author.moderator or Role.owner(ctx) or Role.dev(ctx):
             return True
         raise ModRequired
 
     @staticmethod
     def vip(ctx: Context) -> bool:
-        if ctx.author.badges and ctx.author.badges.get("vip"):
+        if ctx.author.vip:
             return True
         raise VipRequired
 
     @staticmethod
     def sub(ctx: Context) -> bool:
-        if ctx.author.is_subscriber:
+        if ctx.author.subscriber:
             return True
         raise SubRequired
 
@@ -52,30 +52,24 @@ class Role:
 
     @staticmethod
     def any(ctx: Context) -> bool:
-        return (Role.sub(ctx) or Role.vip(ctx) or Role.admin(ctx) or Role.owner(ctx) or Role.dev(ctx
-                                                                                                 ) or Role.sponsor(ctx
-                                                                                                                   ))
+        return True
 
 
 class Check:
     @staticmethod
     def allowed(ctx: Context) -> bool:
-        if not Role.any(ctx) and StringTools.str2url(ctx.message.content) is not None:
+        if not Role.any(ctx) and StringTools.str2url(ctx.content) is not None:
             raise UserIsNotAllowed()
         return True
 
     @staticmethod
     def banword(ctx: Context) -> bool:
-        if ".tmi.twitch.tv WHISPER" in ctx.message.raw_data:
-            return True
-        if any(word in ctx.message.content for word in ctx.bot.channels[ctx.channel.name].banwords):
+        if any(word in ctx.message.text for word in ctx.bot.channels[ctx.channel.name].banwords):
             raise ContentHasBanword()
         return True
 
     @staticmethod
     def enabled(ctx: Context) -> bool:
-        if ".tmi.twitch.tv WHISPER" in ctx.message.raw_data:
-            return True
         if ctx.command.name in ctx.bot.channels[ctx.channel.name].disabled:
             raise CommandDisabled()
         return True
@@ -88,8 +82,6 @@ class Check:
 
     @staticmethod
     def online(ctx: Context) -> bool:
-        if ".tmi.twitch.tv WHISPER" in ctx.message.raw_data:
-            return True
         if not ctx.bot.channels[ctx.channel.name].online:
             raise BotOffline()
         return True
@@ -103,7 +95,7 @@ class Check:
             await Cookies.create(user=user, id=int(ctx.author.id))
         except MultipleObjectsReturned as e:
             logging.error(e)
-            await ctx.reply(ctx.translations.Exceptions.LotteryExceptions().lottery_seed.format(ctx.bot.dev_name))
+            await ctx.reply(ctx.user.translations.Exceptions.LotteryExceptions.lottery_seed.format(ctx.bot.dev_name))
             raise UnknownError
         if not await LotteryBank.get_or_none(closed=False, accumulated=True):
             await LotteryBank.create()

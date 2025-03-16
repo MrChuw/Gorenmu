@@ -126,47 +126,31 @@
             "command_not_pipeble": "this command could not be used with the pipe."
         }
     },
-    "Admin": {
-        "Nada": {
-            "nada": "The command was executed successfully."
-        },
-        "Reload": {
-            "commands_reloaded": "The commands were successfully reloaded."
-        },
-        "Restart": {
-            "success": "The bot has been successfully restarted.",
-            "unexpected_error": "There was an error restarting the bot: {}"
-        }
-    },
-    "Others": {
-        "Pipe": {
+    "Pipe": {
             "response": "Pipe is not really a command. For more information, visit this link: {}"
-        }
     },
     "Afk": {
-        "Afk": {
-            "message_too_long": "This message is too long.",
-            "afk_response": "{}: {}",
-            "afk_content_response": "{}: {} and left a note with: {}"
-        },
-        "IsAfk": {
-            "bot_nick": "I'm always here… watching.",
-            "author_nick": "you're not working… obviously.",
-            "never_seen": "I don't remember ever seeing any {}.",
-            "is_afk": "@{} {}: {}",
-            "is_afk_content": "@{} {} and left a note: {}",
-            "is_not_afk": "@{} is not AFK."
-        },
-        "RAfk": {
-            "time_expired": "The time to return has already passed.",
-            "is_afk": "{}: {}",
-            "is_afk_content": "{} {} and left a note: {}",
-            "is_not_afk": "you are not AFK."
-        },
-        "AfkListeners": {
-            "is_afk": "{}: {} (was away for {} {})",
-            "is_afk_content": "{} {} and left a note: {} (was away for {} {})"
-        }
+        "message_too_long": "This message is too long.",
+        "afk_response": "{}: {}",
+        "afk_content_response": "{}: {} and left a note with: {}"
+    },
+    "IsAfk": {
+        "bot_nick": "I'm always here… watching.",
+        "author_nick": "you're not working… obviously.",
+        "never_seen": "I don't remember ever seeing any {}.",
+        "is_afk": "@{} {}: {}",
+        "is_afk_content": "@{} {} and left a note: {}",
+        "is_not_afk": "@{} is not AFK."
+    },
+    "RAfk": {
+        "time_expired": "The time to return has already passed.",
+        "is_afk": "{}: {}",
+        "is_afk_content": "{} {} and left a note: {}",
+        "is_not_afk": "you are not AFK."
+    },
+    "AfkListeners": {
+        "is_afk": "{}: {} (was away for {} {})",
+        "is_afk_content": "{} {} and left a note: {} (was away for {} {})"
     },
     "Alias": {
         "user_not_found": "there is no user with nickname {}.",
@@ -262,26 +246,6 @@
         "starter_string": "Translating the text…",
         "unexpected_error": "The text could not be translated.",
         "translation": "{}"
-    },
-    "NSFW": {
-        "Imgur": {
-            "timeout": "100 seconds have passed, and I couldn't generate it. Please wait a bit and try again.",
-            "time_message": "Time: {}",
-            "all_images_embed": "All generated images: {}",
-            "all_images_embed_time": "Time: {} || All images: {}"
-        },
-        "ImgurRepeated": {
-            "links_repeated": "Total number of repeated images: {} || Images: {}",
-            "no_repeated": "No repeated images."
-        },
-        "Boru": {
-            "original": "Original",
-            "preview": "Preview",
-            "pls_wait": "Please wait a bit, I'm generating the links.",
-            "unexpected_error": "{}",
-            "success": "{}",
-            "too_much_tags": "Number of tags exceeded the allowed limit of {}."
-        }
     },
     "RandomColor": {
         "response_url": "#{} is {}. {}"
@@ -405,5 +369,46 @@
     },
     "Weather": {
         "TODO": "TODO"
+    },
+
+
+    "NSFW": {
+        "Imgur": {
+            "timeout": "100 seconds have passed, and I couldn't generate it. Please wait a bit and try again.",
+            "time_message": "Time: {}",
+            "all_images_embed": "All generated images: {}",
+            "all_images_embed_time": "Time: {} || All images: {}"
+        },
+        "ImgurRepeated": {
+            "links_repeated": "Total number of repeated images: {} || Images: {}",
+            "no_repeated": "No repeated images."
+        },
+        "Boru": {
+            "original": "Original",
+            "preview": "Preview",
+            "pls_wait": "Please wait a bit, I'm generating the links.",
+            "unexpected_error": "{}",
+            "success": "{}",
+            "too_much_tags": "Number of tags exceeded the allowed limit of {}."
+        }
+    },
+    "Admin": {
+        "Nada": {
+            "nada": "The command was executed successfully."
+        },
+        "Reload": {
+            "commands_reloaded": "The commands were successfully reloaded.",
+            "command_not_found": "Command with name {} not found.",
+            "command_reloaded": "Command {} successfully reloaded.",
+            "command_reloaded_error": "Command {} had an error while reloading: {}"
+        },
+        "Restart": {
+            "success": "The bot has been successfully restarted.",
+            "unexpected_error": "There was an error restarting the bot: {}"
+        },
+        "DisableNSFW": {
+            "success": "The bot has been successfully restarted.",
+            "unexpected_error": "There was an error restarting the bot: {}"
+        }
     }
 }

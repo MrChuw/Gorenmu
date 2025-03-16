@@ -25,18 +25,18 @@ class TimestampMixin:
 
     @property
     def created_ago(self):
-        return datetime.utcnow() - self.created_at
+        return datetime.now(datetime.UTC) - self.created_at
 
     @property
     def updated_ago(self):
-        return datetime.utcnow() - self.updated_at
+        return datetime.now(datetime.UTC) - self.updated_at
 
 
 class Channel(Base, TimestampMixin):
     user = fields.ForeignKeyField("models.User", unique=True)
     followers = fields.IntField(null=True, description="Twitch followers")
     banwords = fields.JSONField(default={})
-    disabled = fields.JSONField(
+    disabled: dict[str, str] = fields.JSONField(
         default={
             "booru": "booru",
             "gelbooru": "gelbooru",

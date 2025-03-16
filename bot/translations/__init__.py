@@ -1,9 +1,10 @@
 # translations/__init__.py
 from bot.translations.base_responses import Translations, BaseTranslations
 from bot.translations.base_decorators import Decorators, BaseDecorators, BaseCommand
-from bot.translations.extras import Response
+from bot.translations.extras import Response, Activity
 import json
 import pathlib
+
 
 
 def open_file(filepath: pathlib.Path, fallback=None):
@@ -14,9 +15,12 @@ def open_file(filepath: pathlib.Path, fallback=None):
         return json.load(file)
 
 
+base_path = pathlib.Path("bot/translations/langs")
+afks = Activity(open_file(base_path / "en/extras/activity.json")["Activity"])
+
 # TODO: Lidar com acentos,
 def load_langs():
-    base_path = pathlib.Path("bot/translations/langs")
+
     langs = {}
 
     en_paths = [
@@ -75,12 +79,15 @@ class TranslationManager:
         langs = load_langs()
         self.languages = {}
 
-        self.languages["en"] = Translation(Decorators(langs["en"]), Translations(langs["en"]))
+        self.languages["en"] = Translation(Decorators(langs["en"]), Translations(langs["en"], "en"))
 
         for lang in langs:
             if lang == "en":
                 continue
-            self.languages[lang] = Translation(Decorators(langs[lang], langs["en"]), Translations(langs[lang], langs["en"]))
+            self.languages[lang] = Translation(
+                    Decorators(langs[lang], langs["en"]),
+                    Translations(langs[lang], lang, fallback=langs["en"])
+            )
 
         self.default_language = "en"
         # if mock:
