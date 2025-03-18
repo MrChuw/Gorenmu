@@ -189,8 +189,7 @@ class Gorenmu(Bot):
         # TODO: Ativar de novo o develop.
         # if self.config.DevelopmentConfig.development:
         #     return None
-        ctx.translations = ctx.bot.TranslationManager.get_translations(ctx.user.language or ctx.bot.config.default_lang)
-        translations = ctx.translations.Exceptions.BotMainLoopExceptions
+        translations = ctx.user.translations.Exceptions.BotMainLoopExceptions
         if isinstance(error, CommandNotFound):
             return None
         if isinstance(error, DevRequired):
@@ -199,7 +198,7 @@ class Gorenmu(Bot):
         if isinstance(error, OwnerRequired):
             await ctx.simple_response(ctx, translations.owner_required)
         if isinstance(error, CommandOnCooldown):
-            format_string = ctx.translations.SupportTools.TimeTools.Humanize.naturaltime(error.remaining, future=True)
+            format_string = ctx.user.translations.SupportTools.TimeTools.Humanize.naturaltime(error.remaining, future=True)
             cooldown_str = translations.command_on_cooldown.format(format_string)
             return await ctx.simple_response(ctx, cooldown_str)
         if isinstance(error, NotImplementedError):
@@ -224,8 +223,7 @@ class Gorenmu(Bot):
         if not user.translations or user.translations.lang != user.language:
             channel = ctx.channel.name
             channel = ctx.bot.channels[channel]
-            translations = ctx.bot.TranslationManager.get_translations(user.language or channel.language or "en")
-            user.translations = translations
+            user.translations = ctx.bot.TranslationManager.get_translations(user.language or channel.language or "en")
 
         return user
 

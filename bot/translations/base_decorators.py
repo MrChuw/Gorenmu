@@ -346,6 +346,8 @@ class BaseDecorators:
 
 
 
+
+
 def inject_translations(command: Command, translations: TranslationManager):
     translations_decorators = {}
     fallback = translations.languages["en"].decorators

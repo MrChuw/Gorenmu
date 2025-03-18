@@ -5,7 +5,7 @@ import sys
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
+from bot.translations import BaseDecorators, Response, TranslationManager
 from bot.utils import Role
 
 if TYPE_CHECKING:
@@ -57,6 +57,13 @@ class AdminSmallCmds(commands.CustomComponent):
     @commands.command(name='reload', aliases=[], invoke_fallback=True)
     async def reload(self, ctx: Context, command: str) -> Response:
         translations = ctx.user.translations.Admin.Reload
+        if command == "translations":
+            try:
+                ctx.bot.TranslationManager = TranslationManager()
+                return translations.translations_reloaded.format_response(ctx)
+            except Exception as e:
+                self.bot.log.error(e)
+                return translations.translations_reloaded_error.format_response(ctx, e, success=False)
         if command == "all":
             await ctx.bot.CommandHandler.reload_cogs(ctx.bot)
             return translations.commands_reloaded.format_response(ctx)
@@ -83,6 +90,8 @@ class AdminSmallCmds(commands.CustomComponent):
         except Exception as e:
             self.bot.log.error(e)
             return translations.unexpected_error.format_response(ctx, e, success=False)
+
+
 
 
 async def setup(bot: Gorenmu) -> None:

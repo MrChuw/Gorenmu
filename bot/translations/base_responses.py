@@ -289,10 +289,10 @@ class BaseTranslations:
         def __init__(self, translation: dict):
             super().__init__(translation, None)
             self.populate_responses()
-            self.channel_not_found: Response = Response(response=self.get_object("channel_not_found"))
-            self.user_not_found: Response = Response(response=self.get_object("user_not_found"))
-            self.no_message_found: Response = Response(response=self.get_object("no_message_found"))
-            self.random_line: Response = Response(response=self.get_object("random_line"))
+        channel_not_found: Response
+        user_not_found: Response
+        no_message_found: Response
+        random_line: Response
 
     class Scp(BaseFunctions):
         def __init__(self, translation: dict):
@@ -475,6 +475,8 @@ class BaseTranslations:
             command_not_found: Response
             command_reloaded: Response
             command_reloaded_error: Response
+            translations_reloaded: Response
+            translations_reloaded_error: Response
         Reload: Reload
 
         class Restart(BaseFunctions):
