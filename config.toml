@@ -16,7 +16,7 @@ site_url = "https://gorenmu.vercel.app/"
 imgur_authorized_ids = [184900613, 411010313]
 
 [apis]
-hex_site_url = "${HEX_SITE_URL}"
+COLOR_SITE_URL = "${COLOR_SITE_URL}"
 image_carousel = "${IMAGE_CAROUSEL}"
 image_carousel_api_key = "${IMAGE_CAROUSEL_API_KEY}"
 site_api_key = "${SITE_API_KEY}"
@@ -43,7 +43,7 @@ port = 3307
 name = "${DB_NAME}"
 
 [cache]
-type = "memory"
+type = "valkey"
 host = "${REDIS_HOST}"
 port = "${REDIS_PORT}"
 password = "${REDIS_PASSWORD}"

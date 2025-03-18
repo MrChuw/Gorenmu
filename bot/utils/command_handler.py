@@ -62,7 +62,9 @@ class CommandHandler:
                 module: types.ModuleType = import_module(name, package=package)
                 if not getattr(module, "setup"):
                     continue
-                command_name = [modulo for modulo in module.__dict__ if modulo.endswith('Cmd') or modulo.endswith('Cmds')][0]
+                command_name = [
+                        modulo for modulo in module.__dict__ if modulo.endswith('Cmd') or modulo.endswith('Cmds')
+                ][0]
                 if not bot.get_component(command_name):
                     await bot.load_module(name)
                 else:

@@ -33,7 +33,6 @@ class IsAfkCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:
         return True
 
-
     @commands.base_decorator(BaseDeco)
     @commands.command(name='isafk', aliases=[])
     async def isafk(self, ctx: Context, *, content: str, ) -> Response:

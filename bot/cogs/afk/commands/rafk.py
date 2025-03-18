@@ -42,7 +42,7 @@ class RAfkCmd(commands.CustomComponent):
             return translations.time_expired.format_response(ctx, success=False)
         elif afk["alias"] in ctx.user.translations.Afk.afks:
             status = ctx.user.translations.Afk.afks["alias"]
-            await ctx.bot.cache.delete(f"Afk-{ctx.author.id}")
+            await ctx.bot.memcache.delete(f"Afk-{ctx.author.id}")
             await Status.go_rafk(ctx, afk)
             if afk["content"] == "":
                 return translations.is_afk.format_response(ctx, status.leave_again, status.emoji, pipe=False)

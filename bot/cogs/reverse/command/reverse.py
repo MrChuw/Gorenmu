@@ -1,13 +1,42 @@
 # -*- coding: utf-8 -*-
-from bot.bot import Gorenmu
-from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
 
+if TYPE_CHECKING:
+    from bot.bot import Gorenmu
 
-@base_decorator(BaseDecorators.Reverse)
-@cooldown(rate=3, per=10, bucket=Bucket.user)
-@check([])
-@command(name='reverse', aliases=["invert"])
-async def command(ctx: Context, *, content, ) -> Response:
-    return ctx.translations.Reverse().reversed_string.format_response(ctx, content[::-1])
+__all__ = (
+        'ReverseCmd'
+)
 
+
+class ReverseCmd(commands.CustomComponent):
+    def __init__(self, bot: Gorenmu) -> None:
+        self.bot = bot
+
+    cooldown_rate = 3
+    cooldown_per = 10
+    cooldown_key = commands.BucketType.user
+
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
+        ...
+
+    @commands.Component.guard()
+    def guards_component(self, ctx: commands.Context) -> bool:
+        return True
+
+    @commands.base_decorator(BaseDecorators.Reverse)
+    @commands.command(name='reverse', aliases=["invert"])
+    async def reverse(self, ctx: Context, *, content, ) -> Response:
+        return ctx.user.translations.Reverse.reversed_string.format_response(ctx, content[::-1])
+
+
+async def setup(bot: Gorenmu) -> None:
+    await bot.add_component(ReverseCmd(bot))
+
+
+async def teardown(bot: Gorenmu) -> None:
+    ...

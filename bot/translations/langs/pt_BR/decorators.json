@@ -15,28 +15,6 @@
         "command_template": "```text\n    usuário: {prefix}{command_name} {args}\n\n    bot: Usuário, {response}\n```\n",
         "admonition_template": "!!! {type} \"{title}\"\n    \n        {message}\n\n    "
     },
-    "Admin": {
-        "Nada": {
-            "helper": "Este comando é usado para testes.",
-            "usage": "Como usar: {}nada <text>",
-            "description": "Este comando é usado para testes."
-        },
-        "Reload": {
-            "helper": "Recarregar os comandos.",
-            "usage": "Como usar: {}reload",
-            "description": "Este comando é usado para recarregar todos os comandos bot. Se algum tiver sido atualizado e não precisar de um reinício completo.",
-            "commands": [
-                {
-                    "response": "os comandos foram recarregados com sucesso."
-                }
-            ]
-        },
-        "Restart": {
-            "helper": "Reinicia o bot.",
-            "usage": "Para usar: {}restart",
-            "description": "Reinicia o bot."
-        }
-    },
     "Pipe": {
             "helper": "Pipe não é realmente um comando. Para mais informações, visite o site.",
             "usage": "Pipe não é realmente um comando. Para mais informações, visite o site.",
@@ -307,47 +285,15 @@
         "helper": "Traduzir um texto em idiomas aleatórios dependendo de quantas vezes o usuário solicita.",
         "usage": "Para usar: {}hipertranslate <número de vezes> <texto>"
     },
-    "NSFW": {
-        "Imgur": {
-            "helper": "Envia uma link Imgur aleatória. (Pode ser NSFW)",
-            "usage": "Para usar: {}imgur ou {}imgur7 <quantidade>",
-            "commands": [
-                {
-                    "args": " <número de imagens>",
-                    "response": "<link para a imagem ou link para um site com todas as imagens>"
-                },
-                {
-                    "args": "7 <número de imagens>",
-                    "response": "<link para a imagem ou link para um site com todas as imagens>"
-                }
-            ],
-            "description": "Este comando gera links aleatórios do Imgur com 5 caracteres, de antes de ~2014, e usando imgur7 para links de ~2014 até o presente."
-        },
-        "ImgurRepeated": {
-            "helper": "Verifica o número de imagens de Imgur repetidas.",
-            "usage": "Para usar: {}imgur_repeated",
-            "description": "Este comando é simples; conta todas as imagens geradas por [imgur](imgur.md).",
-            "commands": [
-                {
-                    "response": "Número total de imagens repetidas: <Número de imagens repetidas> || Imagens: <Link para as imagens>"
-                }
-            ]
-        },
-        "Boru": {
-            "helper": "Envia um ou mais links aleatórios de uma lista de boorus.",
-            "usage": "Para usar: {}booru <quantidade>",
-            "description": "Envia um ou mais links aleatórios de uma lista de boorus."
-        }
-    },
     "RandomColor": {
-        "usage": "Para usar: {}random_color",
+        "helper": "Envia uma cor aleatória.",
+        "usage": "Para usar: {}random_color ou adicione type:hex / type:rgb para especificar o tipo.",
         "description": "Este comando responde com o código HEX de uma cor aleatória e um link para uma imagem da cor.",
         "commands": [
             {
                 "response": "#<HEX> <Nome da cor> <Link para a imagem da cor>"
             }
-        ],
-        "helper": "Envia uma cor aleatória."
+        ]
     },
     "Reverse": {
         "helper": "Inverte um texto.",
@@ -572,5 +518,60 @@
                 "message": "Para tags contendo espaços, o espaço deve ser substituído por \"_\"."
             }
         ]
+    },
+
+    "NSFW": {
+        "Imgur": {
+            "helper": "Envia uma link Imgur aleatória. (Pode ser NSFW)",
+            "usage": "Para usar: {}imgur ou {}imgur7 <quantidade>",
+            "commands": [
+                {
+                    "args": " <número de imagens>",
+                    "response": "<link para a imagem ou link para um site com todas as imagens>"
+                },
+                {
+                    "args": "7 <número de imagens>",
+                    "response": "<link para a imagem ou link para um site com todas as imagens>"
+                }
+            ],
+            "description": "Este comando gera links aleatórios do Imgur com 5 caracteres, de antes de ~2014, e usando imgur7 para links de ~2014 até o presente."
+        },
+        "ImgurRepeated": {
+            "helper": "Verifica o número de imagens de Imgur repetidas.",
+            "usage": "Para usar: {}imgur_repeated",
+            "description": "Este comando é simples; conta todas as imagens geradas por [imgur](imgur.md).",
+            "commands": [
+                {
+                    "response": "Número total de imagens repetidas: <Número de imagens repetidas> || Imagens: <Link para as imagens>"
+                }
+            ]
+        },
+        "Boru": {
+            "helper": "Envia um ou mais links aleatórios de uma lista de boorus.",
+            "usage": "Para usar: {}booru <quantidade>",
+            "description": "Envia um ou mais links aleatórios de uma lista de boorus."
+        }
+    },
+    "Admin": {
+        "Nada": {
+            "helper": "Este comando é usado para testes.",
+            "usage": "Como usar: {}nada <text>",
+            "description": "Este comando é usado para testes."
+        },
+        "Reload": {
+            "helper": "Recarregar os comandos.",
+            "usage": "Como usar: {}reload",
+            "description": "Este comando é usado para recarregar todos os comandos bot. Se algum tiver sido atualizado e não precisar de um reinício completo.",
+            "commands": [
+                {
+                    "response": "os comandos foram recarregados com sucesso."
+                }
+            ]
+        },
+        "Restart": {
+            "helper": "Reinicia o bot.",
+            "usage": "Para usar: {}restart",
+            "description": "Reinicia o bot."
+        }
     }
 }

@@ -19,59 +19,6 @@ if TYPE_CHECKING:
     from bot.ext.commands import Context
 
 
-# TODO: Lembrar dos pets, games, dungeons, Weather
-class Translations(BaseFunctions):
-    TypeChecking: BaseTranslations.TypeChecking
-    SupportTools: BaseTranslations.SupportTools
-    Exceptions: BaseTranslations.Exceptions
-    Pipe: BaseTranslations.Pipe
-    Afk: BaseTranslations.Afk
-    IsAfk: BaseTranslations.IsAfk
-    RAfk: BaseTranslations.RAfk
-    AfkListeners: BaseTranslations.AfkListeners
-    Alias: BaseTranslations.Alias
-    Chance: BaseTranslations.Chance
-    Choice: BaseTranslations.Choice
-    Count: BaseTranslations.Count
-    HyperTranslate: BaseTranslations.HyperTranslate
-    RandomColor: BaseTranslations.RandomColor
-    Reverse: BaseTranslations.Reverse
-    RandomLine: BaseTranslations.RandomLine
-    Scp: BaseTranslations.Scp
-    UpSideDown: BaseTranslations.UpSideDown
-    Wikihow: BaseTranslations.Wikihow
-    Wikipedia: BaseTranslations.Wikipedia
-    Annotations: BaseTranslations.Annotations
-    Lottery: BaseTranslations.Lottery
-    Cookies: BaseTranslations.Cookies
-
-    NSFW: BaseTranslations.NSFW
-    Admin: BaseTranslations.Admin
-
-    # TODO:
-    Markov: BaseTranslations.Markov
-    Weather: BaseTranslations.Weather
-
-    def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):
-        super().__init__(translation['strings'], fallback['strings'] if fallback else None)
-        self._initialize_values(translation, fallback)
-        self.lang = lang
-
-    def _initialize_values(self, translation: Dict[str, Any], fallback: Dict[str, Any] = None):
-        if fallback:
-            extras = BaseFunctions(translation.get('extras', {}), fallback.get('extras', {}))
-        else:
-            extras = BaseFunctions(translation.get('extras', {}))
-
-        extras_fields = {"Afk", "Cookies", "Weather"}
-        self.populate_subclasses(
-                extras=extras,
-                extras_fields=extras_fields,
-                base_cls=BaseTranslations(),
-                add_to_self=True
-        )
-
-
 class BaseTranslations:
     class TypeChecking(BaseFunctions):
         response: Response
@@ -297,19 +244,36 @@ class BaseTranslations:
     class Chance(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.random_percentage: Response = Response(response=self.get_object("random_percentage"))
+            self.populate_responses()
+        random_percentage: Response
 
     class Choice(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
+            self.populate_responses()
             self.base_separators: list[str] = [",", " "]
-            self.choice_separators: list[str] = self.base_separators + self.get_object("additional_separators")
-            self.chosen_option: Response = Response(response=self.get_object("chosen_option"))
+            self.choice_separators: list[str] = self.base_separators + getattr(self, "additional_separators")
+        chosen_option: Response
+        choice_separators: list[str]
 
     class Count(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.character_count: Response = Response(response=self.get_object("character_count"))
+            self.populate_responses()
+        character_count: Response
+
+    class RandomColor(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+        response_url: Response
+        api_down: str
+
+    class Reverse(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+        reversed_string: Response
 
     class HyperTranslate(BaseFunctions):
         def __init__(self, translation: dict):
@@ -321,19 +285,10 @@ class BaseTranslations:
             self.unexpected_error: Response = Response(response=self.get_object("unexpected_error"))
             self.translation: Response = Response(response=self.get_object("translation"))
 
-    class RandomColor(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.response_url: Response = Response(response=self.get_object("response_url"))
-
-    class Reverse(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.reversed_string: Response = Response(response=self.get_object("reversed_string"))
-
     class RandomLine(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
+            self.populate_responses()
             self.channel_not_found: Response = Response(response=self.get_object("channel_not_found"))
             self.user_not_found: Response = Response(response=self.get_object("user_not_found"))
             self.no_message_found: Response = Response(response=self.get_object("no_message_found"))
@@ -538,10 +493,6 @@ class BaseTranslations:
             unexpected_error: Response
         DisableNSFW: DisableNSFW
 
-
-
-
-
     # TODO
     class Markov(BaseFunctions):
         def __init__(self, translation: dict):
@@ -556,7 +507,26 @@ class BaseTranslations:
             self.weather_codes = WeatherTools(tuple(obj["Weather"] for obj in extras.get_base("weather")))
 
 
+# TODO: Lembrar dos pets, games, dungeons, Weather
+class Translations(BaseFunctions, BaseTranslations):
+    def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):
+        super().__init__(translation['strings'], fallback['strings'] if fallback else None)
+        self._initialize_values(translation, fallback)
+        self.lang = lang
 
+    def _initialize_values(self, translation: Dict[str, Any], fallback: Dict[str, Any] = None):
+        if fallback:
+            extras = BaseFunctions(translation.get('extras', {}), fallback.get('extras', {}))
+        else:
+            extras = BaseFunctions(translation.get('extras', {}))
+
+        extras_fields = {"Afk", "Cookies", "Weather"}
+        self.populate_subclasses(
+                extras=extras,
+                extras_fields=extras_fields,
+                base_cls=BaseTranslations(),
+                add_to_self=True
+        )
 
 
 

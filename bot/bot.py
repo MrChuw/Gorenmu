@@ -58,6 +58,7 @@ class Gorenmu(Bot):
         self.log: Logger = log
         self.config: Config = configs
         self.cache: RedisCache | MemcachedCache | SimpleMemoryCache = Cache.cache_load(self)
+        self.memcache: SimpleMemoryCache = Cache.create_cache()
         self.boot: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
         self.timezone: datetime.timezone = datetime.timezone(datetime.timedelta(hours=-3))
         self.TranslationManager: TranslationManager = TranslationManager(self.config.mock)
@@ -99,7 +100,6 @@ class Gorenmu(Bot):
 
         subscription = eventsub.WhisperReceivedSubscription(broadcaster_user_id=str(self.config.BotConfig.bot_id), user_id=str(self.config.BotConfig.bot_id))
         await self.subscribe_websocket(subscription)
-
 
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
         resp: twitchio.authentication.ValidateTokenPayload = await super().add_token(token, refresh)
@@ -214,10 +214,10 @@ class Gorenmu(Bot):
         return await ctx.simple_response(ctx, translations.error_not_registered.format(self.dev_name))
 
     async def user_create_or_update(self, ctx: Context):
-        user = await self.cache.get(key=int(ctx.author.id), namespace="user")
+        user = await self.memcache.get(key=int(ctx.author.id), namespace="user")
         if not user:
             user = await UserModel.create_or_update(ctx)
-            await self.cache.set(key=int(ctx.author.id), value=user, namespace='user')
+            await self.memcache.set(key=int(ctx.author.id), value=user, namespace='user')
         else:
             await UserModel.update_user(user, ctx)
 

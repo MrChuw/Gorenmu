@@ -107,7 +107,6 @@ class DecorationsFunctions(BaseFunctions):
             if invoke_by == classe.lower():
                 return getattr(decorator, classe)
 
-
     def get_object_or_false(self, key: str):
         obj = self.get_object_or_none(key)
         if not obj or len(obj) == 0:
@@ -158,7 +157,7 @@ class BaseCommand(DecoratorType, DecorationsFunctions):
         self.created = created
         self.updated = updated
         self.template = self.get_object_or_none("template")
-        del self.fallback, self.obj
+
 
 
 class BaseDecorators:
@@ -171,10 +170,7 @@ class BaseDecorators:
             self.alias_template: str = self.get_object("alias_template")
             self.command_template: str = self.get_object("command_template")
             self.admonition_template: str = self.get_object("admonition_template")
-
             self.bucket_type: dict[str, str] = self.get_object("bucket_type")
-
-            del self.fallback, self.obj
 
         def get_bucket_type(self, bucket):
             bucket_type = self.bucket_type["default"]
@@ -330,22 +326,23 @@ class BaseDecorators:
         class Nada(BaseCommand):
             def __init__(self, translation: dict):
                 super().__init__(translation, "2024-09-09", "2024-09-09")
+        Nada: Nada
 
         class Reload(BaseCommand):
             def __init__(self, translation: dict):
                 super().__init__(translation, "2024-09-09", "2024-09-09")
+        Reload: Reload
 
         class Restart(BaseCommand):
             def __init__(self, translation: dict):
                 super().__init__(translation, "2024-09-18T18:25:27.911-03:00", "2024-09-18T18:25:27.911-03:00")
+        Restart: Restart
 
         class DisableNSFW(BaseCommand):
             def __init__(self, translation: dict):
                 super().__init__(translation, "2025-03-14T13:19:12.370-03:00", "2025-03-14T13:19:12.370-03:00")
+        DisableNSFW: DisableNSFW
 
-        Nada: Nada
-        Reload: Reload
-        Restart: Restart
 
 
 

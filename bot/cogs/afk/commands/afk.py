@@ -7,8 +7,6 @@ from bot.translations import BaseDecorators, Response, afks
 from bot.utils import Role
 from bot.models import Status
 
-
-
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
@@ -47,7 +45,6 @@ class AFKCmd(commands.CustomComponent):
             return translations.afk_response.format_response(ctx, afk.leave, afk.emoji, pipe=False)
         else:
             return translations.afk_content_response.format_response(ctx, afk.leave, afk.emoji, content, pipe=False)
-
 
 
 async def setup(bot: Gorenmu) -> None:

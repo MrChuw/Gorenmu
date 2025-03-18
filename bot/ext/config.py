@@ -3,7 +3,7 @@ import os
 import pathlib
 from enum import Enum
 from typing import Dict, List
-
+from yarl import URL
 import toml
 from dotenv import load_dotenv
 
@@ -119,9 +119,9 @@ class BotConfig:
 
 class ApisConfig:
     def __init__(self, data: Dict[str, dict]) -> None:
-        self.hex_site_url: str = data.get("hex_site_url", "https://color.exemple.org")
+        self.color_site_url: URL = URL(data.get("COLOR_SITE_URL", "https://color.exemple.org"))
         self.site_api_key: str = data.get("site_api_key", "api_exemple")
-        self.shlink_url: str = data.get("shlink_url", "https://shlink.exemple.org/rest/v3/short-urls")
+        self.shlink_url: URL = URL(data.get("shlink_url", "https://shlink.exemple.org/rest/v3/short-urls"))
         self.shlink_key: str = data.get("shlink_key", "api_exemple")
         self.access_token: str = data.get("access_token", "api_exemple")
         if not data.get("access_oauth_token"):
@@ -133,10 +133,10 @@ class ApisConfig:
         self.client_id: str = data.get("client_id", "api_exemple")
         self.api_client_secret: str = data.get("api_client_secret", "api_exemple")
         self.api_client_id: str = data.get("api_client_id", "api_exemple")
-        self.image_carousel: str = data.get("image_carousel", "https://uploadthing.com")
+        self.image_carousel: URL = URL(data.get("image_carousel", "https://uploadthing.com"))
         self.image_carousel_api_key: str = data.get("image_carousel_api_key", "api_exemple")
-        self.file_upload_url: str = data.get("file_upload_url", "https://upload.exemple.org")
-        self.pastbin_url: str = data.get('pastbin_url', "https://bit.exemple.org")
+        self.file_upload_url: URL = URL(data.get("file_upload_url", "https://upload.exemple.org"))
+        self.pastbin_url: URL = URL(data.get('pastbin_url', "https://bit.exemple.org"))
         self.enable_site_endpoints: bool = data.get("enable_site_endpoints", False)
 
 

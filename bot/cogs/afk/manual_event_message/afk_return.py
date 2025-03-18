@@ -37,34 +37,8 @@ async def event_message(ctx: Context) -> Response | bool:
     user_status.online = True
     await user_status.save()
     afk_str = {"content": user_status.message, "updated_at": user_status.updated_at.isoformat(),
-               "alias": user_status.alias}
+               "alias": user_status.alias
+               }
 
-    await ctx.bot.cache.set(int(ctx.author.id), afk_str, ttl=240, namespace="rafk")
-
-    # await ctx.bot.cache.set(f"{ctx.author.id}", afk_str, ttl=240, namespace="status")
+    await ctx.bot.memcache.set(int(ctx.author.id), afk_str, ttl=240, namespace="rafk")
     return response
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -169,7 +169,7 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
             base = self.get_object(name)
             if type(base) is str:
                 if name.endswith("_str"):
-                    setattr(self, name, base)
+                    setattr(self, name.removesuffix("_str"), base)
                 else:
                     setattr(self, name, Response(response=base))
             if type(base) is list:

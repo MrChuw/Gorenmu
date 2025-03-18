@@ -1,21 +1,60 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+from typing import TYPE_CHECKING
 import random
+from collections import defaultdict
 
 from bot.apis import Color
-from bot.bot import Gorenmu
-from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
+from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
 
+if TYPE_CHECKING:
+    from bot.bot import Gorenmu
 
-@base_decorator(BaseDecorators.RandomColor)
-@cooldown(rate=3, per=10, bucket=Bucket.user)
-@check([])
-@command(name="randomcolor", aliases=["rc"])
-async def command(ctx: Context) -> Response:
-    translations = ctx.translations.RandomColor
-    hex_code = "%06x" % random.randint(0, 0xFFFFFF)
-    url = ctx.bot.config.ApisConfig.hex_site_url + hex_code
-    session = ctx.bot.SessionsCaches.ColorCachedSession.session
-    return translations.response_url.format_response(ctx, hex_code, await Color.name(hex_code, session), url)
+__all__ = (
+        'RandomColorCmd'
+)
 
 
+class RandomColorCmd(commands.CustomComponent):
+    def __init__(self, bot: Gorenmu) -> None:
+        self.bot = bot
+
+    cooldown_rate = 3
+    cooldown_per = 10
+    cooldown_key = commands.BucketType.user
+
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
+        ...
+
+    @commands.Component.guard()
+    def guards_component(self, ctx: commands.Context) -> bool:
+        return True
+
+    @commands.base_decorator(BaseDecorators.RandomColor)
+    @commands.command(name="randomcolor", aliases=["rc"])
+    async def randomcolor(self, ctx: Context, tipo: str = None) -> Response:
+        translations = ctx.user.translations.RandomColor
+        session = ctx.bot.SessionsCaches.ColorCachedSession.session
+        url = ctx.bot.config.ApisConfig.color_site_url
+        params = defaultdict()
+        if tipo == "type:hex" or not tipo:
+            hex_code = "%06x" % random.randint(0, 0xFFFFFF)
+            params["hex"] = str(hex_code)
+            url = url.with_path(f"/hex/{hex_code}")
+        elif tipo == "type:rgb":
+            rgb = tuple(random.randint(0, 255) for _ in range(3))
+            params["rgb"] = str(rgb)
+            url = url.with_path("/rgb/{},{},{}".format(*rgb))
+
+        name = await Color.name(params, session, self.bot.log) or translations.api_down
+        hex_code = await Color.hex_for_randomcolor(params, session, self.bot.log) or translations.api_down
+        return translations.response_url.format_response(ctx, hex_code, name, url)
+
+
+async def setup(bot: Gorenmu) -> None:
+    await bot.add_component(RandomColorCmd(bot))
+
+
+async def teardown(bot: Gorenmu) -> None:
+    ...

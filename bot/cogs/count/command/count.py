@@ -1,29 +1,60 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+from typing import TYPE_CHECKING
 import re
 import string
 
 from urlextract import URLExtract
-
-from bot.bot import Gorenmu
-from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
+from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
 
+if TYPE_CHECKING:
+    from bot.bot import Gorenmu
 
-@base_decorator(BaseDecorators.Count)
-@cooldown(rate=3, per=10, bucket=Bucket.user)
-@check([])
-@command(name='count', aliases=[])
-async def command(ctx: Context, *, content: str) -> Response:
-    if (urls := URLExtract().find_urls(text=content)) and 'type:url' in content:
-        content = ""
-        cache_session = ctx.bot.SessionsCaches.CountCachedSession
-        for url in urls:
-            teste = await cache_session.session.get(url)
-            content += f"{await teste.text()} "
-    uppercase_count = len(re.findall(r'[A-Z]', content))
-    punctuations_count = len(re.findall(f'[{re.escape(string.punctuation)}]', content))
-    special_chars_count = len([char for char in re.findall(r'[^\w\s]', content) if char not in string.punctuation])
-    return ctx.translations.Count.character_count.format_response(ctx, len(content), punctuations_count,
-                                                                  uppercase_count, special_chars_count
-                                                                  )
+__all__ = (
+        'CountCmd'
+)
 
+
+class CountCmd(commands.CustomComponent):
+    def __init__(self, bot: Gorenmu) -> None:
+        self.bot = bot
+
+    cooldown_rate = 3
+    cooldown_per = 10
+    cooldown_key = commands.BucketType.user
+
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
+        ...
+
+    @commands.Component.guard()
+    def guards_component(self, ctx: commands.Context) -> bool:
+        return True
+
+    @commands.base_decorator(BaseDecorators.Count)
+    @commands.command(name='count', aliases=[])
+    async def count(self, ctx: Context, *, content: str) -> Response:
+        if (urls := URLExtract().find_urls(text=content)) and 'type:url' in content:
+            content = ""
+            cache_session = ctx.bot.SessionsCaches.CountCachedSession
+            for url in urls:
+                teste = await cache_session.session.get(url)
+                content += f"{await teste.text()} "
+        uppercase_count = len(re.findall(r'[A-Z]', content))
+        punctuations_count = len(re.findall(f'[{re.escape(string.punctuation)}]', content))
+        special_chars_count = len([char for char in re.findall(r'[^\w\s]', content) if char not in string.punctuation])
+        return ctx.user.translations.Count.character_count.format_response(
+                ctx,
+                len(content),
+                punctuations_count,
+                uppercase_count,
+                special_chars_count
+        )
+
+
+async def setup(bot: Gorenmu) -> None:
+    await bot.add_component(CountCmd(bot))
+
+
+async def teardown(bot: Gorenmu) -> None:
+    ...

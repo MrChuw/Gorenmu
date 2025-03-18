@@ -1,16 +1,44 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+from typing import TYPE_CHECKING
 import random
 
-from bot.bot import Gorenmu
-from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
+from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
 
+if TYPE_CHECKING:
+    from bot.bot import Gorenmu
 
-@base_decorator(BaseDecorators.Chance)
-@cooldown(rate=3, per=10, bucket=Bucket.user)
-@check([])
-@command(name='chance', aliases=['%'])
-async def command(ctx: Context) -> Response:
-    return ctx.translations.Chance.random_percentage.format_response(ctx, random.random() * 100)
+__all__ = (
+        'ChanceCmd'
+)
 
 
+class ChanceCmd(commands.CustomComponent):
+    def __init__(self, bot: Gorenmu) -> None:
+        self.bot = bot
+
+    cooldown_rate = 3
+    cooldown_per = 10
+    cooldown_key = commands.BucketType.user
+
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
+        ...
+
+    @commands.Component.guard()
+    def guards_component(self, ctx: commands.Context) -> bool:
+        return True
+
+    @commands.base_decorator(BaseDecorators.Chance)
+    @commands.command(name='chance', aliases=['%'])
+    async def chance(self, ctx: Context, *, args="") -> Response:
+        chance = f'{("{:.2f}%".format(random.random() * 100))} {args}'
+        return ctx.user.translations.Chance.random_percentage.format_response(ctx, chance)
+
+
+async def setup(bot: Gorenmu) -> None:
+    await bot.add_component(ChanceCmd(bot))
+
+
+async def teardown(bot: Gorenmu) -> None:
+    ...

@@ -7,8 +7,6 @@ from typing import TYPE_CHECKING
 from bot.models import Alias, User
 from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
-# from bot.utils import Role, Check
-
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -21,6 +19,7 @@ BaseDeco = BaseDecorators.Alias
 ALIAS_NAME_REGEX = re.compile(
         r'^[-\w\u00a9\u00ae\u2000-\u3300\ud83c\ud000-\udfff\ud83d\ud000-\udfff\ud83e\ud000-\udfff]{2,30}$'
 )
+
 
 # TODO: Implement alias caching using ttl to ensure it doesn't stay in memory forever
 # TODO: Redo... maybe
@@ -106,7 +105,8 @@ class AliasCmd(commands.CustomComponent):
             return translations.Check.list_of_alias_of.format_response(ctx, mention, url, pipe=False)
         elif target_aliases_flat and first_name in aliases_flat and not second_name:
             url1 = await upload_alias(ctx, aliases, translations.alias_table_name.format(ctx.author.display_name))
-            url2 = await upload_alias(ctx, target_aliases, translations.alias_table_name.format(target_user.name))  # NOQA
+            url2 = await upload_alias(ctx, target_aliases, translations.alias_table_name.format(target_user.name)
+                                      )  # NOQA
             return translations.Check.list_of_special_case.format_response(ctx, first_name, url1, url2, pipe=False)
 
         if second_name:
@@ -117,10 +117,13 @@ class AliasCmd(commands.CustomComponent):
             alias_name = second_name
             mention = ctx.user.translations.SupportTools.mention if user.name == ctx.author.name else f"@{user.name}"
 
-        alias = await Alias.filter(user_id=user.id, name=alias_name, deleted=False).first().prefetch_related("parent")  # NOQA
+        alias = await Alias.filter(user_id=user.id, name=alias_name, deleted=False).first().prefetch_related("parent"
+                                                                                                             )  # NOQA
 
         if not alias:
-            return translations.Check.alias_not_found.format_response(ctx, mention, alias_name, success=False, pipe=False)  # NOQA
+            return translations.Check.alias_not_found.format_response(ctx, mention, alias_name, success=False,
+                                                                      pipe=False
+                                                                      )  # NOQA
 
         if not alias.command and not alias.parent:  # NOQA
             return translations.Check.alias_deleted.format_response(ctx, mention, success=False, pipe=False)  # NOQA
@@ -428,6 +431,3 @@ async def add_alias(ctx: Context, args: tuple):
     rest = [arg for arg in rest if arg]
     alias = await Alias.save_alias(ctx, name, command_check, command_, rest)
     return translations.Add.alias_created.format_response(ctx, alias.name, pipe=False)
-
-
-

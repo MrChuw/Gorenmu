@@ -229,7 +229,7 @@
         }
     },
     "Chance": {
-        "random_percentage": "{:.2f}%."
+        "random_percentage": "{}"
     },
     "Choice": {
         "additional_separators": [
@@ -248,7 +248,8 @@
         "translation": "{}"
     },
     "RandomColor": {
-        "response_url": "#{} is {}. {}"
+        "api_down_str": "thecolorapi.com is inaccessible.",
+        "response_url": "{} is {}. {}"
     },
     "Reverse": {
         "reversed_string": "{}"

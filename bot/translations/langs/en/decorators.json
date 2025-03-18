@@ -287,7 +287,7 @@
     },
     "RandomColor": {
         "helper": "Sends a random color.",
-        "usage": "To use: {}random_color",
+        "usage": "To use: {}random_color or add type:hex / type:rgb to specify the type.",
         "description": "This command responds with the HEX code of a random color and a link to an image of the color.",
         "commands": [
             {
