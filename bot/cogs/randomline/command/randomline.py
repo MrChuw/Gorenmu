@@ -1,78 +1,88 @@
 # -*- coding: utf-8 -*-
-import random
+from __future__ import annotations
 
-from bot.bot import Gorenmu
-from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
-from bot.models import Channel, MessagesLog, User
+from typing import TYPE_CHECKING
+
+from bot.ext import commands, Context
+from bot.models import MessagesLog, User
 from bot.translations import BaseDecorators, Response
 
+if TYPE_CHECKING:
+    from bot.bot import Gorenmu
 
-async def get_user(ctx: Context, user: str) -> User | None:
-    if user.lower() is ctx.author.name.lower():
-        user = ctx.user
-    else:
-        user = await User.get_or_none(name=user)
-    return user
+__all__ = (
+        'RandomLineCmd'
+)
 
-
-async def get_channel(ctx: Context, channel: str) -> Channel | None:
-    if channel.lower() in ctx.bot.channels:
-        channel = ctx.bot.channels[channel]
-        return channel
-    return None
+BaseDeco = BaseDecorators
+# TODO: Test with a big message database
 
 
-async def get_random_message(user=None, channel=None):
-    query = MessagesLog.filter()
-    if user:
-        query = query.filter(user=user)
-    if channel:
-        query = query.filter(channel=channel)
+class RandomLineCmd(commands.CustomComponent):
+    def __init__(self, bot: Gorenmu) -> None:
+        self.bot = bot
 
-    count = await query.count()
-    if not count or count == 0:
-        return None, 0
+    cooldown_rate = 1
+    cooldown_per = 5
+    cooldown_key = commands.BucketType.user
 
-    value = random.randint(0, count - 1)
-    message = await query.offset(value).limit(1).first().prefetch_related("user")
-    return message, count
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
+        ...
+
+    @commands.Component.guard()
+    def guards_component(self, ctx: commands.Context) -> bool:
+        return True
+
+    @commands.base_decorator(BaseDeco.RandomLine)
+    @commands.command(name='randomline', aliases=['rl'])
+    async def randomline(self, ctx: Context, *, options: str = "") -> Response:
+        translations = ctx.user.translations
+        humanize = ctx.user.translations.SupportTools.TimeTools.Humanize
+        options_split = options.split(" ")
+        channel_original = self.bot.ToolsTools.extract_option(options_split, "channel:")
+        user_original = self.bot.ToolsTools.extract_option(options_split, "user:")
+        user, channel = None, None
+        if user_original:
+            if user_original.lower() != ctx.author.name.lower():
+                user = await User.get_user(ctx, user_original)
+            else:
+                user = ctx.user
+            if isinstance(user, Response):
+                return user
+
+        if channel_original and channel_original != "global":
+            channel = ctx.bot.channels.get(channel_original)
+            if not channel:
+                return translations.Exceptions.channel_not_found.format_response(ctx, channel_original)
+
+        if channel is None and channel_original != "global":
+            channel = ctx.bot.channels.get(ctx.channel.name)
+
+        message, count = await MessagesLog.get_random_message(user=user, channel=channel)
+        message: MessagesLog
+        if count == 0:
+            return translations.RandomLine.no_message_found.format_response(
+                    ctx,
+                    user_original or "",
+                    channel_original or ctx.channel.name
+            )
+        if not count:
+            return translations.RandomLine.search_timeout.format_response(
+                    ctx,
+                    user_original or "",
+                    channel_original or ctx.channel.name
+            )
+        return translations.RandomLine.random_line.format_response(
+                ctx,
+                message.content,
+                humanize.created_a_time(created_at=message.created_at, timezone=ctx.user.timezone_),
+                message.user.nickname or message.user.name
+        )
 
 
-@base_decorator(BaseDecorators.RandomLine)
-@cooldown(rate=3, per=10, bucket=Bucket.user)
-@check([])
-@command(name='randomline', aliases=['rl'])
-async def command(ctx: Context, *, options: str = "") -> Response:
-    translations = ctx.translations.RandomLine
-    humanize = ctx.translations.SupportTools.Humanize
-    options_splited = options.split(" ")
+async def setup(bot: Gorenmu) -> None:
+    await bot.add_component(RandomLineCmd(bot))
 
-    channel_original = next((opt.replace("channel:", "") for opt in options_splited if "channel:" in opt), None)
-    user_original = next((opt.replace("user:", "") for opt in options_splited if "user:" in opt), None)
 
-    user, channel = None, None
-    if user_original:
-        user = await get_user(ctx, user_original)
-        if not user:
-            return translations.user_not_found.format_response(ctx, user_original)
-
-    if channel_original:
-        channel = await get_channel(ctx, channel_original)
-        if not channel:
-            return translations.channel_not_found.format_response(ctx, channel_original)
-
-    channel = await get_channel(ctx, ctx.channel.name)
-
-    message, count = await get_random_message(user=user, channel=channel)
-    if not count:
-        return translations.no_message_found.format_response(ctx, user_original or "",
-                                                             channel_original or ctx.channel.name
-                                                             )
-
-    return translations.random_line.format_response(ctx,
-                                                    message.content,
-                                                    message.created_a_time(humanize=humanize,
-                                                                           timezone=ctx.user.timezone_),
-                                                    message.user.nickname or message.user.name
-                                                    )
-
+async def teardown(bot: Gorenmu) -> None:
+    ...

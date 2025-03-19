@@ -144,3 +144,18 @@ class ToolsTools:
                 return await ctx.simple_response(ctx, ctx.translations.Exceptions.ToolsExceptions.announcement.format(e)
                                                  )
 
+    @staticmethod
+    def extract_option(options: list[str], prefix: str):
+        return next((opt.replace(prefix, "") for opt in options if opt.startswith(prefix)), None)
+
+
+
+
+
+
+
+
+
+
+
+

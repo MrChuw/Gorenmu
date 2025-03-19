@@ -312,11 +312,11 @@
         "description": "This command selects a random message depending on the options provided.",
         "commands": [
             {
-                "response": "<it will send a random message from the current chat>"
+                "response": "<it will send a random message from the current channel>"
             },
             {
                 "args": "user:<user name>",
-                "response": "<it will send a random message from the user across all channels>"
+                "response": "<it will send a random message from the user on the current channel>"
             },
             {
                 "args": "channel:<channel name>",
@@ -325,6 +325,14 @@
             {
                 "args": "channel:<channel name> user:<user name>",
                 "response": "<it will send a random message from a user in a specific channel>"
+            },
+            {
+                "args": "channel:global user:<user name>",
+                "response": "<it will send a random message from a user in all channels>"
+            },
+            {
+                "args": "channel:global",
+                "response": "<it will send a random message from in a all channel>"
             }
         ]
     },
