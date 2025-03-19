@@ -19,6 +19,14 @@ if TYPE_CHECKING:
     from bot.ext.commands import Context
 
 
+# For Humanize lang check: https://github.com/python-humanize/humanize/tree/main/src/humanize/locale
+# For HyperTranslation default output lang check: bot.apis.translate.constants.GOOGLE_LANGUAGES_TO_CODES
+
+
+
+
+
+
 class BaseTranslations:
     class TypeChecking(BaseFunctions):
         response: Response
@@ -53,40 +61,28 @@ class BaseTranslations:
         def __init__(self, translation: dict):
             super().__init__(translation, None)
             self.populate_subclasses(base_cls=self)
+            self.populate_responses()
 
-        class LotteryExceptions(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.populate_responses()
-                lottery_seed: str
-        LotteryExceptions: LotteryExceptions
+        user_not_found_id: Response
+        user_not_found_name: Response
+        user_not_provided: Response
+        never_seen: Response
+        channel_not_found: Response
+        message_too_long: Response
+        time_expired: Response
+        unexpected_error: Response
+        too_much_characters: Response
 
-        class ToolsExceptions(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.populate_responses()
-                announcement: str
-        ToolsExceptions: ToolsExceptions
-
-        class BotMainLoopExceptions(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.populate_responses()
-            dev_required: str
-            owner_required: str
-            command_on_cooldown: str
-            not_implemented: str
-            error_not_registered: str
-        BotMainLoopExceptions: BotMainLoopExceptions
-
-        class ResponseExceptions(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.populate_responses()
-            error_on_response: str
-            pipe_response: str
-            command_not_pipeble: str
-        ResponseExceptions: ResponseExceptions
+        dev_required: str
+        owner_required: str
+        command_on_cooldown: str
+        not_implemented: str
+        error_not_registered: str
+        error_on_response: str
+        pipe_response: str
+        command_not_pipeble: str
+        lottery_seed: str
+        announcement: str
 
     class Pipe(BaseFunctions):
         def __init__(self, translation: dict):
@@ -101,7 +97,6 @@ class BaseTranslations:
             _activity = extras.get_object("activity")["Activity"]
             self.afks = ActivityExtras(_activity).afks
         afks: dict[str, ActivityExtras.Status]
-        message_too_long: Response
         afk_response: Response
         afk_content_response: Response
 
@@ -111,7 +106,6 @@ class BaseTranslations:
             self.populate_responses()
         bot_nick: Response
         author_nick: Response
-        never_seen: Response
         is_afk: Response
         is_afk_content: Response
         is_not_afk: Response
@@ -120,7 +114,6 @@ class BaseTranslations:
         def __init__(self, translation: dict):
             super().__init__(translation, None)
             self.populate_responses()
-        time_expired: Response
         is_afk: Response
         is_afk_content: Response
         is_not_afk: Response
@@ -137,7 +130,6 @@ class BaseTranslations:
             super().__init__(translation, None)
             self.populate_subclasses(base_cls=self)
             self.populate_responses()
-        user_not_found: Response
         dont_have_alias: Response
         alias_invalid_name: Response
         user_has_no_alias: Response
@@ -160,7 +152,6 @@ class BaseTranslations:
                 super().__init__(translation, None)
                 self.populate_responses()
 
-
             user_alias_list: Response
             no_alias_found: Response
             list_of_alias_of: Response
@@ -178,7 +169,6 @@ class BaseTranslations:
                 super().__init__(translation, None)
                 self.populate_responses()
 
-            user_not_provided: Response
             alias_not_provided: Response
             target_alias_invalid_name: Response
             no_alias_found: Response
@@ -275,30 +265,31 @@ class BaseTranslations:
             self.populate_responses()
         reversed_string: Response
 
+    class RandomLine(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+        no_message_found: Response
+        search_timeout: Response
+        random_line: Response
+
+
+
+
+
     class HyperTranslate(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            # Use bot.apis.translate.constants.GOOGLE_LANGUAGES_TO_CODES as reference for the languages
             self.lang: str = self.get_object("base_lang")
             self.quantity_error: Response = Response(response=self.get_object("quantity_error"))
             self.starter_string: str = self.get_object("starter_string")
             self.unexpected_error: Response = Response(response=self.get_object("unexpected_error"))
             self.translation: Response = Response(response=self.get_object("translation"))
 
-    class RandomLine(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.populate_responses()
-        channel_not_found: Response
-        user_not_found: Response
-        no_message_found: Response
-        random_line: Response
-
     class Scp(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
             self.links: Response = Response({})
-            self.unexpected_error: Response = Response(response=self.get_object("unexpected_error"))
 
     class UpSideDown(BaseFunctions):
         def __init__(self, translation: dict):
@@ -310,19 +301,16 @@ class BaseTranslations:
             super().__init__(translation, None)
             self.url: str = self.get_object("url")
             self.links: Response = Response({})
-            self.unexpected_error: Response = Response(response=self.get_object("unexpected_error"))
 
     class Wikipedia(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
             self.url: str = self.get_object("url")
             self.links: Response = Response({})
-            self.unexpected_error: Response = Response(response=self.get_object("unexpected_error"))
 
     class Annotations(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.too_much_characters: Response = Response(response=self.get_object("too_much_characters"))
             self.title_too_long: Response = Response(response=self.get_object("title_too_long"))
             self.too_few_characters: Response = Response(response=self.get_object("too_few_characters"))
             self.annotation_created: Response = Response(response=self.get_object("annotation_created"))

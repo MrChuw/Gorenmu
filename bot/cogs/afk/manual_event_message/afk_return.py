@@ -15,7 +15,7 @@ async def event_message(ctx: Context) -> Response | bool:
         return False
     status = ctx.user.translations.Afk.afks[user_status.alias]
     humanize = ctx.user.translations.SupportTools.TimeTools.Humanize
-    a_time = humanize.precisedelta(datetime.now(UTC) - user_status.updated_at.astimezone(UTC))
+    a_time = humanize.created_a_time(user_status.updated_at, ctx.user.timezone_)
     if user_status.message is None:
         response = translations.is_afk.format_response(
                 ctx,

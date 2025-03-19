@@ -13,12 +13,12 @@ from bot.models.User_extras import (
     Reminder, Status, Suggest,
 )
 
+
 from zoneinfo import ZoneInfo
-from datetime import datetime
 
 if TYPE_CHECKING:
     from bot.ext.commands import Context
-    from bot.translations import Translations
+    from bot.translations import Translations, Response
 
 
 class User(Base, UserMixin, TimestampMixin, ContentMixin):
@@ -68,13 +68,20 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     def timezone_(self):
         return ZoneInfo(self.timezone)
 
-
     @staticmethod
     async def create_or_update(ctx: Context) -> Optional[User]:
-        if instance := await User.get_or_none(id=int(ctx.author.id)):
-            return await User.update_user(instance, ctx)
-        return await User.create_user(ctx)
+        user = await ctx.bot.memcache.get(key=int(ctx.author.id), namespace="user")
+        if not user:
+            if instance := await User.get_or_none(id=int(ctx.author.id)):
+                user = await User.update_user(instance, ctx)
+            else:
+                user = await User.create_user(ctx)
+            await ctx.bot.memcache.set(key=int(ctx.author.id), value=user, namespace='user')
+            await ctx.bot.memcache.set(key=user.name, value=user.id, namespace="user_name")
+        else:
+            await User.update_user(user, ctx)
 
+        return await User._set_translation(user, ctx)
 
     @staticmethod
     async def update_user(instance: User, ctx: Context) -> User:
@@ -109,7 +116,7 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
                 "name": ctx.author.name,
                 "channel": ctx.channel.name,
                 "saved_color": ctx.author.colour,
-                "content": ctx.message.text.replace("ACTION", "", 1),
+                "content": ctx.message.text,
                 "timestamp": ctx.message.timestamp,
         }
         user = await User.create(**user_data)
@@ -127,8 +134,6 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
                 channel=ctx.bot.channels[ctx.channel.name],
         )
 
-
-
     @staticmethod
     async def create_or_none(id: int, name: str, **kwargs) -> Optional[User]:
         if not await User.get_or_none(id=id):
@@ -145,6 +150,61 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
             return user
         else:
             return None
+
+
+    @staticmethod
+    async def _set_translation(user: User, ctx: Context):
+        if not user.translations or user.translations.lang != user.language:
+            channel = ctx.channel.name
+            channel = ctx.bot.channels[channel]
+            user.translations = ctx.bot.TranslationManager.get_translations(user.language or channel.language or "en")
+        return user
+
+
+    @staticmethod
+    async def find_by_name(name: str, ctx: Context) -> User | Response:
+        user_id_cached = await ctx.bot.memcache.get(key=name, namespace="user_name")
+        if not user_id_cached:
+            user = await User.get_or_none(name=name)
+            if not user:
+                return ctx.user.translations.Exceptions.user_not_found_name.format_response(ctx, name)
+            await ctx.bot.memcache.set(key=user.name, value=user.id, namespace="user_name")
+            await ctx.bot.memcache.set(key=user.id, value=user, namespace="user")
+        else:
+            user = await User.find_by_id(user_id_cached, ctx)
+        return await User._set_translation(user, ctx)
+
+    @staticmethod
+    async def find_by_id(user_id: int, ctx: Context) -> User | Response:
+        user = await ctx.bot.memcache.get(key=user_id, namespace="user")
+        if not user:
+            user = await User.get_or_none(id=user_id)
+            if not user:
+                return ctx.user.translations.Exceptions.user_not_found_id.format_response(ctx, user_id)
+            await ctx.bot.memcache.set(key=user_id, value=user, namespace="user")
+            await ctx.bot.memcache.set(key=user.name, value=user.id, namespace="user_name")
+        return await User._set_translation(user, ctx)
+
+
+    @staticmethod
+    async def get_user(ctx: Context, name: str = None, user_id: int = None) -> User | Response:
+        if name:
+            user = await User.find_by_name(name=name, ctx=ctx)
+        elif user_id:
+            user = await User.find_by_id(user_id=user_id, ctx=ctx)
+        else:
+            user = await User.find_by_id(user_id=ctx.user.id, ctx=ctx)
+        return user
+
+
+
+
+
+
+
+
+
+
 
 
 

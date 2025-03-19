@@ -124,6 +124,9 @@
         },
         "ToolsExceptions": {
             "announcement_str": "algo deu errado com os anúncios. {}"
+        },
+        "ComumExceptions": {
+            "user_not_found": "Não encontrei nenhum usuário chamado @{}."
         }
     },
     "Pipe": {
@@ -153,7 +156,6 @@
         "is_afk_content": "{} {} e deixou uma nota: {} (estava ausente por {} {})"
     },
     "Alias": {
-        "user_not_found": "não há usuário com apelido {}.",
         "dont_have_alias": "Você não tem o alias \"{}\"!",
         "alias_invalid_name": "Seu nome de alias não é válido! Seu alias deve conter apenas letras, números e ter entre 2-30 caracteres de comprimento.",
         "user_has_no_alias": "O usuário {} não possui aliases registrados.",
@@ -257,7 +259,6 @@
     "RandomLine": {
         "random_line": "{} (enviado há {} por @{})",
         "channel_not_found": "Não encontrei nenhum canal chamado @{}.",
-        "user_not_found": "Não encontrei nenhum usuário chamado @{}.",
         "no_message_found": "Não encontrei nenhuma mensagem de @{} in @{}."
     },
     "Scp": {

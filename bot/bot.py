@@ -189,7 +189,7 @@ class Gorenmu(Bot):
         # TODO: Ativar de novo o develop.
         # if self.config.DevelopmentConfig.development:
         #     return None
-        translations = ctx.user.translations.Exceptions.BotMainLoopExceptions
+        translations = ctx.user.translations.Exceptions
         if isinstance(error, CommandNotFound):
             return None
         if isinstance(error, DevRequired):
@@ -212,27 +212,13 @@ class Gorenmu(Bot):
         self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
         return await ctx.simple_response(ctx, translations.error_not_registered.format(self.dev_name))
 
-    async def user_create_or_update(self, ctx: Context):
-        user = await self.memcache.get(key=int(ctx.author.id), namespace="user")
-        if not user:
-            user = await UserModel.create_or_update(ctx)
-            await self.memcache.set(key=int(ctx.author.id), value=user, namespace='user')
-        else:
-            await UserModel.update_user(user, ctx)
-
-        if not user.translations or user.translations.lang != user.language:
-            channel = ctx.channel.name
-            channel = ctx.bot.channels[channel]
-            user.translations = ctx.bot.TranslationManager.get_translations(user.language or channel.language or "en")
-
-        return user
 
     async def event_message(self, payload: ChatMessage):
         if payload.chatter.id == str(self.bot_id) or payload.source_broadcaster is not None:
             return
         ctx: Context = await self.get_context(payload)
         ctx.user, is_online = await asyncio.gather(
-                self.user_create_or_update(ctx),
+                UserModel.create_or_update(ctx),
                 self.is_online(payload)
         )
         if not is_online:
@@ -270,7 +256,7 @@ class Gorenmu(Bot):
                 decorator = ctx.command.decorators[ctx.user.language]
                 return await ctx.reply(decorator.usage)
 
-            error_not_registered = ctx.user.translations.Exceptions.BotMainLoopExceptions.error_not_registered
+            error_not_registered = ctx.user.translations.Exceptions.error_not_registered
             return await ctx.simple_response(ctx, error_not_registered.format(self.config.BotConfig.dev_name))
         except Exception as error:
             self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
@@ -283,7 +269,7 @@ class Gorenmu(Bot):
 
     async def listeners(self, ctx):
         if not ctx.user:
-            ctx.user = await self.user_create_or_update(ctx)
+            ctx.user = await UserModel.create_or_update(ctx)
         for listener in self.manual_event_message:
             if response := await listener(ctx):
                 await ctx.response(response)
@@ -291,10 +277,7 @@ class Gorenmu(Bot):
 
     async def global_guard(self, ctx: commands.Context) -> bool:
         checks = [Check.online, Check.enabled, Check.banword]
-        for check in checks:
-            if not check(ctx):
-                return False
-        return True
+        return all(check(ctx) for check in checks)
 
 
 

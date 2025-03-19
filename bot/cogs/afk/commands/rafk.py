@@ -36,25 +36,25 @@ class RAfkCmd(commands.CustomComponent):
     @commands.base_decorator(BaseDeco)
     @commands.command(name='rafk', aliases=rafk_alias)
     async def rafk(self, ctx: Context, *, content, ) -> Response:
-        translations = ctx.user.translations.RAfk
+        translations = ctx.user.translations
         afk = await Status.get_afk(ctx, namespace="rafk")
         if afk is None:
-            return translations.time_expired.format_response(ctx, success=False)
+            return translations.Exceptions.time_expired.format_response(ctx, success=False)
         elif afk["alias"] in ctx.user.translations.Afk.afks:
             status = ctx.user.translations.Afk.afks["alias"]
             await ctx.bot.memcache.delete(f"Afk-{ctx.author.id}")
             await Status.go_rafk(ctx, afk)
             if afk["content"] == "":
-                return translations.is_afk.format_response(ctx, status.leave_again, status.emoji, pipe=False)
+                return translations.RAfk.is_afk.format_response(ctx, status.leave_again, status.emoji, pipe=False)
             else:
-                return translations.is_afk.format_response(
+                return translations.RAfk.is_afk.format_response(
                         ctx,
                         status.leave_again,
                         status.emoji, afk["content"],
                         pipe=False
                 )
         else:
-            return translations.is_not_afk.format_response(ctx, success=False, pipe=False)
+            return translations.RAfk.is_not_afk.format_response(ctx, success=False, pipe=False)
 
 
 async def setup(bot: Gorenmu) -> None:

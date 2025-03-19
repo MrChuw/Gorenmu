@@ -16,6 +16,7 @@ __all__ = (
 )
 
 BaseDeco = BaseDecorators.IsAfk
+# TODO: add amount of time user is afk
 
 
 class IsAfkCmd(commands.CustomComponent):
@@ -36,24 +37,24 @@ class IsAfkCmd(commands.CustomComponent):
     @commands.base_decorator(BaseDeco)
     @commands.command(name='isafk', aliases=[])
     async def isafk(self, ctx: Context, *, content: str, ) -> Response:
-        translations = ctx.user.translations.IsAfk
+        translations = ctx.user.translations
         name = ctx.bot.StringTools.str2name(content.split()[0])
-        actions = {ctx.bot.bot_nick: translations.bot_nick.format_response(ctx, success=False),
-                   ctx.author.name: translations.author_nick.format_response(ctx, success=False)
+        actions = {ctx.bot.bot_nick: translations.IsAfk.bot_nick.format_response(ctx, success=False),
+                   ctx.author.name: translations.IsAfk.author_nick.format_response(ctx, success=False)
                    }
         if name in actions:
             return actions[name]
         user = await User.get_or_none(name=name) if name != ctx.author.name.lower() else ctx.user
         if not user:
-            return translations.never_seen.format_response(ctx, name)
+            return translations.Exceptions.never_seen.format_response(ctx, name)
         await user.fetch_related("status")
         if user.status[0].online:
-            return translations.is_not_afk.format_response(ctx, name)
+            return translations.IsAfk.is_not_afk.format_response(ctx, name)
         afk: Status = user.status[0]
         status = ctx.user.translations.Afk.afks[afk.alias]
         if not afk.message:
-            return translations.is_afk.format_response(ctx, name, status.current, status.emoji)
-        return translations.is_afk.format_response(ctx, name, status.current, status.emoji, afk.message)
+            return translations.IsAfk.is_afk.format_response(ctx, name, status.current, status.emoji)
+        return translations.IsAfk.is_afk.format_response(ctx, name, status.current, status.emoji, afk.message)
 
 
 async def setup(bot: Gorenmu) -> None:

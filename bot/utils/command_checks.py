@@ -95,7 +95,7 @@ class Check:
             await Cookies.create(user=user, id=int(ctx.author.id))
         except MultipleObjectsReturned as e:
             logging.error(e)
-            await ctx.reply(ctx.user.translations.Exceptions.LotteryExceptions.lottery_seed.format(ctx.bot.dev_name))
+            await ctx.reply(ctx.user.translations.Exceptions.lottery_seed.format(ctx.bot.dev_name))
             raise UnknownError
         if not await LotteryBank.get_or_none(closed=False, accumulated=True):
             await LotteryBank.create()

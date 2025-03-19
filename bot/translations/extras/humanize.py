@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 import humanize
 from .response import BaseFunctions
 
@@ -27,7 +27,7 @@ class Humanize:
     _milliseconds = ["years", "months", "days", "hours", "minutes", "seconds", "microseconds"]
 
     def __init__(self, data: dict, pattern_time: dict):
-        self.lang = data["language"] if data["language"] is not None else data["language"]
+        self.lang = data["language"] or "en"
         self.units = self._generate_options(pattern_time)
 
     def precisedelta(self, value, minimum_unit="seconds", suppress=(), format="%0.2f") -> str:
@@ -79,6 +79,11 @@ class Humanize:
         options["time"] = ()
         return options
 
+    def created_a_time(self, created_at: datetime, timezone=UTC):
+        return humanize.precisedelta(datetime.now(timezone) - created_at.astimezone(timezone))
+
+    def updated_a_time(self, updated_at: datetime, timezone=UTC):
+        return humanize.precisedelta(datetime.now(timezone) - updated_at.astimezone(timezone))
 
 
 

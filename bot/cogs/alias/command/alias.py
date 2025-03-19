@@ -112,7 +112,8 @@ class AliasCmd(commands.CustomComponent):
         if second_name:
             user = await User.get_or_none(name=first_name)
             if not user:
-                return translations.user_not_found.format_response(ctx, first_name, success=False, pipe=False)
+                exception = ctx.user.translations.Exceptions
+                return exception.user_not_found_name.format_response(ctx, first_name, success=False, pipe=False)
 
             alias_name = second_name
             mention = ctx.user.translations.SupportTools.mention if user.name == ctx.author.name else f"@{user.name}"
@@ -147,10 +148,11 @@ class AliasCmd(commands.CustomComponent):
     @alias.command(name="copy")
     async def copy_alias(self, ctx: Context, args: tuple):
         translations = ctx.user.translations.Alias
+        exception = ctx.user.translations.Exceptions
         target_user_name, target_alias_name, *rest = chain(args, repeat(None, 2))
         new_name = rest[0] if (rest := [arg for arg in rest if arg]) else None
         if not target_user_name:
-            return translations.Copy.user_not_provided.format_response(ctx, success=False, pipe=False)
+            return exception.user_not_provided.format_response(ctx, success=False, pipe=False)
         if not target_alias_name:
             return translations.Copy.alias_not_provided.format_response(ctx, success=False, pipe=False)
         if not ALIAS_NAME_REGEX.match(target_alias_name):
@@ -167,7 +169,7 @@ class AliasCmd(commands.CustomComponent):
 
         target_user = await User.get_or_none(name=target_user_name)
         if not target_user:
-            return translations.user_not_found.format_response(ctx, target_user_name, success=False, pipe=False)
+            return exception.user_not_found_name.format_response(ctx, target_user_name, success=False, pipe=False)
 
         target_alias = await Alias.filter(channel=None, user=target_user, name=target_alias_name, deleted=False).first()
         if target_alias is None:
@@ -254,6 +256,7 @@ class AliasCmd(commands.CustomComponent):
     @alias.command(name="link")
     async def link_alias(self, ctx: Context, args: tuple):
         translations = ctx.user.translations.Alias
+        exception = ctx.user.translations.Exceptions
         link_to_link = False
         if len(args) < 2:
             return translations.Link.link_no_args.format_response(ctx, success=False, pipe=False)
@@ -268,7 +271,7 @@ class AliasCmd(commands.CustomComponent):
 
         target_user_data = await User.get_or_none(name=user_name)
         if not target_user_data:
-            return translations.user_not_found.format_response(ctx, user_name, success=False, pipe=False)
+            return exception.user_not_found_name.format_response(ctx, user_name, success=False, pipe=False)
 
         target_alias = await (
                 Alias.filter(user=target_user_data, name=alias_name, deleted=False).first().prefetch_related("parent"))
