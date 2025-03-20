@@ -1,20 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response, afks
-from bot.utils import Role
 from bot.models import Status
+from bot.translations import afks, BaseDecorators, Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
-__all__ = (
-        'AFKCmd'
-)
-
-BaseDeco = BaseDecorators.Afk
 afk_alias = [s for s in afks.afks if s != "afk"]
 
 
@@ -33,7 +28,7 @@ class AFKCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:
         return True
 
-    @commands.base_decorator(BaseDeco)
+    @commands.base_decorator(BaseDecorators.Afk)
     @commands.command(name='afk', aliases=afk_alias)
     async def afk(self, ctx: Context, *, content: str = "", ) -> Response:
         translations = ctx.user.translations

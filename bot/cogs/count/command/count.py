@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-from typing import TYPE_CHECKING
+
 import re
 import string
+from typing import TYPE_CHECKING
 
 from urlextract import URLExtract
+
 from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
-__all__ = (
-        'CountCmd'
-)
 
 
 class CountCmd(commands.CustomComponent):

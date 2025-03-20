@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+
 import re
 from itertools import chain, repeat
 from typing import TYPE_CHECKING
 
-from bot.models import Alias, User
 from bot.ext import commands, Context
+from bot.models import Alias, User
 from bot.translations import BaseDecorators, Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
-__all__ = (
-        'AliasCmd'
-)
 
-BaseDeco = BaseDecorators.Alias
 ALIAS_NAME_REGEX = re.compile(
         r'^[-\w\u00a9\u00ae\u2000-\u3300\ud83c\ud000-\udfff\ud83d\ud000-\udfff\ud83e\ud000-\udfff]{2,30}$'
 )
@@ -40,7 +37,7 @@ class AliasCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:
         return True
 
-    @commands.base_decorator(BaseDeco)
+    @commands.base_decorator(BaseDecorators.Alias)
     @commands.group(name='alias')
     @commands.cooldown(rate=10, per=10, key=commands.BucketType.user)
     async def alias(self, ctx: Context, *, args, ) -> Response:

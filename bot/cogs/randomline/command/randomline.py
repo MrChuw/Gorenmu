@@ -10,11 +10,7 @@ from bot.translations import BaseDecorators, Response
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
-__all__ = (
-        'RandomLineCmd'
-)
 
-BaseDeco = BaseDecorators
 # TODO: Test with a big message database
 
 
@@ -33,7 +29,7 @@ class RandomLineCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:
         return True
 
-    @commands.base_decorator(BaseDeco.RandomLine)
+    @commands.base_decorator(BaseDecorators.RandomLine)
     @commands.command(name='randomline', aliases=['rl'])
     async def randomline(self, ctx: Context, *, options: str = "") -> Response:
         translations = ctx.user.translations

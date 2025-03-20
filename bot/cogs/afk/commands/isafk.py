@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
-from bot.utils import Role
 from bot.models import User
+from bot.translations import BaseDecorators, Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 from bot.models import Status
 
-__all__ = (
-        'IsAfkCmd'
-)
 
-BaseDeco = BaseDecorators.IsAfk
 # TODO: add amount of time user is afk
 
 
@@ -34,7 +30,7 @@ class IsAfkCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:
         return True
 
-    @commands.base_decorator(BaseDeco)
+    @commands.base_decorator(BaseDecorators.IsAfk)
     @commands.command(name='isafk', aliases=[])
     async def isafk(self, ctx: Context, *, content: str, ) -> Response:
         translations = ctx.user.translations

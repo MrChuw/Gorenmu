@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-from typing import TYPE_CHECKING
+
 import random
 import re
+from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
@@ -10,9 +11,6 @@ from bot.translations import BaseDecorators, Response
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
-__all__ = (
-        'ChoiceCmd'
-)
 
 
 class ChoiceCmd(commands.CustomComponent):

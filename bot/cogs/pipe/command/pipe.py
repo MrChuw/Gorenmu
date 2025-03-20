@@ -1,20 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
 
-# from bot.utils import Role, Check
-
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
-__all__ = (
-        'PipeCmd'
-)
-
-
 
 
 class PipeCmd(commands.CustomComponent):

@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+
+import asyncio
 from typing import TYPE_CHECKING
+
+from aiohttp_client_cache import CachedSession, response
+from bs4 import BeautifulSoup
 
 from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
-from aiohttp_client_cache import CachedSession, response
-from bs4 import BeautifulSoup
-import asyncio
-
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
-__all__ = (
-        'RandomSCPCmd'
-)
 
 
 class RandomSCPCmd(commands.CustomComponent):
@@ -65,5 +62,3 @@ async def setup(bot: Gorenmu) -> None:
 
 async def teardown(bot: Gorenmu) -> None:
     ...
-
-

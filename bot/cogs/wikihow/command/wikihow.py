@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+
+import asyncio
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
-import asyncio
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
-__all__ = (
-        'WikiHowCmd'
-)
-
-BaseDeco = BaseDecorators
 
 
 class WikiHowCmd(commands.CustomComponent):
@@ -31,7 +26,7 @@ class WikiHowCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:
         return True
 
-    @commands.base_decorator(BaseDeco)
+    @commands.base_decorator(BaseDecorators.Wikihow)
     @commands.command(name='wikihow', aliases=[])
     async def wikihow(self, ctx: Context) -> Response:
         translations = ctx.user.translations.Wikihow

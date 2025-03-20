@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+
 import os
 import sys
 from typing import TYPE_CHECKING
@@ -10,10 +11,6 @@ from bot.utils import Role
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
-__all__ = (
-        'AdminSmallCmds'
-)
 
 BaseAdmin = BaseDecorators.Admin
 
@@ -90,8 +87,6 @@ class AdminSmallCmds(commands.CustomComponent):
         except Exception as e:
             self.bot.log.error(e)
             return translations.unexpected_error.format_response(ctx, e, success=False)
-
-
 
 
 async def setup(bot: Gorenmu) -> None:

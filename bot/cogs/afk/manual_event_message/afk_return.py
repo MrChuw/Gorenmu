@@ -2,7 +2,6 @@
 from bot.ext.commands import Context
 from bot.models import Status
 from bot.translations import Response
-from datetime import datetime, UTC
 
 
 async def event_message(ctx: Context) -> Response | bool:

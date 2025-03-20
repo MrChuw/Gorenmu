@@ -1,21 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
+from bot.apis.upsidedown import transform
 from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
-from bot.apis.upsidedown import transform
-
-# from bot.utils import Role, Check
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
-__all__ = (
-        'upsidedownCmd'
-)
-
-BaseDeco = BaseDecorators
 
 
 class UpSideDownCmd(commands.CustomComponent):
@@ -33,7 +26,7 @@ class UpSideDownCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:
         return True
 
-    @commands.base_decorator(BaseDeco)
+    @commands.base_decorator(BaseDecorators.UpSideDown)
     @commands.command(name='upsidedown', aliases=['updown'])
     async def upsidedown(self, ctx: Context, *, content, ) -> Response:
         return ctx.user.translations.UpSideDown.upsidedown.format_response(ctx, transform(content))
