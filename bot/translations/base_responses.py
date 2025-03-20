@@ -273,8 +273,32 @@ class BaseTranslations:
         search_timeout: Response
         random_line: Response
 
+    class UpSideDown(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+        upsidedown: Response
+
+    class Scp(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+        links: Response
+
+    class Wikihow(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+        url: str
+        links: Response
 
 
+    class Wikipedia(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+        url: str
+        links: Response
 
 
     class HyperTranslate(BaseFunctions):
@@ -285,28 +309,6 @@ class BaseTranslations:
             self.starter_string: str = self.get_object("starter_string")
             self.unexpected_error: Response = Response(response=self.get_object("unexpected_error"))
             self.translation: Response = Response(response=self.get_object("translation"))
-
-    class Scp(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.links: Response = Response({})
-
-    class UpSideDown(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.upsidedown: Response = Response(response=self.get_object("upsidedown"))
-
-    class Wikihow(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.url: str = self.get_object("url")
-            self.links: Response = Response({})
-
-    class Wikipedia(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.url: str = self.get_object("url")
-            self.links: Response = Response({})
 
     class Annotations(BaseFunctions):
         def __init__(self, translation: dict):

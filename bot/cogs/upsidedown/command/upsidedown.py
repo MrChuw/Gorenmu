@@ -1,14 +1,47 @@
 # -*- coding: utf-8 -*-
-from bot.apis.upsidedown import transform
-from bot.bot import Gorenmu
-from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
+from bot.apis.upsidedown import transform
+
+# from bot.utils import Role, Check
+
+if TYPE_CHECKING:
+    from bot.bot import Gorenmu
+
+__all__ = (
+        'upsidedownCmd'
+)
+
+BaseDeco = BaseDecorators
 
 
-@base_decorator(BaseDecorators.UpSideDown)
-@cooldown(rate=3, per=10, bucket=Bucket.user)
-@check([])
-@command(name='upsidedown', aliases=['updown'])
-async def command(ctx: Context, *, content, ) -> Response:
-    return ctx.translations.UpSideDown.upsidedown.format_response(ctx, transform(content))
+class UpSideDownCmd(commands.CustomComponent):
+    def __init__(self, bot: Gorenmu) -> None:
+        self.bot = bot
 
+    cooldown_rate = 3
+    cooldown_per = 10
+    cooldown_key = commands.BucketType.user
+
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
+        ...
+
+    @commands.Component.guard()
+    def guards_component(self, ctx: commands.Context) -> bool:
+        return True
+
+    @commands.base_decorator(BaseDeco)
+    @commands.command(name='upsidedown', aliases=['updown'])
+    async def upsidedown(self, ctx: Context, *, content, ) -> Response:
+        return ctx.user.translations.UpSideDown.upsidedown.format_response(ctx, transform(content))
+
+
+async def setup(bot: Gorenmu) -> None:
+    await bot.add_component(UpSideDownCmd(bot))
+
+
+async def teardown(bot: Gorenmu) -> None:
+    ...

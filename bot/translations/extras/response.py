@@ -174,4 +174,6 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
                     setattr(self, name, Response(response=base))
             if type(base) is list:
                 setattr(self, name, base)
+            if type(base) is dict and len(base) == 0:
+                setattr(self, name, Response({}))
             ...

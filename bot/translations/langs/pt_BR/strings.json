@@ -262,7 +262,7 @@
         "no_message_found": "Não encontrei nenhuma mensagem de @{} in @{}."
     },
     "Scp": {
-        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
+        "links": {}
     },
     "UpSideDown": {
         "upsidedown": "{}"

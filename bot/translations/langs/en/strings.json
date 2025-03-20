@@ -256,15 +256,19 @@
         "random_line": "{} (sent {} ago by @{} )",
         "search_timeout": "30s has passed and I has unable to find a message from user @{} on channel @{}"
     },
-    "Scp": {},
+    "Scp": {
+        "links": {}
+    },
     "UpSideDown": {
         "upsidedown": "{}"
     },
     "Wikihow": {
-        "url": "https://www.wikihow.com/Special:Randomizer"
+        "url_url": "https://www.wikihow.com/Special:Randomizer",
+        "links": {}
     },
     "Wikipedia": {
-        "url": "https://wikipedia.org/wiki/Special:Random"
+        "url_url": "https://wikipedia.org/wiki/Special:Random",
+        "links": {}
     },
     "Annotations": {
         "title_too_long": "The title must have a maximum of 32 characters.",

@@ -19,6 +19,8 @@ from collections import OrderedDict
 from threading import RLock
 from time import time
 from typing import Any, Optional
+from aiohttp_client_cache import CachedResponse, CachedSession
+import asyncio
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -110,6 +112,13 @@ class BaseCachedSession:
 
     async def close(self):
         await self.session.close()
+
+    @staticmethod
+    async def get_not_cached(session: CachedSession, url: str) -> CachedResponse:
+        async with session.disabled():
+            await asyncio.sleep(1)
+            response = await session.get(url, allow_redirects=True)  # NOQA
+        return response  # NOQA
 
 
 class SessionsCaches:
