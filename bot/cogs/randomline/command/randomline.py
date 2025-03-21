@@ -35,8 +35,8 @@ class RandomLineCmd(commands.CustomComponent):
         translations = ctx.user.translations
         humanize = ctx.user.translations.SupportTools.TimeTools.Humanize
         options_split = options.split(" ")
-        channel_original = self.bot.ToolsTools.extract_option(options_split, "channel:")
-        user_original = self.bot.ToolsTools.extract_option(options_split, "user:")
+        channel_original = self.bot.ToolsTools.find_prefixed_option(options_split, "channel:")
+        user_original = self.bot.ToolsTools.find_prefixed_option(options_split, "user:")
         user, channel = None, None
         if user_original:
             if user_original.lower() != ctx.author.name.lower():

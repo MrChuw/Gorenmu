@@ -34,6 +34,7 @@ class AdminSmallCmds(commands.CustomComponent):
     @commands.command(name='nada', aliases=[])
     async def nada(self, ctx: Context, *, args, ) -> Response:
         translations = ctx.user.translations.Admin.Nada
+        teste = ctx.bot.ToolsTools.remove_prefixed_option(args, "title:")
         return translations.nada.format_response(ctx, args, success=True, handle=None, response_list=[])
 
     @commands.base_decorator(BaseAdmin.Restart)

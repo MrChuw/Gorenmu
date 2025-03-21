@@ -145,9 +145,23 @@ class ToolsTools:
                                                  )
 
     @staticmethod
-    def extract_option(options: list[str], prefix: str):
+    def find_prefixed_option(options: list[str], prefix: str) -> str | None:
         return next((opt.replace(prefix, "") for opt in options if opt.startswith(prefix)), None)
 
+    @staticmethod
+    def remove_prefixed_option(text: str, prefix: str) -> tuple[str, str | None]:
+        if option := ToolsTools.find_prefixed_option(text.split(" "), prefix):
+            text = text.replace(f"{prefix}{option}", "").replace("  ", " ")
+        return text, option
+
+    @staticmethod
+    def extract_and_remove_field(text: str, field: str) -> tuple[str, str | None]:
+        pattern = rf'{field}:"(.*?)"'
+        if match := re.search(pattern, text):
+            value = match[1]
+            text = text.replace(value, "")
+            return text, value
+        return text, None
 
 
 
