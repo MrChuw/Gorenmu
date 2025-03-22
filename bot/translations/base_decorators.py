@@ -195,67 +195,67 @@ class BaseDecorators:
 
     class Afk(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-16T12:20:00.000-03:00")
 
     class IsAfk(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-16T12:20:00.000-03:00")
 
     class RAfk(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-16T12:20:00.000-03:00")
 
     class Alias(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-16T12:20:00.000-03:00")
 
     class Chance(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-17T20:00:00.000-03:00")
 
     class Choice(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-17T20:00:00.000-03:00")
 
     class Count(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-17T20:00:00.000-03:00")
 
     class HyperTranslate(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-22T12:54:31.259-03:00")
 
     class RandomColor(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-17T20:00:00.000-03:00")
 
     class Reverse(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-17T20:00:00.000-03:00")
 
     class RandomLine(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-19T12:20:00.000-03:00")
 
     class Scp(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-19T21:06:00.000-03:00")
 
     class UpSideDown(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-19T21:06:00.000-03:00")
 
     class Wikihow(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-19T21:06:00.000-03:00")
 
     class Wikipedia(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-09", "2024-09-09")
+            super().__init__(translation, "2024-09-09", "2025-03-19T21:06:00.000-03:00")
 
     class Annotations(BaseCommand):
         def __init__(self, translation: dict):
-            super().__init__(translation, "2024-09-10", "2024-09-10")
+            super().__init__(translation, "2024-09-10", "2025-03-20T23:39:00.000-03:00")
 
     class Lottery(BaseCommand):
         def __init__(self, translation: dict):
@@ -325,17 +325,17 @@ class BaseDecorators:
 
         class Nada(BaseCommand):
             def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
+                super().__init__(translation, "2024-09-09", "2025-03-16T12:20:00.000-03:00")
         Nada: Nada
 
         class Reload(BaseCommand):
             def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-09", "2024-09-09")
+                super().__init__(translation, "2024-09-09", "2025-03-16T12:20:00.000-03:00")
         Reload: Reload
 
         class Restart(BaseCommand):
             def __init__(self, translation: dict):
-                super().__init__(translation, "2024-09-18T18:25:27.911-03:00", "2024-09-18T18:25:27.911-03:00")
+                super().__init__(translation, "2024-09-18T18:25:27.911-03:00", "2025-03-18T12:20:00.000-03:00")
         Restart: Restart
 
         class DisableNSFW(BaseCommand):
