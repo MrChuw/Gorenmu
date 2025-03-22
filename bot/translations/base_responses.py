@@ -292,7 +292,6 @@ class BaseTranslations:
         url: str
         links: Response
 
-
     class Wikipedia(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
@@ -300,28 +299,28 @@ class BaseTranslations:
         url: str
         links: Response
 
+    class Annotations(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+        title_too_long: Response
+        too_few_characters: Response
+        annotation_created: Response
+        no_annotations_with_id: Response
+        all_annotations: Response
+        annotation_content: Response
+        deleted: Response
+        id_not_provided: Response
+        option_not_recognized: Response
 
     class HyperTranslate(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.lang: str = self.get_object("base_lang")
-            self.quantity_error: Response = Response(response=self.get_object("quantity_error"))
-            self.starter_string: str = self.get_object("starter_string")
-            self.unexpected_error: Response = Response(response=self.get_object("unexpected_error"))
-            self.translation: Response = Response(response=self.get_object("translation"))
-
-    class Annotations(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.title_too_long: Response = Response(response=self.get_object("title_too_long"))
-            self.too_few_characters: Response = Response(response=self.get_object("too_few_characters"))
-            self.annotation_created: Response = Response(response=self.get_object("annotation_created"))
-            self.no_annotations_with_id: Response = Response(response=self.get_object("no_annotations_with_id"))
-            self.all_annotations: Response = Response(response=self.get_object("all_annotations"))
-            self.annotation_content: Response = Response(response=self.get_object("annotation_content"))
-            self.deleted: Response = Response(response=self.get_object("deleted"))
-            self.id_not_provided: Response = Response(response=self.get_object("id_not_provided"))
-            self.option_not_recognized: Response = Response(response=self.get_object("option_not_recognized"))
+            self.populate_responses()
+        lang: str
+        starter_string: str
+        unexpected_error: Response
+        translation: Response
 
     class Lottery(BaseFunctions):
         def __init__(self, translation: dict):

@@ -243,9 +243,8 @@
         "character_count": "Há um total de caracteres {}. Destes, {} são sinais de pontuação, {} são letras maiúsculas, e {} são caracteres especiais."
     },
     "HyperTranslate": {
-        "base_lang": "pt",
-        "quantity_error": "Você deve especificar o número de vezes que o texto será traduzido. Exemplo: `{}hypertranslate 10 <texto>`",
-        "starter_string": "Traduzindo o texto…",
+        "base_lang_str": "pt",
+        "starter_string_str": "Traduzindo o texto…",
         "unexpected_error": "O texto não pôde ser traduzido.",
         "translation": "{}"
     },
@@ -269,11 +268,11 @@
     },
     "Wikihow": {
         "url": "https://pt.wikihow.com/Especial:Randomizer",
-        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
+        "links": {}
     },
     "Wikipedia": {
         "url": "https://pt.wikipedia.org/wiki/Special:Random",
-        "unexpected_error": "Um erro ocorreu, por favor tente novamente."
+        "links": {}
     },
     "Annotations": {
         "too_much_characters": "A anotação deve ter um máximo de 450 caracteres.",
