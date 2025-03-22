@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-from typing import TYPE_CHECKING
-import datetime
 
-
-from bot.ext.commands import base_decorator, Bucket, command, Command, Context, cooldown
-from bot.translations import BaseDecorators, Response, BaseCommand, Translation
-from bot.utils import Role
-from collections import defaultdict
 import re
+from collections import defaultdict
+from typing import TYPE_CHECKING
+
+from bot.ext.commands import Command, Context
+from bot.translations import BaseCommand, Translation
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -25,6 +23,7 @@ class BaseAdmonitions:
     def from_list(data: list):
         return [BaseAdmonitions(d) for d in data]
 
+
 def custom_format(template, **kwargs):
     # List of allowed placeholders
     placeholders = [
@@ -35,7 +34,7 @@ def custom_format(template, **kwargs):
             "command_name",
             "prefix",
             "aliases",
-            "command_name"
+            "cooldown_type",
     ]
 
     # Build the regular expression to identify allowed placeholders
@@ -54,7 +53,6 @@ class DynamicDescriptions:
     def __init__(self, bot: Gorenmu):
         self.bot: Gorenmu = bot
 
-
     def normal_description(self, command_data: Command) -> dict[str, dict[str, str]]:
         responses = defaultdict(dict)
         cooldown_ = command_data._buckets[0]  # NOQA
@@ -69,7 +67,6 @@ class DynamicDescriptions:
             responses[lang][command_data.name.lower()] = command_body
 
         return responses
-
 
     def afk_description(self, command_data: Command, ctx: Context = None) -> dict[str, dict[str, str]]:  # NOQA
         # TODO
@@ -90,10 +87,12 @@ class DynamicDescriptions:
             description = decorator.description
             language: Translation = self.bot.TranslationManager.languages[lang]
             cooldown_type = language.decorators.Templates.get_bucket_type(cooldown_._key)  # NOQA
-            template = "\n\n".join(decorator.template)  # TODO: make a better solution for template like descriptions.
+            templates = decorator.template
+            template = "\n\n\n".join([templates[template] for template in templates])
             template = custom_format(
                     template=template,
-                    rate=rate, per=per,
+                    rate=rate,
+                    per=per,
                     cooldown_type=cooldown_type,
                     description=description,
                     command_title=command_data.name.capitalize(),
@@ -105,35 +104,58 @@ class DynamicDescriptions:
 
         return responses
 
-
     @staticmethod
     def _format_aliases(command_data: Command, alias_template: str):
         if command_data.aliases:
             return alias_template.format(command_title=command_data.name.capitalize(),
-                                         aliases=", ".join(command_data.aliases))
+                                         aliases=", ".join(command_data.aliases)
+                                         )
         return ""
 
-    def _build_command_body(self, command_data: Command, cooldown_type, aliases, decorator: BaseCommand, language: Translation):
+    def _build_command_body(self, command_data: Command, cooldown_type, aliases, decorator: BaseCommand,
+                            language: Translation
+                            ):
         rate: int = command_data._buckets[0]._cooldown._rate  # NOQA
         per: int = command_data._buckets[0]._cooldown._per  # NOQA
         command_name: str = command_data.name
         prefix = self.bot.config.BotConfig.prefix[0]
-        command_body = language.decorators.Templates.template_part1.format(command_title=command_name.capitalize(), rate=rate, per=per, cooldown_type=cooldown_type)
-    
-        command_body += self._add_admonitions(decorator.admonitions, "top", language.decorators.Templates.admonition_template)
-        command_body += language.decorators.Templates.template_part2.format(description=decorator.description, aliases=aliases)
-        command_body += self._add_admonitions(decorator.admonitions, "middle", language.decorators.Templates.admonition_template)
-    
+        command_body = language.decorators.Templates.template_part1.format(
+                command_title=command_name.capitalize(),
+                rate=rate, per=per,
+                cooldown_type=cooldown_type
+        )
+
+        command_body += self._add_admonitions(
+                decorator.admonitions,
+                "top",
+                language.decorators.Templates.admonition_template
+        )
+        command_body += language.decorators.Templates.template_part2.format(
+                description=decorator.description,
+                aliases=aliases
+        )
+        command_body += self._add_admonitions(
+                decorator.admonitions,
+                "middle",
+                language.decorators.Templates.admonition_template
+        )
+
         commands = decorator.commands
         if commands:
             command_body += language.decorators.Templates.template_part3
             command_body += "".join([
-                language.decorators.Templates.command_template.format(prefix=prefix, command_name=command_name.lower(), args=item.args, response=item.response)
-                for item in commands
-            ])
-    
-        command_body += self._add_admonitions(decorator.admonitions, "bottom", language.decorators.Templates.admonition_template)
-    
+                    language.decorators.Templates.command_template.format(prefix=prefix,
+                                                                          command_name=command_name.lower(),
+                                                                          args=item.args, response=item.response
+                                                                          )
+                    for item in commands
+            ]
+            )
+
+        command_body += self._add_admonitions(decorator.admonitions, "bottom",
+                                              language.decorators.Templates.admonition_template
+                                              )
+
         return command_body
 
     @staticmethod
@@ -142,24 +164,8 @@ class DynamicDescriptions:
             return ""
         admonitions = BaseAdmonitions.from_list(admonitions)
         return "".join(
-            admonition_template.format(type=admonition.admonition_type, title=admonition.title, message=admonition.message)
-            for admonition in admonitions if admonition.position == position
+                admonition_template.format(type=admonition.admonition_type, title=admonition.title,
+                                           message=admonition.message
+                                           )
+                for admonition in admonitions if admonition.position == position
         )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

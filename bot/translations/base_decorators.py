@@ -153,10 +153,9 @@ class BaseCommand(DecoratorType, DecorationsFunctions):
         self.extras = self.get_object_or_none("extras")
         self.commands = CommandExemples(self.get_object_or_false("commands"))
         self.admonitions = self.get_object_or_false("admonitions")
-        self.template = self.get_object_or_false("template")
         self.created = created
         self.updated = updated
-        self.template = self.get_object_or_none("template")
+        self.template: dict[str] | None = self.get_object_or_none("template")
 
 
 

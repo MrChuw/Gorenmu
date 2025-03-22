@@ -61,9 +61,6 @@ class Command(TwitchioCommand):
     decorators_original: Decorators
     _cooldowns: Cooldown
     docs: dict[str, dict[str, str]]
-    # command: TwitchioCommand
-
-
 
     def command(self, name: str | None = None, aliases: list[str] | None = None, extras: dict[Any, Any] | None = None,
                 **kwargs: Any
