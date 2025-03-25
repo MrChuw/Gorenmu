@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import asyncio
 import os
 import sys
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response, TranslationManager
+from bot.translations import BaseDecorators, Response
 from bot.utils import Role
+import importlib
+import gc
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -34,8 +37,8 @@ class AdminSmallCmds(commands.CustomComponent):
     @commands.command(name='nada', aliases=[])
     async def nada(self, ctx: Context, *, args, ) -> Response:
         translations = ctx.user.translations.Admin.Nada
-        teste = ctx.bot.ToolsTools.remove_prefixed_option(args, "title:")
         return translations.nada.format_response(ctx, args, success=True, handle=None, response_list=[])
+
 
     @commands.base_decorator(BaseAdmin.Restart)
     @commands.command(name="restart", aliases=[])
@@ -57,7 +60,7 @@ class AdminSmallCmds(commands.CustomComponent):
         translations = ctx.user.translations.Admin.Reload
         if command == "translations":
             try:
-                ctx.bot.TranslationManager = TranslationManager()
+                ctx.bot.TranslationManager = reload_and_get("bot.translations", "TranslationManager")()
                 return translations.translations_reloaded.format_response(ctx)
             except Exception as e:
                 self.bot.log.error(e)
@@ -96,3 +99,14 @@ async def setup(bot: Gorenmu) -> None:
 
 async def teardown(bot: Gorenmu) -> None:
     ...
+
+
+def reload_and_get(module_name: str, element: str):
+    for mod in list(sys.modules):
+        if mod.startswith(module_name):
+            del sys.modules[mod]
+    gc.collect()
+    module = importlib.import_module(module_name)
+    importlib.reload(module)
+    return getattr(module, element)
+
