@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from tortoise import fields
 
@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 
 
 class Copypasta(Base, TimestampMixin):
-    content: Union[str, fields.TextField] = fields.TextField()
-    visible: Union[bool, fields.BooleanField] = fields.BooleanField(default=True)
+    content: fields.TextField = fields.TextField()
+    visible: fields.BooleanField = fields.BooleanField(default=True)
 
     user: User = fields.ForeignKeyField("models.User", related_name="Copypasta")
 

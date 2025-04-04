@@ -1,21 +1,22 @@
 from __future__ import annotations
 
 import datetime
+from typing import TYPE_CHECKING
+
 from tortoise import fields
 
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING, Union
 if TYPE_CHECKING:
     from bot.models import User
     from bot.ext import Context
 
-from bot.models.base import Base, TimestampMixin, TextFieldStr
+from bot.models.base import Base, TimestampMixin
 
 
 class Status(Base, TimestampMixin):
-    online: Union[bool, fields.BooleanField] = fields.BooleanField(default=True)
-    alias: Union[str, fields.TextField] = fields.TextField(null=True)
-    message: Union[str, fields.TextField] = fields.TextField(null=True)
-    updated_at: Union[datetime, fields.DatetimeField] = fields.DatetimeField(null=True)
+    online: fields.BooleanField = fields.BooleanField(default=True)
+    alias: fields.TextField = fields.TextField(null=True)
+    message: fields.TextField = fields.TextField(null=True)
+    updated_at: fields.DatetimeField = fields.DatetimeField(null=True)
     user: User = fields.ForeignKeyField("models.User", related_name="status")
 
     class Meta:
@@ -57,19 +58,3 @@ class Status(Base, TimestampMixin):
     async def go_rafk(ctx: Context, status: dict):
         status_db = await Status.get_afk(ctx)
         await status_db._go_rafk(status=status)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from tortoise import fields
 
-from bot.models.base import Base, TimestampMixin, CharFieldStr, CharFieldIntStr, IntFieldInt
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING, Union
+from bot.models.base import Base, CharFieldIntStr, CharFieldStr, IntFieldInt, TimestampMixin
+
 if TYPE_CHECKING:
     from bot.models.User import User
 
@@ -19,7 +21,7 @@ class Player(Base, TimestampMixin):
     sub_class: CharFieldStr = fields.CharField(max_length=10, default="")
 
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-        "models.User", related_name="player"
+            "models.User", related_name="player"
     )
 
     class Meta:

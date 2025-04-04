@@ -189,12 +189,11 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     @staticmethod
     async def get_user(ctx: Context, name: str = None, user_id: int = None) -> User | Response:
         if name:
-            user = await User.find_by_name(name=name, ctx=ctx)
+            return await User.find_by_name(name=name, ctx=ctx)
         elif user_id:
-            user = await User.find_by_id(user_id=user_id, ctx=ctx)
+            return await User.find_by_id(user_id=user_id, ctx=ctx)
         else:
-            user = await User.find_by_id(user_id=ctx.user.id, ctx=ctx)
-        return user
+            return await User.find_by_id(user_id=ctx.user.id, ctx=ctx)
 
 
 

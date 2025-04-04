@@ -3,16 +3,14 @@ from __future__ import annotations
 import asyncio
 import random
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 import pytz
 from tortoise import fields
 
-from bot.models.base import Base, TimestampMixin
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING, Union
-
+from bot.models.base import Base
 
 if TYPE_CHECKING:
-    from bot.bot import Context
     from bot.models.User import User
     from bot.models.Channel import Channel
 
@@ -32,11 +30,8 @@ class MessagesLog(Base):
     def created_ago(self):
         return datetime.now(pytz.utc) - self.created_at
 
-
-
     def created_a_time(self, humanize, timezone):
         return humanize.precisedelta(datetime.now(timezone) - self.created_at.astimezone(timezone))
-
 
     @staticmethod
     async def all_messages_generator(maximum=None, category=None, offset=0, channel_id=None):
@@ -69,10 +64,10 @@ class MessagesLog(Base):
         while users_fetched and (not maximum or len(all_users) < maximum):
             if category == "message":
                 users = (
-                    await MessagesLog.filter(type=category)
-                    .offset(offset)
-                    .limit(batch_size)
-                    .values("content")
+                        await MessagesLog.filter(type=category)
+                        .offset(offset)
+                        .limit(batch_size)
+                        .values("content")
                 )
             else:
                 users = await MessagesLog.all().offset(offset).limit(batch_size)

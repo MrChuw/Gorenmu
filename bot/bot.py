@@ -32,6 +32,7 @@ from bot.utils.caches import (Cache, SessionsCaches, aioCache)
 from bot.utils.command_handler import CommandHandler
 from bot.utils.dynamic_descriptions import DynamicDescriptions
 
+from bot.models.migrations import migrations
 
 import twitchio
 from twitchio import eventsub
@@ -123,6 +124,7 @@ class Gorenmu(Bot):
 
     async def setup_database(self) -> None:
         await Tortoise.init(config=self.config.DatabaseConfig.DB_CONFIG)
+        await migrations()
         await Tortoise.generate_schemas()
         try:
             user = await UserModel.get(id=926706091)

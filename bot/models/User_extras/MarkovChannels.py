@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from tortoise import Model, fields
+
+from tortoise import fields, Model
 
 from bot.models.base import TimestampMixin
-
 
 if TYPE_CHECKING:
     from bot.models.User import User
@@ -15,7 +15,7 @@ class MarkovChannels(Model, TimestampMixin):
     transition = fields.JSONField()
 
     channel: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-        "models.Channel", related_name="MarkovChannels"
+            "models.Channel", related_name="MarkovChannels"
     )
 
     class Meta:

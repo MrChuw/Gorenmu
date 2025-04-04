@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from datetime import datetime, UTC, timedelta
-from typing import TYPE_CHECKING, Union
+from datetime import datetime, timedelta, UTC
 from math import ceil
+from typing import TYPE_CHECKING
 
 from tortoise import fields
 
@@ -10,16 +10,18 @@ from bot.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
     from bot.models.User import User
+    from bot.ext.commands import Context
+    from bot.translations import Response
 
 
 class Cookies(Base, TimestampMixin):
-    cooldown: Union[datetime, fields.DatetimeField] = fields.DatetimeField(null=True)
-    stocked: Union[float, fields.IntField] = fields.IntField(default=10)
-    streak: Union[int, fields.IntField] = fields.IntField(default=0)
-    consumed: Union[int, fields.IntField] = fields.IntField(default=0)
-    donated: Union[int, fields.IntField] = fields.IntField(default=0)
-    received: Union[int, fields.IntField] = fields.IntField(default=0)
-    total: Union[int, fields.IntField] = fields.IntField(default=0)
+    cooldown: fields.DatetimeField = fields.DatetimeField(null=True)
+    stocked: fields.IntField = fields.IntField(default=10)
+    streak: fields.IntField = fields.IntField(default=0)
+    consumed: fields.IntField = fields.IntField(default=0)
+    donated: fields.IntField = fields.IntField(default=0)
+    received: fields.IntField = fields.IntField(default=0)
+    total: fields.IntField = fields.IntField(default=0)
 
     user: User = fields.ForeignKeyField("models.User", related_name="cookies")
 
@@ -98,12 +100,10 @@ class Cookies(Base, TimestampMixin):
         await self.save()
         return self
 
-
     async def new_cooldown(self) -> Cookies:
         self.cooldown = datetime.now(UTC) - timedelta(hours=6)
         await self.save()
         return self
-
 
     def not_redeemed(self) -> int:
         cookie_cooldown = datetime.now(UTC) - self.cooldown
@@ -111,9 +111,40 @@ class Cookies(Base, TimestampMixin):
         chunk_size = 6
         return max(0, ceil(hours_difference / chunk_size))
 
-
     def datetime_to(self, amount: int):
         total_hours_needed = amount * timedelta(hours=6).total_seconds() / 3600
         final_time = self.cooldown + timedelta(hours=total_hours_needed)
         return final_time - datetime.now(UTC)
 
+    @staticmethod
+    async def find_by_name(name: str, ctx: Context) -> Cookies | Response:
+        user_id_cached = await ctx.bot.memcache.get(key=name, namespace="user_name")
+        if not user_id_cached:
+            cookie = await Cookies.get_or_none(name=name)
+            if not cookie:
+                return ctx.user.translations.Exceptions.user_not_found_name.format_response(ctx, name)
+            await ctx.bot.memcache.set(key=cookie.id, value=cookie, namespace="cookie", ttl=timedelta(days=1))
+        else:
+            cookie = await Cookies.find_by_id(user_id_cached, ctx)
+        return cookie
+
+    @staticmethod
+    async def find_by_id(user_id: int, ctx: Context) -> Cookies | Response:
+        cookie = await ctx.bot.memcache.get(key=user_id, namespace="cookie")
+        if not cookie:
+            cookie = await Cookies.get_or_none(id=user_id)
+            if not cookie:
+                return ctx.user.translations.Exceptions.user_not_found_id.format_response(ctx, user_id)
+            await ctx.bot.memcache.set(key=cookie.id, value=cookie, namespace="cookie",
+                                       ttl=timedelta(days=2).total_seconds()
+                                       )
+        return cookie
+
+    @staticmethod
+    async def get_cookie(ctx: Context, name: str = None, user_id: int = None) -> Cookies | Response:
+        if name:
+            return await Cookies.find_by_name(name=name, ctx=ctx)
+        elif user_id:
+            return await Cookies.find_by_id(user_id=user_id, ctx=ctx)
+        else:
+            return await Cookies.find_by_id(user_id=ctx.user.id, ctx=ctx)

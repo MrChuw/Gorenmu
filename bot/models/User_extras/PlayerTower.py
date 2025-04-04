@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from tortoise import fields
 
 from bot.models.base import Base, TimestampMixin
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING, Union
+
 if TYPE_CHECKING:
     from bot.models.User import User
 
@@ -24,7 +26,7 @@ class PlayerTower(Base, TimestampMixin):
     cooldown = fields.IntField(default=0)
 
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-        "models.User", related_name="player_torre"
+            "models.User", related_name="player_torre"
     )
 
     class Meta:
