@@ -4,7 +4,7 @@ from bot.translations.base_decorators import Decorators, BaseDecorators, BaseCom
 from bot.translations.extras import Response, Activity
 import json
 import pathlib
-
+import os
 
 
 def open_file(filepath: pathlib.Path, fallback=None):
@@ -15,8 +15,17 @@ def open_file(filepath: pathlib.Path, fallback=None):
         return json.load(file)
 
 
-base_path = pathlib.Path("bot/translations/langs")
+fullpath = os.getcwd()
+folder_name = os.path.basename(fullpath)
+
+if folder_name == "tests":
+    base_path = pathlib.Path(fullpath).parent / "bot/translations/langs"
+elif folder_name == "cogs":
+    base_path = pathlib.Path(fullpath).parent.parent / "bot/translations/langs"
+else:
+    base_path = pathlib.Path("bot/translations/langs")
 afks = Activity(open_file(base_path / "en/extras/activity.json")["Activity"])
+
 
 # TODO: Lidar com acentos,
 def load_langs():

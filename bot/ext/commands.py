@@ -74,12 +74,12 @@ class Bot(TwitchioBot):
             return "+"
         return self.channels[message.broadcaster.name].prefix
 
-    async def get_context(self, message: ChatMessage | twitchio.Whisper, *, cls: Context = None):
+    async def get_context(self, payload: ChatMessage | twitchio.Whisper, *, cls: Context = None):
         """Get a Context object from a message.
 
         Parameters
         ----------
-        message: :class:`.Message`
+        payload: :class:`.Message`
             The message object to get context for.
         cls
             The class to return. Defaults to Context. Its constructor must take message, prefix, valid, and bot
@@ -93,14 +93,13 @@ class Bot(TwitchioBot):
         ---------
         :class:`.CommandNotFound` No valid command was passed
         """
-        if "\x01ACTION " in message.text:
-            message.text = message.text.replace("\x01ACTION ", "").replace("\x01", "")
-        prefix = await self.get_prefix(message)
+        if "\x01ACTION " in payload.text:
+            payload.text = payload.text.replace("\x01ACTION ", "").replace("\x01", "")
+        prefix = await self.get_prefix(payload)
         invoke_by = None
-        if message and message.text and prefix in message.text:
-            invoke_by = message.text.partition(" ")[0][len(prefix):].lower()
-        context = Context(message=message, bot=self, prefix=prefix, invoke_by=invoke_by)
-        return context
+        if payload and payload.text and prefix in payload.text:
+            invoke_by = payload.text.partition(" ")[0][len(prefix):].lower()
+        return Context(message=payload, bot=self, prefix=prefix, invoke_by=invoke_by)
 
     async def invoke(self, context: Context, *, index=0) -> Response | None | bool:  # NOQA
         try:
@@ -113,8 +112,6 @@ class Bot(TwitchioBot):
 class Context(TwitchioContext):
     user: UserModel
     bot: Gorenmu
-    # translations: Translations
-    # decorators:  Decorators
     command: Command
     _command: Command
     invoke_by: str | None = None
@@ -321,7 +318,7 @@ class Context(TwitchioContext):
 class CustomComponent(Component):
     def __new__(cls, *args, **kwargs) -> Self:
         self: Self = super().__new__(cls, *args, **kwargs)
-        bot: Gorenmu = args[0]
+        bot: Gorenmu = args[0] if args else kwargs.get('bot')
         translations = bot.TranslationManager
         rate = getattr(self, 'cooldown_rate', 10)
         per = getattr(self, 'cooldown_per', 3)
@@ -336,14 +333,10 @@ class CustomComponent(Component):
             if len(command_._buckets) == 0:  # NOQA
                 command_._buckets.append(bucket_)  # NOQA
 
-            if command_.name.lower() in ["afk", "isafk", "rafk"]:  # TODO: Mudar
-                command_.docs = bot.docs_handler.afk_description(command_)
-            elif command_.name.lower() in ["cookies"]:
-                command_.docs = bot.docs_handler.cookies_description(command_)
-            elif command_.name.lower() in ["alias"]:
-                command_.docs = bot.docs_handler.template_description(command_)
+            if command_.name.lower() in ["alias"]:
+                command_.docs = lambda: bot.docs_handler.template_description(command_)
             else:
-                command_.docs = bot.docs_handler.normal_description(command_)
+                command_.docs = lambda: bot.docs_handler.normal_description(command_)
 
         return self
 

@@ -50,15 +50,14 @@ class CommandHandler:
     @staticmethod
     async def load_commands(bot: Gorenmu, path: pathlib.Path) -> None:
         for filename in path.iterdir():
-            if not filename.suffix == ".py" or filename.name.startswith("__"):
+            if filename.suffix != ".py" or filename.name.startswith("__"):
                 continue
             try:
-                # if filename.name in ['imgur.py', 'imgur_repeated.py', 'nada.py', 'reload.py']:
-                if filename.name in ['cookies.py']:
-                    pass
-                local: str = os.path.join(path, filename.name)
-                name: str = local[:-3].replace("/", ".")
-                package: str = ".".join(filename.parts)
+                # if filename.name in ['cookies.py']:  # ['imgur.py', 'imgur_repeated.py', 'nada.py', 'reload.py']:
+                #     pass
+                local = os.path.join(path, filename.name)
+                name = local[local.find('bot/cogs'):-3].replace("/", ".")
+                package = ".".join(filename.parts[filename.parts.index('bot'):]).removesuffix('.py')
                 module: types.ModuleType = import_module(name, package=package)
                 if not getattr(module, "setup"):
                     continue
@@ -78,12 +77,12 @@ class CommandHandler:
     @staticmethod
     def load_manual_event_message(bot: Gorenmu, path: pathlib.Path) -> None:
         for filename in path.iterdir():
-            if not filename.suffix == ".py" or filename.name.startswith("__"):
+            if filename.suffix != ".py" or filename.name.startswith("__"):
                 continue
             try:
-                local: str = os.path.join(path, filename.name)
-                name: str = local[:-3].replace("/", ".")
-                package: str = ".".join(filename.parts)
+                local = os.path.join(path, filename.name)
+                name = local[local.find('bot/cogs'):-3].replace("/", ".")
+                package = ".".join(filename.parts[filename.parts.index('bot'):]).removesuffix('.py')
                 module: types.ModuleType = import_module(name, package=package)
                 if hasattr(module, "event_message"):
                     bot.manual_event_message.append(module.event_message)
@@ -93,12 +92,12 @@ class CommandHandler:
     @staticmethod
     def load_routines(bot: Gorenmu, path: pathlib.Path) -> None:
         for filename in path.iterdir():
-            if not filename.suffix == ".py" or filename.name.startswith("__"):
+            if filename.suffix != ".py" or filename.name.startswith("__"):
                 continue
             try:
-                local: str = os.path.join(path, filename.name)
-                name: str = local[:-3].replace("/", ".")
-                package: str = ".".join(filename.parts)
+                local = os.path.join(path, filename.name)
+                name = local[local.find('bot/cogs'):-3].replace("/", ".")
+                package = ".".join(filename.parts[filename.parts.index('bot'):]).removesuffix('.py')
                 module: types.ModuleType = import_module(name, package=package)
                 routine: Routine = module.routine
                 bot.routines.append(routine)
@@ -106,8 +105,12 @@ class CommandHandler:
                 logger.error(f"Routine '{filename.name[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     @staticmethod
-    async def load_cogs(bot: Gorenmu, base: str) -> None: # TODO: Mudar para lidar com os novos comandos
-        cogs = pathlib.Path(base)
+    async def load_cogs(bot: Gorenmu, base: str = None) -> None: # TODO: Mudar para lidar com os novos comandos
+        if base is None:
+            base = pathlib.Path(__file__).parent.parent / 'cogs'
+        else:
+            base = pathlib.Path(base)
+        cogs = base
         try:
             for cog in cogs.iterdir():
                 cog: pathlib.Path
@@ -116,7 +119,7 @@ class CommandHandler:
                 if cog.is_file():
                     continue
                 for folder in cog.iterdir():
-                    if folder.name == "__pycache__" or folder.name == "data":
+                    if folder.name in ["__pycache__", "data"]:
                         continue
                     if "commands" in folder.name or "command" in folder.name:
                         await CommandHandler.load_commands(bot, folder.joinpath())
@@ -129,9 +132,13 @@ class CommandHandler:
             logger.error(e)
 
     @staticmethod
-    async def reload_cogs(bot: Gorenmu, base: str = "bot/cogs") -> None:
+    async def reload_cogs(bot: Gorenmu, base: str = None) -> None:
         CommandHandler.stop_routines(bot)
-        cogs = pathlib.Path(base)
+        if base is None:
+            base = pathlib.Path(__file__).parent.parent / 'cogs'
+        else:
+            base = pathlib.Path(base)
+        cogs = base
         for cog in cogs.iterdir():
             cog: pathlib.Path
             if ".example" in cog.name:
@@ -139,7 +146,7 @@ class CommandHandler:
             if cog.is_file():
                 continue
             for folder in cog.iterdir():
-                if folder.name == "__pycache__" or folder.name == "data":
+                if folder.name in ["__pycache__", "data"]:
                     continue
                 if "commands" in folder.name or "command" in folder.name:
                     await CommandHandler.load_commands(bot, folder.joinpath())

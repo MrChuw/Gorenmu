@@ -109,10 +109,15 @@ class Check:
             cookie = await Cookies.get(id=int(ctx.author.id))
         except DoesNotExist:
             cookie = await Cookies.create(user=ctx.user, id=int(ctx.author.id))
+        seed = datetime.now().toordinal()
+        if not cookie.cooldown and cookie.daily:
+            amount = cookie.daily - seed
+            await cookie.new_cooldown(amount)
+            ...
         if not cookie.cooldown:
             await cookie.new_cooldown()
 
-        ctx.bot.CookieTools.seed = datetime.now().toordinal()
+        ctx.bot.CookieTools.seed = seed
         if ctx.bot.CookieTools.seed % 100 == 0:
             ctx.bot.CookieTools.multiplicador = 5
         elif ctx.bot.CookieTools.seed % 10 == 5:

@@ -19,7 +19,7 @@ class Response:
         self.object: Optional[object] = data.get("object")
         self.handle: Optional[str] = data.get("handle")
         self.pipe: bool = data.get("pipe", True)
-        self.response_string: str = ""
+        self.response_string: str = data.get("response_string")
 
     def format_response(self, ctx: Context, *args: Any, **kwargs: Any) -> Response:
         self.ctx = ctx
@@ -171,8 +171,10 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
                     setattr(self, name.removesuffix("_str"), base)
                 else:
                     setattr(self, name, Response(response=base))
-            if type(base) is list:
+            elif type(base) is list:
                 setattr(self, name, base)
-            if type(base) is dict and len(base) == 0:
+            elif type(base) is dict and len(base) == 0:
                 setattr(self, name, Response({}))
+            else:
+                setattr(self, name, base)
             ...

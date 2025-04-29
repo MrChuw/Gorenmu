@@ -104,13 +104,21 @@
                 "bet",
                 "consult"
             ]
+        },
+        "Emotes": {
+            "emotions": {
+                "happy": ["happy"],
+                "pog": ["pog"],
+                "sad": ["sad"]
+            }
         }
     },
     "Exceptions": {
         "user_not_found_id": "I couldn't find any user with id {}.",
         "user_not_found_name": "I couldn't find any user named @{}.",
+        "time_expired": "Time {} has already expired.",
         "user_not_provided": "No target user provided!",
-        "never_seen": "I don't remember ever seeing any {}.",
+        "never_seen": "I don't remember ever seeing any @{}.",
         "channel_not_found": "I couldn't find any channel named @{}.",
         "dev_required_str": "you need to be my creator to run this command.",
         "owner_required_str": "commands reserved for the bot owner.",
@@ -123,7 +131,6 @@
         "lottery_seed_str": "something terrible happened, contact \"{}\" here on Twitch using whispers.",
         "announcement_str": "something went wrong with the announcement. {}",
         "message_too_long": "This message is too long.",
-        "time_expired": "Time for {} has already expired.",
         "unexpected_error": "An error occurred, please try again.",
         "too_much_characters": "The message must have a maximum of 450 characters."
     },
@@ -131,24 +138,24 @@
             "response": "Pipe is not really a command. For more information, visit this link: {}"
     },
     "Afk": {
-        "afk_response": "{}: {}",
-        "afk_content_response": "{}: {} and left a note with: {}"
+        "afk_response": "{} {}",
+        "afk_content_response": "{} {} and left a note with: {}"
     },
     "IsAfk": {
         "bot_nick": "I'm always here… watching.",
-        "author_nick": "you're not working… obviously.",
-        "is_afk": "@{} {}: {}",
-        "is_afk_content": "@{} {} and left a note: {}",
+        "author_nick": "you're not afk… obviously.",
+        "is_afk": "@{} {} {}",
+        "is_afk_content": "@{} {} {} and left a note: {}",
         "is_not_afk": "@{} is not AFK."
     },
     "RAfk": {
-        "return_expired_str": "return afk",
-        "is_afk": "{}: {}",
+        "return_expired_str": "to return AFK",
+        "is_afk": "{} {}",
         "is_afk_content": "{} {} and left a note: {}",
         "is_not_afk": "you are not AFK."
     },
     "AfkListeners": {
-        "is_afk": "{}: {} (was away for {} {})",
+        "is_afk": "{} {} (was away for {} {})",
         "is_afk_content": "{} {} and left a note: {} (was away for {} {})"
     },
     "Alias": {
@@ -342,19 +349,42 @@
         "multiple_gift_plural": "you gifted @{} with {} cookies 🎁",
         "gift_plural": "you gave @{} a cookies 🎁",
         "invalid_amount": "you are trying to bet {} but you only have {} unredeemed cookies.",
+
+        "all_string_str": "all",
+        "time_suffix_str": "The next one is available in {}.",
+
+        "cookie_win_suffix_str": "and earned {} cookies. {}",
+        "cookie_loss_suffix_str": "and lost everything. {}",
+        "cookie_message": "",
+        "accumulated_message": "{} You have used {} unredeemed cookie(s) {}",
+        "last_cookie_message": "{} You used your last available cookie {}",
+
+
+
+
         "daily_win": "{} you used your daily cookie and got {} cookies!",
         "daily_single_loss": "{} you lost your daily cookie…",
+
         "not_daily_multiple_loss": "{} you used your daily unredeemed cookie and earned {} cookies!",
         "not_daily_single_loss": "{} you lost your unredeemed daily cookie…",
         "not_daily_multiple_win": "you used {} daily unredeemed cookies and gained {} cookies from the following.",
+
         "not_daily_lost_everything": "you used {} daily cookies and lost everything PoroSad",
-        "format_cookie_count": {
-            "cookie_count": "Have you already eaten {} cookies 🥠,",
-            "stocked_count": "has {} in stock,",
-            "received_count": "was presented with {},",
-            "donated_count": "gifted {},",
-            "not_redeemed_count": "and has a total of {} unredeemed.",
-            "total_count": "and there were a total of {} cookies that have already been added to the account."
+        "formats_cookie_count": {
+            "cookie_count": "Have you already eaten {} cookies 🥠.",
+            "stocked_count": "Has {} in stock.",
+            "received_count": "Was presented with {}.",
+            "donated_count": "Gifted {}.",
+            "not_redeemed_count": "And has a total of {} unredeemed.",
+            "total_count": "And there were a total of {} cookies that have already been added to the account."
+        },
+        "order_dict": {
+            "stocked": ["stocked", "stocked"],
+            "streak": ["streak", "streak"],
+            "consumed": ["consumed", "cookiers"],
+            "donated": ["donated", "givers"],
+            "received": ["received", "receivers"],
+            "total": ["total", "total"]
         }
     },
     "Markov": {
