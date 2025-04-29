@@ -1,0 +1,58 @@
+version = "2.0.0"
+
+[development]
+#development = true
+
+[bot]
+bot_id = 707980467
+color = 0x9147FF
+dev_userid = 411010313
+dev_name = "mr_chuw"
+dev_display_name = "MrChuw"
+default_prefix = "+"
+allowed_prefix_list = false
+allowed_prefix_size = 10
+site_url = "https://gorenmu.vercel.app/"
+imgur_authorized_ids = [184900613, 411010313]
+
+[apis]
+COLOR_SITE_URL = "${COLOR_SITE_URL}"
+image_carousel = "${IMAGE_CAROUSEL}"
+image_carousel_api_key = "${IMAGE_CAROUSEL_API_KEY}"
+site_api_key = "${SITE_API_KEY}"
+shlink_key = "${SHLINK_KEY}"
+shlink_url = "${SHLINK_URL}"
+access_token = "blablabla"
+access_oauth_token = "blablabla"
+refresh_token = "blablabla"
+client_id = "blablabla"
+
+api_client_id = "blablabla"
+api_client_secret = "blablabla"
+
+pastbin_url="https://bin.mrchuw.com.br/documents"
+file_upload_url = "${FILE_UPLOAD_URL}"
+enable_site_endpoints = false
+
+[database]
+type = "memory"
+login = "${DB_LOGIN}"
+password = "${DB_PASSWORD}"
+host = "127.0.0.1"
+port = 3307
+name = "${DB_NAME}"
+
+[cache]
+type = "memory"
+host = "${REDIS_HOST}"
+port = "${REDIS_PORT}"
+password = "${REDIS_PASSWORD}"
+namespace = "${REDIS_NAMESPACE}"
+db = "${REDIS_DB}"
+
+
+[logger]
+format = "{time:YYYY-MM-DD HH:mm:ss} [{level}] {name} {module}.py:{line} {message}"
+level = "INFO"
+enqueue = true
+colorize = true
