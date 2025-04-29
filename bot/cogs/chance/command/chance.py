@@ -29,7 +29,7 @@ class ChanceCmd(commands.CustomComponent):
     @commands.base_decorator(BaseDecorators.Chance)
     @commands.command(name='chance', aliases=['%'])
     async def chance(self, ctx: Context, *, args="") -> Response:
-        chance = f'{("{:.2f}%".format(random.random() * 100))} {args}'
+        chance = f'{("{:.2f}%".format(random.random() * 100))}'
         return ctx.user.translations.Chance.random_percentage.format_response(ctx, chance)
 
 

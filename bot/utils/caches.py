@@ -123,7 +123,7 @@ class BaseCachedSession:
 
 class SessionsCaches:
     def __init__(self, bot):
-        self.UserAgent: str = "Mozilla/5.0 (compatible; Gorenmu/2.0; +https://gorenmu.vercel.app/)"
+        self.UserAgent: str = "Mozilla/5.0 (compatible; Gorenmu/2.0; +https://github.com/MrChuw/Gorenmu)"
         for name, cls in vars(self.__class__).items():
             if isinstance(cls, type) and issubclass(cls, BaseCachedSession):
                 setattr(self, name, cls(bot, useragent=self.UserAgent))  # NOQA
@@ -319,4 +319,15 @@ class SessionsCaches:
                     }
     BooruCachedSession: BooruCachedSession
 
+    class EmotesCachedSession(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            super().__init__(bot=bot, cache_name="Emotes_requests", useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {
+                    "*7tv.io/v3/*": timedelta(minutes=15),
+                    "*api.betterttv.net/3/*": timedelta(minutes=15),
+                    "*api.frankerfacez.com/v1/*": timedelta(minutes=15),
+            }
+    EmotesCachedSession: EmotesCachedSession
 

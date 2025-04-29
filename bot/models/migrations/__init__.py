@@ -33,10 +33,6 @@ async def migrations():
 
 
 
-    print("Manually change the names for markov tables.")
-    ...
-
-
 
 
 

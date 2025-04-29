@@ -9,6 +9,8 @@ from .cookie_tools import CookieTools
 from .selenium_tool import Selenium
 from .markov_tools import MarkovProcessor
 from .string_manipulation import StringTools
+from .emotes import Emotes
+from .dynamic_descriptions import DynamicDescriptions
 
 
 

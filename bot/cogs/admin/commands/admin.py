@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import asyncio
+import importlib
 import os
+import pkgutil
 import sys
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
 from bot.translations import BaseDecorators, Response
 from bot.utils import Role
-import importlib
-import gc
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -39,7 +38,6 @@ class AdminSmallCmds(commands.CustomComponent):
         translations = ctx.user.translations.Admin.Nada
         return translations.nada.format_response(ctx, args, success=True, handle=None, response_list=[])
 
-
     @commands.base_decorator(BaseAdmin.Restart)
     @commands.command(name="restart", aliases=[])
     async def restart(self, ctx: Context) -> Response:
@@ -61,6 +59,13 @@ class AdminSmallCmds(commands.CustomComponent):
         if command == "translations":
             try:
                 ctx.bot.TranslationManager = reload_and_get("bot.translations", "TranslationManager")()
+                return translations.translations_reloaded.format_response(ctx)
+            except Exception as e:
+                self.bot.log.error(e)
+                return translations.translations_reloaded_error.format_response(ctx, e, success=False)
+        if command == "emotes":
+            try:
+                self.bot.Emotes = reload_and_get("bot.utils.emotes", "Emotes")(self.bot)
                 return translations.translations_reloaded.format_response(ctx)
             except Exception as e:
                 self.bot.log.error(e)
@@ -102,11 +107,13 @@ async def teardown(bot: Gorenmu) -> None:
 
 
 def reload_and_get(module_name: str, element: str):
-    for mod in list(sys.modules):
-        if mod.startswith(module_name):
-            del sys.modules[mod]
-    gc.collect()
-    module = importlib.import_module(module_name)
-    importlib.reload(module)
-    return getattr(module, element)
+    spec = importlib.util.find_spec(module_name)  # NOQA
+    if spec and spec.submodule_search_locations:
+        prefix = f"{module_name}."
+        for finder, name, ispkg in pkgutil.walk_packages(spec.submodule_search_locations, prefix):  # NOQA
+            sys.modules.pop(name, None)
+    sys.modules.pop(module_name, None)
 
+    importlib.invalidate_caches()
+    module = importlib.import_module(module_name)
+    return getattr(module, element)

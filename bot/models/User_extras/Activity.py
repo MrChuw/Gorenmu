@@ -33,7 +33,7 @@ class Status(Base, TimestampMixin):
         self.online = False
         self.alias = status["alias"]
         self.message = status["content"]
-        self.updated_at = datetime.datetime.fromisoformat(status["updated_at"])
+        self.updated_at = status["updated_at"]
         await self.save()
 
     @staticmethod

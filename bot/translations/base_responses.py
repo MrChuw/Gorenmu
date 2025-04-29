@@ -12,6 +12,7 @@ from .extras import TimeTools
 from .extras import Dicio
 from .extras import BaseFunctions
 from .extras import WeatherTools
+from .extras import EmoteEmotions
 
 if TYPE_CHECKING:
     from bot.ext import Context
@@ -35,8 +36,8 @@ class BaseTranslations:
     class SupportTools(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.populate_subclasses(base_cls=self)
             self.populate_responses()
+            self.populate_subclasses(base_cls=self)
             self.Dicio: Dicio = Dicio()
         Dicio: Dicio
         mention: str
@@ -57,10 +58,19 @@ class BaseTranslations:
             bet_or_consultation: list[str]
         Lottery: Lottery
 
+        class Emotes(BaseFunctions):
+            def __init__(self, translation: dict):
+                super().__init__(translation, None)
+                self.populate_responses()
+                self.emotions = EmoteEmotions(self.emotions)  # NOQA
+                ...
+            emotions: EmoteEmotions
+        Emotes: Emotes
+
+
     class Exceptions(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.populate_subclasses(base_cls=self)
             self.populate_responses()
 
         user_not_found_id: Response
@@ -117,6 +127,7 @@ class BaseTranslations:
         is_afk: Response
         is_afk_content: Response
         is_not_afk: Response
+        return_expired: str
 
     class AfkListeners(BaseFunctions):
         def __init__(self, translation: dict):
@@ -322,6 +333,86 @@ class BaseTranslations:
         unexpected_error: Response
         translation: Response
 
+    class Cookies(BaseFunctions):
+        def __init__(self, translation: dict, extras: BaseFunctions):
+            super().__init__(translation, None)
+            self.populate_responses()
+            self.cookies_path: pathlib.Path = extras.get_object("cookies_path")
+
+        cookies_path: pathlib.Path
+
+        formats_cookie_count: dict[str, str]
+
+        order_dict: dict[str, dict[list[str]]]
+
+        daily_limit_reached: Response
+        user_not_found: Response
+        invalid_option: Response
+        cookie_not_found: Response
+
+        not_eat: Response
+        negative_eat: Response
+        multiple_eat: Response
+        eat: Response
+
+        cc_bot_nick: Response
+
+        gift_bot_nick: Response
+        gift_user_himself: Response
+        gift_on_cooldown_no_stock: Response
+        invalid_gift_amount: Response
+        multiple_gift: Response
+        gift: Response
+        gift_not_enough_cookies: Response
+        stock: Response
+        stock_not_daily: Response
+        stock_not_enough_cookies: Response
+        ranks: Response
+        top10_ish: Response
+
+        invalid_amount: Response
+
+        all_string: str
+        time_suffix: str
+
+
+        cookie_win_suffix: str
+        cookie_loss_suffix: str
+        accumulated_message: Response
+        last_cookie_message: Response
+
+        daily_win: Response
+        daily_single_loss: Response
+        not_daily_multiple_loss: Response
+        not_daily_single_loss: Response
+        not_daily_multiple_win: Response
+        not_daily_lost_everything: Response
+
+        def random_line(self):
+            return random.choice(json.loads(self.cookies_path.read_text())["options"])
+
+        def format_cookie_count(self, ctx: Context, *args: Any, **kwargs: Any):
+            # Custom formatting function based on provided cookie stats.
+            translations = self.formats_cookie_count
+            mention = kwargs.pop("mention", "")
+            cookie: Cookies = kwargs.pop("cookie")
+            fields = [
+                    ("cookie_count", cookie.consumed),
+                    ("stocked_count", cookie.stocked),
+                    ("received_count", cookie.received),
+                    ("donated_count", cookie.donated),
+                    ("not_redeemed_count", cookie.not_redeemed()),
+                    ("total_count", cookie.total),
+            ]
+            parts = [translations[key].format(value) for key, value in fields if value > 0]
+            if parts:
+                parts[0] = parts[0].lower()
+
+            response = f"{mention} {' '.join(parts)}".strip()
+
+            return Response({"ctx": ctx, "response_string": response})
+
+
     class Lottery(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
@@ -356,62 +447,6 @@ class BaseTranslations:
 
             self.lottery_result_announce: str = self.get_object("lottery_result_announce")
             self.remind_message: str = self.get_object("remind_message")
-
-    class Cookies(BaseFunctions):
-        def __init__(self, translation: dict, extras: BaseFunctions):
-            super().__init__(translation, None)
-            self.cookies_path: pathlib.Path = extras.get_object("cookies_path")
-
-            self.daily_limit_reached: Response = Response(response=self.get_object("daily_limit_reached"))
-            self.user_not_found: Response = Response(response=self.get_object("user_not_found"))
-            self.invalid_option: Response = Response(response=self.get_object("invalid_option"))
-            self.cookie_not_found: Response = Response(response=self.get_object("cookie_not_found"))
-
-            self.not_eat: Response = Response(response=self.get_object("not_eat"))
-            self.negative_eat: Response = Response(response=self.get_object("negative_eat"))
-            self.multiple_eat: Response = Response(response=self.get_object("multiple_eat"))
-            self.eat: Response = Response(response=self.get_object("eat"))
-
-            self.cc_bot_nick: Response = Response(response=self.get_object("cc_bot_nick"))
-
-            self.gift_bot_nick: Response = Response(response=self.get_object("gift_bot_nick"))
-            self.gift_user_himself: Response = Response(response=self.get_object("gift_user_himself"))
-            self.gift_on_cooldown_no_stock: Response = Response(response=self.get_object("gift_on_cooldown_no_stock"))
-            self.invalid_gift_amount: Response = Response(response=self.get_object("invalid_gift_amount"))
-            self.multiple_gift: Response = Response(response=self.get_object("multiple_gift"))
-            self.gift: Response = Response(response=self.get_object("gift"))
-            self.gift_not_enough_cookies: Response = Response(response=self.get_object("gift_not_enough_cookies"))
-            self.stock: Response = Response(response=self.get_object("stock"))
-            self.stock_not_daily: Response = Response(response=self.get_object("stock_not_daily"))
-            self.stock_not_enough_cookies: Response = Response(response=self.get_object("stock_not_enough_cookies"))
-            self.ranks: Response = Response(response=self.get_object("ranks"))
-            self.top10_ish: Response = Response(response=self.get_object("top10_ish"))
-            self.format_cookie_count: dict[str, str] = self.get_object("format_cookie_count")
-
-            self.invalid_amount: Response = Response(response=self.get_object("invalid_amount"))
-            self.daily_win: Response = Response(response=self.get_object("daily_win"))
-            self.daily_single_loss: Response = Response(response=self.get_object("daily_single_loss"))
-            self.not_daily_multiple_loss: Response = Response(response=self.get_object("not_daily_multiple_loss"))
-            self.not_daily_single_loss: Response = Response(response=self.get_object("not_daily_single_loss"))
-            self.not_daily_multiple_win: Response = Response(response=self.get_object("not_daily_multiple_win"))
-            self.not_daily_lost_everything: Response = Response(response=self.get_object("not_daily_lost_everything"))
-
-        def random_line(self):
-            return random.choice(json.loads(self.cookies_path.read_text())["root"]["options"])
-
-        def format_cookie_count(self, ctx: Context, *args: Any, **kwargs: Any):
-            # Custom formatting function based on provided cookie stats.
-            translations = self.format_cookie_count
-            response = kwargs.pop("mention", "") + " "
-            cookie: Cookies = kwargs.pop("cookie")
-            response += translations["cookie_count"].format(cookie.consumed) if cookie.consumed > 0 else ""
-            response += translations["stocked_count"].format(cookie.stocked) if cookie.stocked > 0 else ""
-            response += translations["received_count"].format(cookie.received) if cookie.received > 0 else ""
-            response += translations["donated_count"].format(cookie.donated) if cookie.donated > 0 else ""
-            response += translations["not_redeemed_count"].format(cookie.not_redeemed()) if cookie.not_redeemed() > 0 else ""
-            response += translations["total_count"].format(cookie.total)
-            return Response({"response": response})
-
 
     class NSFW(BaseFunctions):
         def __init__(self, translation: dict):

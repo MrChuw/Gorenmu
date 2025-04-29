@@ -35,9 +35,10 @@ class IsAfkCmd(commands.CustomComponent):
     async def isafk(self, ctx: Context, *, content: str, ) -> Response:
         translations = ctx.user.translations
         name = ctx.bot.StringTools.str2name(content.split()[0])
-        actions = {ctx.bot.bot_nick: translations.IsAfk.bot_nick.format_response(ctx, success=False),
-                   ctx.author.name: translations.IsAfk.author_nick.format_response(ctx, success=False)
-                   }
+        actions = {
+                ctx.bot.bot_nick: translations.IsAfk.bot_nick.format_response(ctx, success=False),
+                ctx.author.name: translations.IsAfk.author_nick.format_response(ctx, success=False)
+            }
         if name in actions:
             return actions[name]
         user = await User.get_or_none(name=name) if name != ctx.author.name.lower() else ctx.user
@@ -50,7 +51,7 @@ class IsAfkCmd(commands.CustomComponent):
         status = ctx.user.translations.Afk.afks[afk.alias]
         if not afk.message:
             return translations.IsAfk.is_afk.format_response(ctx, name, status.current, status.emoji)
-        return translations.IsAfk.is_afk.format_response(ctx, name, status.current, status.emoji, afk.message)
+        return translations.IsAfk.is_afk_content.format_response(ctx, name, status.current, status.emoji, afk.message)
 
 
 async def setup(bot: Gorenmu) -> None:

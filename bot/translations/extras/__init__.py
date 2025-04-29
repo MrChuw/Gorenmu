@@ -9,6 +9,9 @@ from .humanize import Humanize
 from .weather import WeatherTools
 from .dicio import Dicio
 from .response import BaseFunctions
+from .emotes import EmoteEmotions
+
+
 
 
 

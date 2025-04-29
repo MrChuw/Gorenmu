@@ -26,11 +26,11 @@ from bot.models import Channel as ChannelModel, User as UserModel
 from bot.models.User_extras import BotsIgnore
 from bot.translations import Response, TranslationManager
 from bot.utils import (
-    CookieTools, LotteryTools, MarkovProcessor, ToolsTools, UploadThings, StringTools, Check
+    CookieTools, Emotes, LotteryTools, MarkovProcessor, ToolsTools, UploadThings, StringTools, Check, Cache,
+    SessionsCaches, CommandHandler, DynamicDescriptions,
 )
-from bot.utils.caches import (Cache, SessionsCaches, aioCache)
-from bot.utils.command_handler import CommandHandler
-from bot.utils.dynamic_descriptions import DynamicDescriptions
+
+
 
 from bot.models.migrations import migrations
 
@@ -72,6 +72,7 @@ class Gorenmu(Bot):
         self.StringTools: StringTools = StringTools()
         self.LotteryTools: LotteryTools = LotteryTools(self)
         self.CookieTools: CookieTools = CookieTools(self)
+        self.Emotes: Emotes = Emotes(self)
         self.lottery_lock: asyncio.Lock = asyncio.Lock()
         self.manual_event_message: list[Callable] = []
         self.bots_ids: list[int] = []
@@ -124,12 +125,12 @@ class Gorenmu(Bot):
 
     async def setup_database(self) -> None:
         await Tortoise.init(config=self.config.DatabaseConfig.DB_CONFIG)
-        await migrations()
+        # await migrations()
         await Tortoise.generate_schemas()
         try:
-            user = await UserModel.get(id=926706091)
+            user = await UserModel.get(id=411010313)
         except DoesNotExist:
-            user = await UserModel.create_or_none(926706091, "MrNotChuw")
+            user = await UserModel.create_or_none(411010313, "MrChuw")
         try:
             await ChannelModel.get(user=user)
         except DoesNotExist:
@@ -213,7 +214,6 @@ class Gorenmu(Bot):
             return None
         self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
         return await ctx.simple_response(ctx, translations.error_not_registered.format(self.dev_name))
-
 
     async def event_message(self, payload: ChatMessage):
         if payload.chatter.id == str(self.bot_id) or payload.source_broadcaster is not None:

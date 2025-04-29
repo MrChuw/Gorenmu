@@ -20,6 +20,8 @@ if TYPE_CHECKING:
     from bot.ext.commands import Context
     from bot.translations import Translations, Response
 
+url_extractor = URLExtract()
+
 
 class User(Base, UserMixin, TimestampMixin, ContentMixin):
     channel: CharFieldStr = fields.CharField(max_length=64, null=True, description="Twitch channel")
@@ -126,7 +128,7 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
 
     @staticmethod
     async def log_message(user: User, ctx: Context):
-        message_type = "message_link" if URLExtract().find_urls(text=ctx.message.text) else "message"
+        message_type = "message_link" if url_extractor.find_urls(text=ctx.message.text) else "message"
         await MessagesLog.create(
                 user=user,
                 content=ctx.message.text[:500],

@@ -30,16 +30,15 @@ class AFKCmd(commands.CustomComponent):
 
     @commands.base_decorator(BaseDecorators.Afk)
     @commands.command(name='afk', aliases=afk_alias)
-    async def afk(self, ctx: Context, *, content: str = "", ) -> Response:
+    async def afk(self, ctx: Context, *, content: str = "") -> Response:
         translations = ctx.user.translations
         if len(content) >= 450:
-            return translations.Exceptions.message_too_long.format_response(ctx, success=False, pipe=False)
-        afk = translations.afks.get(ctx.invoke_by)  # NOQA
+            return translations.Exceptions.too_much_characters.format_response(ctx, success=False, pipe=False)
+        afk = translations.Afk.afks.get(ctx.invoke_by)  # NOQA
         await Status.go_afk(ctx=ctx, status=afk, content=content)
         if not content:
             return translations.Afk.afk_response.format_response(ctx, afk.leave, afk.emoji, pipe=False)
-        else:
-            return translations.Afk.afk_content_response.format_response(ctx, afk.leave, afk.emoji, content, pipe=False)
+        return translations.Afk.afk_content_response.format_response(ctx, afk.leave, afk.emoji, content, pipe=False)
 
 
 async def setup(bot: Gorenmu) -> None:
