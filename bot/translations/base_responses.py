@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import pathlib
 import random
+import re
 from typing import Any, Dict, TYPE_CHECKING
 
 from .extras import (
@@ -252,10 +253,15 @@ class BaseTranslations:
         def __init__(self, translation: dict):
             super().__init__(translation, None)
             self.populate_responses()
-            self.base_separators: list[str] = [",", " "]
+            self.base_separators: list[str] = [",", r"\s+"]
             self.choice_separators: list[str] = self.base_separators + getattr(self, "additional_separators")
+            self.pattern: str = '|'.join(
+                    s if s.startswith("\\") else re.escape(s)
+                    for s in self.choice_separators
+            )
         chosen_option: Response
         choice_separators: list[str]
+        pattern: str
 
     class Count(BaseFunctions):
         def __init__(self, translation: dict):

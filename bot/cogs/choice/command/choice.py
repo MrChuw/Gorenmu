@@ -31,7 +31,7 @@ class ChoiceCmd(commands.CustomComponent):
     @commands.base_decorator(BaseDecorators.Choice)
     @commands.command(name='choice', aliases=['pick'])
     async def choice(self, ctx: Context, *, content: str) -> Response:
-        pattern = '|'.join(map(re.escape, ctx.user.translations.Choice.choice_separators))
+        pattern = ctx.user.translations.Choice.pattern
         choice = random.choice([arg for arg in re.split(pattern, content) if arg])
         return ctx.user.translations.Choice.chosen_option.format_response(ctx, choice)
 

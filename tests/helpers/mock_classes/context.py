@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import random
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock
 
+from bot.models import User
 from .Channel import MockChannel
 from .User import MockUser
-
-from bot.models import User
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -44,6 +44,7 @@ class MockContext(AsyncMock):
 
 
     async def prepare_context(self, translation: str = 'en'):
+        random.seed(0)
         self.user = await User.create_or_update(self)
         self.user.translations = self.bot.TranslationManager.get_translations(language=translation)
         ...
