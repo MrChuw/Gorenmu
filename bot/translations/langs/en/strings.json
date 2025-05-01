@@ -117,6 +117,9 @@
         "user_not_found_id": "I couldn't find any user with id {}.",
         "user_not_found_name": "I couldn't find any user named @{}.",
         "time_expired": "Time {} has already expired.",
+        "no_content_provided": "You need to provide content for this command.",
+        "too_much_characters": "The message must have a maximum of 450 characters.",
+
         "user_not_provided": "No target user provided!",
         "never_seen": "I don't remember ever seeing any @{}.",
         "channel_not_found": "I couldn't find any channel named @{}.",
@@ -131,8 +134,7 @@
         "lottery_seed_str": "something terrible happened, contact \"{}\" here on Twitch using whispers.",
         "announcement_str": "something went wrong with the announcement. {}",
         "message_too_long": "This message is too long.",
-        "unexpected_error": "An error occurred, please try again.",
-        "too_much_characters": "The message must have a maximum of 450 characters."
+        "unexpected_error": "An error occurred, please try again."
     },
     "Pipe": {
             "response": "Pipe is not really a command. For more information, visit this link: {}"

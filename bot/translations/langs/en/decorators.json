@@ -301,7 +301,7 @@
                 "response": "Note successfully created. 📝 (ID: <note ID>)"
             },
             {
-                "args": "add title:\"title to make it easier to remember the content\" A note about something I want to be able to check forever.",
+                "args": "add title:\"title easier to remember\" A note about something I want to be able to check forever.",
                 "response": "Note successfully created. 📝 (ID: <note ID>)"
             },
             {

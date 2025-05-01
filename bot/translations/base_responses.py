@@ -75,11 +75,13 @@ class BaseTranslations:
 
         user_not_found_id: Response
         user_not_found_name: Response
+        time_expired: Response
+        no_content_provided: Response
+
         user_not_provided: Response
         never_seen: Response
         channel_not_found: Response
         message_too_long: Response
-        time_expired: Response
         unexpected_error: Response
         too_much_characters: Response
 

@@ -110,6 +110,7 @@
         "too_much_characters": "A mensagem deve ter no máximo 450 caracteres.",
         "never_seen": "Não me lembro de ter visto nenhum @{}.",
         "time_expired": "O tempo {} já expirou.",
+        "no_content_provided": "Você precisa fornecer conteúdo para este comando.",
 
         "BotMainLoopExceptions": {
             "dev_required_str": "você precisa ser meu criador para executar este comando.",

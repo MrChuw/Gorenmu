@@ -39,13 +39,13 @@ class AnnotationsCmd(commands.CustomComponent):
     @annotations.command(name="add", aliases=[])
     async def add(self, ctx: Context, *, content: str = ""):
         translations = ctx.user.translations.Annotations
-        content, title = ctx.bot.ToolsTools.extract_and_remove_field(content, "title")
-        if len(title) > 32:
-            return translations.title_too_long.format_response(ctx, success=False)
-        if len(content) > 450:
-            return ctx.user.translations.Exceptions.too_much_characters.format_response(ctx, success=False)
         if not content:
-            return translations.too_few_characters.format_response(ctx, success=False)
+            return ctx.user.translations.Exceptions.no_content_provided.format_response(ctx, success=False, pipe=False)
+        content, title = ctx.bot.ToolsTools.extract_and_remove_field(content, "title")
+        if title and len(title) > 32:
+            return translations.title_too_long.format_response(ctx, success=False, pipe=False)
+        if len(content) > 450:
+            return ctx.user.translations.Exceptions.too_much_characters.format_response(ctx, success=False, pipe=False)
         annotation = await Annotation.create(content=content, user=ctx.user, title=title)
         return translations.annotation_created.format_response(ctx, annotation.id)
 
