@@ -1,5 +1,7 @@
+from unittest.mock import MagicMock, patch
+
 import pytest_asyncio
-from unittest.mock import patch, MagicMock
+
 
 @pytest_asyncio.fixture(autouse=True)
 async def silence_logging():

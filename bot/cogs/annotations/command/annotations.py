@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
-import re
 
 from bot.ext import commands, Context
 from bot.models import Annotation
 from bot.translations import BaseDecorators, Response
 
-
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 __all__ = 'AnnotationsCmd'
+
+
 # TODO: Maybe add whisper annotations
 
 
@@ -52,26 +53,32 @@ class AnnotationsCmd(commands.CustomComponent):
     @annotations.command(name="check", aliases=[])
     async def check(self, ctx: Context, *, content: str = ""):
         translations = ctx.user.translations.Annotations
-        if content.isdigit():
-            annotation = await Annotation.get_or_none(id=int(content), user=ctx.user)
+        if content and not content.isdigit():
+            return ctx.user.translations.Exceptions.id_not_valid.format_response(ctx, content, success=False,
+                                                                                 pipe=False
+                                                                                 )
+        if not content:
+            annotation = await Annotation.filter(user=ctx.user, deleted=False)
             if not annotation:
-                return translations.no_annotations_with_id.format_response(ctx, int(content), success=False)
-            return translations.annotation_content.format_response(ctx, annotation.content)
-        annotation = await Annotation.filter(user=ctx.user, deleted=False)
-        annotations_ = ", ".join([f'{note.title or ""} [{note.id}]' for note in annotation])
-        return translations.all_annotations.format_response(ctx, annotations_)
+                return translations.no_annotation_present.format_response(ctx, success=False, pipe=False)
+            annotations_ = ", ".join([f'{note.title or ""} [{note.id}]' for note in annotation])
+            return translations.all_annotations.format_response(ctx, annotations_)
+        annotation = await Annotation.get_or_none(id=int(content), user=ctx.user, deleted=False)
+        if not annotation:
+            return translations.no_annotations_with_id.format_response(ctx, int(content), success=False, pipe=False)
+        return translations.annotation_content.format_response(ctx, annotation.content)
 
     @annotations.command(name="delete", aliases=[])
     async def delete(self, ctx: Context, *, content: str = ""):
-        translations = ctx.user.translations.Annotations
         if content.isdigit():
             annotation = await Annotation.get_or_none(id=int(content), user=ctx.user)
+            translations = ctx.user.translations.Annotations
             if not annotation:
                 return translations.no_annotations_with_id.format_response(ctx, int(content), success=False)
             annotation.deleted = True
             await annotation.save()
             return translations.deleted.format_response(ctx, annotation.id)
-        return translations.id_not_provided.format_response(ctx, content)
+        return ctx.user.translations.Exceptions.no_id_provided.format_response(ctx, content)
 
 
 async def setup(bot: Gorenmu) -> None:

@@ -3,6 +3,7 @@ import logging
 import os
 from unittest.mock import MagicMock, patch
 
+import pytest
 import pytest_asyncio
 import twitchio
 from twitchio.web import StarletteAdapter
@@ -16,6 +17,11 @@ from tests.helpers.fake_db_data import create_fake_db
 async def silence_logging():
     with patch("logging.getLogger", return_value=MagicMock()):
         yield
+
+
+@pytest.fixture(autouse=True)
+def silence_tortoise_logs():
+    logging.getLogger("tortoise").setLevel(logging.WARNING)
 
 
 @pytest_asyncio.fixture
@@ -39,4 +45,5 @@ async def mock_bot():
 
     yield bot
 
-    await bot.SessionsCaches.close_all_sessions()
+    await bot.close()
+    ...

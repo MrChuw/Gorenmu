@@ -111,6 +111,8 @@
         "never_seen": "Não me lembro de ter visto nenhum @{}.",
         "time_expired": "O tempo {} já expirou.",
         "no_content_provided": "Você precisa fornecer conteúdo para este comando.",
+        "no_id_provided": "Você precisa fornecer um ID numérico válido.",
+        "id_not_valid": "{} não é um ID valido.",
 
         "BotMainLoopExceptions": {
             "dev_required_str": "você precisa ser meu criador para executar este comando.",
@@ -287,7 +289,8 @@
         "annotation_content": "{}",
         "deleted": "Sua anotação com ID {} foi excluída com sucesso. 🗑",
         "id_not_provided": "{} não é um ID válido.",
-        "option_not_recognized": "As opções válidas são apenas \"add\" \"check\" \"delete\""
+        "option_not_recognized": "As opções válidas são apenas \"add\" \"check\" \"delete\"",
+        "no_annotation_present": "Você não tem nenhuma anotação salva."
     },
     "Lottery": {
         "past": [

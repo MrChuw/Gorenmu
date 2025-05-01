@@ -21,7 +21,7 @@ def mock_context(mock_bot):
 
 @pytest.mark.asyncio
 async def test_annotations(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     response: Response = await interact.annotations._callback(self=interact, ctx=mock_context)
     assert response.response_string == ""
     assert mock_context.simple_response.call_count == 1
@@ -32,96 +32,96 @@ async def test_annotations(interact, mock_context: MockContext):
 
 @pytest.mark.asyncio
 async def test_annotations_add_no_content(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     response: Response = await interact.add._callback(self=interact, ctx=mock_context, content="")
-    assert response.response_string == 'You need to provide content for this command.'
+    assert response.response_string == 'Você precisa fornecer conteúdo para este comando.'
     mock_context.reset_mock()
     del response
 
 
 @pytest.mark.asyncio
 async def test_annotations_add_content_no_title(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     response: Response = await interact.add._callback(
             self=interact,
             ctx=mock_context,
             content="A note about something I want to be able to check forever."
     )
-    assert response.response_string == 'Note successfully created. 📝 (ID: 1)'
+    assert response.response_string == 'Nota criada com sucesso. 📝 (ID: 1)'
     mock_context.reset_mock()
     del response
 
 
 @pytest.mark.asyncio
 async def test_annotations_add_content_too_long_no_title(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     response: Response = await interact.add._callback(
             self=interact,
             ctx=mock_context,
             content="a" * 451
     )
-    assert response.response_string == 'The message must have a maximum of 450 characters.'
+    assert response.response_string == 'A mensagem deve ter no máximo 450 caracteres.'
     mock_context.reset_mock()
     del response
 
 
 @pytest.mark.asyncio
 async def test_annotations_add_content_title(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     response: Response = await interact.add._callback(
             self=interact,
             ctx=mock_context,
             content='title:"title easier to remember" '
                     'A note about something I want to be able to check forever.'
     )
-    assert response.response_string == 'Note successfully created. 📝 (ID: 1)'
+    assert response.response_string == 'Nota criada com sucesso. 📝 (ID: 1)'
     mock_context.reset_mock()
     del response
 
 
 @pytest.mark.asyncio
 async def test_annotations_add_content_title_too_long(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     response: Response = await interact.add._callback(
             self=interact,
             ctx=mock_context,
             content='title:"title to make it easier to remember the content" '
                     'A note about something I want to be able to check forever.'
     )
-    assert response.response_string == 'The title must have a maximum of 32 characters.'
+    assert response.response_string == 'O título deve ter um máximo de 32 caracteres.'
     mock_context.reset_mock()
     del response
 
 
 @pytest.mark.asyncio
 async def test_annotations_check_wrong_id(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     response: Response = await interact.check._callback(
             self=interact,
             ctx=mock_context,
             content='title'
     )
-    assert response.response_string == 'title is not a valid ID.'
+    assert response.response_string == 'title não é um ID valido.'
     mock_context.reset_mock()
     del response
 
 
 @pytest.mark.asyncio
 async def test_annotations_check_no_content_no_annotations(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     response: Response = await interact.check._callback(
             self=interact,
             ctx=mock_context,
             content=''
     )
-    assert response.response_string == 'You don\'t have any annotations saved.'
+    assert response.response_string == 'Você não tem nenhuma anotação salva.'
     mock_context.reset_mock()
     del response
 
 
 @pytest.mark.asyncio
 async def test_annotations_check_one_annotation(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     content = "a note about something I want to be able to check forever."
     title = "a" * 32
     await Annotation.create(content=content, user=mock_context.user, title=title)
@@ -130,14 +130,14 @@ async def test_annotations_check_one_annotation(interact, mock_context: MockCont
             ctx=mock_context,
             content=''
     )
-    assert response.response_string == 'Your annotations are the ones with ID: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa [1]'
+    assert response.response_string == 'Suas anotações são aquelas com ID: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa [1]'
     mock_context.reset_mock()
     del response
 
 
 @pytest.mark.asyncio
 async def test_annotations_check_two_annotation(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     content = "a note about something I want to be able to check forever."
     title = "a" * 32
     await Annotation.create(content=content, user=mock_context.user, title=title)
@@ -149,7 +149,7 @@ async def test_annotations_check_two_annotation(interact, mock_context: MockCont
             ctx=mock_context,
             content=''
     )
-    assert response.response_string == ('Your annotations are the ones with ID: '
+    assert response.response_string == ('Suas anotações são aquelas com ID: '
                                         'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa [1], '
                                         'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa [2]')
     mock_context.reset_mock()
@@ -158,7 +158,7 @@ async def test_annotations_check_two_annotation(interact, mock_context: MockCont
 
 @pytest.mark.asyncio
 async def test_annotations_check_annotation_id_one(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     content = "a note about something I want to be able to check forever."
     title = "a" * 32
     await Annotation.create(content=content, user=mock_context.user, title=title)
@@ -177,7 +177,7 @@ async def test_annotations_check_annotation_id_one(interact, mock_context: MockC
 
 @pytest.mark.asyncio
 async def test_annotations_check_annotation_id_two(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     content = "a note about something I want to be able to check forever."
     title = "a" * 32
     await Annotation.create(content=content, user=mock_context.user, title=title)
@@ -196,7 +196,7 @@ async def test_annotations_check_annotation_id_two(interact, mock_context: MockC
 
 @pytest.mark.asyncio
 async def test_annotations_check_annotation_wrong_id(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     content = "a note about something I want to be able to check forever."
     title = "a" * 32
     await Annotation.create(content=content, user=mock_context.user, title=title)
@@ -208,14 +208,14 @@ async def test_annotations_check_annotation_wrong_id(interact, mock_context: Moc
             ctx=mock_context,
             content='3'
     )
-    assert response.response_string == 'You don\'t have any annotation with ID 3.'
+    assert response.response_string == 'Você não tem nenhuma anotação com ID 3.'
     mock_context.reset_mock()
     del response
 
 
 @pytest.mark.asyncio
 async def test_annotations_delete_no_id(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     content = "a note about something I want to be able to check forever."
     title = "a" * 32
     await Annotation.create(content=content, user=mock_context.user, title=title)
@@ -227,14 +227,14 @@ async def test_annotations_delete_no_id(interact, mock_context: MockContext):
             ctx=mock_context,
             content=''
     )
-    assert response.response_string == 'You need to provide a valid numeric ID.'
+    assert response.response_string == 'Você precisa fornecer um ID numérico válido.'
     mock_context.reset_mock()
     del response
 
 
 @pytest.mark.asyncio
 async def test_annotations_delete_id(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
+    await mock_context.prepare_context('pt_BR')
     content = "a note about something I want to be able to check forever."
     title = "a" * 32
     await Annotation.create(content=content, user=mock_context.user, title=title)
@@ -246,6 +246,6 @@ async def test_annotations_delete_id(interact, mock_context: MockContext):
             ctx=mock_context,
             content='1'
     )
-    assert response.response_string == 'Your annotation with ID 1 was successfully deleted. 🗑'
+    assert response.response_string == 'Sua anotação com ID 1 foi excluída com sucesso. 🗑'
     mock_context.reset_mock()
     del response

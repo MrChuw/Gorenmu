@@ -119,6 +119,8 @@
         "time_expired": "Time {} has already expired.",
         "no_content_provided": "You need to provide content for this command.",
         "too_much_characters": "The message must have a maximum of 450 characters.",
+        "no_id_provided": "You need to provide a valid numeric ID.",
+        "id_not_valid": "{} is not a valid ID.",
 
         "user_not_provided": "No target user provided!",
         "never_seen": "I don't remember ever seeing any @{}.",
@@ -286,8 +288,8 @@
         "all_annotations": "Your annotations are the ones with ID: {}",
         "annotation_content": "{}",
         "deleted": "Your annotation with ID {} was successfully deleted. 🗑",
-        "id_not_provided": "{} is not a valid ID.",
-        "option_not_recognized": "The valid options are only \"add\" \"check\" \"delete\""
+        "option_not_recognized": "The valid options are only \"add\" \"check\" \"delete\"",
+        "no_annotation_present": "You don't have any annotations saved."
     },
     "Lottery": {
         "past": [

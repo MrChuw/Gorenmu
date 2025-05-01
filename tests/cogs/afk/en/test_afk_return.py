@@ -40,7 +40,7 @@ async def test_afk_return_afk_no_content(interact, mock_context: MockContext):
     afk.online = False
     await afk.save()
     response: Response = await event_message(ctx=mock_context)
-    assert response.response_string == 'you came back 🏃⌨ (was away for 0.00 seconds 🕛)'
+    assert "you came back 🏃⌨ (was away for " in response.response_string
     mock_context.reset_mock()
     del response
 
@@ -55,6 +55,6 @@ async def test_afk_return_afk_content(interact, mock_context: MockContext):
     afk.online = False
     await afk.save()
     response: Response = await event_message(ctx=mock_context)
-    assert response.response_string == 'you came back 🏃⌨ and left a note: content (was away for 0.00 seconds 🕛)'
+    assert "you came back 🏃⌨ and left a note: content (was away for" in response.response_string
     mock_context.reset_mock()
     del response

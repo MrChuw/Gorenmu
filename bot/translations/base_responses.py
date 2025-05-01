@@ -1,18 +1,14 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
 
-import pathlib, json
+import json
+import pathlib
 import random
-from typing import Any, TYPE_CHECKING, Callable, Dict, TypeVar, Protocol
+from typing import Any, Dict, TYPE_CHECKING
 
-from .extras import Activity as ActivityExtras
-from .extras import Response
-from .extras import Humanize
-from .extras import TimeTools
-from .extras import Dicio
-from .extras import BaseFunctions
-from .extras import WeatherTools
-from .extras import EmoteEmotions
+from .extras import (
+    Activity as ActivityExtras, BaseFunctions, Dicio, EmoteEmotions, Humanize, Response, TimeTools,
+    WeatherTools,
+)
 
 if TYPE_CHECKING:
     from bot.ext import Context
@@ -77,6 +73,8 @@ class BaseTranslations:
         user_not_found_name: Response
         time_expired: Response
         no_content_provided: Response
+        no_id_provided: Response
+        id_not_valid: Response
 
         user_not_provided: Response
         never_seen: Response
@@ -323,8 +321,8 @@ class BaseTranslations:
         all_annotations: Response
         annotation_content: Response
         deleted: Response
-        id_not_provided: Response
         option_not_recognized: Response
+        no_annotation_present: Response
 
     class HyperTranslate(BaseFunctions):
         def __init__(self, translation: dict):
