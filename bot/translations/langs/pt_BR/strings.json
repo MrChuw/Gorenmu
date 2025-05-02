@@ -181,7 +181,7 @@
         "alias_table_name_str": "{} aliases",
         "Add": {
             "no_command_to_add": "Você não enviou um comando! Use: {}alias add (nome) (comando) (…argumentos)",
-            "alias_name_conflict": "Não é possível adicionar o alias \"{}\" - você já possui um! Você pode “editar” sua definição, “renomeá-la” ou “removê-la”.",
+            "alias_name_conflict": "Não é possível adicionar o alias \"{}\" - você já possui um! Você pode “editar” sua definição, “renomear” ou “removê-la”.",
             "alias_created": "Seu alias \"{}\" foi criado com sucesso.",
             "command_dont_exist": "Não é possível criar um alias! O comando \"{}\" não existe."
         },
@@ -254,7 +254,7 @@
         "translation": "{}"
     },
     "RandomColor": {
-        "api_down_str": "thecolorapi.com esta inacessível.",
+        "api_down_str": "thecolorapi.com esta inacessível",
         "response_url": "{} é {}. {}"
     },
     "Reverse": {

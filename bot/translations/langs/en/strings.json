@@ -255,7 +255,7 @@
         "translation": "{}"
     },
     "RandomColor": {
-        "api_down_str": "thecolorapi.com is inaccessible.",
+        "api_down_str": "thecolorapi.com is inaccessible",
         "response_url": "{} is {}. {}"
     },
     "Reverse": {

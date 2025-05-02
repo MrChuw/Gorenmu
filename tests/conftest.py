@@ -10,6 +10,7 @@ from twitchio.web import StarletteAdapter
 
 from bot.bot import Gorenmu
 from bot.ext.config import Config
+from tests.helpers.cached_sessions import SessionsCaches
 from tests.helpers.fake_db_data import create_fake_db
 
 
@@ -40,10 +41,11 @@ async def mock_bot():
         twitchio.utils.setup_logging(handler=InterceptHandler(), level=logging.INFO)
     bot = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
     bot.bot_nick = "bot_name"
+    bot.tests_sessions = SessionsCaches(bot)
     await bot.setup_database()
     await create_fake_db(bot)
 
     yield bot
 
     await bot.close()
-    ...
+    await bot.tests_sessions.close_all_sessions()

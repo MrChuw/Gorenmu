@@ -35,17 +35,18 @@ class RandomColorCmd(commands.CustomComponent):
         session = ctx.bot.SessionsCaches.ColorCachedSession.session
         url = ctx.bot.config.ApisConfig.color_site_url
         params = defaultdict()
+        hex_code = None
         if tipo == "type:hex" or not tipo:
             hex_code = "%06x" % random.randint(0, 0xFFFFFF)
             params["hex"] = str(hex_code)
             url = url.with_path(f"/hex/{hex_code}")
+            hex_code = f"#{hex_code.upper()}"
         elif tipo == "type:rgb":
             rgb = tuple(random.randint(0, 255) for _ in range(3))
             params["rgb"] = str(rgb)
             url = url.with_path("/rgb/{},{},{}".format(*rgb))
-
+            hex_code = "#{:02X}{:02X}{:02X}".format(*rgb)
         name = await Color.name(params, session, self.bot.log) or translations.api_down
-        hex_code = await Color.hex_for_randomcolor(params, session, self.bot.log) or translations.api_down
         return translations.response_url.format_response(ctx, hex_code, name, url)
 
 
