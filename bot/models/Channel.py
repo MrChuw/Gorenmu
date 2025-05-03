@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import datetime
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from tortoise import fields
 from tortoise.models import Model
 
-# Local
-from bot.models.base import BoolFieldBool, CharFieldStr, ContentMixin, DatetimeTzField
+from bot.models.base import CharFieldStr
+
+if TYPE_CHECKING:
+    from bot.models import MessagesLog, MarkovUsers, MarkovChannels  # NOQA
 
 
 class Base(Model):
-    id = fields.IntField(pk=True)
+    id = fields.IntField(primary_key=True)
 
     class Meta:
         abstract = True

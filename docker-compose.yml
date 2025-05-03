@@ -30,7 +30,7 @@ services:
     restart: always
 
   Gorenmu_bot:
-    image: python:3.10
+    image: python:3.12.6
     working_dir: /app
     network_mode: host
 #    environment:

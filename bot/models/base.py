@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-from datetime import datetime, UTC
+from datetime import datetime
 from typing import Union
 
-
-from tortoise import fields, Model
 import pytz
-
+from tortoise import fields, Model
 
 CharFieldStr = Union[str, fields.CharField]
 IntFieldInt = Union[int, fields.IntField]
@@ -15,7 +13,7 @@ DatetimeTzField = Union[datetime, fields.DatetimeField]
 
 
 class Base(Model):
-    id: IntFieldInt = fields.IntField(pk=True)
+    id: IntFieldInt = fields.IntField(primary_key=True)
 
     class Meta:
         abstract = True
@@ -46,8 +44,8 @@ class TimestampMixin:
 
 
 class UserMixin:
-    id: IntFieldInt = fields.IntField(pk=True, description="Twitch ID")
-    name: CharFieldStr = fields.CharField(unique=True, index=True, max_length=64, description="Twitch username")
+    id: IntFieldInt = fields.IntField(primary_key=True, description="Twitch ID")
+    name: CharFieldStr = fields.CharField(unique=True, db_index=True, max_length=64, description="Twitch username")
 
 
 class ContentMixin:

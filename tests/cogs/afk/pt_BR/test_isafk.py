@@ -15,14 +15,15 @@ async def interact(mock_bot):
 
 @pytest.fixture
 def mock_context(mock_bot):
-    return MockContext("username", 12345, "channelname", 123456, mock_bot)
+    return MockContext("username", 12345, "channelname", 123456, mock_bot)  # NOQA
 
 
 @pytest.mark.asyncio
 async def test_isafk_own_user(interact, mock_context: MockContext):
     await mock_context.prepare_context('pt_BR')
     response: Response = await interact.isafk._callback(self=interact, ctx=mock_context, content="username")
-    assert response.response_string == 'você não está afk... obviamente.'
+    assert response.response_string == 'você não está afk... obviamente.', \
+        f"Expected waiting for a sarcastic answer, got: {response.response_string!r}"
     mock_context.reset_mock()
     del response
 
@@ -31,7 +32,8 @@ async def test_isafk_own_user(interact, mock_context: MockContext):
 async def test_isafk_bot_nick(interact, mock_context: MockContext):
     await mock_context.prepare_context('pt_BR')
     response: Response = await interact.isafk._callback(self=interact, ctx=mock_context, content="bot_name")
-    assert response.response_string == 'Estou sempre aqui... assistindo.'
+    assert response.response_string == 'Estou sempre aqui... assistindo.', \
+        f"Expected waiting for a sarcastic answer, got: {response.response_string!r}"
     mock_context.reset_mock()
     del response
 
@@ -40,7 +42,8 @@ async def test_isafk_bot_nick(interact, mock_context: MockContext):
 async def test_isafk_no_content(interact, mock_context: MockContext):
     await mock_context.prepare_context('pt_BR')
     response: Response = await interact.isafk._callback(self=interact, ctx=mock_context, content="status_user_50")
-    assert response.response_string == '@status_user_50 está ausente 🏃⌨'
+    assert response.response_string == '@status_user_50 está ausente 🏃⌨', \
+        f"Expected a return AFK message with emojis, got: {response.response_string!r}"
     mock_context.reset_mock()
     del response
 
@@ -49,7 +52,8 @@ async def test_isafk_no_content(interact, mock_context: MockContext):
 async def test_isafk_content(interact, mock_context: MockContext):
     await mock_context.prepare_context('pt_BR')
     response: Response = await interact.isafk._callback(self=interact, ctx=mock_context, content="status_user_51")
-    assert response.response_string == '@status_user_51 está ausente 🏃⌨ e deixou uma nota: content'
+    assert response.response_string == '@status_user_51 está ausente 🏃⌨ e deixou uma nota: content', \
+        f"Expected a return AFK message with emojis with content, got: {response.response_string!r}"
     mock_context.reset_mock()
     del response
 
@@ -58,7 +62,8 @@ async def test_isafk_content(interact, mock_context: MockContext):
 async def test_isafk_user_dont_exist(interact, mock_context: MockContext):
     await mock_context.prepare_context('pt_BR')
     response: Response = await interact.isafk._callback(self=interact, ctx=mock_context, content="not_user_1234")
-    assert response.response_string == 'Não me lembro de ter visto nenhum @not_user_1234.'
+    assert response.response_string == 'Não me lembro de ter visto nenhum @not_user_1234.', \
+        f"Expected error message about not seen a user, got: {response.response_string!r}"
     mock_context.reset_mock()
     del response
 
