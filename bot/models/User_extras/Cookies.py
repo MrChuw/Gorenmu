@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, UTC
-from math import ceil
 from typing import TYPE_CHECKING
 
+from math import ceil
 from tortoise import fields
 
 from bot.models.base import Base, TimestampMixin
@@ -24,6 +24,7 @@ class Cookies(Base, TimestampMixin):
     total: fields.IntField = fields.IntField(default=0)
 
     user: User = fields.ForeignKeyField("models.User", related_name="cookies")
+    daily: fields.IntField = fields.IntField(generated=True, null=True)
 
     class Meta:
         table = "cookie"
@@ -32,18 +33,17 @@ class Cookies(Base, TimestampMixin):
         return getattr(self, item)
 
     async def daily_update(self, value: int = 1) -> Cookies:
-        self.cooldown = self.cooldown + timedelta(hours=6)
+        self.cooldown = self.cooldown + timedelta(hours=6 * value)
         self.consumed = self.consumed + value
         self.total = self.total + value
         await self.save()
         return self
 
-    async def gift_all(self, value: int, cooldown: bool = True) -> Cookies:
-        if not cooldown:
-            self.cooldown = datetime.now(UTC) + timedelta(hours=6)
+    async def gift_all(self, value: int, total: int) -> Cookies:
+        self.cooldown = datetime.now(UTC) + timedelta(hours=6)
         if self.stocked:
             self.stocked -= value
-        self.donated += value
+        self.donated += total
         await self.save()
         return self
 
@@ -51,7 +51,7 @@ class Cookies(Base, TimestampMixin):
         if not cooldown and not self.stocked:
             self.cooldown = self.cooldown + timedelta(hours=6)
         if self.stocked:
-            self.stocked -= 1
+            self.stocked -= value
         self.donated += value
         await self.save()
         return self
@@ -64,14 +64,14 @@ class Cookies(Base, TimestampMixin):
         return self
 
     async def stock(self, value: int) -> Cookies:
-        self.cooldown = self.cooldown + (timedelta(hours=6) * value)
+        self.cooldown = self.cooldown + (timedelta(hours=6) * value if value != 0 else 1)
         self.stocked = self.stocked + value
         self.total = self.total + value
         await self.save()
         return self
 
     async def stock_all(self, value: int) -> Cookies:
-        self.cooldown = self.cooldown = datetime.now(UTC) + timedelta(hours=6)
+        self.cooldown = datetime.now(UTC) + timedelta(hours=6)
         self.stocked = self.stocked + value
         self.total = self.total + value
         await self.save()
@@ -100,8 +100,8 @@ class Cookies(Base, TimestampMixin):
         await self.save()
         return self
 
-    async def new_cooldown(self) -> Cookies:
-        self.cooldown = datetime.now(UTC) - timedelta(hours=6)
+    async def new_cooldown(self, extra: int = 1) -> Cookies:
+        self.cooldown = datetime.now(UTC) - timedelta(hours=6 * extra)
         await self.save()
         return self
 
@@ -114,7 +114,7 @@ class Cookies(Base, TimestampMixin):
     def datetime_to(self, amount: int):
         total_hours_needed = amount * timedelta(hours=6).total_seconds() / 3600
         final_time = self.cooldown + timedelta(hours=total_hours_needed)
-        return final_time - datetime.now(UTC)
+        return final_time - datetime.now(UTC)  # NOQA TODO: fix NOQA?
 
     @staticmethod
     async def find_by_name(name: str, ctx: Context) -> Cookies | Response:
@@ -123,7 +123,12 @@ class Cookies(Base, TimestampMixin):
             cookie = await Cookies.get_or_none(name=name)
             if not cookie:
                 return ctx.user.translations.Exceptions.user_not_found_name.format_response(ctx, name)
-            await ctx.bot.memcache.set(key=cookie.id, value=cookie, namespace="cookie", ttl=timedelta(days=1))
+            await ctx.bot.memcache.set(
+                key=cookie.id,
+                value=cookie,
+                namespace="cookie",
+                ttl=timedelta(hours=16).total_seconds(),
+            )
         else:
             cookie = await Cookies.find_by_id(user_id_cached, ctx)
         return cookie
@@ -135,9 +140,12 @@ class Cookies(Base, TimestampMixin):
             cookie = await Cookies.get_or_none(id=user_id)
             if not cookie:
                 return ctx.user.translations.Exceptions.user_not_found_id.format_response(ctx, user_id)
-            await ctx.bot.memcache.set(key=cookie.id, value=cookie, namespace="cookie",
-                                       ttl=timedelta(days=2).total_seconds()
-                                       )
+            await ctx.bot.memcache.set(
+                key=cookie.id,
+                value=cookie,
+                namespace="cookie",
+                ttl=timedelta(hours=16).total_seconds(),
+            )
         return cookie
 
     @staticmethod

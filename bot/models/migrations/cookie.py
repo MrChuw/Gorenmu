@@ -1,5 +1,9 @@
-from tortoise import Tortoise
+from datetime import datetime, timedelta, UTC
 
+from tortoise import Tortoise
+from tortoise.expressions import Q
+
+from bot.models import Cookies
 from .tools import HelpMigration
 
 
@@ -16,6 +20,19 @@ async def migrate_cookies_to_v2():
 
     if "stocked" in existing_columns:
         sql_commands.append("ALTER TABLE cookie MODIFY COLUMN stocked INT DEFAULT 10;")
+
+    if "daily" in existing_columns:
+        seed = datetime.now().toordinal()
+        now = datetime.now(UTC)
+
+        cookies = await Cookies.exclude(Q(daily=None) | Q(daily=0))
+
+        for cookie in cookies:
+            amount = seed - cookie.daily
+            cooldown = now - timedelta(hours=6 * amount)
+            cookie.cooldown = cooldown
+            cookie.daily = 0
+            await cookie.save()
 
     if sql_commands:
         for sql in sql_commands:

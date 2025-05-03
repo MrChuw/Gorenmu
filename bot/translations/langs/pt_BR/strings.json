@@ -1,6 +1,10 @@
 {
     "SupportTools": {
         "mention_str": "você",
+      "verbs": {
+        "second_person": "já comeu",
+        "third_person": "já comeu"
+      },
         "TimeTools": {
             "strftime_str": "%d/%m/%Y às %H:%M:%S",
             "Pattern time": {

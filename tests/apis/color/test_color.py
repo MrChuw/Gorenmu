@@ -12,10 +12,7 @@ from bot.apis import Color
 
 @pytest.mark.asyncio
 async def test_color_name_success():
-    fake_response = {
-            "name": {"value": "Cerulean"},
-            "hex": {"value": "#24B1E0"}
-    }
+    fake_response = {"name": {"value": "Cerulean"}, "hex": {"value": "#24B1E0"}}
     url = "https://www.thecolorapi.com/id?hex=24B1E0"
 
     with aioresponses() as mocked:
@@ -36,6 +33,7 @@ async def test_name_failure_returns_none():
             assert result is None, f"Expected None due to API failure, but got {result!r}"
 
 
+@pytest.mark.network
 @pytest.mark.asyncio
 async def test_name_real_session(mock_bot):
     session = mock_bot.tests_sessions.ColorSession.session
@@ -43,6 +41,7 @@ async def test_name_real_session(mock_bot):
     assert result == "Cerulean", f"Expected 'Cerulean' from real API, but got {result!r}"
 
 
+@pytest.mark.network
 @pytest.mark.asyncio
 async def test_name_real_session_cached(mock_bot):
     session = mock_bot.tests_sessions.ColorSession.session

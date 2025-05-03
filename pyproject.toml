@@ -1,7 +1,7 @@
 
 [tool.black]
-line-length = 100  # Comprimento máximo das linhas
-target-version = ['py36', 'py37', 'py38', 'py39', 'py310', 'py311']  # Versões target do Python
+line-length = 120  # Comprimento máximo das linhas
+target-version = ['py39', 'py310', 'py311']  # Versões target do Python
 include = '\.pyi?$'  # Padrão para incluir arquivos
 exclude = '''
 /(
@@ -25,4 +25,6 @@ preview = false  # Usar recursos experimentais do Black
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+markers = ["network: tests that make real requests"]
+addopts = "-m 'not network'"
 

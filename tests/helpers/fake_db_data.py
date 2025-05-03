@@ -3,15 +3,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from bot.models import Channel, Cookies, Status, User
 from tests.helpers.mock_classes import MockContext
-from bot.models import User
-from bot.models import Channel
-from bot.models import Status
-
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
 
 
 async def create_fake_db(bot: Gorenmu):
@@ -58,50 +54,12 @@ async def create_fake_db(bot: Gorenmu):
         ctx.user = user
         await Status.go_afk(ctx=ctx, status=afk, content="content")
 
-
-    ...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    for num in range(40, 46):
+        user = await ctx.bot.memcache.get(key=num, namespace="user")
+        cookie = await Cookies.create(user=user)
+        cookie.received = 54 * num
+        cookie.consumed = 73 * num
+        cookie.donated = 56 * num
+        cookie.stocked = 93 * num
+        await cookie.save()
+        await cookie.new_cooldown()

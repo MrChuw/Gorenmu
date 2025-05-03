@@ -1,6 +1,12 @@
 {
     "SupportTools": {
-        "mention_str": "you",
+        "LanguageContext": {
+            "mention_str": "you",
+            "Verbs": {
+                "second_person_str": "have",
+                "third_person_str": "has"
+            }
+        },
         "TimeTools": {
             "strftime_str": "%m/%d/%Y in %I:%M %p",
             "Pattern time": {
@@ -329,27 +335,71 @@
         "remind_message": "You won {} cookies in the lottery! The winning tickets were: {}"
     },
     "Cookies": {
-        "daily_limit_reached": "You're still on cooldown, wait {} until the next batch! ⌛",
-        "user_not_found": "user {} has not yet been registered and has not used any cookie commands.",
         "invalid_option": "Choose from one of the options \"eat\", \"count\", \"top\", \"gift\", \"stock\" or \"sm\"",
-        "cookie_not_found": "User {} has not yet used any command related to cookies.",
+        "daily_limit_reached": "You're still on cooldown, wait {} until the next batch! ⌛",
+        "user_not_found": "user @{} has not yet been registered and has not used any cookie commands.",
+
         "not_eat": "You didn't eat anything, wow!",
         "negative_eat": "To eat {} cookies, you must first know how to reverse entropy.",
         "multiple_eat": "you ate {} cookies in one sitting. 🥠",
         "eat": "{}",
+        "formats_cookie_count": {
+            "cookie_count": "{} already eaten {} cookies 🥠.",
+            "stocked_count": "Has {} in stock.",
+            "received_count": "Was presented with {}.",
+            "donated_count": "Gifted {}.",
+            "not_redeemed_count": "And has a total of {} unredeemed.",
+            "total_count": "And there were a total of {} cookies that have already been added to the account."
+        },
         "cc_bot_nick": "I have infinite cookies, and I give away a fraction of them to you.",
         "gift_bot_nick": "I don't want your cookie.",
         "gift_user_himself": "Did you try gifting it yourself, wow!",
-        "gift_on_cooldown_no_stock": "you don't have any cookies stored and the cooldown lasts another {}.",
+        "cookie_not_found": "User {} has not yet used any command related to cookies.",
+        "gift_on_cooldown_no_stock": "You don’t have any cookies 🍪 stored or waiting to be redeemed. The next one arrives in {}.",
         "invalid_gift_amount": "send a valid amount for gifting and not {}.",
+        "not_gifted": "You didn't gift anything, wow!",
+        "negative_gift": "You can't give negative cookies unless you're a cookie thief... and you're not, right?",
         "multiple_gift": "you gifted @{} with {} cookie 🎁",
         "gift": "you gave @{} a cookie 🎁",
         "gift_not_enough_cookies": "To gift, you must first redeem the cookie.",
+        "gift_no_stock_but_cooldown": "To gift, you must first redeem the {} cookies you have available.",
+
+
+
         "stock": "you stocked {} cookies 🍪, the next one comes out in 6h.",
         "stock_not_daily": "you stocked {} cookies 🍪.",
-        "stock_not_enough_cookies": "you can only stock {}.",
+        "stock_not_enough_cookies": "you can only stock {} 🍪.",
+
         "ranks": "the ranks are: {}",
         "top10_ish": "top {} {}: {} || You are in the {}th position in the ranking with {}.",
+        "order_dict": {
+            "stocked": [
+                "stocked",
+                "stocked"
+            ],
+            "streak": [
+                "streak",
+                "streak"
+            ],
+            "consumed": [
+                "consumed",
+                "cookiers"
+            ],
+            "donated": [
+                "donated",
+                "givers"
+            ],
+            "received": [
+                "received",
+                "receivers"
+            ],
+            "total": [
+                "total",
+                "total"
+            ]
+        },
+
+
         "multiple_gift_plural": "you gifted @{} with {} cookies 🎁",
         "gift_plural": "you gave @{} a cookies 🎁",
         "invalid_amount": "you are trying to bet {} but you only have {} unredeemed cookies.",
@@ -372,24 +422,8 @@
         "not_daily_multiple_loss": "{} you used your daily unredeemed cookie and earned {} cookies!",
         "not_daily_single_loss": "{} you lost your unredeemed daily cookie…",
         "not_daily_multiple_win": "you used {} daily unredeemed cookies and gained {} cookies from the following.",
+        "not_daily_lost_everything": "you used {} daily cookies and lost everything PoroSad"
 
-        "not_daily_lost_everything": "you used {} daily cookies and lost everything PoroSad",
-        "formats_cookie_count": {
-            "cookie_count": "Have you already eaten {} cookies 🥠.",
-            "stocked_count": "Has {} in stock.",
-            "received_count": "Was presented with {}.",
-            "donated_count": "Gifted {}.",
-            "not_redeemed_count": "And has a total of {} unredeemed.",
-            "total_count": "And there were a total of {} cookies that have already been added to the account."
-        },
-        "order_dict": {
-            "stocked": ["stocked", "stocked"],
-            "streak": ["streak", "streak"],
-            "consumed": ["consumed", "cookiers"],
-            "donated": ["donated", "givers"],
-            "received": ["received", "receivers"],
-            "total": ["total", "total"]
-        }
     },
     "Markov": {
         "purge": "Purge dictionary in %0.2fs. %d words removed.",

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
+
 from loguru import logger
 
 
+# TODO: Maybe put a webhook to discord.
 class InterceptHandler(logging.Handler):
     def emit(self, record):
         try:
@@ -16,4 +18,3 @@ class InterceptHandler(logging.Handler):
             frame = frame.f_back
 
         logger.opt(depth=6, exception=record.exc_info).log(level, record.getMessage())
-

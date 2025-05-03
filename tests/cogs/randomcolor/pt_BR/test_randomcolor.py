@@ -25,8 +25,7 @@ async def test_randomcolor_no_tipo(interact, mock_context: MockContext):
     with patch("bot.apis.color.Color.name", return_value="Medium Purple"):
         response: Response = await interact.randomcolor._callback(self=interact, ctx=mock_context)
     assert (
-        response.response_string
-        == "#C53EDF is Medium Purple. https://color.mrchuw.com.br/hex/c53edf"
+        response.response_string == "#C53EDF é Medium Purple. https://color.mrchuw.com.br/hex/c53edf"
     ), f"Expected HEX + Name + Link, got: {response.response_string!r}"
     mock_context.reset_mock()
     del response
@@ -40,8 +39,7 @@ async def test_randomcolor_hex_tipo(interact, mock_context: MockContext):
             self=interact, ctx=mock_context, tipo="type:hex"
         )
     assert (
-        response.response_string
-        == "#C53EDF is Medium Purple. https://color.mrchuw.com.br/hex/c53edf"
+        response.response_string == "#C53EDF é Medium Purple. https://color.mrchuw.com.br/hex/c53edf"
     ), f"Expected HEX + Name + Link, got: {response.response_string!r}"
     mock_context.reset_mock()
     del response
@@ -53,7 +51,7 @@ async def test_randomcolor_hex_name_api_down(interact, mock_context: MockContext
     with patch("bot.apis.color.Color.name", return_value=None):
         response: Response = await interact.randomcolor._callback(self=interact, ctx=mock_context)
     assert response.response_string == (
-        "#C53EDF is thecolorapi.com is inaccessible. " "https://color.mrchuw.com.br/hex/c53edf"
+        "#C53EDF é thecolorapi.com esta inacessível. " "https://color.mrchuw.com.br/hex/c53edf"
     ), f"Expected HEX + Name + Link error, got: {response.response_string!r}"
     mock_context.reset_mock()
     del response
@@ -67,7 +65,7 @@ async def test_randomcolor_rgb_name_api_down(interact, mock_context: MockContext
             self=interact, ctx=mock_context, tipo="type:rgb"
         )
     assert response.response_string == (
-        "#C5D714 is thecolorapi.com is inaccessible. " "https://color.mrchuw.com.br/rgb/197,215,20"
+        "#C5D714 é thecolorapi.com esta inacessível. " "https://color.mrchuw.com.br/rgb/197,215,20"
     ), f"Expected RGB + Name + Link error, got: {response.response_string!r}"
     mock_context.reset_mock()
     del response

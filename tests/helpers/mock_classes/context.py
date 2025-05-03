@@ -5,7 +5,7 @@ import random
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock
 
-from bot.models import User
+from bot.models import Cookies, User
 from .Channel import MockChannel
 from .User import MockUser
 
@@ -42,9 +42,18 @@ class MockContext(AsyncMock):
         self.resposta = AsyncMock()
         self.message = MockMessage()
 
-
     async def prepare_context(self, translation: str = 'en'):
         random.seed(0)
         self.user = await User.create_or_update(self)
         self.user.translations = self.bot.TranslationManager.get_translations(language=translation)
         ...
+
+    async def create_cookie(self, user, received=0, consumed=0, donated=0, stocked=0):
+        cookie = await Cookies.create(user=user)
+        cookie.received = received
+        cookie.consumed = consumed
+        cookie.donated = donated
+        cookie.stocked = stocked
+        await cookie.save()
+        await cookie.new_cooldown()
+        return cookie

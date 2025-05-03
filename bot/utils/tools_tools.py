@@ -3,14 +3,10 @@ from __future__ import annotations
 
 import asyncio
 import io
-import random
 import re
-from string import ascii_letters, digits
 from typing import Any, TYPE_CHECKING
 
-import numpy as np
 import pandas as pd
-from aiohttp_client_cache import CachedSession
 from loguru import logger
 from PIL import Image
 
@@ -124,7 +120,6 @@ class ToolsTools:
         image.save(image_io, format="PNG")
         return image_io.getvalue()
 
-
     @staticmethod
     async def announcement(ctx: Context, content: str, target_channel: str = "all") -> None:
         target_channel = target_channel.lower()
@@ -163,13 +158,40 @@ class ToolsTools:
             return text, value
         return text, None
 
+    @staticmethod
+    def is_int(text: str) -> bool:
+        text = text.strip()
+        try:
+            int(text)
+            return True
+        except ValueError:
+            return False
 
+    @staticmethod
+    def is_float(text: str) -> bool:
+        text = text.strip().replace(",", ".")
+        try:
+            float(text)
+            return True
+        except ValueError:
+            return False
 
+    @staticmethod
+    def to_amount(text: str, default: int = 1) -> int | float:
+        if not text:
+            return default
+        text = text.strip().replace(",", ".")
+        if ToolsTools.is_int(text):
+            return int(text)
+        elif ToolsTools.is_float(text):
+            return float(text)
+        return default
 
-
-
-
-
-
-
-
+    @staticmethod
+    def to_all(text: str, amount_available: int, default: int = 1) -> tuple[int | float, bool]:
+        if not text:
+            return default, False
+        text = text.strip().lower()
+        if text == "all":
+            return amount_available, True
+        return ToolsTools.to_amount(text, default), False

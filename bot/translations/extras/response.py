@@ -97,7 +97,7 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
         unique_keys = set(self.obj.keys()).union(self.fallback.keys())
         return iter(unique_keys)
 
-    def get_object(self, key: str) -> [dict, dict]:
+    def get_object(self, key: str):
         if key in self.obj:
             return self.obj[key]
         elif key in self.fallback:
@@ -105,7 +105,7 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
         else:
             raise KeyError(f"Key '{key}' not found in either base or fallback.")
 
-    def get_object_or_none(self, key: str) -> [dict, dict]:
+    def get_object_or_none(self, key: str) -> dict | None:
         if key in self.obj:
             return self.obj[key]
         elif key in self.fallback:
@@ -113,7 +113,7 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
         else:
             return None
 
-    def get_base(self, key: str) -> [dict, dict]:
+    def get_base(self, key: str):
         if key in self.obj:
             return self.obj[key], self.fallback[key]
         elif key in self.fallback:

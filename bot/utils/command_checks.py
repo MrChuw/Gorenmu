@@ -110,10 +110,6 @@ class Check:
         except DoesNotExist:
             cookie = await Cookies.create(user=ctx.user, id=int(ctx.author.id))
         seed = datetime.now().toordinal()
-        if not cookie.cooldown and cookie.daily:
-            amount = cookie.daily - seed
-            await cookie.new_cooldown(amount)
-            ...
         if not cookie.cooldown:
             await cookie.new_cooldown()
 
