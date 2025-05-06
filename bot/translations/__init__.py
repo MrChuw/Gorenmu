@@ -1,10 +1,11 @@
 # translations/__init__.py
-from bot.translations.base_responses import Translations, BaseTranslations
-from bot.translations.base_decorators import Decorators, BaseDecorators, BaseCommand
-from bot.translations.extras import Response, Activity
 import json
-import pathlib
 import os
+import pathlib
+
+from bot.translations.base_decorators import BaseCommand, BaseDecorators, Decorators
+from bot.translations.base_responses import BaseTranslations, Translations
+from bot.translations.extras import Activity, Response
 
 
 def open_file(filepath: pathlib.Path, fallback=None):
@@ -15,23 +16,13 @@ def open_file(filepath: pathlib.Path, fallback=None):
         return json.load(file)
 
 
-fullpath = os.getcwd()
+fullpath = pathlib.Path(__file__).parent / "langs"
 folder_name = os.path.basename(fullpath)
-
-if folder_name == "tests":
-    base_path = pathlib.Path(fullpath).parent / "bot/translations/langs"
-elif folder_name == "cogs":
-    base_path = pathlib.Path(fullpath).parent.parent / "bot/translations/langs"
-else:
-    base_path = pathlib.Path("bot/translations/langs")
+base_path = fullpath
 afks = Activity(open_file(base_path / "en/extras/activity.json")["Activity"])
-
 
 # TODO: Lidar com acentos,
 def load_langs():
-
-    langs = {}
-
     en_paths = [
             base_path / "en/strings.json",
             base_path / "en/decorators.json",
@@ -44,20 +35,21 @@ def load_langs():
             base_path / "en/extras/weather.json",
     ]
 
-    langs["en"] = {
+    langs = {
+        "en": {
             "strings": open_file(en_paths[0]),
             "decorators": open_file(en_paths[1]),
             "site": open_file(en_paths[2]),
             "extras": {
-                    "cookies_path": en_paths[3],
-                    "activity": open_file(en_paths[4]),
-                    "dungeon": open_file(en_paths[5]),
-                    "games": open_file(en_paths[6]),
-                    "pets": open_file(en_paths[7]),
-                    "weather": open_file(en_paths[8]),
-            }
+                "cookies_path": en_paths[3],
+                "activity": open_file(en_paths[4]),
+                "dungeon": open_file(en_paths[5]),
+                "games": open_file(en_paths[6]),
+                "pets": open_file(en_paths[7]),
+                "weather": open_file(en_paths[8]),
+            },
+        }
     }
-
     for lang in base_path.iterdir():
         if lang.name != "en":
             langs[lang.name] = {
@@ -86,9 +78,7 @@ class Translation:
 class TranslationManager:
     def __init__(self, mock: bool = False):
         langs = load_langs()
-        self.languages = {}
-
-        self.languages["en"] = Translation(Decorators(langs["en"]), Translations(langs["en"], "en"))
+        self.languages = {"en": Translation(Decorators(langs["en"]), Translations(langs["en"], "en"))}
 
         for lang in langs:
             if lang == "en":

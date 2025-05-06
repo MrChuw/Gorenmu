@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from unittest.mock import patch
 
 import pytest
 import pytest_asyncio
 
 from bot.cogs.admin.commands.admin import AdminSmallCmds
-from bot.translations import Response
+from tests.cogs.admin.templates import templates
 from tests.helpers.mock_classes import MockContext
+
+tests_lang = "en"
 
 
 @pytest_asyncio.fixture
@@ -14,102 +15,71 @@ async def interact(mock_bot):
     return AdminSmallCmds(bot=mock_bot)
 
 
-@pytest.fixture
-def mock_context(mock_bot):
-    return MockContext("username", 12345, "channelname", 123456, mock_bot)  # NOQA
-
-
 @pytest.mark.asyncio
 async def test_nada(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
-    response: Response = await interact.nada._callback(self=interact, ctx=mock_context, args="")
-    assert response.response_string == "The command was executed successfully.", \
-        f"Expected success message, got: {response.response_string!r}"
-    mock_context.reset_mock()
-    del response
+    await templates.test_nada(
+        interact, mock_context, lang=tests_lang, content="", expected="The command was executed successfully."
+    )
 
 
 @pytest.mark.asyncio
 async def test_restart_success(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
-    with patch("os.execv") as mock_execv:
-        response: Response = await interact.restart._callback(self=interact, ctx=mock_context)
-
-    mock_execv.assert_called_once(), "Expected os.execv to be called once, but it wasn't"
-
-    called_args = mock_execv.call_args[0]
-    assert called_args[0].endswith("bin/python"), (
-            f"Expected execv path to end with 'bin/python', got: {called_args[0]!r}"
-    )
-    assert called_args[0] in called_args[1], (
-            f"Expected {called_args[0]!r} to be in args list {called_args[1]!r}"
-    )
-    assert response is None or (
-            isinstance(response, Response) and response.response_string == ""
-    ), (
-            f"Expected response to be None or empty Response, got: {response!r}"
-    )
-    mock_context.reset_mock()
+    await templates.test_restart_success(interact, mock_context, lang=tests_lang)
 
 
 @pytest.mark.asyncio
 async def test_restart_failure(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
-    with patch("os.execv", side_effect=OSError("exec failed")):  # NOQA
-        response: Response = await interact.restart._callback(self=interact, ctx=mock_context)
-    assert response.response_string == "There was an error restarting the bot: exec failed", \
-        f"Expected error message, got: {response.response_string!r}"
-    mock_context.reset_mock()
-    del response
+    await templates.test_restart_failure(
+        interact, mock_context, lang=tests_lang, expected="There was an error restarting the bot: exec failed"
+    )
 
 
 @pytest.mark.asyncio
 async def test_reload_translations(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
-    response: Response = await interact.reload._callback(self=interact, ctx=mock_context, command="translations")
-    assert response.response_string == 'The translations were successfully reloaded.', \
-        f"Expected success message, got: {response.response_string!r}"
-    mock_context.reset_mock()
-    del response
+    await templates.test_reload_commands(
+        interact,
+        mock_context,
+        lang=tests_lang,
+        command="translations",
+        expected="The translations were successfully reloaded.",
+    )
 
 
 @pytest.mark.asyncio
 async def test_reload_emotes(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
-    response: Response = await interact.reload._callback(self=interact, ctx=mock_context, command="emotes")
-    assert response.response_string == 'The translations were successfully reloaded.', \
-        f"Expected success message, got: {response.response_string!r}"
-    mock_context.reset_mock()
-    del response
+    await templates.test_reload_commands(
+        interact,
+        mock_context,
+        lang=tests_lang,
+        command="emotes",
+        expected="The translations were successfully reloaded.",
+    )
 
 
 @pytest.mark.asyncio
 async def test_reload_all(interact, mock_context: MockContext):
-    await mock_context.prepare_context('en')
-    response: Response = await interact.reload._callback(self=interact, ctx=mock_context, command="all")
-    assert response.response_string == 'The commands were successfully reloaded.', \
-        f"Expected success message, got: {response.response_string!r}"
-    mock_context.reset_mock()
-    del response
+    await templates.test_reload_commands(
+        interact, mock_context, lang=tests_lang, command="all", expected="The commands were successfully reloaded."
+    )
 
 
 @pytest.mark.asyncio
 async def test_reload_error_translations(interact, mock_context: MockContext):
-    with patch("importlib.import_module", side_effect=ImportError("Error")):
-        await mock_context.prepare_context('en')
-        response: Response = await interact.reload._callback(self=interact, ctx=mock_context, command="translations")
-        assert response.response_string == 'The translations had an error while reloading: Error', \
-            f"Expected error message, got: {response.response_string!r}"
-        mock_context.reset_mock()
-        del response
+    await templates.test_reload_importlib_error(
+        interact,
+        mock_context,
+        lang=tests_lang,
+        command="translations",
+        expected="The translations had an error while reloading: Error",
+    )
 
 
 @pytest.mark.asyncio
 async def test_reload_error_emotes(interact, mock_context: MockContext):
-    with patch("importlib.import_module", side_effect=ImportError("Error")):
-        await mock_context.prepare_context('en')
-        response: Response = await interact.reload._callback(self=interact, ctx=mock_context, command="emotes")
-        assert response.response_string == 'The translations had an error while reloading: Error', \
-            f"Expected error message, got: {response.response_string!r}"
-        mock_context.reset_mock()
-        del response
+    await templates.test_reload_importlib_error(
+        interact,
+        mock_context,
+        lang=tests_lang,
+        command="emotes",
+        expected="The translations had an error while reloading: Error",
+    )

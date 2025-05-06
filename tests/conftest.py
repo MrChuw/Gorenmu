@@ -12,6 +12,7 @@ from bot.bot import Gorenmu
 from bot.ext.config import Config
 from tests.helpers.cached_sessions import SessionsCaches
 from tests.helpers.fake_db_data import create_fake_db
+from tests.helpers.mock_classes import MockContext
 
 
 # @pytest_asyncio.fixture(autouse=True)
@@ -23,6 +24,11 @@ async def silence_logging():
 @pytest.fixture(autouse=True)
 def silence_tortoise_logs():
     logging.getLogger("tortoise").setLevel(logging.WARNING)
+
+
+@pytest.fixture
+def mock_context(mock_bot):
+    return MockContext("username", 12345, "channelname", 123456, mock_bot)  # NOQA
 
 
 @pytest_asyncio.fixture
