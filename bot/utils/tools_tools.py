@@ -188,10 +188,10 @@ class ToolsTools:
         return default
 
     @staticmethod
-    def to_all(text: str, amount_available: int, default: int = 1) -> tuple[int | float, bool]:
+    def to_all(text: str, amount_available: int, lang_all: str, default: int = 1) -> tuple[int | float, bool]:
         if not text:
             return default, False
         text = text.strip().lower()
-        if text == "all":
+        if text in ["all", lang_all]:
             return amount_available, True
         return ToolsTools.to_amount(text, default), False

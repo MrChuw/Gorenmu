@@ -64,7 +64,7 @@ class Cookies(Base, TimestampMixin):
         return self
 
     async def stock(self, value: int) -> Cookies:
-        self.cooldown = self.cooldown + (timedelta(hours=6) * value if value != 0 else 1)
+        self.cooldown = self.cooldown + (timedelta(hours=6 * value if value != 0 else 1))
         self.stocked = self.stocked + value
         self.total = self.total + value
         await self.save()

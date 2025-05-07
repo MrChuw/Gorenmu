@@ -122,5 +122,4 @@ class Emotes:
 
     async def get_random_by_amount(self, channel_id: int, amount: int = 1) -> list[str]:
         emotes = await self.get_emotes(channel_id=channel_id)
-        return random.choices(emotes, k=min(amount, len(emotes)))
-
+        return random.sample(emotes, k=min(amount, len(emotes)))

@@ -10,7 +10,7 @@ from bot.cogs.cookies.command.cookies import CookieCmd
 from tests.cogs.cookies.templates import templates_cookies_slotmachine as templates
 from tests.helpers.mock_classes import MockContext
 
-lang = "en"
+lang = "pt_BR"
 
 
 @pytest_asyncio.fixture
@@ -37,7 +37,7 @@ async def test_slotmachine_on_cooldown(interact, mock_context: MockContext):
         mock_context,
         lang=lang,
         content="",
-        expected_regex=r"You're still on cooldown, wait \d+\.\d{2} seconds until the next batch! ⌛",
+        expected_regex=r"Você ainda está em cooldown, espere \d+\.\d{2} segundos até o próximo lote! ⌛",
         values=values,
     )
 
@@ -50,7 +50,7 @@ async def test_slotmachine_invalid_amount(interact, mock_context: MockContext):
         mock_context,
         lang=lang,
         content="amount",
-        expected=" You used your last available cookie and lost everything. The next one is available in 6 hours.",
+        expected=" Você usou seu último cookie disponível e perdeu tudo. O próximo está disponível em 6 horas. PoroSad",
         values=values,
     )
 
@@ -63,7 +63,7 @@ async def test_slotmachine_one_bunch_unredeemed(interact, mock_context: MockCont
         mock_context,
         lang=lang,
         content="1",
-        expected=" You have used 1 unredeemed cookie(s) and lost everything. ",
+        expected=" Você usou 1 cookie(s) não resgatado(s) e perdeu tudo.  PoroSad",
         values=values,
     )
 
@@ -76,8 +76,8 @@ async def test_slotmachine_all_bunch_unredeemed(interact, mock_context: MockCont
         mock_context,
         lang=lang,
         content="all",
-        expected=" You have used all 5 unredeemed cookie(s) and lost everything. "
-        "The next one is available in 6 hours.",
+        expected=" Você usou todos 5 cookie(s) não resgatado(s) e perdeu tudo. "
+        "O próximo está disponível em 6 horas. PoroSad",
         values=values,
     )
 
@@ -103,7 +103,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_3(interact, mock_context: Mo
         mock_context,
         lang=lang,
         content="1",
-        expected="[ 🍍 | 🍌 | 🍌 | 🍉 | 🍓 ] You have used 1 unredeemed cookie(s) and earned 3 cookies. ",
+        expected="[ 🍍 | 🍌 | 🍌 | 🍉 | 🍓 ] Você usou 1 cookie(s) não resgatado(s) e ganhou 3 cookies.  PogChamp",
         values=values,
         seed=2,
     )
@@ -117,7 +117,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_6(interact, mock_context: Mo
         mock_context,
         lang=lang,
         content="1",
-        expected="[ 🥑 | 🍋 | 🍋 | 🍋 | 🍉 ] You have used 1 unredeemed cookie(s) and earned 6 cookies. ",
+        expected="[ 🥑 | 🍋 | 🍋 | 🍋 | 🍉 ] Você usou 1 cookie(s) não resgatado(s) e ganhou 6 cookies.  PogChamp",
         values=values,
         seed=15,
     )
@@ -131,7 +131,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_12(interact, mock_context: M
         mock_context,
         lang=lang,
         content="1",
-        expected="[ 🍓 | 🍓 | 🍓 | 🍓 | 🍇 ] You have used 1 unredeemed cookie(s) and earned 12 cookies. ",
+        expected="[ 🍓 | 🍓 | 🍓 | 🍓 | 🍇 ] Você usou 1 cookie(s) não resgatado(s) e ganhou 12 cookies.  PogChamp",
         values=values,
         seed=651,
     )
@@ -145,7 +145,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_30(interact, mock_context: M
         mock_context,
         lang=lang,
         content="1",
-        expected="[ 🍇 | 🍇 | 🍇 | 🍇 | 🍇 ] You have used 1 unredeemed cookie(s) and earned 30 cookies. ",
+        expected="[ 🍇 | 🍇 | 🍇 | 🍇 | 🍇 ] Você usou 1 cookie(s) não resgatado(s) e ganhou 30 cookies.  PogChamp",
         values=values,
         seed=120202,
     )
@@ -172,7 +172,8 @@ async def test_slotmachine_one_bunch_unredeemed_win_3_emotes(interact, mock_cont
         mock_context,
         lang=lang,
         content="1",
-        expected="[ ppL | ppL | chuw | catJAM | 🍌 ] You have used 1 unredeemed cookie(s) and earned 3 cookies. ",
+        expected="[ ppL | ppL | chuw | catJAM | 🍌 ] Você usou 1 cookie(s) não resgatado(s) e "
+        "ganhou 3 cookies.  PogChamp",
         values=values,
         seed=2,
     )
@@ -186,8 +187,8 @@ async def test_slotmachine_one_bunch_unredeemed_win_6_emotes(interact, mock_cont
         mock_context,
         lang=lang,
         content="1",
-        expected="[ papaoRun | papaoRun | papaoRun | 🥔 | COPIUM ] "  # NOQA
-        "You have used 1 unredeemed cookie(s) and earned 6 cookies. ",
+        expected="[ papaoRun | papaoRun | papaoRun | 🥔 | COPIUM ] Você usou 1 cookie(s) não resgatado(s) "  # NOQA
+        "e ganhou 6 cookies.  PogChamp",
         values=values,
         seed=15,
     )
@@ -201,8 +202,8 @@ async def test_slotmachine_one_bunch_unredeemed_win_12_emotes(interact, mock_con
         mock_context,
         lang=lang,
         content="1",
-        expected="[ GIGACHAD | GIGACHAD | GIGACHAD | GIGACHAD | NOOOO ] "  # NOQA
-        "You have used 1 unredeemed cookie(s) and earned 12 cookies. ",
+        expected="[ GIGACHAD | GIGACHAD | GIGACHAD | GIGACHAD | NOOOO ] Você usou 1 cookie(s) não resgatado(s) "  # NOQA
+        "e ganhou 12 cookies.  PogChamp",
         values=values,
         seed=1772,
     )
@@ -216,8 +217,8 @@ async def test_slotmachine_one_bunch_unredeemed_win_30_emotes(interact, mock_con
         mock_context,
         lang=lang,
         content="1",
-        expected="[ papaoRun | papaoRun | papaoRun | papaoRun | papaoRun ] "  # NOQA
-        "You have used 1 unredeemed cookie(s) and earned 30 cookies. ",
+        expected="[ papaoRun | papaoRun | papaoRun | papaoRun | papaoRun ] Você usou 1 cookie(s) não resgatado(s) "  # NOQA
+        "e ganhou 30 cookies.  PogChamp",
         values=values,
         seed=44296,
     )

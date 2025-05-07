@@ -42,8 +42,8 @@ class MockContext(AsyncMock):
         self.resposta = AsyncMock()
         self.message = MockMessage()
 
-    async def prepare_context(self, translation: str = 'en'):
-        random.seed(0)
+    async def prepare_context(self, translation: str = "en", seed: int = 0):
+        random.seed(seed)
         self.user = await User.create_or_update(self)
         self.user.translations = self.bot.TranslationManager.get_translations(language=translation)
         ...

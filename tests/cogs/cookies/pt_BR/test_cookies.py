@@ -7,7 +7,7 @@ from bot.cogs.cookies.command.cookies import CookieCmd
 from tests.cogs.cookies.templates import templates_cookies as templates
 from tests.helpers.mock_classes import MockContext
 
-lang = "en"
+lang = "pt_BR"
 
 
 @pytest_asyncio.fixture
@@ -22,5 +22,5 @@ async def test_cookie(interact, mock_context: MockContext):
         mock_context,
         lang=lang,
         content="",
-        expected='Choose from one of the options "eat", "count", "top", "gift", "stock" or "sm"',
+        expected='Escolha entre uma das opções "eat", "count", "top", "gift", "stock" ou "sm"',
     )

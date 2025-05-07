@@ -7,7 +7,7 @@ from bot.cogs.cookies.command.cookies import CookieCmd
 from tests.cogs.cookies.templates import templates_cookies_top as templates
 from tests.helpers.mock_classes import MockContext
 
-lang = "en"
+lang = "pt_BR"
 
 
 @pytest_asyncio.fixture
@@ -22,7 +22,7 @@ async def test_cookie_top_no_content(interact, mock_context: MockContext):
         mock_context,
         lang=lang,
         content=[],
-        expected="the ranks are: stocked, streak, consumed, donated, received, total",
+        expected="as categoria são: stocked, streak, consumed, donated, received, total",
     )
 
 
@@ -34,8 +34,8 @@ async def test_cookie_top_stocked(interact, mock_context: MockContext):
         lang=lang,
         content=["stocked"],
         expected="top 5 stocked: 🏆 @channelname: (8534) 🥈 @some_user_45: (4185) "
-        "🥉 @some_user_44: (4092) 🏅 @some_user_43: (3999) 🏅 @some_user_42: "
-        "(3906) || You are in the 8th position in the ranking with 10.",
+        "🥉 @some_user_44: (4092) 🏅 @some_user_43: (3999) 🏅 @some_user_42: (3906)"
+        " || Você está na 8ª posição na classificação com 10.",
     )
 
 
@@ -47,8 +47,8 @@ async def test_cookie_top_consumed(interact, mock_context: MockContext):
         lang=lang,
         content=["consumed"],
         expected="top 5 cookiers: 🏆 @some_user_45: (3285) 🥈 @some_user_44: (3212) "
-        "🥉 @some_user_43: (3139) 🏅 @some_user_42: (3066) 🏅 @some_user_41: "
-        "(2993) || You are in the 8th position in the ranking with 0.",
+        "🥉 @some_user_43: (3139) 🏅 @some_user_42: (3066) 🏅 @some_user_41: (2993)"
+        " || Você está na 8ª posição na classificação com 0.",
     )
 
 
@@ -60,8 +60,8 @@ async def test_cookie_top_donated(interact, mock_context: MockContext):
         lang=lang,
         content=["donated"],
         expected="top 5 givers: 🏆 @some_user_45: (2520) 🥈 @some_user_44: (2464) "
-        "🥉 @some_user_43: (2408) 🏅 @some_user_42: (2352) 🏅 @some_user_41: "
-        "(2296) || You are in the 8th position in the ranking with 0.",
+        "🥉 @some_user_43: (2408) 🏅 @some_user_42: (2352) 🏅 @some_user_41: (2296)"
+        " || Você está na 8ª posição na classificação com 0.",
     )
 
 
@@ -73,8 +73,8 @@ async def test_cookie_top_received(interact, mock_context: MockContext):
         lang=lang,
         content=["received"],
         expected="top 5 receivers: 🏆 @some_user_45: (2430) 🥈 @some_user_44: (2376) "
-        "🥉 @some_user_43: (2322) 🏅 @some_user_42: (2268) 🏅 @some_user_41: "
-        "(2214) || You are in the 8th position in the ranking with 0.",
+        "🥉 @some_user_43: (2322) 🏅 @some_user_42: (2268) 🏅 @some_user_41: (2214)"
+        " || Você está na 8ª posição na classificação com 0.",
     )
 
 
@@ -86,6 +86,6 @@ async def test_cookie_top_total(interact, mock_context: MockContext):
         lang=lang,
         content=["total"],
         expected="top 5 total: 🏆 @some_user_40: (0) 🥈 @some_user_41: (0) "
-        "🥉 @some_user_42: (0) 🏅 @some_user_43: (0) 🏅 @some_user_44: "
-        "(0) || You are in the 1th position in the ranking with 0.",
+        "🥉 @some_user_42: (0) 🏅 @some_user_43: (0) 🏅 @some_user_44: (0)"
+        " || Você está na 1ª posição na classificação com 0.",
     )

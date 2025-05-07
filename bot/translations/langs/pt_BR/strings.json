@@ -1,10 +1,12 @@
 {
     "SupportTools": {
-        "mention_str": "você",
-      "verbs": {
-        "second_person": "já comeu",
-        "third_person": "já comeu"
-      },
+        "LanguageContext": {
+            "mention_str": "você",
+            "Verbs": {
+                "second_person_str": "já comeu",
+                "third_person_str": "já comeu"
+            }
+        },
         "TimeTools": {
             "strftime_str": "%d/%m/%Y às %H:%M:%S",
             "Pattern time": {
@@ -334,44 +336,54 @@
         "remind_message": "Você ganhou {} cookies na loteria! Os ingressos vencedores foram: {}"
     },
     "Cookies": {
-        "ranks": "os categoria são: {}",
-        "daily_limit_reached": "Você ainda está em cooldown, espere {} até o próximo lote! ⌛",
-        "user_not_found": "o usuário {} ainda não foi registrado e não usou nenhum comando de cookie.",
         "invalid_option": "Escolha entre uma das opções \"eat\", \"count\", \"top\", \"gift\", \"stock\" ou \"sm\"",
-        "cookie_not_found": "O usuário {} ainda não usou nenhum comando relacionado aos cookies.",
+        "daily_limit_reached": "Você ainda está em cooldown, espere {} até o próximo lote! ⌛",
+        "user_not_found": "o usuário @{} ainda não foi registrado e não usou nenhum comando de cookie.",
         "not_eat": "Você não comeu nada, nossa!",
         "negative_eat": "Para comer {} cookies, você deve primeiro saber como reverter entropia.",
         "multiple_eat": "você comeu {} cookies de uma só vez. 🥠",
         "eat": "{}",
-        "cc_bot_nick": "Tenho cookies infinitos e dou uma fração deles para você.",
-        "gift_bot_nick": "Não quero a seu cookie.",
-        "gift_user_himself": "você tentou presentear você mesmo, uau!",
-        "gift_on_cooldown_no_stock": "você não tem nenhum cookie armazenado e o cooldown dura mais {}.",
-        "invalid_gift_amount": "envie um valor válido para presentear e não {}.",
-        "multiple_gift": "você presenteou @{} com {} cookie 🎁",
-        "gift": "você deu um cookie para @{} 🎁",
-        "gift_not_enough_cookies": "Para presente, você deve primeiro resgatar o cookie.",
-        "stock": "você estocou {} cookies 🍪, o próximo sai em 6h.",
-        "stock_not_daily": "você estocou {} cookies 🍪.",
-        "stock_not_enough_cookies": "você só pode estocar {}.",
-        "top10_ish": "top {} {}: {} || Você está na {}ª posição na classificação com {}.",
-        "multiple_gift_plural": "você presenteou @{} com {} cookies 🎁",
-        "gift_plural": "você deu @{} um cookie 🎁",
-        "invalid_amount": "você está tentando apostar {} mas só tem {} cookies não resgatados.",
-        "daily_win": "{} você usou seu cookie diário e recebeu {} cookies!",
-        "daily_single_loss": "{} você perdeu seu cookie diário…",
-        "not_daily_multiple_loss": "{} você usou seu cookie diário não resgatado e ganhou {} cookies!",
-        "not_daily_single_loss": "{} você perdeu seu cookie diário não resgatado…",
-        "not_daily_multiple_win": "você usou {} cookies diários não resgatados e ganhou {} cookies dos seguintes itens.",
-        "not_daily_lost_everything": "você usou {} cookies diários e perdeu tudo PoroSad",
         "formats_cookie_count": {
-            "cookie_count": "Você já comeu {} biscoitos 🥠,",
+            "cookie_count": "{} já comeu {} biscoitos 🥠,",
             "stocked_count": "tem {} em estoque,",
             "received_count": "foi apresentado com {},",
             "donated_count": "presenteou {},",
             "not_redeemed_count": "e tem um total de {} não resgatados.",
             "total_count": "e um total de {} cookies já foram adicionados à conta."
-        }
+        },
+        "cc_bot_nick": "Tenho cookies infinitos e dou uma fração deles para você.",
+        "gift_bot_nick": "Não quero a seu cookie.",
+        "gift_user_himself": "você tentou presentear você mesmo, uau!",
+        "cookie_not_found": "O usuário @{} ainda não usou nenhum comando relacionado aos cookies.",
+        "gift_on_cooldown_no_stock": "Você não tem nenhum cookie 🍪 armazenado ou aguardando para ser resgatado. O próximo chega em {}.",
+        "invalid_gift_amount": "envie um valor válido para presentear e não {}.",
+        "not_gifted": "Você não deu nada de presente, uau!",
+        "negative_gift": "Você não pode dar cookies negativos, a menos que seja um ladrão de cookies... e você não é, certo?",
+        "multiple_gift": "você presenteou @{} com {} cookie 🎁",
+        "gift": "você deu um cookie para @{} 🎁",
+        "gift_not_enough_cookies": "Para presente, você deve primeiro resgatar o cookie.",
+        "gift_no_stock_but_cooldown": "Para presentear, você deve primeiro resgatar os {} cookies que você tem disponíveis.",
+
+
+        "stock": "você estocou {} cookies 🍪, o próximo sai em 6h.",
+        "stock_not_daily": "você estocou {} cookies 🍪.",
+        "stock_not_enough_cookies": "você só pode estocar {}.",
+        "ranks": "as categoria são: {}",
+        "top10_ish": "top {} {}: {} || Você está na {}ª posição na classificação com {}.",
+        "multiple_gift_plural": "você presenteou @{} com {} cookies 🎁",
+        "gift_plural": "você deu @{} um cookie 🎁",
+        "invalid_amount": "você está tentando apostar {} mas só tem {} cookies não resgatados.",
+        "all_string_str": "todos",
+        "time_suffix_str": "O próximo está disponível em {}.",
+        "cookie_win_suffix_str": "e ganhou {} cookies. {}",
+        "cookie_loss_suffix_str": "e perdeu tudo. {}",
+        "cookie_message": "",
+        "accumulated_message": "{} Você usou {} cookie(s) não resgatado(s) {} {}",
+        "last_cookie_message": "{} Você usou seu último cookie disponível {} {}",
+
+
+        "daily_win": "{} você usou seu cookie diário e recebeu {} cookies!",
+        "daily_single_loss": "{} você perdeu seu cookie diário…"
     },
     "Markov": {
         "purge": "Dicionários limpos em %0.2fs. %d palavras removidas.",

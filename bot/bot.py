@@ -1,46 +1,33 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-from typing import TYPE_CHECKING
+
 import asyncio
 import datetime
-import os
-import sys
 from logging import Logger
-from typing import Any, Callable, Coroutine
+from typing import Any, Callable, TYPE_CHECKING
 
+import twitchio
 from aiocache.backends.memcached import MemcachedCache
 from aiocache.backends.memory import SimpleMemoryCache
 from aiocache.backends.redis import RedisCache
 from loguru import logger
 from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist
-from twitchio.ext.routines import Routine
-from twitchio.ext.commands import CommandErrorPayload, Command
+from twitchio import eventsub
+from twitchio.ext import commands
+from twitchio.ext.commands import Command, CommandErrorPayload
 
 from bot.exceptions import (
-    GuardFailure, CommandNotFound, CommandOnCooldown, DevRequired, InvalidArgument, OwnerRequired,
+    CommandNotFound, CommandOnCooldown, DevRequired, GuardFailure, InvalidArgument, OwnerRequired,
 )
-from bot.ext import Bot, Context, ChatMessage, routine
-from bot.ext import Config
-from bot.models import Channel as ChannelModel, User as UserModel
+from bot.ext import Bot, ChatMessage, Config, Context
+from bot.models import Channel as ChannelModel, TwitchTokens, User as UserModel
 from bot.models.User_extras import BotsIgnore
 from bot.translations import Response, TranslationManager
 from bot.utils import (
-    CookieTools, Emotes, LotteryTools, MarkovProcessor, ToolsTools, UploadThings, StringTools, Check, Cache,
-    SessionsCaches, CommandHandler, DynamicDescriptions,
+    Cache, Check, CommandHandler, DynamicDescriptions, Emotes, LotteryTools, MarkovProcessor, SessionsCaches,
+    StringTools, ToolsTools, UploadThings,
 )
-
-
-
-from bot.models.migrations import migrations
-
-import twitchio
-from twitchio import eventsub
-from twitchio.ext import commands
-from bot.models import Channel as ChannelModel, User as UserModel, TwitchTokens
-from tortoise.exceptions import DoesNotExist
-from bot.ext import Config
-from loguru import logger
 
 if TYPE_CHECKING:
     from bot.api import api, api_start
@@ -71,7 +58,6 @@ class Gorenmu(Bot):
         self.ToolsTools: ToolsTools = ToolsTools(self)
         self.StringTools: StringTools = StringTools()
         self.LotteryTools: LotteryTools = LotteryTools(self)
-        self.CookieTools: CookieTools = CookieTools(self)
         self.Emotes: Emotes = Emotes(self)
         self.lottery_lock: asyncio.Lock = asyncio.Lock()
         self.manual_event_message: list[Callable] = []
@@ -280,21 +266,3 @@ class Gorenmu(Bot):
     async def global_guard(self, ctx: commands.Context) -> bool:
         checks = [Check.online, Check.enabled, Check.banword]
         return all(check(ctx) for check in checks)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

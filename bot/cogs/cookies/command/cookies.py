@@ -3,8 +3,9 @@ from __future__ import annotations
 
 import datetime
 import random
-from itertools import chain, repeat
-from typing import TYPE_CHECKING
+from collections import Counter
+from itertools import chain, groupby, repeat
+from typing import List, TYPE_CHECKING
 
 from bot.ext import commands, Context
 from bot.models import Cookies, User
@@ -20,14 +21,13 @@ __all__ = "CookieCmd"
 class CookieCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.multiplicador = 1
 
     cooldown_rate = 3
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(
-        self, payload: commands.CommandErrorPayload
-    ) -> bool | None: ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
     async def guards_component(self, ctx: commands.Context) -> bool:
@@ -58,9 +58,7 @@ class CookieCmd(commands.CustomComponent):
             choice = ctx.user.translations.Cookies.random_line()  # NOQA
             return translations.eat.format_response(ctx, choice["text"])
         else:
-            time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(
-                cookie_cooldown
-            )
+            time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cookie_cooldown)
             return translations.daily_limit_reached.format_response(ctx, time, success=False)
 
     @cookies.command(name="count", aliases=["cc"])
@@ -110,7 +108,7 @@ class CookieCmd(commands.CustomComponent):
         cookie_cooldown = await calculate_cooldown(cookie_from)
         on_cooldown = datetime.datetime.now(datetime.UTC) < cookie_from.cooldown
         amount_available = cookie_from.stocked + cookie_from.not_redeemed()
-        amount, is_all = ctx.bot.ToolsTools.to_all(amount, amount_available, 1)
+        amount, is_all = ctx.bot.ToolsTools.to_all(amount, amount_available, translations.all_string, default=1)
         if amount <= 0:
             if amount == 0:
                 return translations.not_gifted.format_response(ctx, success=False)
@@ -148,12 +146,10 @@ class CookieCmd(commands.CustomComponent):
         cookie_cooldown = await calculate_cooldown(cookie)
         on_cooldown = datetime.datetime.now(datetime.UTC) < cookie.cooldown
         amount_available = cookie.not_redeemed()
-        amount, is_all = ctx.bot.ToolsTools.to_all(amount, amount_available, 1)
+        amount, is_all = ctx.bot.ToolsTools.to_all(amount, amount_available, translations.all_string, default=1)
 
         if on_cooldown:
-            time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(
-                cookie_cooldown
-            )
+            time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cookie_cooldown)
             return translations.daily_limit_reached.format_response(ctx, time, success=False)
 
         if is_all:
@@ -184,14 +180,11 @@ class CookieCmd(commands.CustomComponent):
         cookies = await Cookies.all().order_by(f"-{order_by}").prefetch_related("user").limit(10)
         emojis = "🏆🥈🥉🏅🏅"
         top_10ish = [
-            f"{emoji} @{cookie.user.name}: ({getattr(cookie, order_by)})"
-            for emoji, cookie in zip(emojis, cookies)
+            f"{emoji} @{cookie.user.name}: ({getattr(cookie, order_by)})" for emoji, cookie in zip(emojis, cookies)
         ]
         tops = " ".join(top_10ish)
         cookie_user = await Cookies.get(user=ctx.user)
-        user_index = (
-            await Cookies.filter(**{f"{order_by}__gt": getattr(cookie_user, order_by)}).count() + 1
-        )
+        user_index = await Cookies.filter(**{f"{order_by}__gt": getattr(cookie_user, order_by)}).count() + 1
 
         return translations.top10_ish.format_response(
             ctx, len(top_10ish), title, tops, user_index, getattr(cookie_user, order_by)
@@ -199,119 +192,136 @@ class CookieCmd(commands.CustomComponent):
 
     @cookies.command(name="sm", aliases=["slotmachine"])
     async def slotmachine(self, ctx: Context, amount: str = "1"):
-        translations = ctx.user.translations.Cookies
-        is_all = amount == "all" or amount == translations.all_string
-        amount = int(amount) if amount.isdigit() else amount
-        await ctx.user.fetch_related("cookies")
+        user = ctx.user
+        translations = user.translations.Cookies
+
+        await user.fetch_related("cookies")
         cookie = await Cookies.get_cookie(ctx)
-        cookie_cooldown = await calculate_cooldown(cookie)
-        on_cooldown = datetime.datetime.now(datetime.UTC) < cookie.cooldown
-        if on_cooldown:
-            time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(
-                cookie_cooldown
-            )
-            return translations.daily_limit_reached.format_response(ctx, time, success=False)
+
+        if await _is_on_cooldown(cookie):
+            return await _cooldown_response(ctx, cookie)
+
         amount_available = cookie.not_redeemed()
-        parsed_amount = parse_amount(amount, amount_available)
+        parsed_amount, is_all = ctx.bot.ToolsTools.to_all(amount, amount_available, translations.all_string, default=1)
+
         if parsed_amount is None:
             return translations.invalid_amount.format_response(ctx, amount, amount_available)
-        amount = parsed_amount
-        amount = amount_available if amount == "all" else int(amount) or 1
-        frutas = [
-            "🍇",
-            "🍊",
-            "🍋",
-            "🍒",
-            "🍉",
-            "🍓",
-            "🍌",
-            "🍍",
-            "🥕",
-            "🍆",
-            "🌽",
-            "🥔",
-            "🌶️",
-            "🫑",
-            "🥑",
-        ]
-        emotes = await self.bot.Emotes.get_random_by_amount(
-            channel_id=ctx.channel.id, amount=len(frutas)
-        )
-        if len(emotes) < len(frutas):
-            missing = len(frutas) - len(emotes)
-            frutas_extra = random.choices(frutas, k=missing)
-            emotes += frutas_extra
-        rewards = {}
-        for fruta in frutas:
-            rewards[(5, fruta)] = 30
-            rewards[(4, fruta)] = 12
-            rewards[(3, fruta)] = 6
-            rewards[(2, fruta)] = 3
 
-        filler_amount = f"{translations.all_string} {amount}" if is_all else amount
+        fruits = _get_fruit_emojis()
+        emotes = await _get_emotes(ctx, fruits)
+
+        rewards = await get_rewards(ctx, emotes)
         time_suffix = await parse_time(amount_available, ctx, is_all, translations)
-        total_recompensa, contagem_valores = await ctx.bot.CookieTools.all_slotmachine(
-            frutas=frutas, rewards=rewards, quantidade=amount
-        )
-        contagem_valores = sorted(contagem_valores.items())
-        # Make something to see the breakdown about the multiple SM.
-        # resposta_valores = None
-        # resposta_valores = ", ".join([f"{quantidade} de {valor}" for valor, quantidade in contagem_valores])
+        amount_label = f"{translations.all_string} {parsed_amount}" if is_all else parsed_amount
 
-        is_all_mode = not amount.is_integer() and is_all
+        total_reward, reward_counts, sequences = await all_slotmachine(
+            fruits=emotes, rewards=rewards, quantidade=parsed_amount
+        )
+
+        reward_counts = sorted(reward_counts.items())  # NOQA
+        # Future: show reward breakdown.
+        # breakdown = ", ".join([f"{count} of {value}" for value, count in reward counts])
+
+        is_all_mode = not parsed_amount.is_integer() and is_all
         stock_method = cookie.stock_all if is_all_mode else cookie.stock
 
-        if total_recompensa:
-            emote = (await self.bot.Emotes.get_pog(channel_id=ctx.channel.id, user=ctx.user))[0]
-            total = total_recompensa * ctx.bot.CookieTools.multiplicador
+        if total_reward:
+            emote = (await self.bot.Emotes.get_pog(channel_id=ctx.channel.id, user=user))[0]
+            total = total_reward * self.multiplicador
             await stock_method(amount_available)  # NOQA
             suffix = translations.cookie_win_suffix.format(total, time_suffix)
         else:
-            emote = (await self.bot.Emotes.get_sad(channel_id=ctx.channel.id, user=ctx.user))[0]
+            emote = (await self.bot.Emotes.get_sad(channel_id=ctx.channel.id, user=user))[0]
             await stock_method(0)  # NOQA
             suffix = translations.cookie_loss_suffix.format(time_suffix)
 
-        if is_all_mode or amount_available != 1:
-            return translations.accumulated_message.format_response(
-                ctx, emote, filler_amount, suffix
-            )
+        if parsed_amount == 1 and total_reward and len(sequences) == 1:
+            prefix = f'[ {" | ".join(sequences[0])} ]'
         else:
-            return translations.last_cookie_message.format_response(
-                ctx, emote, filler_amount, suffix
-            )
+            prefix = ""
+
+        if is_all_mode or amount_available != 1:
+            return translations.accumulated_message.format_response(ctx, prefix, amount_label, suffix, emote)
+        else:
+            return translations.last_cookie_message.format_response(ctx, prefix, suffix, emote)
 
 
 async def parse_time(amount_available, ctx, is_all, translations):
     if is_all or amount_available == 1:
-        time = datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=6)
-        time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(time)
-        time_suffix = translations.time_suffix.format()
+        time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(datetime.timedelta(hours=6))
+        time_suffix = translations.time_suffix.format(time)
     else:
         time_suffix = ""
     return time_suffix
 
 
-def parse_amount(amount: str | int, amount_available: int):
-    if amount.is_integer():
-        return None if amount > amount_available else amount
-    amount = amount.strip().lower()
-    if amount.isdigit():
-        amount_int = int(amount)
-        return None if amount_int > amount_available else amount_int
-    return amount_available if amount == "all" else None
+async def get_rewards(ctx: Context, frutas: list):
+    rewards = await ctx.bot.cache.get(key=int(ctx.broadcaster.id), namespace="cookies_rewards")
+    if not rewards:
+        levels = [5, 4, 3, 2]
+        points = {5: 30, 4: 12, 3: 6, 2: 3}
+        rewards = {(level, fruta): points[level] for level in levels for fruta in frutas}
+        await ctx.bot.cache.set(
+            key=int(ctx.broadcaster.id),
+            value=rewards,
+            namespace="cookies_rewards",
+            ttl=datetime.timedelta(hours=6).total_seconds(),
+        )
+    return rewards
 
 
 async def calculate_cooldown(cookie: Cookies):
     if not cookie.cooldown:
-        cookie.cooldown = datetime.datetime.now(datetime.UTC) - datetime.timedelta(
-            hours=8, seconds=10
-        )
+        cookie.cooldown = datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=8, seconds=10)
         await cookie.save()
     return datetime.datetime.now(datetime.UTC) - cookie.cooldown
+
+
+async def calculate_reward(sequencia, recompensas, comprimento_sequencia):
+    total_recompensa = 0
+    for elemento, grupo in groupby(sequencia):
+        tamanho = sum(1 for _ in grupo)
+        if tamanho >= comprimento_sequencia:
+            total_recompensa += recompensas.get((tamanho, elemento), 0)
+    return total_recompensa
+
+
+async def all_slotmachine(fruits: List[str], rewards: dict[tuple[int, str], int], quantidade):
+    sequencias = [random.choices(fruits, k=5) for _ in range(quantidade)]
+    recompensas_valores = [await calculate_reward(sequencia, rewards, 2) for sequencia in sequencias]
+    soma_total = sum(recompensas_valores)
+    contagem_valores = Counter(recompensas_valores)
+    return soma_total, contagem_valores, sequencias
+
+
+async def _is_on_cooldown(cookie) -> bool:
+    now = datetime.datetime.now(datetime.UTC)
+    return now < cookie.cooldown
+
+
+async def _cooldown_response(ctx: Context, cookie) -> Response:
+    cooldown_duration = await calculate_cooldown(cookie)
+    time_str = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cooldown_duration)
+    return ctx.user.translations.Cookies.daily_limit_reached.format_response(ctx, time_str, success=False)
+
+
+def _get_fruit_emojis() -> list[str]:
+    return ["🍇", "🍊", "🍋", "🍒", "🍉", "🍓", "🍌", "🍍", "🥕", "🍆", "🌽", "🥔", "🌶️", "🫑", "🥑"]
+
+
+async def _get_emotes(ctx: Context, fallback_fruits: list[str]) -> list[str]:
+    emotes = await ctx.bot.Emotes.get_random_by_amount(channel_id=ctx.channel.id, amount=len(fallback_fruits))
+
+    if len(emotes) < len(fallback_fruits):
+        missing = len(fallback_fruits) - len(emotes)
+        fallback = random.sample(fallback_fruits, k=missing)
+        emotes += fallback
+
+    return emotes
 
 
 async def setup(bot: Gorenmu) -> None:
     await bot.add_component(CookieCmd(bot))
 
 
-async def teardown(bot: Gorenmu) -> None: ...
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

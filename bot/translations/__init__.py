@@ -53,17 +53,18 @@ def load_langs():
     for lang in base_path.iterdir():
         if lang.name != "en":
             langs[lang.name] = {
-                    "strings": open_file(base_path / lang.name / "strings.json", en_paths[0]),
-                    "decorators": open_file(base_path / lang.name / "decorators.json", en_paths[1]),
-                    "site": open_file(base_path / lang.name / "site_stuff.json", en_paths[2]),
-                    "extras": {
-                            "cookies_path": base_path / lang.name / "extras/cookies.json",
-                            "activity": open_file(base_path / lang.name / "extras/activity.json", en_paths[4]),
-                            "dungeon": open_file(base_path / lang.name / "extras/dungeon.json", en_paths[5]),
-                            "games": open_file(base_path / lang.name / "extras/games.json", en_paths[6]),
-                            "pets": open_file(base_path / lang.name / "extras/pets.json", en_paths[7]),
-                            "weather": open_file(base_path / lang.name / "extras/weather.json", en_paths[8]),
-                    }
+                "strings": open_file(base_path / lang.name / "strings.json", en_paths[0]),
+                "decorators": open_file(base_path / lang.name / "decorators.json", en_paths[1]),
+                "site": open_file(base_path / lang.name / "site_stuff.json", en_paths[2]),
+                "extras": {
+                    "cookies_path": en_paths[3],  # TODO: Change back.
+                    # "cookies_path": base_path / lang.name / "extras/cookies.json",
+                    "activity": open_file(base_path / lang.name / "extras/activity.json", en_paths[4]),
+                    "dungeon": open_file(base_path / lang.name / "extras/dungeon.json", en_paths[5]),
+                    "games": open_file(base_path / lang.name / "extras/games.json", en_paths[6]),
+                    "pets": open_file(base_path / lang.name / "extras/pets.json", en_paths[7]),
+                    "weather": open_file(base_path / lang.name / "extras/weather.json", en_paths[8]),
+                },
             }
 
     return langs
