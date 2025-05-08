@@ -15,6 +15,7 @@ async def interact(mock_bot):
     return RAfkCmd(bot=mock_bot)
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_rafk_not_in_time(interact, mock_context: MockContext):
     await templates.test_rafk_not_in_time(
@@ -22,6 +23,7 @@ async def test_rafk_not_in_time(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_rafk_with_content(interact, mock_context: MockContext):
     await templates.test_rafk_with_content(
@@ -33,6 +35,7 @@ async def test_rafk_with_content(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_rafk_no_content(interact, mock_context: MockContext):
     await templates.test_rafk_with_content(

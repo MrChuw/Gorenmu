@@ -29,6 +29,7 @@ def silence_logs():
         yield
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_on_cooldown(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1)]
@@ -42,6 +43,7 @@ async def test_slotmachine_on_cooldown(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_invalid_amount(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(minutes=1)]
@@ -55,6 +57,7 @@ async def test_slotmachine_invalid_amount(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_one_bunch_unredeemed(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
@@ -68,6 +71,7 @@ async def test_slotmachine_one_bunch_unredeemed(interact, mock_context: MockCont
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_all_bunch_unredeemed(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
@@ -82,6 +86,7 @@ async def test_slotmachine_all_bunch_unredeemed(interact, mock_context: MockCont
     )
 
 
+@pytest.mark.en
 @pytest.mark.template
 @pytest.mark.asyncio
 async def test_find_seed_for_reward_no_emotes(interact, mock_context: MockContext):
@@ -95,6 +100,7 @@ async def test_find_seed_for_reward_no_emotes(interact, mock_context: MockContex
     assert False
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_one_bunch_unredeemed_win_3(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
@@ -109,6 +115,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_3(interact, mock_context: Mo
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_one_bunch_unredeemed_win_6(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
@@ -123,6 +130,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_6(interact, mock_context: Mo
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_one_bunch_unredeemed_win_12(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
@@ -137,6 +145,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_12(interact, mock_context: M
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_one_bunch_unredeemed_win_30(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
@@ -151,6 +160,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_30(interact, mock_context: M
     )
 
 
+@pytest.mark.en
 @pytest.mark.template
 @pytest.mark.asyncio
 async def test_find_seed_for_reward(interact, mock_context: MockContext):
@@ -164,6 +174,7 @@ async def test_find_seed_for_reward(interact, mock_context: MockContext):
     assert False
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_one_bunch_unredeemed_win_3_emotes(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
@@ -178,6 +189,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_3_emotes(interact, mock_cont
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_one_bunch_unredeemed_win_6_emotes(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
@@ -193,6 +205,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_6_emotes(interact, mock_cont
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_one_bunch_unredeemed_win_12_emotes(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
@@ -208,6 +221,7 @@ async def test_slotmachine_one_bunch_unredeemed_win_12_emotes(interact, mock_con
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_slotmachine_one_bunch_unredeemed_win_30_emotes(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]

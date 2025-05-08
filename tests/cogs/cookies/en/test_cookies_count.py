@@ -15,6 +15,7 @@ async def interact(mock_bot):
     return CookieCmd(bot=mock_bot)
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_count_no_name(interact, mock_context: MockContext):
     await templates.test_count(
@@ -22,6 +23,7 @@ async def test_count_no_name(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_count_bot_name(interact, mock_context: MockContext):
     await templates.test_count(
@@ -33,6 +35,7 @@ async def test_count_bot_name(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_count_other_user(interact, mock_context: MockContext):
     await templates.test_count_user(
@@ -45,6 +48,7 @@ async def test_count_other_user(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_count_author_with_a_bunch_of_things(interact, mock_context: MockContext):
     await templates.test_count_user(
@@ -58,6 +62,7 @@ async def test_count_author_with_a_bunch_of_things(interact, mock_context: MockC
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_count_user_not_found(interact, mock_context: MockContext):
     await templates.test_count(

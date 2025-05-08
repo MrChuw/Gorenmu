@@ -16,12 +16,14 @@ async def interact(mock_bot):
     return AnnotationsCmd(bot=mock_bot)
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations(interact, mock_context: MockContext):
     expected = ["", 1, "Shush"]
     await templates.test_annotations(interact, mock_context, lang=lang, content="", expected=expected)
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_add_no_content(interact, mock_context: MockContext):
     await templates.test_annotations_add(
@@ -29,6 +31,7 @@ async def test_annotations_add_no_content(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_add_content_no_title(interact, mock_context: MockContext):
     await templates.test_annotations_add(
@@ -40,6 +43,7 @@ async def test_annotations_add_content_no_title(interact, mock_context: MockCont
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_add_content_too_long_no_title(interact, mock_context: MockContext):
     await templates.test_annotations_add(
@@ -51,6 +55,7 @@ async def test_annotations_add_content_too_long_no_title(interact, mock_context:
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_add_content_title(interact, mock_context: MockContext):
     await templates.test_annotations_add(
@@ -62,6 +67,7 @@ async def test_annotations_add_content_title(interact, mock_context: MockContext
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_add_content_title_too_long(interact, mock_context: MockContext):
     await templates.test_annotations_add(
@@ -74,6 +80,7 @@ async def test_annotations_add_content_title_too_long(interact, mock_context: Mo
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_check_wrong_id(interact, mock_context: MockContext):
     await templates.test_annotations_check(
@@ -81,6 +88,7 @@ async def test_annotations_check_wrong_id(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_check_no_content_no_annotations(interact, mock_context: MockContext):
     await templates.test_annotations_check(
@@ -88,6 +96,7 @@ async def test_annotations_check_no_content_no_annotations(interact, mock_contex
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_check_one_annotation(interact, mock_context: MockContext):
     await templates.test_annotations_check(
@@ -100,6 +109,7 @@ async def test_annotations_check_one_annotation(interact, mock_context: MockCont
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_check_two_annotation(interact, mock_context: MockContext):
     await templates.test_annotations_check(
@@ -114,6 +124,7 @@ async def test_annotations_check_two_annotation(interact, mock_context: MockCont
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_check_annotation_id_one(interact, mock_context: MockContext):
     await templates.test_annotations_check(
@@ -126,6 +137,7 @@ async def test_annotations_check_annotation_id_one(interact, mock_context: MockC
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_check_annotation_id_two(interact, mock_context: MockContext):
     await templates.test_annotations_check(
@@ -138,6 +150,7 @@ async def test_annotations_check_annotation_id_two(interact, mock_context: MockC
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_check_annotation_wrong_id(interact, mock_context: MockContext):
     await templates.test_annotations_check(
@@ -145,6 +158,7 @@ async def test_annotations_check_annotation_wrong_id(interact, mock_context: Moc
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_delete_no_id(interact, mock_context: MockContext):
     await templates.test_annotations_delete(
@@ -152,6 +166,7 @@ async def test_annotations_delete_no_id(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_annotations_delete_id(interact, mock_context: MockContext):
     await templates.test_annotations_delete(

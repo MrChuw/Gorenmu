@@ -17,6 +17,7 @@ async def interact(mock_bot):
     return CookieCmd(bot=mock_bot)
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_bot(interact, mock_context: MockContext):
     await templates.test_cookie_gift(
@@ -24,6 +25,7 @@ async def test_cookie_gift_bot(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_yourself(interact, mock_context: MockContext):
     await templates.test_cookie_gift(
@@ -35,6 +37,7 @@ async def test_cookie_gift_yourself(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_unknown_user(interact, mock_context: MockContext):
     await templates.test_cookie_gift(
@@ -46,6 +49,7 @@ async def test_cookie_gift_unknown_user(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_other_user_no_cookie(interact, mock_context: MockContext):
     await templates.test_cookie_gift(
@@ -57,6 +61,7 @@ async def test_cookie_gift_other_user_no_cookie(interact, mock_context: MockCont
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_other_user_zero(interact, mock_context: MockContext):
     await templates.test_cookie_gift_user(
@@ -68,6 +73,7 @@ async def test_cookie_gift_other_user_zero(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_other_user_negative_amount(interact, mock_context: MockContext):
     await templates.test_cookie_gift_user(
@@ -79,6 +85,7 @@ async def test_cookie_gift_other_user_negative_amount(interact, mock_context: Mo
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_cooldown_no_stock(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1)]
@@ -92,6 +99,7 @@ async def test_cookie_gift_cooldown_no_stock(interact, mock_context: MockContext
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_other_user_all(interact, mock_context: MockContext):
     await templates.test_cookie_gift_user(
@@ -103,6 +111,7 @@ async def test_cookie_gift_other_user_all(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_other_user_no_amount(interact, mock_context: MockContext):
     await templates.test_cookie_gift_user(
@@ -110,6 +119,7 @@ async def test_cookie_gift_other_user_no_amount(interact, mock_context: MockCont
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_other_user_exact_amount(interact, mock_context: MockContext):
     await templates.test_cookie_gift_user(
@@ -121,6 +131,7 @@ async def test_cookie_gift_other_user_exact_amount(interact, mock_context: MockC
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_other_user(interact, mock_context: MockContext):
     await templates.test_cookie_gift_user(
@@ -128,6 +139,7 @@ async def test_cookie_gift_other_user(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_gift_other_user_no_stock_cooldown(interact, mock_context: MockContext):
     expected = [

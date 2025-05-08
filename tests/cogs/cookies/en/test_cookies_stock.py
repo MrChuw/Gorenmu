@@ -17,6 +17,7 @@ async def interact(mock_bot):
     return CookieCmd(bot=mock_bot)
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_cookie_stock_on_cooldown(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1)]
@@ -30,6 +31,7 @@ async def test_cookie_stock_on_cooldown(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_cookie_stock_no_content(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20)]
@@ -38,6 +40,7 @@ async def test_cookie_stock_no_content(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_cookie_stock_with_all(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20)]
@@ -51,6 +54,7 @@ async def test_cookie_stock_with_all(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_cookie_stock_with_amount(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20)]
@@ -59,6 +63,7 @@ async def test_cookie_stock_with_amount(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_cookie_stock_with_exact_amount(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20)]
@@ -72,6 +77,7 @@ async def test_cookie_stock_with_exact_amount(interact, mock_context: MockContex
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_cookie_stock_not_enough_cookies(interact, mock_context: MockContext):
     values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20)]

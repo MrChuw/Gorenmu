@@ -15,6 +15,7 @@ async def interact(mock_bot):
     return CookieCmd(bot=mock_bot)
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_eat_with_nothing(interact, mock_context: MockContext):
     await templates.test_cookie_eat(
@@ -28,6 +29,7 @@ async def test_cookie_eat_with_nothing(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_eat_amount_zero(interact, mock_context: MockContext):
     await templates.test_cookie_eat(
@@ -35,6 +37,7 @@ async def test_cookie_eat_amount_zero(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_eat_amount_negative(interact, mock_context: MockContext):
     await templates.test_cookie_eat(
@@ -46,6 +49,7 @@ async def test_cookie_eat_amount_negative(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_eat_multiple_amount(interact, mock_context: MockContext):
     await templates.test_cookie_eat(
@@ -53,6 +57,7 @@ async def test_cookie_eat_multiple_amount(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_cookie_eat_cooldown(interact, mock_context: MockContext):
     expected = [

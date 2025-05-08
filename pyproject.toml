@@ -26,9 +26,10 @@ preview = false  # Usar recursos experimentais do Black
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
-markers = ["network: tests that make real requests", "template: just the template for the test."]
+markers = ["network: tests that make real requests", "template: just the template for the test.",
+    "pt_BR: Test for Portuguse language.", "en: Test for English language."]
 #addopts = "-m 'not template'"
-#addopts = "-m 'not network and not template'"
-addopts = "-n auto -m 'not network and not template'"
+addopts = "-m 'not network and not template'"
+#addopts = "-n auto -m 'not network and not template'"
 
 

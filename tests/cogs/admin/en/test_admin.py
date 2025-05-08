@@ -15,6 +15,7 @@ async def interact(mock_bot):
     return AdminSmallCmds(bot=mock_bot)
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_nada(interact, mock_context: MockContext):
     await templates.test_nada(
@@ -22,11 +23,13 @@ async def test_nada(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_restart_success(interact, mock_context: MockContext):
     await templates.test_restart_success(interact, mock_context, lang=tests_lang)
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_restart_failure(interact, mock_context: MockContext):
     await templates.test_restart_failure(
@@ -34,6 +37,7 @@ async def test_restart_failure(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_reload_translations(interact, mock_context: MockContext):
     await templates.test_reload_commands(
@@ -45,6 +49,7 @@ async def test_reload_translations(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_reload_emotes(interact, mock_context: MockContext):
     await templates.test_reload_commands(
@@ -56,6 +61,7 @@ async def test_reload_emotes(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_reload_all(interact, mock_context: MockContext):
     await templates.test_reload_commands(
@@ -63,6 +69,7 @@ async def test_reload_all(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_reload_error_translations(interact, mock_context: MockContext):
     await templates.test_reload_importlib_error(
@@ -74,6 +81,7 @@ async def test_reload_error_translations(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_reload_error_emotes(interact, mock_context: MockContext):
     await templates.test_reload_importlib_error(

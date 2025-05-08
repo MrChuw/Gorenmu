@@ -15,11 +15,13 @@ async def interact(mock_bot):
     return AFKCmd(bot=mock_bot)
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_afk_return_not_afk(interact, mock_context: MockContext):
     await templates.test_afk_return_not_afk(interact, mock_context, lang=lang, expected=False)
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_afk_return_afk_no_content(interact, mock_context: MockContext):
     await templates.test_afk_return_afk_no_content(
@@ -27,6 +29,7 @@ async def test_afk_return_afk_no_content(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_afk_return_afk_content(interact, mock_context: MockContext):
     await templates.test_afk_return_afk_content(

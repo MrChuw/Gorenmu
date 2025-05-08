@@ -15,6 +15,7 @@ async def interact(mock_bot):
     return CookieCmd(bot=mock_bot)
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_cookie(interact, mock_context: MockContext):
     await templates.test_cookie(

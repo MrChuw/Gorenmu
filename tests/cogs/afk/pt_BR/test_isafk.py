@@ -15,6 +15,7 @@ async def interact(mock_bot):
     return IsAfkCmd(bot=mock_bot)
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_isafk_own_user(interact, mock_context: MockContext):
     await templates.test_isafk(
@@ -22,6 +23,7 @@ async def test_isafk_own_user(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_isafk_bot_nick(interact, mock_context: MockContext):
     await templates.test_isafk(
@@ -29,6 +31,7 @@ async def test_isafk_bot_nick(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_isafk_no_content(interact, mock_context: MockContext):
     await templates.test_isafk(
@@ -36,6 +39,7 @@ async def test_isafk_no_content(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_isafk_content(interact, mock_context: MockContext):
     await templates.test_isafk(
@@ -47,6 +51,7 @@ async def test_isafk_content(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_isafk_user_dont_exist(interact, mock_context: MockContext):
     await templates.test_isafk(

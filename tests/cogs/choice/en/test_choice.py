@@ -15,21 +15,25 @@ async def interact(mock_bot):
     return ChoiceCmd(bot=mock_bot)
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_choice_or(interact, mock_context: MockContext):
     await templates.test_choice(interact, mock_context, lang=tests_lang, content="1 or 2 or 3", expected="2")
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_choice_space(interact, mock_context: MockContext):
     await templates.test_choice(interact, mock_context, lang=tests_lang, content="1 2 3", expected="2")
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_choice_comma(interact, mock_context: MockContext):
     await templates.test_choice(interact, mock_context, lang=tests_lang, content="1, 2, 3", expected="2")
 
 
+@pytest.mark.en
 @pytest.mark.asyncio
 async def test_choice_mixed(interact, mock_context: MockContext):
     await templates.test_choice(interact, mock_context, lang=tests_lang, content="1 or 2, 3 4", expected="4")

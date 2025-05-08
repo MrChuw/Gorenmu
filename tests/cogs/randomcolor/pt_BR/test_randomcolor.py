@@ -15,6 +15,7 @@ async def interact(mock_bot):
     return RandomColorCmd(bot=mock_bot)
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_randomcolor_no_tipo(interact, mock_context: MockContext):
     await templates.test_randomcolor(
@@ -27,6 +28,7 @@ async def test_randomcolor_no_tipo(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_randomcolor_hex_tipo(interact, mock_context: MockContext):
     await templates.test_randomcolor(
@@ -39,6 +41,7 @@ async def test_randomcolor_hex_tipo(interact, mock_context: MockContext):
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_randomcolor_hex_name_api_down(interact, mock_context: MockContext):
     await templates.test_randomcolor(
@@ -51,6 +54,7 @@ async def test_randomcolor_hex_name_api_down(interact, mock_context: MockContext
     )
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_randomcolor_rgb_name_api_down(interact, mock_context: MockContext):
     await templates.test_randomcolor(

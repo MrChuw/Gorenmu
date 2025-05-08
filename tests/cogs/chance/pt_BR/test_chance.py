@@ -15,6 +15,7 @@ async def interact(mock_bot):
     return ChanceCmd(bot=mock_bot)
 
 
+@pytest.mark.pt_BR
 @pytest.mark.asyncio
 async def test_choice(interact, mock_context: MockContext):
     await templates.test_choice(interact, mock_context, lang=lang, content="", expected="84.44%")
