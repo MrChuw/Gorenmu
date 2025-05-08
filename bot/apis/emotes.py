@@ -18,9 +18,9 @@ class Emotes:
         self.bot = bot
         self.session: CachedSession = bot.SessionsCaches.EmotesCachedSession.session
         self.cached_emotes = {}
-        self.sad_emotes = ['sadge', 'sadgecry', 'sadcat', 'sadchamp']
-        self.happy_emotes = ['peepoglad', 'gladge', 'peepohappy', 'peepohappyu', 'happycat']
-        self.pog_emotes = ['pog', 'pogu', 'pagbounce', 'pogg', 'pogs', 'noway', 'nowaying', 'nowaycat']
+        self.sad_emotes = ['sadge', 'sadgecry', 'sadcat', 'sadchamp']  # NOQA
+        self.happy_emotes = ['peepoglad', 'gladge', 'peepohappy', 'peepohappyu', 'happycat']  # NOQA
+        self.pog_emotes = ['pog', 'pogu', 'pagbounce', 'pogg', 'pogs', 'noway', 'nowaying', 'nowaycat']  # NOQA
 
     async def fetch_json(self, url) -> dict:
         try:
@@ -63,7 +63,7 @@ class Emotes:
             self.bot.log.error(f'Error fetching ffz emotes for {channel_id}: {e}')
             return []
 
-    async def get_emotes_(self, channel_id) -> list[str]:
+    async def fetch_emotes(self, channel_id) -> list[str]:
         ttv, bttv, ffz = await asyncio.gather(
                 self.get_7tv(channel_id),
                 self.get_bttv(channel_id),
@@ -81,14 +81,14 @@ class Emotes:
 
     async def get_emotes(self, channel_id: int) -> list[str]:
         return (await self.bot.cache.get(channel_id, namespace="emotes") or
-                await self.get_emotes_(channel_id=channel_id))
+                await self.fetch_emotes(channel_id=channel_id))
 
     async def get_happy(self, channel_id: int, user: User, amount: int = 1) -> list[str]:
         emotes_ = self.happy_emotes + user.translations.SupportTools.Emotes.emotions.pog
         emotes_set = {emote.lower() for emote in emotes_}
         emotes = await self.get_emotes(channel_id=channel_id)
         if matching_emotes := [emote for emote in emotes if emote.lower() in emotes_set]:
-            return random.choices(matching_emotes, k=min(amount, len(matching_emotes)))
+            return random.sample(matching_emotes, k=min(amount, len(matching_emotes)))
         else:
             return ["peepoHappy"]
 
@@ -97,7 +97,7 @@ class Emotes:
         emotes_set = {emote.lower() for emote in emotes_}
         emotes = await self.get_emotes(channel_id=channel_id)
         if matching_emotes := [emote for emote in emotes if emote.lower() in emotes_set]:
-            return random.choices(matching_emotes, k=min(amount, len(matching_emotes)))
+            return random.sample(matching_emotes, k=min(amount, len(matching_emotes)))
         else:
             return ["PogChamp"]
 
@@ -106,7 +106,7 @@ class Emotes:
         emotes_set = {emote.lower() for emote in emotes_}
         emotes = await self.get_emotes(channel_id=channel_id)
         if matching_emotes := [emote for emote in emotes if emote.lower() in emotes_set]:
-            return random.choices(matching_emotes, k=min(amount, len(matching_emotes)))
+            return random.sample(matching_emotes, k=min(amount, len(matching_emotes)))
         else:
             return ["PoroSad"]
 

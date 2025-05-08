@@ -10,7 +10,7 @@ from aiocache.backends.memcached import MemcachedCache
 from aiocache.backends.memory import SimpleMemoryCache
 from aiocache.backends.redis import RedisCache
 from aiocache.serializers import PickleSerializer
-from aiohttp_client_cache import CachedSession, RedisBackend, SQLiteBackend
+from aiohttp_client_cache import CachedSession, RedisBackend, SQLiteBackend, CacheBackend
 
 from bot.ext.config import CacheType
 import aiohttp
@@ -93,7 +93,15 @@ class BaseCachedSession:
 
     def create_cache_backend(self, cache_name: str = "Default-Cache"):
         """ Abstract method to create the cache backend. Can be overridden. """
-        if "redis" in self.bot.__dict__:
+        if self.bot.config.DevelopmentConfig.test:
+            return CacheBackend(
+                    cache_name=cache_name,
+                    urls_expire_after=self.get_expiry_times(),
+                    allowed_methods=self.allowed_methods,
+                    include_headers=True,
+                    allowed_codes=self.allowed_codes
+            )
+        if self.bot.config.CacheConfig.type in [CacheType.REDIS, CacheType.VALKEY]:
             return RedisBackend(
                     cache_name=f"{self.bot.config.CacheConfig.namespace}-{cache_name}",
                     urls_expire_after=self.get_expiry_times(),

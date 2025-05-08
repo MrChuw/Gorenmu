@@ -425,8 +425,10 @@
             "command_not_found": "Comando com nome {} não encontrado.",
             "command_reloaded": "Comando {} recarregado com sucesso.",
             "command_reloaded_error": "O comando {} teve um erro ao recarregar: {}",
-            "translations_reloaded": "As traduções foram recarregadas com sucesso.",
-            "translations_reloaded_error": "As traduções tiveram um erro ao recarregar: {}"
+            "translations_str": "As traduções",
+            "emotes_str": "Os emotes",
+            "module_reloaded": "{} foram recarregadas com sucesso.",
+            "module_reloaded_error": "{} tiveram um erro ao recarregar: {}"
         },
         "Restart": {
             "success": "O bot reinicio com sucesso.",

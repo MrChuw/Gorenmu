@@ -52,7 +52,7 @@ async def test_reload_emotes(interact, mock_context: MockContext):
         mock_context,
         lang=tests_lang,
         command="emotes",
-        expected="As traduções foram recarregadas com sucesso.",
+        expected='Os emotes foram recarregadas com sucesso.'
     )
 
 
@@ -81,5 +81,5 @@ async def test_reload_error_emotes(interact, mock_context: MockContext):
         mock_context,
         lang=tests_lang,
         command="emotes",
-        expected="As traduções tiveram um erro ao recarregar: Error",
+        expected='Os emotes tiveram um erro ao recarregar: Error'
     )

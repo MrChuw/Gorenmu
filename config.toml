@@ -2,6 +2,7 @@ version = "2.0.0"
 
 [development]
 development = true
+test = false
 
 [bot]
 bot_id = 707980467

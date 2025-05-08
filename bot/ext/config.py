@@ -100,6 +100,7 @@ class LoggingType(Enum):
 class DevelopmentConfig:
     def __init__(self, data: Dict[str, dict]) -> None:
         self.development: bool = data.get("development", False)
+        self.test: bool = data.get("test", False)
 
 
 class BotConfig:

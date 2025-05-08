@@ -599,8 +599,10 @@ class BaseTranslations:
             command_not_found: Response
             command_reloaded: Response
             command_reloaded_error: Response
-            translations_reloaded: Response
-            translations_reloaded_error: Response
+            translations: str
+            emotes: str
+            module_reloaded: Response
+            module_reloaded_error: Response
 
         Reload: Reload
 

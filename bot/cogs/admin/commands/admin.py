@@ -57,19 +57,21 @@ class AdminSmallCmds(commands.CustomComponent):
     async def reload(self, ctx: Context, command: str) -> Response:
         translations = ctx.user.translations.Admin.Reload
         if command == "translations":
+            prefix = translations.translations
             try:
                 ctx.bot.TranslationManager = reload_and_get("bot.translations", "TranslationManager")()
-                return translations.translations_reloaded.format_response(ctx)
+                return translations.module_reloaded.format_response(ctx, prefix)
             except Exception as e:
                 self.bot.log.error(e)
-                return translations.translations_reloaded_error.format_response(ctx, e, success=False)
+                return translations.module_reloaded_error.format_response(ctx, prefix, e, success=False)
         if command == "emotes":
+            prefix = translations.emotes
             try:
-                self.bot.Emotes = reload_and_get("bot.utils.emotes", "Emotes")(self.bot)
-                return translations.translations_reloaded.format_response(ctx)
+                self.bot.Emotes = reload_and_get("bot.apis.emotes", "Emotes")(self.bot)
+                return translations.module_reloaded.format_response(ctx, prefix)
             except Exception as e:
                 self.bot.log.error(e)
-                return translations.translations_reloaded_error.format_response(ctx, e, success=False)
+                return translations.module_reloaded_error.format_response(ctx, prefix, e, success=False)
         if command == "all":
             await ctx.bot.CommandHandler.reload_cogs(ctx.bot)
             return translations.commands_reloaded.format_response(ctx)

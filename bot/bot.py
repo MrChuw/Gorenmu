@@ -24,8 +24,9 @@ from bot.ext import Bot, ChatMessage, Config, Context
 from bot.models import Channel as ChannelModel, TwitchTokens, User as UserModel
 from bot.models.User_extras import BotsIgnore
 from bot.translations import Response, TranslationManager
+from bot.apis import Emotes
 from bot.utils import (
-    Cache, Check, CommandHandler, DynamicDescriptions, Emotes, LotteryTools, MarkovProcessor, SessionsCaches,
+    Cache, Check, CommandHandler, DynamicDescriptions, LotteryTools, MarkovProcessor, SessionsCaches,
     StringTools, ToolsTools, UploadThings,
 )
 

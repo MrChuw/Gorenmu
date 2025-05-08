@@ -457,8 +457,10 @@
             "command_not_found": "Command with name {} not found.",
             "command_reloaded": "Command {} successfully reloaded.",
             "command_reloaded_error": "Command {} had an error while reloading: {}",
-            "translations_reloaded": "The translations were successfully reloaded.",
-            "translations_reloaded_error": "The translations had an error while reloading: {}"
+            "translations_str": "The translations",
+            "emotes_str": "The emotes",
+            "module_reloaded": "{} were successfully reloaded.",
+            "module_reloaded_error": "{} had an error while reloading: {}"
         },
         "Restart": {
             "success": "The bot has been successfully restarted.",
