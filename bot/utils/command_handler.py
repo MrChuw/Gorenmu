@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 from twitchio.ext.commands import BucketType
+
 from bot.ext import Routine
 
 if TYPE_CHECKING:
@@ -35,14 +36,14 @@ class CommandHandler:
     DEFAULT_COOLDOWN_BUCKET = BucketType.user
 
     @staticmethod
-    def start_routines(self: Gorenmu) -> None:
-        for routine in self.routines:
-            routine.start(self)
+    def start_routines(bot: Gorenmu) -> None:
+        for routine in bot.routines:
+            routine.start(bot)
 
     @staticmethod
-    def stop_routines(self: Gorenmu) -> None:
+    def stop_routines(bot: Gorenmu) -> None:
         try:
-            for routine in self.routines:
+            for routine in bot.routines:
                 routine.cancel()
         except Exception as e:
             logger.error(e)

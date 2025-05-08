@@ -2,9 +2,9 @@ name: Run Tests
 
 on:
   push:
-    branches: [ "main", "twitchIO-v3" ]
+    branches: [ "twitchIO-v3" ]
   pull_request:
-    branches: [ "main", "twitchIO-v3" ]
+    branches: [ "twitchIO-v3" ]
 
 jobs:
   Tests:
