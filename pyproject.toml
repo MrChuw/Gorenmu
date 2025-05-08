@@ -25,8 +25,9 @@ preview = false  # Usar recursos experimentais do Black
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
 markers = ["network: tests that make real requests", "template: just the template for the test."]
-#addopts = "-m 'not network and not template'"
-addopts = "-n 6 -m 'not network and not template'"
+addopts = "-m 'not network and not template'"
+#addopts = "-n auto -m 'not network and not template'"
 
 

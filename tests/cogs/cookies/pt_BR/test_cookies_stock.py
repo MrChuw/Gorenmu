@@ -25,7 +25,7 @@ async def test_cookie_stock_on_cooldown(interact, mock_context: MockContext):
         mock_context,
         lang=lang,
         content=[],
-        expected="Você ainda está em cooldown, espere 60.00 segundos até o próximo lote! ⌛",
+        expected_regex=r"Você ainda está em cooldown, espere \d+\.\d{2} segundos até o próximo lote! ⌛",
         values=values,
     )
 

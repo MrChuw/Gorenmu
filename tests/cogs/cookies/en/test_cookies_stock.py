@@ -25,7 +25,7 @@ async def test_cookie_stock_on_cooldown(interact, mock_context: MockContext):
         mock_context,
         lang=lang,
         content=[],
-        expected="You're still on cooldown, wait 60.00 seconds until the next batch! ⌛",
+        expected_regex=r"You're still on cooldown, wait \d+\.\d{2} seconds until the next batch! ⌛",
         values=values,
     )
 

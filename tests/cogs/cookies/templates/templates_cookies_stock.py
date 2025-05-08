@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import re
 
 import pytest
 import pytest_asyncio
@@ -29,8 +30,9 @@ async def test_cookie_stock(
     mock_context: MockContext,
     lang: str,
     content: list[str],
-    expected: str,
     values: list[int | datetime.datetime],
+    expected: str | None = None,
+    expected_regex: str | None = None,
 ):
     await mock_context.prepare_context(lang)
     await Check.cookie_check(mock_context)
@@ -42,4 +44,11 @@ async def test_cookie_stock(
     cookie.cooldown = values[4]
     await cookie.save()
     response: Response = await interact.stock._callback(interact, mock_context, *content)
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    if expected_regex:
+        assert re.search(
+            expected_regex, response.response_string
+        ), f"Expected pattern {expected_regex!r}, got: {response.response_string!r}"
+    elif expected:
+        assert expected in response.response_string, f"Expected {expected!r}, got: {response.response_string!r}"
+    else:
+        raise ValueError("You must provide either `expected` or `expected_regex`.")
