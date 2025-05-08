@@ -5,7 +5,6 @@ import asyncio
 import json
 from typing import TYPE_CHECKING
 
-import aiohttp
 from aiohttp_client_cache import CachedSession, SQLiteBackend
 from loguru import logger
 
@@ -68,9 +67,10 @@ class UploadThings:
                 body += data + b"\r\n"
                 body += b"--faa88938ece74999ac092a3e782951fb--\r\n"
 
-                headers = {"Content-Type": f"multipart/form-data; boundary=faa88938ece74999ac092a3e782951fb",
-                           "Authorization": bot.config.ApisConfig.site_api_key,
-                           }
+                headers = {
+                    "Content-Type": f"multipart/form-data; boundary=faa88938ece74999ac092a3e782951fb",
+                    "Authorization": bot.config.ApisConfig.file_upload_api_key,
+                }
 
                 async with session.post(bot.config.BotConfig.file_upload_url, data=body, headers=headers) as resp:
                     return json.loads(await resp.text())

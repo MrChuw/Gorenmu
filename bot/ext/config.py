@@ -3,9 +3,10 @@ import os
 import pathlib
 from enum import Enum
 from typing import Dict, List
-from yarl import URL
+
 import toml
 from dotenv import load_dotenv
+from yarl import URL
 
 load_dotenv()
 
@@ -109,8 +110,7 @@ class BotConfig:
         self.dev_name: str = data.get("dev_name", "Exemple")
         self.dev_display_name: str = data.get("dev_display_name", "Exemple")
         self.prefix: List[str] = [data.get("default_prefix", "+")]
-        allowed_prefix: str | None = data.get("allowed_prefix_list", None)
-        if allowed_prefix:
+        if allowed_prefix := data.get("allowed_prefix_list", None):
             self.prefix = prefix_generator(str(self.prefix) + allowed_prefix)
         self.allowed_prefix_size: int = data.get("allowed_prefix_size", 1)
         self.site_url: str = data.get("site_url", "https://exemple.org")
@@ -119,7 +119,7 @@ class BotConfig:
 
 class ApisConfig:
     def __init__(self, data: Dict[str, dict]) -> None:
-        self.color_site_url: URL = URL(data.get("COLOR_SITE_URL", "https://color.exemple.org"))
+        self.color_site_url: URL = URL(data.get("color_site_url", "https://color.exemple.org"))
         self.site_api_key: str = data.get("site_api_key", "api_exemple")
         self.shlink_url: URL = URL(data.get("shlink_url", "https://shlink.exemple.org/rest/v3/short-urls"))
         self.shlink_key: str = data.get("shlink_key", "api_exemple")
@@ -135,7 +135,7 @@ class ApisConfig:
         self.api_client_id: str = data.get("api_client_id", "api_exemple")
         self.image_carousel: URL = URL(data.get("image_carousel", "https://uploadthing.com"))
         self.image_carousel_api_key: str = data.get("image_carousel_api_key", "api_exemple")
-        self.file_upload_url: URL = URL(data.get("file_upload_url", "https://upload.exemple.org"))
+        self.file_upload_api_key: URL = URL(data.get("file_upload_api_key", "https://upload.exemple.org"))
         self.pastbin_url: URL = URL(data.get('pastbin_url', "https://bit.exemple.org"))
         self.enable_site_endpoints: bool = data.get("enable_site_endpoints", False)
 
@@ -178,7 +178,6 @@ class DatabaseConfig:
         self.DB_CONFIG = {"connections": {"default": self.database_uri},
                           "apps": {"models": {"models": ["bot.models"], "default_connection": "default"}}
                           }
-
 
 
 class LoggerConfig:

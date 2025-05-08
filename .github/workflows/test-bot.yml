@@ -7,7 +7,7 @@ on:
     branches: [ "main", "twitchIO-v3" ]
 
 jobs:
-  test:
+  Tests:
     runs-on: ubuntu-latest
 
     steps:

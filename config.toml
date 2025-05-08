@@ -16,12 +16,14 @@ site_url = "https://gorenmu.vercel.app/"
 imgur_authorized_ids = [184900613, 411010313]
 
 [apis]
-COLOR_SITE_URL = "${COLOR_SITE_URL}"
-image_carousel = "${IMAGE_CAROUSEL}"
+color_site_url = "https://color.mrchuw.com.br/"
+pastbin_url = "https://bin.mrchuw.com.br/documents"
+image_carousel = "https://car.mrchuw.com.br/upload"
 image_carousel_api_key = "${IMAGE_CAROUSEL_API_KEY}"
-site_api_key = "${SITE_API_KEY}"
+file_upload_url = "https://im.mrchuw.com.br/api/files/"
+file_upload_api_key = "${SITE_API_KEY}"
+shlink_url = "https://shlink.mrchuw.com.br/rest/v3/short-urls"
 shlink_key = "${SHLINK_KEY}"
-shlink_url = "${SHLINK_URL}"
 access_token = "${ACCESS_TOKEN}"
 access_oauth_token = "${ACCESS_OAUTH_TOKEN}"
 refresh_token = "${REFRESH_TOKEN}"
@@ -30,9 +32,7 @@ client_id = "${CLIENT_ID}"
 api_client_id = "${API_CLIENT_ID}"
 api_client_secret = "${API_CLIENT_SECRET}"
 
-pastbin_url="https://bin.mrchuw.com.br/documents"
-file_upload_url = "${FILE_UPLOAD_URL}"
-enable_site_endpoints = true
+enable_site_endpoints = false
 
 [database]
 type = "mariadb"
