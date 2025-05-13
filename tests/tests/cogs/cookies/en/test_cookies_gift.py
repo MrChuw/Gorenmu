@@ -1,0 +1,148 @@
+# -*- coding: utf-8 -*-
+
+import datetime
+
+import pytest
+import pytest_asyncio
+
+from bot.cogs.cookies.command.cookies import CookieCmd
+from tests.tests.cogs.cookies.templates import templates_cookies_gift as templates
+from tests.helpers.mock_classes import MockContext
+
+lang = "en"
+
+
+@pytest_asyncio.fixture
+async def interact(mock_bot):
+    return CookieCmd(bot=mock_bot)
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_bot(interact, mock_context: MockContext):
+    await templates.test_cookie_gift(
+        interact, mock_context, lang=lang, content=[mock_context.bot.bot_nick], expected="I don't want your cookie."
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_yourself(interact, mock_context: MockContext):
+    await templates.test_cookie_gift(
+        interact,
+        mock_context,
+        lang=lang,
+        content=[mock_context.author.name],
+        expected="Did you try gifting it yourself, wow!",
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_unknown_user(interact, mock_context: MockContext):
+    await templates.test_cookie_gift(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["random_user"],
+        expected="user @random_user has not yet been registered and has not used any cookie commands.",
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_other_user_no_cookie(interact, mock_context: MockContext):
+    await templates.test_cookie_gift(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["channelname"],
+        expected="User @channelname has not yet used any command related to cookies.",
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_other_user_zero(interact, mock_context: MockContext):
+    await templates.test_cookie_gift_user(
+        interact, mock_context, lang=lang, content=["channelname", "0"], expected=["You didn't gift anything, wow!"]
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_other_user_negative_amount(interact, mock_context: MockContext):
+    await templates.test_cookie_gift_user(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["channelname", "-1"],
+        expected=["You can't give negative cookies unless you're a cookie thief... and you're not, right?"],
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_cooldown_no_stock(interact, mock_context: MockContext):
+    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1)]
+    await templates.test_cookie_gift_user_edited(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["channelname", "1"],
+        expected="You don’t have any cookies 🍪 stored or waiting to be redeemed. The next one arrives in 59 minu",
+        values=values,
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_other_user_all(interact, mock_context: MockContext):
+    await templates.test_cookie_gift_user(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["channelname", "all"],
+        expected=["you gifted @channelname with 12 cookie 🎁"],
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_other_user_no_amount(interact, mock_context: MockContext):
+    await templates.test_cookie_gift_user(
+        interact, mock_context, lang=lang, content=["channelname"], expected=["you gave @channelname a cookie 🎁"]
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_other_user_exact_amount(interact, mock_context: MockContext):
+    await templates.test_cookie_gift_user(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["channelname", "10"],
+        expected=["you gifted @channelname with 10 cookie 🎁"],
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_other_user(interact, mock_context: MockContext):
+    await templates.test_cookie_gift_user(
+        interact, mock_context, lang=lang, content=["channelname"], expected=["you gave @channelname a cookie 🎁"]
+    )
+
+
+@pytest.mark.en
+@pytest.mark.asyncio
+async def test_cookie_gift_other_user_no_stock_cooldown(interact, mock_context: MockContext):
+    expected = [
+        "you gifted @channelname with 5 cookie 🎁",
+        "you gifted @channelname with 5 cookie 🎁",
+        "To gift, you must first redeem the 2 cookies you have available.",
+    ]
+    await templates.test_cookie_gift_user(
+        interact, mock_context, lang=lang, content=["channelname", "5"], expected=expected, amount=3
+    )

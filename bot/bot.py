@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import datetime
 from logging import Logger
 from typing import Any, Callable, TYPE_CHECKING
+from asyncio import Task
 
 import twitchio
 from aiocache.backends.memcached import MemcachedCache
@@ -27,7 +29,7 @@ from bot.translations import Response, TranslationManager
 from bot.apis import Emotes
 from bot.utils import (
     Cache, Check, CommandHandler, DynamicDescriptions, LotteryTools, MarkovProcessor, SessionsCaches,
-    StringTools, ToolsTools, UploadThings,
+    StringTools, ToolsTools, UploadThings, MemCache
 )
 
 if TYPE_CHECKING:
@@ -47,7 +49,7 @@ class Gorenmu(Bot):
         self.log: Logger = log
         self.config: Config = configs
         self.cache: RedisCache | MemcachedCache | SimpleMemoryCache = Cache.cache_load(self)
-        self.memcache: SimpleMemoryCache = Cache.create_cache()
+        self.memcache: MemCache = MemCache()
         self.boot: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
         self.timezone: datetime.timezone = datetime.timezone(datetime.timedelta(hours=-3))
         self.TranslationManager: TranslationManager = TranslationManager(self.config.mock)
@@ -55,6 +57,7 @@ class Gorenmu(Bot):
         self.CommandHandler: CommandHandler = CommandHandler()
         self.SessionsCaches: SessionsCaches = SessionsCaches(self)
         self.MarkovProcessor: MarkovProcessor | None = None
+        self.MarkovTask: Task[None] | None = None
         self.UploadThings: UploadThings = UploadThings(self)
         self.ToolsTools: ToolsTools = ToolsTools(self)
         self.StringTools: StringTools = StringTools()
@@ -69,7 +72,7 @@ class Gorenmu(Bot):
         self.api: api | None = None
         self.api_start: api_start = None
         self.channels: dict[str, ChannelModel] = {}
-        self.routines: list[callable] = []
+        self.routines: list[callable] = []  # NOQA
 
     async def setup_hook(self) -> None:
         tokens = await TwitchTokens.all()
@@ -144,14 +147,18 @@ class Gorenmu(Bot):
         self.bots_ids = [_id.user_id for _id in bot_list]  # NOQA
         self.MarkovProcessor = MarkovProcessor(self)
         await self.update_channels()
-        asyncio.create_task(self.MarkovProcessor.process_message(), name="process_message")
-        await CommandHandler.load_cogs(self, "bot/cogs")
+        self.MarkovTask = asyncio.create_task(self.MarkovProcessor.process_message(), name="process_message")
+        await CommandHandler.load_cogs(self)
         if self.config.ApisConfig.enable_site_endpoints:
             asyncio.create_task(self.api_start(self))
 
     async def close(self) -> None:
         await self.close_db()
         await self.SessionsCaches.close_all_sessions()
+        await self.memcache.close_all_caches()
+        self.MarkovTask.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await self.MarkovTask
         await super().close()
 
     async def event_ready(self) -> None:
@@ -204,18 +211,16 @@ class Gorenmu(Bot):
 
     async def event_message(self, payload: ChatMessage):
         if payload.chatter.id == str(self.bot_id) or payload.source_broadcaster is not None:
-            return
+            return None
         ctx: Context = await self.get_context(payload)
         ctx.user, is_online = await asyncio.gather(
                 UserModel.create_or_update(ctx),
                 self.is_online(payload)
         )
         if not is_online:
-            return
+            return None
 
         ctx.message.text = ctx.message.text.replace("\U000e0000", "")
-        if ctx.prefix in ctx.message.text:
-            ctx._get_command()  # NOQA
         if not ctx.command:
             await self.MarkovProcessor.put_markov_queue(ctx)
 
@@ -239,6 +244,7 @@ class Gorenmu(Bot):
                 if response:
                     await ctx.response(response)
             await self.listeners(ctx)
+            return None
 
         except InvalidArgument:
             if ctx.command and hasattr(ctx.command, "usage"):

@@ -118,41 +118,30 @@ class Cookies(Base, TimestampMixin):
 
     @staticmethod
     async def find_by_name(name: str, ctx: Context) -> Cookies | Response:
-        user_id_cached = await ctx.bot.memcache.get(key=name, namespace="user_name")
-        if not user_id_cached:
-            cookie = await Cookies.get_or_none(name=name)
+        cookie = await ctx.bot.memcache.Cookie.get_by_name(name)
+        if not cookie:
+            user_id = await ctx.bot.memcache.Cookie.get_id_by_name(name)
+            cookie = await Cookies.get_or_none(user_id=user_id)
             if not cookie:
                 return ctx.user.translations.Exceptions.user_not_found_name.format_response(ctx, name)
-            await ctx.bot.memcache.set(
-                key=cookie.id,
-                value=cookie,
-                namespace="cookie",
-                ttl=timedelta(hours=16).total_seconds(),
-            )
-        else:
-            cookie = await Cookies.find_by_id(user_id_cached, ctx)
+            await ctx.bot.memcache.Cookie.set(user=[cookie.id, name],cookie=cookie)
         return cookie
 
     @staticmethod
-    async def find_by_id(user_id: int, ctx: Context) -> Cookies | Response:
-        cookie = await ctx.bot.memcache.get(key=user_id, namespace="cookie")
+    async def find_by_id(user: User, ctx: Context) -> Cookies | Response:
+        cookie = await ctx.bot.memcache.Cookie.get(user_id=user.id)
         if not cookie:
-            cookie = await Cookies.get_or_none(id=user_id)
+            cookie = await Cookies.get_or_none(id=user.id)
             if not cookie:
-                return ctx.user.translations.Exceptions.user_not_found_id.format_response(ctx, user_id)
-            await ctx.bot.memcache.set(
-                key=cookie.id,
-                value=cookie,
-                namespace="cookie",
-                ttl=timedelta(hours=16).total_seconds(),
-            )
+                return ctx.user.translations.Exceptions.user_not_found_id.format_response(ctx, user.id)
+            await ctx.bot.memcache.Cookie.set(user=user, cookie=cookie,)
         return cookie
 
     @staticmethod
-    async def get_cookie(ctx: Context, name: str = None, user_id: int = None) -> Cookies | Response:
+    async def get_cookie(ctx: Context, name: str = None, user: User = None) -> Cookies | Response:
         if name:
             return await Cookies.find_by_name(name=name, ctx=ctx)
-        elif user_id:
-            return await Cookies.find_by_id(user_id=user_id, ctx=ctx)
+        elif user:
+            return await Cookies.find_by_id(user=user, ctx=ctx)
         else:
-            return await Cookies.find_by_id(user_id=ctx.user.id, ctx=ctx)
+            return await Cookies.find_by_id(user=ctx.user, ctx=ctx)

@@ -4,13 +4,14 @@ from bot.models import Status
 from bot.translations import Response
 from datetime import datetime
 
+from bot.ext.named_tuples import RAfkNamedTuple
 
 async def event_message(ctx: Context) -> Response | bool:
     translations = ctx.user.translations.AfkListeners
     if (not ctx.bot.is_enabled(ctx, "afk") or not ctx.bot.channels[ctx.channel.name].online or
             ctx.command is not None and ctx.command.name in ["afk", "rafk"]):
         return False
-    user_status: Status = await Status.get_afk(ctx, namespace="afk")
+    user_status: Status = await Status.get_afk(ctx)
     if not ctx.user or user_status.online:
         return False
     status = ctx.user.translations.Afk.afks[user_status.alias]
@@ -56,13 +57,14 @@ async def event_message(ctx: Context) -> Response | bool:
 
     user_status.online = True
     await user_status.save()
-    afk_str = {
-            "content": user_status.message,
-            "updated_at": user_status.updated_at,
-            "alias": user_status.alias
-            }
+    afk_tuple = RAfkNamedTuple(
+            content=user_status.message,
+            updated_at=user_status.updated_at,
+            alias=user_status.alias,
+            afk=user_status
+    )
 
-    await ctx.bot.memcache.set(int(ctx.author.id), afk_str, ttl=240, namespace="rafk")
+    await ctx.bot.memcache.RAfk.set(user=ctx.user, value=afk_tuple)
     return response
 
 

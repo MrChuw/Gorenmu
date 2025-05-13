@@ -98,6 +98,8 @@ class BaseTranslations:
             super().__init__(translation, None)
             self.populate_responses()
 
+        guard_caught: Response
+
         user_not_found_id: Response
         user_not_found_name: Response
         time_expired: Response
@@ -173,8 +175,8 @@ class BaseTranslations:
     class Alias(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
-            self.populate_subclasses(base_cls=self)
             self.populate_responses()
+            self.populate_subclasses(base_cls=self)
 
         dont_have_alias: Response
         alias_invalid_name: Response
@@ -258,7 +260,8 @@ class BaseTranslations:
             link_no_args: Response
             alias_name_already_exists: Response
             user_dont_has_alias: Response
-            link_with_invalid_name: Response
+            link_to_with_invalid_name: Response
+            link_custom_name_invalid: Response
             link_to_link: Response
             link_success: Response
             link_name_string: str

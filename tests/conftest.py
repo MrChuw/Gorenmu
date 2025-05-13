@@ -2,7 +2,9 @@
 import logging
 import os
 from unittest.mock import MagicMock, patch
+import asyncio
 
+import contextlib
 import pytest
 import pytest_asyncio
 import twitchio
@@ -47,11 +49,17 @@ async def mock_bot():
         twitchio.utils.setup_logging(handler=InterceptHandler(), level=logging.INFO)
     bot = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
     bot.bot_nick = "bot_name"
+    bot.dev_name = "dev_name"
     bot.tests_sessions = SessionsCaches(bot)
     await bot.setup_database()
+    await bot.setup()
     await create_fake_db(bot)
 
     yield bot
 
     await bot.close()
     await bot.tests_sessions.close_all_sessions()
+    bot.MarkovTask.cancel()
+    with contextlib.suppress(asyncio.CancelledError):
+        await bot.MarkovTask
+    ...

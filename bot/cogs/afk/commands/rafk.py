@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from bot.ext import commands, Context
 from bot.models import Status
 from bot.translations import afks, BaseDecorators, Response
+from bot.ext.named_tuples import RAfkNamedTuple
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -32,24 +33,20 @@ class RAfkCmd(commands.CustomComponent):
     @commands.command(name='rafk', aliases=rafk_alias)
     async def rafk(self, ctx: Context, *, content: str = "") -> Response:
         translations = ctx.user.translations
-        rafk = await self.bot.memcache.get(key=ctx.author.id, namespace="rafk")
-        afk = await Status.get_afk(ctx, namespace="rafk")
+        rafk = await self.bot.memcache.RAfk.get(user_id=ctx.author.id)
         if rafk is None:
             return translations.Exceptions.time_expired.format_response(ctx, ctx.user.translations.RAfk.return_expired, success=False, pipe=False)
-        if afk is None:
-            return translations.RAfk.is_not_afk.format_response(ctx, success=False, pipe=False)
 
-        status = ctx.user.translations.Afk.afks[afk["alias"]]
-        await ctx.bot.memcache.delete(f"Afk-{ctx.author.id}")
-        await Status.go_rafk(ctx, afk)
-        if afk["content"] == "":
+        status = ctx.user.translations.Afk.afks[rafk.alias]
+        await Status.go_rafk(ctx, rafk)
+        if rafk.content == "":
             return translations.RAfk.is_afk.format_response(ctx, status.leave_again, status.emoji, pipe=False)
         else:
             return translations.RAfk.is_afk_content.format_response(
                     ctx,
                     status.leave_again,
                     status.emoji,
-                    afk["content"],
+                    rafk.content,
                     pipe=False
             )
 

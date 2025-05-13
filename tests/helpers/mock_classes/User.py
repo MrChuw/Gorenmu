@@ -47,7 +47,7 @@ class MockUser:
         self.created_at: date = created_at
         self.updated_at: date = updated_at
         self.profile_image: str = ''
-        self.translations: Optional[Translations] = None
+        self.translations: Translations | None = None
 
     def get_translation(self, bot: Gorenmu, lang: str = 'en'):
         self.translations = bot.TranslationManager.get_translations(language=lang)

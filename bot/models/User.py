@@ -6,7 +6,7 @@ from tortoise import fields
 from urlextract import URLExtract
 
 from bot.models.base import (
-    Base, BoolFieldBool, CharFieldStr, ContentMixin, DatetimeTzField, TimestampMixin, UserMixin,
+    Base, BoolFieldBool, CharFieldStr, ContentMixin, DatetimeTzField, TimestampMixin,
 )
 from bot.models.User_extras import (
     Annotation, Bug, Cookies, Copypasta, Imgur, ImgurAggregate, MessagesLog, NickHistory, Pets, Player, PlayerTower,
@@ -19,22 +19,24 @@ from zoneinfo import ZoneInfo
 if TYPE_CHECKING:
     from bot.ext.commands import Context
     from bot.translations import Translations, Response
+    GetReturnT = "User" | Response | None
 
 url_extractor = URLExtract()
 
 
-class User(Base, UserMixin, TimestampMixin, ContentMixin):
-    channel: CharFieldStr = fields.CharField(max_length=64, null=True, description="Twitch channel")
-    saved_color: CharFieldStr = fields.CharField(max_length=7, null=True, description="Twitch color")
-    city: CharFieldStr = fields.CharField(max_length=100, null=True)
-    ping: BoolFieldBool = fields.BooleanField(default=True)
-    mention: BoolFieldBool = fields.BooleanField(default=True)
-    block: BoolFieldBool = fields.BooleanField(default=False)
-    sponsor: BoolFieldBool = fields.BooleanField(default=True)
-    nickname: CharFieldStr = fields.CharField(max_length=32, null=True)
-    timestamp: DatetimeTzField = fields.DatetimeField(null=True)
-    language: CharFieldStr = fields.CharField(max_length=32, null=True)
-    timezone: CharFieldStr = fields.CharField(max_length=50, default="UTC")
+class User(Base, TimestampMixin, ContentMixin):
+    name = fields.CharField(unique=True, db_index=True, max_length=64, description="Twitch username")
+    channel = fields.CharField(max_length=64, null=True, description="Twitch channel")
+    saved_color = fields.CharField(max_length=7, null=True, description="Twitch color")
+    city = fields.CharField(max_length=100, null=True)
+    ping = fields.BooleanField(default=True)
+    mention = fields.BooleanField(default=True)
+    block = fields.BooleanField(default=False)
+    sponsor = fields.BooleanField(default=True)
+    nickname = fields.CharField(max_length=32, null=True)
+    timestamp = fields.DatetimeField(null=True)
+    language = fields.CharField(max_length=32, null=True)
+    timezone = fields.CharField(max_length=50, default="UTC")
     cookies: List[Cookies] = fields.ReverseRelation["Cookies"]
     player: List[Player] = fields.ReverseRelation["Player"]
     pets: List[Pets] = fields.ReverseRelation["Pets"]
@@ -58,6 +60,7 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     markov_channels = fields.ReverseRelation["MarkovUserChannel"]
 
     translations: Translations = None
+    user_id: int
 
 
     class Meta:
@@ -72,14 +75,13 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
 
     @staticmethod
     async def create_or_update(ctx: Context) -> Optional[User]:
-        user = await ctx.bot.memcache.get(key=int(ctx.author.id), namespace="user")
+        user = await ctx.bot.memcache.User.get(user_id=int(ctx.author.id))
         if not user:
             if instance := await User.get_or_none(id=int(ctx.author.id)):
                 user = await User.update_user(instance, ctx)
             else:
                 user = await User.create_user(ctx)
-            await ctx.bot.memcache.set(key=int(ctx.author.id), value=user, namespace='user')
-            await ctx.bot.memcache.set(key=user.name, value=user.id, namespace="user_name")
+            await ctx.bot.memcache.User.set(user=user)
         else:
             await User.update_user(user, ctx)
 
@@ -153,7 +155,6 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
         else:
             return None
 
-
     @staticmethod
     async def _set_translation(user: User, ctx: Context):
         if not user.translations or user.translations.lang != user.language:
@@ -164,49 +165,43 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
 
 
     @staticmethod
-    async def find_by_name(name: str, ctx: Context) -> User | Response:
-        user_id_cached = await ctx.bot.memcache.get(key=name, namespace="user_name")
-        if not user_id_cached:
+    async def find_by_name(name: str, ctx: Context, is_none: bool = False) -> GetReturnT:
+        user = await ctx.bot.memcache.User.get_by_name(name=name)
+        if not user:
             user = await User.get_or_none(name=name)
+            if is_none and not user:
+                return None
             if not user:
                 return ctx.user.translations.Exceptions.user_not_found_name.format_response(ctx, name)
-            await ctx.bot.memcache.set(key=user.name, value=user.id, namespace="user_name")
-            await ctx.bot.memcache.set(key=user.id, value=user, namespace="user")
-        else:
-            user = await User.find_by_id(user_id_cached, ctx)
+            await ctx.bot.memcache.User.set(user=user)
         return await User._set_translation(user, ctx)
 
     @staticmethod
-    async def find_by_id(user_id: int, ctx: Context) -> User | Response:
-        user = await ctx.bot.memcache.get(key=user_id, namespace="user")
+    async def find_by_id(user_id: int, ctx: Context, is_none: bool = False) -> GetReturnT:
+        user = await ctx.bot.memcache.User.get(user_id=user_id)
         if not user:
             user = await User.get_or_none(id=user_id)
+            if is_none and not user:
+                return None
             if not user:
                 return ctx.user.translations.Exceptions.user_not_found_id.format_response(ctx, user_id)
-            await ctx.bot.memcache.set(key=user_id, value=user, namespace="user")
-            await ctx.bot.memcache.set(key=user.name, value=user.id, namespace="user_name")
+            await ctx.bot.memcache.User.set(user=user)
         return await User._set_translation(user, ctx)
 
 
     @staticmethod
-    async def get_user(ctx: Context, name: str = None, user_id: int = None) -> User | Response:
+    async def get_user(ctx: Context, name: str = None, user_id: int = None, is_none: bool = False) -> GetReturnT:
         if name:
-            return await User.find_by_name(name=name, ctx=ctx)
+            return await User.find_by_name(name=name, ctx=ctx, is_none=is_none)
         elif user_id:
-            return await User.find_by_id(user_id=user_id, ctx=ctx)
+            return await User.find_by_id(user_id=user_id, ctx=ctx, is_none=is_none)
         else:
-            return await User.find_by_id(user_id=ctx.user.id, ctx=ctx)
+            return await User.find_by_id(user_id=ctx.user.id, ctx=ctx, is_none=is_none)
 
 
-
-
-
-
-
-
-
-
-
+    @staticmethod
+    async def get_user_or_none(ctx: Context, name: str = None, user_id: int = None) -> GetReturnT:
+        return await User.get_user(ctx, name, user_id, is_none=True)
 
 
 class TwitchTokens(Base, TimestampMixin):

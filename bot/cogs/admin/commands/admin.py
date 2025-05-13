@@ -53,7 +53,7 @@ class AdminSmallCmds(commands.CustomComponent):
             return translations.unexpected_error.format_response(ctx, e, success=False)
 
     @commands.base_decorator(BaseAdmin.Reload)
-    @commands.command(name='reload', aliases=[], invoke_fallback=True)
+    @commands.command(name='reload', aliases=[])
     async def reload(self, ctx: Context, command: str) -> Response:
         translations = ctx.user.translations.Admin.Reload
         if command == "translations":

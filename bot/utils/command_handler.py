@@ -106,12 +106,8 @@ class CommandHandler:
                 logger.error(f"Routine '{filename.name[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     @staticmethod
-    async def load_cogs(bot: Gorenmu, base: str = None) -> None: # TODO: Mudar para lidar com os novos comandos
-        if base is None:
-            base = pathlib.Path(__file__).parent.parent / 'cogs'
-        else:
-            base = pathlib.Path(base)
-        cogs = base
+    async def load_cogs(bot: Gorenmu) -> None: # TODO: Mudar para lidar com os novos comandos
+        cogs = pathlib.Path(__file__).parent.parent / 'cogs'
         try:
             for cog in cogs.iterdir():
                 cog: pathlib.Path
@@ -133,13 +129,9 @@ class CommandHandler:
             logger.error(e)
 
     @staticmethod
-    async def reload_cogs(bot: Gorenmu, base: str = None) -> None:
+    async def reload_cogs(bot: Gorenmu) -> None:
         CommandHandler.stop_routines(bot)
-        if base is None:
-            base = pathlib.Path(__file__).parent.parent / 'cogs'
-        else:
-            base = pathlib.Path(base)
-        cogs = base
+        cogs = pathlib.Path(__file__).parent.parent / 'cogs'
         for cog in cogs.iterdir():
             cog: pathlib.Path
             if ".example" in cog.name:

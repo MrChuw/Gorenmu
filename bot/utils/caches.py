@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from datetime import datetime, timedelta
-from typing import Any, Dict, TYPE_CHECKING
+from datetime import timedelta
+from typing import Any, Iterable, TYPE_CHECKING
 
 import redis
 from aiocache import Cache as aioCache
@@ -10,24 +10,22 @@ from aiocache.backends.memcached import MemcachedCache
 from aiocache.backends.memory import SimpleMemoryCache
 from aiocache.backends.redis import RedisCache
 from aiocache.serializers import PickleSerializer
-from aiohttp_client_cache import CachedSession, RedisBackend, SQLiteBackend, CacheBackend
 
 from bot.ext.config import CacheType
 import aiohttp
 
-from collections import OrderedDict
-from threading import RLock
-from time import time
-from typing import Any, Optional
-from aiohttp_client_cache import CachedResponse, CachedSession
-import asyncio
+from bot.ext.named_tuples import AliasCached, RAfkNamedTuple
+from bot.models import Cookies as CookiesDB, Status, User as UserDB
+from bot.models.Others.Alias import Alias
+
+from bot.utils.caches_base import BaseCachedSession, BaseCacheFunctions
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 CODE_LIST = (200, 201, 202, 204, 301, 302, 304, 400, 401, 403, 404, 405, 408, 409, 410, 500, 501, 502, 503, 504)
 
-__all__ = ("SessionsCaches", "Cache", "aioCache")
+__all__ = ("SessionsCaches", "Cache", "aioCache", "MemCache")
 
 
 class Cache:
@@ -52,81 +50,124 @@ class Cache:
         return aioCache(aioCache.MEMORY, namespace=namespace)
 
 
-class BaseCachedSession:
-    def __init__(self, bot, cache_name: str, useragent: str):
-        self.bot = bot
-        self.timeout = aiohttp.ClientTimeout(total=240)
-        self.headers = {
-                'User-Agent': useragent,
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
-                          'image/webp,image/png,image/svg+xml,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.5',
-                'DNT': '1',
-                'Sec-GPC': '1',
-                'Connection': 'keep-alive',
-                'Upgrade-Insecure-Requests': '1',
-                'Sec-Fetch-Dest': 'document',
-                'Sec-Fetch-Mode': 'navigate',
-                'Sec-Fetch-Site': 'same-site',
-                'Sec-Fetch-User': '?1',
-                'Priority': 'u=0, i',
-                'Pragma': 'no-cache',
-                'Cache-Control': 'no-cache',
-        }
-        self.urls_expire_after = self.get_expiry_times()
-        if not hasattr(self, 'allowed_methods'):
-            self.allowed_methods = ("GET", "HEAD", "POST")
-        if not hasattr(self, 'allowed_codes'):
-            self.allowed_codes = (200, 301, 302)
-        self.cache = self.create_cache_backend(cache_name)
-        if hasattr(self, 'extra_headers'):
-            extra_headers = getattr(self, 'extra_headers')
-            self.headers.update(extra_headers)
-        if hasattr(self, 'timeout'):
-            self.timeout = getattr(self, 'timeout')
+class MemCache:
+    def __init__(self):
+        for name, cls in vars(self.__class__).items():
+            if isinstance(cls, type) and issubclass(cls, BaseCacheFunctions):
+                setattr(self, name, cls())
 
-        self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers, timeout=self.timeout)
+    async def close_all_caches(self):
+        for session in vars(self).values():
+            if isinstance(session, BaseCacheFunctions):
+                await session.close()
 
-    def get_expiry_times(self) -> dict:
-        """ Sets expiration times for different URLs. Can be overridden. """
-        return {}
+    class Alias(BaseCacheFunctions):
+        def __init__(self) -> None:
+            super().__init__(ttl=timedelta(hours=12))
 
-    def create_cache_backend(self, cache_name: str = "Default-Cache"):
-        """ Abstract method to create the cache backend. Can be overridden. """
-        if self.bot.config.DevelopmentConfig.test:
-            return CacheBackend(
-                    cache_name=cache_name,
-                    urls_expire_after=self.get_expiry_times(),
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                    allowed_codes=self.allowed_codes
-            )
-        if self.bot.config.CacheConfig.type in [CacheType.REDIS, CacheType.VALKEY]:
-            return RedisBackend(
-                    cache_name=f"{self.bot.config.CacheConfig.namespace}-{cache_name}",
-                    urls_expire_after=self.get_expiry_times(),
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                    allowed_codes=self.allowed_codes
-            )
-        else:
-            return SQLiteBackend(
-                    cache_name=f".cache/aiohttp-{cache_name}.db",
-                    urls_expire_after=self.get_expiry_times(),
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                    allowed_codes=self.allowed_codes
-            )
+        async def set(self, name: str, user_id: int, cached: AliasCached) -> None:
+            await self._set(key=name, value=cached, namespace=user_id)
 
-    async def close(self):
-        await self.session.close()
+        async def get(self, key: str, user_id: int) -> AliasCached:
+            return await self._get(key=key, namespace=user_id)
 
-    @staticmethod
-    async def get_not_cached(session: CachedSession, url: str) -> CachedResponse:
-        async with session.disabled():
-            await asyncio.sleep(1)
-            response = await session.get(url, allow_redirects=True)  # NOQA
-        return response  # NOQA
+        async def list_keys(self, user_id: int) -> list[str]:
+            return list(self.key_index.get(str(user_id), set()))
+
+        async def list(self, user_id: int) -> list[Alias]:
+            items = await self._list_key(str(user_id))
+            return [item.alias for item in items if item]
+
+        async def multi_set(self, pairs: Iterable[tuple[str, Any]], user_id: int) -> None:
+            await self._multi_set(items=pairs, namespace=user_id)
+    Alias: Alias
+
+    class User(BaseCacheFunctions):
+        def __init__(self) -> None:
+            super().__init__(ttl=timedelta(hours=6))
+
+        async def set(self, user: UserDB, ttl: float = None) -> None:
+            await self._set(str(user.id), user, ttl)
+            self._map_name(user.name, user.id)
+
+        async def get(self, user_id: int) -> UserDB | None:
+            return await self._get(str(user_id))
+
+        async def get_by_name(self, name: str) -> UserDB | None:
+            return await self._get_by_name(name)
+
+        async def list(self) -> list[UserDB]:
+            return await self._list_name()
+    User: User
+
+    class Cookie(BaseCacheFunctions):
+        def __init__(self) -> None:
+            super().__init__(ttl=timedelta(hours=16))
+
+        async def set(self, user: UserDB | list, cookie: CookiesDB, ttl: float = None) -> None:
+            user_id, user_name = (user[0], user[1]) if isinstance(user, list) else (user.id, user.name)
+            await self._set(key=str(user_id), value=cookie, ttl=ttl)
+            self._map_name(user_name, user_id)
+
+        async def get(self, user_id: int) -> CookiesDB | None:
+            return await self._get(key=str(user_id))
+
+        async def get_by_name(self, name: str) -> CookiesDB | None:
+            return await self._get_by_name(name)
+
+        async def get_id_by_name(self, name: str) -> int | None:
+            return self._get_id_by_name(name)
+
+        async def list(self) -> list[CookiesDB]:
+            return await self._list_name()
+    Cookie: Cookie
+
+    class Afk(BaseCacheFunctions):
+        def __init__(self):
+            super().__init__(ttl=timedelta(hours=12))
+
+        async def set(self, user: UserDB, value: Status, ttl: float = None) -> None:
+            await self._set(key=str(user.id), value=value, ttl=ttl)
+            self._map_name(user.name, user.id)
+
+        async def get(self, user_id: int) -> Status | None:
+            return await self._get(key=str(user_id))
+
+        async def get_by_name(self, name: str) -> Status | None:
+            return await self._get_by_name(name)
+
+        async def list(self) -> list[Status]:
+            return await self._list_name()
+
+        async def delete(self, user_id: int) -> None:
+            await self._delete(key=str(user_id))
+            self.name_to_user_id.pop(str(user_id), None)
+    Afk: Afk
+
+    class RAfk(BaseCacheFunctions):
+        def __init__(self):
+            super().__init__(ttl=timedelta(minutes=4))
+
+        async def set(self, user: UserDB | list, value: RAfkNamedTuple, ttl: float = None) -> None:
+            user_id, user_name = (user[0], user[1]) if isinstance(user, list) else (user.id, user.name)
+            await self._set(key=str(user_id), value=value, ttl=ttl)
+            self._map_name(user_name, user_id)
+
+        async def get(self, user_id: int) -> RAfkNamedTuple | None:
+            return await self._get(key=str(user_id))
+
+        async def get_by_name(self, name: str) -> RAfkNamedTuple | None:
+            return await self._get_by_name(name)
+
+        async def list(self) -> list[RAfkNamedTuple]:
+            return await self._list_name()
+
+        async def delete(self, user_id: int) -> None:
+            await self._delete(key=str(user_id))
+            self.name_to_user_id.pop(str(user_id), None)
+    RAfk: RAfk
+
+
 
 
 class SessionsCaches:
@@ -229,7 +270,7 @@ class SessionsCaches:
             super().__init__(bot=bot, cache_name="Alias_requests", useragent=useragent)
 
         def get_expiry_times(self) -> dict:
-            return {"*/*": timedelta(hours=1000)}
+            return {"*/*": -1}
     AliasCachedSession: AliasCachedSession
 
     class CountCachedSession(BaseCachedSession):
@@ -338,4 +379,3 @@ class SessionsCaches:
                     "*api.frankerfacez.com/v1/*": timedelta(minutes=15),
             }
     EmotesCachedSession: EmotesCachedSession
-

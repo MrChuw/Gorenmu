@@ -78,3 +78,9 @@ class UploadThings:
         except Exception as e:
             logger.error(e)
             return None
+
+    @staticmethod
+    async def upload_alias(data: dict, session: CachedSession):
+        url = 'https://alias.mrchuw.com.br/submit'
+        response = await session.post(url, data=data)
+        return response.url.human_repr()

@@ -120,5 +120,7 @@ class MarkovProcessor:
                 await self.train_and_save_to_database(message, channel, user)
 
                 self.message_queue.async_q.task_done()
+            except asyncio.CancelledError:
+                raise
             except Exception as e:
                 logger.error(e)

@@ -12,6 +12,7 @@ from bot.exceptions import (
 )
 from bot.ext.commands import Context
 from bot.models import (Cookies, LotteryBank, User as UserModel)
+from bot.translations import Response
 from bot.utils.string_manipulation import StringTools
 
 
@@ -106,8 +107,10 @@ class Check:
     @staticmethod
     async def cookie_check(ctx: Context) -> bool:
         try:
-            cookie = await Cookies.get(id=int(ctx.author.id))
+            cookie = await Cookies.get_cookie(ctx=ctx, user=ctx.user)
         except DoesNotExist:
+            cookie = await Cookies.create(user=ctx.user, id=int(ctx.author.id))
+        if isinstance(cookie, Response):
             cookie = await Cookies.create(user=ctx.user, id=int(ctx.author.id))
         if not cookie.cooldown:
             await cookie.new_cooldown()

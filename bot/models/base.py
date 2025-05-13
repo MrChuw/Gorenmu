@@ -43,10 +43,6 @@ class TimestampMixin:
         return self.updated_at.strftime("%d/%m/%Y %H:%M:%S")
 
 
-class UserMixin:
-    id: IntFieldInt = fields.IntField(primary_key=True, description="Twitch ID")
-    name: CharFieldStr = fields.CharField(unique=True, db_index=True, max_length=64, description="Twitch username")
-
 
 class ContentMixin:
     content: CharFieldStr = fields.CharField(max_length=1200, null=True, description="Twitch message content")

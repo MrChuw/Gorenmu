@@ -22,7 +22,7 @@ async def create_fake_db(bot: Gorenmu):
         await User.create_or_update(ctx)
 
     for num in range(45, 51):
-        user = await ctx.bot.memcache.get(key=num, namespace="user")
+        user = await ctx.bot.memcache.User.get(user_id=num)
         channel = await Channel.create(user=user)
         ctx.bot.channels[user.name] = channel
 
@@ -55,7 +55,7 @@ async def create_fake_db(bot: Gorenmu):
         await Status.go_afk(ctx=ctx, status=afk, content="content")
 
     for num in range(40, 46):
-        user = await ctx.bot.memcache.get(key=num, namespace="user")
+        user = await ctx.bot.memcache.User.get(user_id=num)
         cookie = await Cookies.create(user=user)
         cookie.received = 54 * num
         cookie.consumed = 73 * num

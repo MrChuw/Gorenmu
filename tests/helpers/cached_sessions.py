@@ -3,7 +3,7 @@
 
 from datetime import timedelta
 
-from bot.utils.caches import BaseCachedSession  # NOQA
+from bot.utils.caches_base import BaseCachedSession
 
 
 class SessionsCaches:

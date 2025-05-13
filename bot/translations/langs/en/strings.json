@@ -127,8 +127,9 @@
         "too_much_characters": "The message must have a maximum of 450 characters.",
         "no_id_provided": "You need to provide a valid numeric ID.",
         "id_not_valid": "{} is not a valid ID.",
-
         "user_not_provided": "No target user provided!",
+        "guard_caught": "You are not authorized to use the \"{}\" command due to \"{}\". If you think this is an error, contact @{}.",
+
         "never_seen": "I don't remember ever seeing any @{}.",
         "channel_not_found": "I couldn't find any channel named @{}.",
         "dev_required_str": "you need to be my creator to run this command.",
@@ -169,6 +170,51 @@
         "is_afk_content": "{} {} and left a note: {} (was away for {} {})"
     },
     "Alias": {
+        "Add": {
+            "no_command_to_add": "You didn't send a command! Usage: {}alias add (name) (command) (…arguments)",
+            "alias_name_conflict": "Cannot add alias \"{}\" - you already have one! You can either \"edit\" its definition, \"rename\" it or \"remove\" it.",
+            "alias_created": "Your alias \"{}\" has been created successfully.",
+            "command_dont_exist": "Cannot create alias! The command \"{}\" does not exist."
+        },
+        "Check": {
+            "user_alias_list": "List of your aliases: {} | Detailed list: {}",
+            "no_alias_found": "Could not find {} in {} aliases or any of your aliases!",
+            "list_of_alias_of": "List of {} aliases: {}",
+            "list_of_special_case": "Special case!\n Your alias \"{0}\": {1}\n List of {0}'s aliases: {2}",
+            "alias_not_found": "{} don't have the \"{}\" alias!",
+            "appendix_str": "This alias is a link to \"{}\" made by {}.",
+            "alias_deleted": "{} alias is a link to a different alias, but the original has been deleted.",
+            "message_str": "{} alias \"{}\" have the arguments: {} {}",
+            "normal_message": "{} || Invoke: {} || Link: {}"
+        },
+        "Copy": {
+            "alias_not_provided": "No target alias provided!",
+            "target_alias_invalid_name": "The copied alias's name is not valid and therefore can't be copied!",
+            "no_alias_found": "I couldn't find {} in user {}!",
+            "link_to_a_link": "You cannot copy links to other aliases. Instead, use {}alias copy {} {}",
+            "copy_success": "Alias \"{}\" copied successfully.",
+            "copy_with_name_of": "Alias \"{}\" copied successfully. With the name \"{}\"."
+        },
+        "Describe": {
+            "no_args_to_parse": "You didn't provide a alias or description! Use: {}alias describe (name) (…description)",
+            "description_updated": "The description of alias \"{}\" has been updated successfully.",
+            "description_reverted": "The description of alias \"{}\" has been reset successfully."
+        },
+        "Link": {
+            "link_no_args": "You didn't provide a user or alias name! Use: {}alias link (user) (alias name)",
+            "alias_name_already_exists": "Cannot link a new alias - you already have an alias with that name!",
+            "user_dont_has_alias": "The provided user does not have the alias \"{}\"!",
+            "link_to_with_invalid_name": "The original alias has an invalid name \"{}\"! Please provide a custom name.",
+            "link_custom_name_invalid": "The custom name \"{}\" is not valid. Please provide a valid name.",
+            "link_name_string_str": ", with a custom name of \"{}\".",
+            "link_to_link": "You tried to create a link from a linked alias (alias {} by {}), so I used the original as your template{} When the original changes, yours will too.",
+            "link_success": "Alias successfully linked{} When the original changes, yours will too."
+        },
+        "Remove": {
+            "no_alias_name_provided": "No alias name provided!",
+            "alias_removed": "Your alias \"{}\" has been successfully removed."
+        },
+
         "dont_have_alias": "You don't have the \"{}\" alias!",
         "alias_invalid_name": "Your alias name is not valid! Your alias should only contain letters, numbers and be 2-30 characters long.",
         "user_has_no_alias": "User {} has no registered aliases.",
@@ -187,54 +233,11 @@
             "None"
         ],
         "alias_table_name_str": "{} aliases",
-        "Add": {
-            "no_command_to_add": "You didn't send a command! Usage: {}alias add (name) (command) (…arguments)",
-            "alias_name_conflict": "Cannot add alias \"{}\" - you already have one! You can either \"edit\" its definition, \"rename\" it or \"remove\" it.",
-            "alias_created": "Your alias \"{}\" has been created successfully.",
-            "command_dont_exist": "Cannot create alias! The command \"{}\" does not exist."
-        },
-        "Check": {
-            "user_alias_list": "List of your aliases: {} | Detailed list: {}",
-            "no_alias_found": "Could not find {} in {} aliases or any of your aliases!",
-            "list_of_alias_of": "List of {} aliases: {}",
-            "list_of_special_case": "Special case!\n Your alias \"{0}\": {1}\n List of {0}'s aliases: {2}",
-            "alias_not_found": "{} don't have the \"{}\" alias!",
-            "appendix_str": "This alias is a link to \"{}\" made by {}.",
-            "alias_deleted": "{} alias is a link to a different alias, but the original has been deleted.",
-            "message_str": "{} alias \"{}\" have the arguments: {} {}",
-            "normal_message": "{} || Link: {}"
-        },
-        "Copy": {
-            "alias_not_provided": "No target alias provided!",
-            "target_alias_invalid_name": "The copied alias's name is not valid and therefore can't be copied!",
-            "no_alias_found": "I couldn't find {} in user {}!",
-            "link_to_a_link": "You cannot copy links to other aliases. Instead, use {}alias copy {} {}",
-            "copy_success": "Alias \"{}\" copied successfully.",
-            "copy_with_name_of": "Alias \"{}\" copied successfully. With the name \"{}\"."
-        },
-        "Describe": {
-            "no_args_to_parse": "You didn't provide a alias or description! Use: {}alias describe (name) (…description)",
-            "description_updated": "The description of alias \"{}\" has been updated successfully.",
-            "description_reverted": "The description of alias \"{}\" has been reset successfully."
-        },
         "Edit": {
             "no_args_provided": "No alias or command name provided!",
             "edit_link": "You cannot edit links to other aliases!",
             "edit_success": "Your alias \"{}\" has been successfully edited.",
             "command_dont_exist": "Cannot edit alias! The command \"{}\" does not exist."
-        },
-        "Link": {
-            "link_no_args": "You didn't provide a user or alias name! Use: {}alias link (user) (alias name)",
-            "alias_name_already_exists": "Cannot link a new alias - you already have an alias with that name!",
-            "user_dont_has_alias": "The provided user does not have the alias \"{}\"!",
-            "link_with_invalid_name": "The linked alias name is not valid! {}",
-            "link_name_string_str": ", with a custom name of \"{}\".",
-            "link_to_link": "You tried to create a link from a linked alias (alias {} by {}), so I used the original as your template. When the original changes, yours will too.",
-            "link_success": "Alias successfully linked{} When the original changes, yours will too."
-        },
-        "Remove": {
-            "no_alias_name_provided": "No alias name provided!",
-            "alias_removed": "Your alias \"{}\" has been successfully removed."
         },
         "Rename": {
             "no_name_provided": "You must provide both the current alias name and the new one!",

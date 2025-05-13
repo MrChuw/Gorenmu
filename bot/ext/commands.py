@@ -67,6 +67,10 @@ class Command(TwitchioCommand):
                 ):
         return super().command(name=name, aliases=aliases, extras=extras, **kwargs)  # NOQA
 
+    @property
+    def all_guards(self):
+        return self.component.guards() + self.guards
+
 
 class Bot(TwitchioBot):
     async def get_prefix(self: Gorenmu, message: ChatMessage):
@@ -74,7 +78,7 @@ class Bot(TwitchioBot):
             return "+"
         return self.channels[message.broadcaster.name].prefix
 
-    async def get_context(self, payload: ChatMessage | twitchio.Whisper, *, cls: Context = None):
+    async def get_context(self, payload: ChatMessage | twitchio.Whisper, *, cls: Context = None) -> Context:
         """Get a Context object from a message.
 
         Parameters
@@ -99,7 +103,9 @@ class Bot(TwitchioBot):
         invoke_by = None
         if payload and payload.text and prefix in payload.text:
             invoke_by = payload.text.partition(" ")[0][len(prefix):].lower()
-        return Context(message=payload, bot=self, prefix=prefix, invoke_by=invoke_by)
+        ctx = Context(message=payload, bot=self, prefix=prefix, invoke_by=invoke_by)
+        ctx._get_command()  # NOQA
+        return ctx
 
     async def invoke(self, context: Context, *, index=0) -> Response | None | bool:  # NOQA
         try:
@@ -107,6 +113,9 @@ class Bot(TwitchioBot):
         except CommandError as e:
             payload = CommandErrorPayload(context=context, exception=e)
             self.dispatch("command_error", payload=payload)
+
+    def get_command(self, name: str, /) -> Command:
+        return super().get_command(name)
 
 
 class Context(TwitchioContext):
@@ -238,6 +247,7 @@ class Context(TwitchioContext):
             else:
                 message.text = f"{command} {response_str}"  # NOQA
             ctx = await self.bot.get_context(message)
+            ctx._get_command()
             ctx.user = external_ctx.user
             ctx.bot.CommandHandler.load_language(ctx)
             response: Response = await self.bot.invoke(ctx)  # NOQA
@@ -272,11 +282,11 @@ class Context(TwitchioContext):
             message.content = format_content(message.content, args)
         if " | " in message.content:
             return await self.pipe_handler(external_ctx, message)
-        else:
-            ctx = await self.bot.get_context(message)
-            ctx.user = external_ctx.user
-            ctx.bot.CommandHandler.load_language(ctx)
-            return await self.bot.invoke(ctx)
+
+        ctx = await self.bot.get_context(message)
+        ctx.user = external_ctx.user
+        ctx.bot.CommandHandler.load_language(ctx)
+        return await self.bot.invoke(ctx)
 
     async def invoke(self) -> Response | bool:
         if not self.prefix or not self.is_valid:

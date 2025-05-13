@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from bot.ext import Context
 
 from bot.models.base import Base, TimestampMixin
+from bot.ext.named_tuples import RAfkNamedTuple
 
 
 class Status(Base, TimestampMixin):
@@ -29,22 +30,20 @@ class Status(Base, TimestampMixin):
         self.updated_at = datetime.datetime.now(datetime.UTC)
         await self.save()
 
-    async def _go_rafk(self, status):
+    async def _go_rafk(self, status: RAfkNamedTuple):
         self.online = False
-        self.alias = status["alias"]
-        self.message = status["content"]
-        self.updated_at = status["updated_at"]
+        self.alias = status.alias
+        self.message = status.content
+        self.updated_at = status.updated_at
         await self.save()
 
     @staticmethod
-    async def get_afk(ctx: Context = None, user: User = None, namespace: str = None):
-        user_id = int(ctx.author.id) if ctx else user.id
-        namespace = "afk" if namespace is None else namespace
-        status = await ctx.bot.memcache.get(key=user_id, namespace=namespace)
+    async def get_afk(ctx: Context = None, user: User = None) -> Status:
+        user = user or ctx.user
+        status = await ctx.bot.memcache.Afk.get(user_id=user.id)
         if not status:
             status_db = (await Status.get_or_create(user=ctx.user))[0]
-            if namespace == "afk" and not status:
-                await ctx.bot.memcache.set(key=user_id, value=status_db, namespace="afk")
+            await ctx.bot.memcache.Afk.set(user=user, value=status_db)
             status = status_db
 
         return status
@@ -55,6 +54,5 @@ class Status(Base, TimestampMixin):
         await status_db._go_afk(status=status, content=content)
 
     @staticmethod
-    async def go_rafk(ctx: Context, status: dict):
-        status_db = await Status.get_afk(ctx)
-        await status_db._go_rafk(status=status)
+    async def go_rafk(ctx: Context, status: RAfkNamedTuple):
+        await status.afk._go_rafk(status=status)

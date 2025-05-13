@@ -1,4 +1,4 @@
-from .caches import Cache, SessionsCaches
+from .caches import Cache, SessionsCaches, MemCache
 from .command_checks import Check, Role
 from .command_handler import CommandHandler
 from .dynamic_descriptions import DynamicDescriptions
