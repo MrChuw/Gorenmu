@@ -1,0 +1,64 @@
+# -*- coding: utf-8 -*-
+
+import pytest
+
+
+class Params:
+    no_content = [
+        pytest.param("en", "No alias or command name provided!", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", "Nenhum alias ou nome de comando fornecido!", marks=pytest.mark.pt_BR, id="pt_BR"),
+    ]
+
+    wrong_name_no_command = [
+        pytest.param("en", "No alias or command name provided!", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", "Nenhum alias ou nome de comando fornecido!", marks=pytest.mark.pt_BR, id="pt_BR"),
+    ]
+
+    wrong_name_wrong_command = [
+        pytest.param("en", 'You don\'t have the "Wrong_alias" alias!', marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", 'Você não tem o alias "Wrong_alias"!', marks=pytest.mark.pt_BR, id="pt_BR"),
+    ]
+
+    name_wrong_command = [
+        pytest.param(
+            "en",
+            'Cannot edit alias! The command "blablablablablablablablablablablabla" does not exist.',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Não é possível editar o alias! O comando "blablablablablablablablablablablabla" não existe.',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
+    alias_link_wrong_command = [
+        pytest.param("en", "You cannot edit links to other aliases!", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", "Você não pode editar links para outros aliases!", marks=pytest.mark.pt_BR, id="pt_BR"),
+    ]
+
+    guard_caught = [
+        pytest.param(
+            "en",
+            'You are not authorized to use the "restart" command due to "DevRequired". '
+            "If you think this is an error, contact @dev_name.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Você não está autorizado a usar o comando "restart" motivo: "DevRequired". '
+            "Se achar que isso é um erro, entre em contato com @dev_name.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
+    describe_success = [
+        pytest.param("en", 'Your alias "The_Tests_alias" has been successfully edited.', marks=pytest.mark.en, id="en"),
+        pytest.param(
+            "pt_BR", 'Seu alias "The_Tests_alias" foi editado com sucesso.', marks=pytest.mark.pt_BR, id="pt_BR"
+        ),
+    ]

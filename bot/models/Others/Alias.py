@@ -6,8 +6,8 @@ from tortoise import fields
 from tortoise.models import Model
 from twitchio.ext.commands import Command
 
-from bot.models.base import TimestampMixin
 from bot.ext.named_tuples import AliasCached
+from bot.models.base import TimestampMixin
 
 SET_NULL = fields.SET_NULL
 
@@ -50,25 +50,16 @@ class Alias(Model, TimestampMixin):
             arguments=rest or [""],
         )
         await alias.save()
-        cached = AliasCached(
-                alias=alias,
-                invocation=invocation,
-                arguments=rest or [""],
-        )
+        cached = AliasCached(alias=alias, invocation=invocation, arguments=rest or [""])
         await ctx.bot.memcache.Alias.set(name=name, user_id=ctx.user.id, cached=cached)
         return alias
 
     @staticmethod
-    async def link_alias(ctx: Context, name: str, parent: Alias, user: User = None):  # TODO: Add to cache
+    async def link_alias(ctx: Context, name: str, parent: Alias, user: User = None):
         user = user or ctx.user
         alias = Alias(user=user, name=name, description=parent.description, parent=parent)
         await alias.save()
-        cached = AliasCached(
-                alias=alias,
-                invocation=parent.invocation,
-                arguments=parent.arguments,
-                parent=parent
-        )
+        cached = AliasCached(alias=alias, invocation=parent.invocation, arguments=parent.arguments, parent=parent)
         await ctx.bot.memcache.Alias.set(name=name, user_id=ctx.user.id, cached=cached)
         return alias
 
@@ -124,23 +115,18 @@ class Alias(Model, TimestampMixin):
     async def first_prefetch(ctx: Context, user: User = None, prefetch: str = "parent") -> list[Alias]:
         return await CachedAliasQuerySet(ctx=ctx, user=user).first().prefetch_related(prefetch)
 
-
     @staticmethod
     async def list_alias(ctx: Context, user_id: int = None, user: User = None) -> list[Alias]:
         return await ctx.bot.memcache.Alias.list(user_id=user_id or user.id)
 
-
     @staticmethod
-    def filter_cached(
-            ctx: Context,
-            user: User = None,
-            alias_name: str = None,
-    ) -> CachedAliasQuerySet:
+    def filter_cached(ctx: Context, user: User = None, alias_name: str = None) -> CachedAliasQuerySet:
         return CachedAliasQuerySet(ctx=ctx, user=user, alias_name=alias_name)
 
-
     @staticmethod
-    async def filter_first_prefetch(ctx: Context, user: User = None, alias_name: str = None, prefetch: str = "parent") -> Alias:
+    async def filter_first_prefetch(
+        ctx: Context, user: User = None, alias_name: str = None, prefetch: str = "parent"
+    ) -> Alias:
         return await CachedAliasQuerySet(ctx=ctx, user=user, alias_name=alias_name).first().prefetch_related(prefetch)
 
 
@@ -209,11 +195,7 @@ class CachedAliasQuerySet:  # TODO: The same thing with other caches...
             if result:
                 if self._prefetch:
                     await result.fetch_related(*self._prefetch)
-                alias_tuple = AliasCached(
-                    alias=result,
-                    invocation=result.invocation,
-                    arguments=result.arguments,
-                )
+                alias_tuple = AliasCached(alias=result, invocation=result.invocation, arguments=result.arguments)
                 await memcache.set(name=result.name, user_id=self.user.id, cached=alias_tuple)
                 return result if result and not result.deleted else None
 

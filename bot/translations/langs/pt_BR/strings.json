@@ -204,6 +204,12 @@
             "description_updated": "A descrição do alias \"{}\" foi atualizada com sucesso.",
             "description_reverted": "A descrição do alias \"{}\" foi removida com sucesso."
         },
+        "Edit": {
+            "no_args_provided": "Nenhum alias ou nome de comando fornecido!",
+            "edit_link": "Você não pode editar links para outros aliases!",
+            "edit_success": "Seu alias \"{}\" foi editado com sucesso.",
+            "command_dont_exist": "Não é possível editar o alias! O comando \"{}\" não existe."
+        },
         "Link": {
             "link_no_args": "Você não forneceu um nome de usuário ou alias! Use: {}alias link (usuário) (nome do alias)",
             "alias_name_already_exists": "Não é possível vincular um novo alias - você já possui um alias com esse nome!",
@@ -242,13 +248,7 @@
             "Sem argumentos",
             "Nada"
         ],
-        "alias_table_name_str": "{} aliases",
-        "Edit": {
-            "no_args_provided": "Nenhum alias ou nome de comando fornecido!",
-            "edit_link": "Você não pode editar links para outros aliases!",
-            "edit_success": "Seu alias \"{}\" foi editado com sucesso.",
-            "command_dont_exist": "Não é possível editar o alias! O comando \"{}\" não existe."
-        }
+        "alias_table_name_str": "{} aliases"
     },
     "Chance": {
         "random_percentage": "{}"

@@ -200,6 +200,12 @@
             "description_updated": "The description of alias \"{}\" has been updated successfully.",
             "description_reverted": "The description of alias \"{}\" has been reset successfully."
         },
+        "Edit": {
+            "no_args_provided": "No alias or command name provided!",
+            "edit_link": "You cannot edit links to other aliases!",
+            "edit_success": "Your alias \"{}\" has been successfully edited.",
+            "command_dont_exist": "Cannot edit alias! The command \"{}\" does not exist."
+        },
         "Link": {
             "link_no_args": "You didn't provide a user or alias name! Use: {}alias link (user) (alias name)",
             "alias_name_already_exists": "Cannot link a new alias - you already have an alias with that name!",
@@ -213,6 +219,11 @@
         "Remove": {
             "no_alias_name_provided": "No alias name provided!",
             "alias_removed": "Your alias \"{}\" has been successfully removed."
+        },
+        "Rename": {
+            "no_name_provided": "You must provide both the current alias name and the new one!",
+            "alias_already_exists": "You already have the \"{}\" alias!",
+            "alias_renamed": "Your alias \"{}\" has been successfully renamed to \"{}\"."
         },
 
         "dont_have_alias": "You don't have the \"{}\" alias!",
@@ -232,18 +243,7 @@
             "No arguments",
             "None"
         ],
-        "alias_table_name_str": "{} aliases",
-        "Edit": {
-            "no_args_provided": "No alias or command name provided!",
-            "edit_link": "You cannot edit links to other aliases!",
-            "edit_success": "Your alias \"{}\" has been successfully edited.",
-            "command_dont_exist": "Cannot edit alias! The command \"{}\" does not exist."
-        },
-        "Rename": {
-            "no_name_provided": "You must provide both the current alias name and the new one!",
-            "alias_already_exists": "You already have the \"{}\" alias!",
-            "alias_renamed": "Your alias \"{}\" has been successfully renamed to \"{}\"."
-        }
+        "alias_table_name_str": "{} aliases"
     },
     "Chance": {
         "random_percentage": "{}"
