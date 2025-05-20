@@ -1,0 +1,44 @@
+# -*- coding: utf-8 -*-
+
+import pytest
+import pytest_asyncio
+
+from bot.cogs.choice.command.choice import ChoiceCmd
+from bot.translations import Response
+from tests.helpers.mock_classes import MockContext
+from tests.tests.cogs.choice.choice.test_params import Params
+
+
+@pytest_asyncio.fixture
+async def interact(mock_bot):
+    return ChoiceCmd(bot=mock_bot)
+
+
+async def base_choice(interact, mock_context: MockContext, lang: str, content: str, expected: str):
+    await mock_context.prepare_context(lang)
+    response: Response = await interact.choice._callback(self=interact, ctx=mock_context, content=content)  # NOQA
+    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, content, expected", Params.choice_or)
+async def test_choice_or(interact, mock_context: MockContext, lang: str, content: str, expected: str):
+    await base_choice(interact, mock_context, lang=lang, content=content, expected="2")
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, content, expected", Params.space)
+async def test_choice_space(interact, mock_context: MockContext, lang: str, content: str, expected: str):
+    await base_choice(interact, mock_context, lang=lang, content=content, expected="2")
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, content, expected", Params.comma)
+async def test_choice_comma(interact, mock_context: MockContext, lang: str, content: str, expected: str):
+    await base_choice(interact, mock_context, lang=lang, content=content, expected="2")
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, content, expected", Params.mixed)
+async def test_choice_mixed(interact, mock_context: MockContext, lang: str, content: str, expected: str):
+    await base_choice(interact, mock_context, lang=lang, content=content, expected="4")
