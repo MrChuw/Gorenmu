@@ -20,7 +20,6 @@ from .extras import (
 if TYPE_CHECKING:
     from bot.ext import Context
     from bot.models import Cookies
-    from bot.ext.commands import Context
 
 
 # For Humanize lang check: https://github.com/python-humanize/humanize/tree/main/src/humanize/locale
@@ -30,7 +29,7 @@ if TYPE_CHECKING:
 class BaseTranslations:
     class TypeChecking(BaseFunctions):
         response: Response
-        PlaceHolder2: response
+        PlaceHolder2: Response
 
     class SupportTools(BaseFunctions):
         def __init__(self, translation: dict):

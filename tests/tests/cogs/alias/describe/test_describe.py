@@ -15,7 +15,7 @@ async def alias_describe(
 ):
     await mock_context.prepare_context(lang)
     await mock_context.prepare_alias(special_user)
-    response: Response = await interact.describe_alias._callback(interact, mock_context, *content)
+    response: Response = await interact.describe_alias._callback(interact, mock_context, *content)  # NOQA
     assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
 
 

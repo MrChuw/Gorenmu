@@ -5,11 +5,11 @@ import random
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock
 
-from bot.models import Cookies, User
+from twitchio.models import ChatMessage
+
+from bot.models import Alias, Cookies, User
 from .Channel import MockChannel
 from .User import MockUser
-from twitchio.models import ChatMessage
-from bot.models import Alias
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -80,12 +80,7 @@ class MockContext(AsyncMock):
         if special_user:
             await Alias.create_cached(ctx=self, name="The_Tests_user", command=command_check, invocation="chance")
 
-            user = User(
-                    name="The_Tests_user",
-                    display_name="The_Tests_user",
-                    language="en",
-                    id=54321
-            )
+            user = User(name="The_Tests_user", display_name="The_Tests_user", language="en", id=54321)
             await user.save()
 
             alias = Alias(
@@ -99,12 +94,7 @@ class MockContext(AsyncMock):
             await alias.save()
             await Alias.get_alias(ctx=self, user=user, name="The_Alias_test")
             alias1 = Alias(
-                user_id=user.id,
-                channel_id=None,
-                name="The_Alias_link",
-                invocation="",
-                arguments=[""],
-                parent=alias
+                user_id=user.id, channel_id=None, name="The_Alias_link", invocation="", arguments=[""], parent=alias
             )
             await alias1.save()
             await Alias.get_alias(ctx=self, user=user, name="The_Alias_link")
@@ -119,12 +109,7 @@ class MockContext(AsyncMock):
             await alias2.save()
             await Alias.get_alias(ctx=self, user=user, name="The_Deleted_Alias_test")
             alias2 = Alias(
-                user_id=user.id,
-                name="The_Alias_link_link",
-                command=None,
-                invocation=None,
-                arguments=[],
-                parent=alias1
+                user_id=user.id, name="The_Alias_link_link", command=None, invocation=None, arguments=[], parent=alias1
             )
             await alias2.save()
             await Alias.get_alias(ctx=self, user=user, name="The_Alias_link_link")
