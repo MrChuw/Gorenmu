@@ -412,8 +412,8 @@
         "cookie_win_suffix_str": "and earned {} cookies. {}",
         "cookie_loss_suffix_str": "and lost everything. {}",
         "cookie_message": "",
-        "accumulated_message": "{} You have used {} unredeemed cookie(s) {}",
-        "last_cookie_message": "{} You used your last available cookie {}",
+        "accumulated_message": "{} You have used {} unredeemed cookie(s) {} {}",
+        "last_cookie_message": "{} You used your last available cookie {} {}",
 
 
         "daily_win": "{} you used your daily cookie and got {} cookies!",

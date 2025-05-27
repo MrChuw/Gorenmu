@@ -118,12 +118,16 @@ class MockContext(AsyncMock):
             await Alias.get_alias(ctx=self, name="The_Link_alias")
             ...
 
-    async def create_cookie(self, user, received=0, consumed=0, donated=0, stocked=0):
-        cookie = await Cookies.create(user=user)
+    @staticmethod
+    async def create_cookie(user, received=0, consumed=0, donated=0, stocked=0, cooldown=None):
+        cookie = (await Cookies.get_or_create(user=user))[0]
         cookie.received = received
         cookie.consumed = consumed
         cookie.donated = donated
         cookie.stocked = stocked
         await cookie.save()
         await cookie.new_cooldown()
+        if cooldown:
+            cookie.cooldown = cooldown
+            await cookie.save()
         return cookie
