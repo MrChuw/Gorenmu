@@ -19,16 +19,15 @@ class UpSideDownCmd(commands.CustomComponent):
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
-        ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:
+    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
     @commands.base_decorator(BaseDecorators.UpSideDown)
-    @commands.command(name='upsidedown', aliases=['updown'])
-    async def upsidedown(self, ctx: Context, *, content, ) -> Response:
+    @commands.command(name="upsidedown", aliases=["updown"])
+    async def upsidedown(self, ctx: Context, *, content) -> Response:
         return ctx.user.translations.UpSideDown.upsidedown.format_response(ctx, transform(content))
 
 
@@ -36,5 +35,4 @@ async def setup(bot: Gorenmu) -> None:
     await bot.add_component(UpSideDownCmd(bot))
 
 
-async def teardown(bot: Gorenmu) -> None:
-    ...
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

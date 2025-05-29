@@ -31,15 +31,17 @@ class WikipediaCmd(commands.CustomComponent):
     async def wikipedia(self, ctx: Context) -> Response:
         translations = ctx.user.translations.Wikipedia
         session = ctx.bot.SessionsCaches.WikipediaCachedSession.session
-        responses = []
+        start_time = asyncio.get_event_loop().time()
         try:
-            wiki = await ctx.bot.SessionsCaches.WikihowCachedSession.get_not_cached(session, translations.url)
-            while wiki.status == 404:
-                wiki = await ctx.bot.SessionsCaches.WikihowCachedSession.get_not_cached(session, translations.url)
-                await asyncio.sleep(2)
-            if wiki.status == 200:
-                responses.append(wiki.url.human_repr())
-            return translations.links.format_response(ctx, response_list=responses)
+            while True:
+                wiki = await ctx.bot.SessionsCaches.WikipediaCachedSession.get_not_cached(session, translations.url)
+                if wiki.status != 404:
+                    break
+                if asyncio.get_event_loop().time() - start_time >= 30:
+                    return translations.timeout.format_response(ctx)
+                await asyncio.sleep(1)
+
+            return translations.links.format_response(ctx, wiki.url.human_repr())
         except Exception as e:
             ctx.bot.log.error(e, exc_info=e)
             return ctx.user.translations.Exceptions.unexpected_error.format_response(ctx, success=False)

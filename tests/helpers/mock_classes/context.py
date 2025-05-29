@@ -2,17 +2,19 @@
 from __future__ import annotations
 
 import random
+import re
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock
 
 from twitchio.models import ChatMessage
 
-from bot.models import Alias, Cookies, User
+from bot.models import Alias, Channel, Cookies, MessagesLog, User
 from .Channel import MockChannel
 from .User import MockUser
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+    from bot.translations import Response
 
 
 class MockAuthor:
@@ -131,3 +133,30 @@ class MockContext(AsyncMock):
             cookie.cooldown = cooldown
             await cookie.save()
         return cookie
+
+    @staticmethod
+    def assert_response(
+        response: Response, expected: str | None = None, re_expected: str | None = None, strict: bool = False
+    ):
+        helper = f"Expected {(expected or re_expected)!r}, got: {response.response_string!r}"
+        if re_expected:
+            assert re.search(
+                re_expected, response.response_string
+            ), f"Expected pattern {re_expected!r}, got: {response.response_string!r}"
+        elif expected:
+            if strict:
+                assert response.response_string == expected, helper
+            else:
+                assert expected in response.response_string, helper
+        else:
+            raise ValueError("You must provide either `expected` or `expected_regex`.")
+
+    @staticmethod
+    async def fake_messages():
+        channel_user = await User.get(id=123456, name="channelname")
+        channel = await Channel.get(user=channel_user)
+        await MessagesLog.create(user=channel_user, content="Some Random Text", type="message", channel=channel)
+
+        other_user = await User.get_or_none(id=12345)
+
+        await MessagesLog.create(user=other_user, content="Some Random Text", type="message", channel=channel)

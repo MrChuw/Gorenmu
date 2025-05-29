@@ -34,7 +34,7 @@ class HyperTranslateCmd(commands.CustomComponent):
 
     @commands.base_decorator(BaseDecorators.HyperTranslate)
     @commands.command(name='hypertranslate', aliases=['ht'])
-    async def hypertranslate(self, ctx: Context, quantity: str = 10, *, text: str = "") -> Response:
+    async def hypertranslate(self, ctx: Context, quantity: str, *, text: str = "") -> Response:
         translations = ctx.user.translations.HyperTranslate
         session = ctx.bot.SessionsCaches.TranslateCachedSession.session
         if not quantity.isdigit():
@@ -43,28 +43,25 @@ class HyperTranslateCmd(commands.CustomComponent):
         quantity = int(quantity)
         text, output_lang = ctx.bot.ToolsTools.remove_prefixed_option(text, "lang:")
         sleep = 0 if quantity > 500 else 0.5
-        runs = 0
         await ctx.simple_response(ctx, translations.starter_string)
-        while True:
+        for runs in range(1, quantity + 2):
             try:
-                if runs == quantity + 1:
-                    break
                 await asyncio.sleep(sleep)
-                if runs == quantity - 1:
+                if runs == quantity:
                     target = "en"
-                elif runs == quantity:
-                    target = output_lang or translations.lang
+                elif runs == quantity + 1:
+                    target = output_lang or translations.base_lang
                 else:
                     target = random.choice(list(GOOGLE_LANGS.values()))
                 translator = GoogleTranslator(session=session, target=target)
                 text = await translator.translate(text)
-                runs += 1
             except TooManyRequests as e:
                 ctx.bot.log.warning(e)
                 await asyncio.sleep(60)
             except Exception as e:
                 ctx.bot.log.error(e)
                 await asyncio.sleep(10)
+
         if not text:
             return translations.unexpected_error.format_response(ctx, success=False)
         return translations.translation.format_response(ctx, text)

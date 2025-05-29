@@ -1,22 +1,15 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import timedelta
-from typing import Any, Iterable
-
-import aiohttp
 import contextlib
-from aiocache import Cache as aioCache, SimpleMemoryCache
-from aiohttp_client_cache import CacheBackend, CachedResponse, CachedSession, RedisBackend, SQLiteBackend
-import asyncio
-from datetime import datetime, timedelta
-import heapq
-from typing import Any, Iterable, Tuple
-import asyncio
 import heapq
 import time
 from datetime import timedelta
 from typing import Any, Callable, Iterable, Tuple
+
+import aiohttp
+from aiocache import Cache as aioCache, SimpleMemoryCache
+from aiohttp_client_cache import CacheBackend, CachedResponse, CachedSession, RedisBackend, SQLiteBackend
 
 from bot.ext.config import CacheType
 
@@ -169,8 +162,8 @@ class BaseCachedSession:
     @staticmethod
     async def get_not_cached(session: CachedSession, url: str) -> CachedResponse:
         async with session.disabled():
-            await asyncio.sleep(1)
-            response = await session.get(url, allow_redirects=True)  # NOQA
+            await asyncio.sleep(0.2)
+            response = await session.get(url, allow_redirects=True)
         return response  # NOQA
 
 
@@ -211,9 +204,3 @@ class ExpiryScheduler:
         self._task.cancel()
         with contextlib.suppress(asyncio.CancelledError):
             await self._task
-
-
-
-
-
-

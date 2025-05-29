@@ -338,7 +338,9 @@ class BaseTranslations:
             super().__init__(translation, None)
             self.populate_responses()
 
-        no_message_found: Response
+        no_channel_message: Response
+        no_user_message: Response
+        no_user_on_channel: Response
         search_timeout: Response
         random_line: Response
 
@@ -354,7 +356,8 @@ class BaseTranslations:
             super().__init__(translation, None)
             self.populate_responses()
 
-        links: Response
+        link: Response
+        timeout: Response
 
     class Wikihow(BaseFunctions):
         def __init__(self, translation: dict):
@@ -362,6 +365,7 @@ class BaseTranslations:
             self.populate_responses()
 
         url: str
+        timeout: Response
         links: Response
 
     class Wikipedia(BaseFunctions):
@@ -370,6 +374,7 @@ class BaseTranslations:
             self.populate_responses()
 
         url: str
+        timeout: Response
         links: Response
 
     class Annotations(BaseFunctions):
@@ -392,7 +397,7 @@ class BaseTranslations:
             super().__init__(translation, None)
             self.populate_responses()
 
-        lang: str
+        base_lang: str
         starter_string: str
         unexpected_error: Response
         translation: Response

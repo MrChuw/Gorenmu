@@ -122,7 +122,7 @@
         "id_not_valid": "{} não é um ID valido.",
         "user_not_provided": "Nenhum usuário alvo fornecido!",
         "guard_caught": "Você não está autorizado a usar o comando \"{}\" motivo: \"{}\". Se achar que isso é um erro, entre em contato com @{}.",
-
+        "unexpected_error": "Ocorreu um erro. Tente novamente.",
 
 
         "never_seen": "Não me lembro de ter visto nenhum @{}.",
@@ -276,23 +276,28 @@
         "reversed_string": "{}"
     },
     "RandomLine": {
+        "no_channel_message": "Não encontrei nenhuma mensagem do canal @{}.",
+        "no_user_message": "Não encontrei nenhuma mensagem de @{} .",
+        "no_user_on_channel": "Não encontrei nenhuma mensagem de @{} in @{}.",
         "random_line": "{} (enviado há {} por @{})",
-        "channel_not_found": "Não encontrei nenhum canal chamado @{}.",
-        "no_message_found": "Não encontrei nenhuma mensagem de @{} in @{}."
+        "search_timeout": "30s se passaram e não consegui encontrar uma mensagem do usuário @{} no canal @{}"
     },
     "Scp": {
-        "links": {}
+        "link": "{}",
+        "timeout": "Já se passaram 30 segundos e não consegui encontrar nenhum link válido."
     },
     "UpSideDown": {
         "upsidedown": "{}"
     },
     "Wikihow": {
-        "url": "https://pt.wikihow.com/Especial:Randomizer",
-        "links": {}
+        "url_str": "https://pt.wikihow.com/Especial:Randomizer",
+        "timeout": "Já se passaram 30 segundos e não consegui encontrar nenhum link válido.",
+        "links": "{}"
     },
     "Wikipedia": {
-        "url": "https://pt.wikipedia.org/wiki/Special:Random",
-        "links": {}
+        "url_str": "https://pt.wikipedia.org/wiki/Special:Random",
+        "timeout": "Já se passaram 30 segundos e não consegui encontrar nenhum link válido.",
+        "links": "{}"
     },
     "Annotations": {
         "too_much_characters": "A anotação deve ter um máximo de 450 caracteres.",
