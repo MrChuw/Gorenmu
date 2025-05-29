@@ -129,6 +129,9 @@
         "id_not_valid": "{} is not a valid ID.",
         "user_not_provided": "No target user provided!",
         "guard_caught": "You are not authorized to use the \"{}\" command due to \"{}\". If you think this is an error, contact @{}.",
+        "unexpected_error": "An error occurred, please try again.",
+
+
 
         "never_seen": "I don't remember ever seeing any @{}.",
         "channel_not_found": "I couldn't find any channel named @{}.",
@@ -142,8 +145,7 @@
         "command_not_pipeble_str": "this command could not be used with the pipe.",
         "lottery_seed_str": "something terrible happened, contact \"{}\" here on Twitch using whispers.",
         "announcement_str": "something went wrong with the announcement. {}",
-        "message_too_long": "This message is too long.",
-        "unexpected_error": "An error occurred, please try again."
+        "message_too_long": "This message is too long."
     },
     "Pipe": {
             "response": "Pipe is not really a command. For more information, visit this link: {}"
@@ -271,12 +273,15 @@
         "reversed_string": "{}"
     },
     "RandomLine": {
-        "no_message_found": "Couldn't find any message from @{} in @{}.",
-        "random_line": "{} (sent {} ago by @{} )",
+        "no_channel_message": "Couldn't find any message from channel @{} .",
+        "no_user_message": "Couldn't find any message from user @{} .",
+        "no_user_on_channel": "Couldn't find any message from @{} in @{}.",
+        "random_line": "{} (sent {} ago by @{})",
         "search_timeout": "30s has passed and I has unable to find a message from user @{} on channel @{}"
     },
     "Scp": {
-        "links": {}
+        "link": "{}",
+        "timeout": "It's been 30 seconds and I can't find any valid links."
     },
     "UpSideDown": {
         "upsidedown": "{}"

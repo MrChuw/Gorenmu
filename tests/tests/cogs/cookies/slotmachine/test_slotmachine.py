@@ -43,17 +43,6 @@ async def prepare_cookie_context(
         await cookie.save()
 
 
-def assert_response(response: Response, expected: str | None = None, expected_regex: str | None = None):
-    if expected_regex:
-        assert re.search(
-            expected_regex, response.response_string
-        ), f"Expected pattern {expected_regex!r}, got: {response.response_string!r}"
-    elif expected:
-        assert expected in response.response_string, f"Expected {expected!r}, got: {response.response_string!r}"
-    else:
-        raise ValueError("You must provide either `expected` or `expected_regex`.")
-
-
 @contextlib.contextmanager
 def mock_external_apis(emotes: bool = True):
     with aioresponses() as mocked:
@@ -104,7 +93,7 @@ async def base_slotmachine(
     with mock_external_apis(emotes=emotes):
         response: Response = await interact.slotmachine._callback(interact, mock_context, amount=content)  # NOQA
 
-    assert_response(response, expected, re_expected)
+    mock_context.assert_response(response, expected, re_expected)
 
 
 # region Not need.
