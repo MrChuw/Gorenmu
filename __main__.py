@@ -12,10 +12,10 @@ from bot.bot import Gorenmu
 from bot.ext.config import Config
 from bot.api import api, api_start
 
-DEBUG = os.getenv("DEBUG", "1") == "1"
+
 Configs = Config(os.path.join(os.path.dirname(__file__), "config.toml"))
 
-if DEBUG:
+if os.getenv("NO_LOG") == "1":
     import logging
     log = logging.getLogger()
     twitchio.utils.setup_logging(level=logging.INFO)

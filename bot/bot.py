@@ -175,7 +175,7 @@ class Gorenmu(Bot):
     async def event_command_error(self, payload: CommandErrorPayload) -> None:
         command: Command[Any, ...] | None = payload.context.command
         if command and command.has_error and payload.context.error_dispatched:
-            return
+            return None
 
         ctx: Context = payload.context
         error: Exception = payload.exception
@@ -202,8 +202,8 @@ class Gorenmu(Bot):
             return await ctx.simple_response(ctx, translations.not_implemented)
         if isinstance(error, InvalidArgument) and ctx.command:
             decorator = ctx.command.decorators[ctx.user.language or ctx.bot.config.default_lang]
-            await ctx.reply(decorator.usage)
-            return
+            await ctx.reply(decorator.usage.format(ctx.prefix))
+            return None
         if isinstance(error, GuardFailure):
             return None
         self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)

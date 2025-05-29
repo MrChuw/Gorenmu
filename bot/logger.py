@@ -12,9 +12,7 @@ class InterceptHandler(logging.Handler):
         except KeyError:
             level = record.levelno
         frame = logging.currentframe()
-        while frame:
-            if frame.f_code.co_filename not in logging._srcfile:  # NOQA
-                break
+        while frame and frame.f_code.co_filename in logging._srcfile:
             frame = frame.f_back
 
         logger.opt(depth=6, exception=record.exc_info).log(level, record.getMessage())
