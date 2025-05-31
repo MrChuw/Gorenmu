@@ -467,6 +467,7 @@
             "command_not_found": "Command with name {} not found.",
             "command_reloaded": "Command {} successfully reloaded.",
             "command_reloaded_error": "Command {} had an error while reloading: {}",
+            "all": "{}",
             "translations_str": "The translations",
             "emotes_str": "The emotes",
             "module_reloaded": "{} were successfully reloaded.",

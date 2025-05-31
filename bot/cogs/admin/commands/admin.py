@@ -8,11 +8,12 @@ import sys
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
+from bot.translations import BaseDecorators, Response, Translations
 from bot.utils import Role
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+    translations_t = Translations.Admin.Reload
 
 BaseAdmin = BaseDecorators.Admin
 
@@ -56,25 +57,27 @@ class AdminSmallCmds(commands.CustomComponent):
     @commands.command(name='reload', aliases=[])
     async def reload(self, ctx: Context, command: str) -> Response:
         translations = ctx.user.translations.Admin.Reload
+
         if command == "translations":
-            prefix = translations.translations
-            try:
-                ctx.bot.TranslationManager = reload_and_get("bot.translations", "TranslationManager")()
-                return translations.module_reloaded.format_response(ctx, prefix)
-            except Exception as e:
-                self.bot.log.error(e)
-                return translations.module_reloaded_error.format_response(ctx, prefix, e, success=False)
+            return await reload_translations(ctx, translations)
+
         if command == "emotes":
-            prefix = translations.emotes
-            try:
-                self.bot.Emotes = reload_and_get("bot.apis.emotes", "Emotes")(self.bot)
-                return translations.module_reloaded.format_response(ctx, prefix)
-            except Exception as e:
-                self.bot.log.error(e)
-                return translations.module_reloaded_error.format_response(ctx, prefix, e, success=False)
+            return await reload_emotes(ctx, translations)
+
+        if command == "commands":
+            return await reload_commands(ctx, translations)
+
         if command == "all":
-            await ctx.bot.CommandHandler.reload_cogs(ctx.bot)
-            return translations.commands_reloaded.format_response(ctx)
+            res = await reload_translations(ctx, translations)
+            results = [res.response_string]
+            res = await reload_emotes(ctx, translations)
+            results.append(res.response_string)
+
+            res = await reload_commands(ctx, translations)
+            results.append(res.response_string)
+
+            return translations.all.format_response(ctx, " ".join(results))
+
         command_to_reload = ctx.bot.get_command(command)
         if not command_to_reload:
             return translations.command_not_found.format_response(ctx, command, success=False)
@@ -104,8 +107,7 @@ async def setup(bot: Gorenmu) -> None:
     await bot.add_component(AdminSmallCmds(bot))
 
 
-async def teardown(bot: Gorenmu) -> None:
-    ...
+async def teardown(bot: Gorenmu) -> None: ... # NOQA
 
 
 def reload_and_get(module_name: str, element: str):
@@ -119,3 +121,28 @@ def reload_and_get(module_name: str, element: str):
     importlib.invalidate_caches()
     module = importlib.import_module(module_name)
     return getattr(module, element)
+
+
+async def reload_translations(ctx: Context, translations: translations_t) -> Response:
+    prefix = translations.translations
+    try:
+        ctx.bot.TranslationManager = reload_and_get("bot.translations", "TranslationManager")()
+        return translations.module_reloaded.format_response(ctx, prefix)
+    except Exception as exception:
+        ctx.bot.log.error(exception)
+        return translations.module_reloaded_error.format_response(ctx, prefix, exception, success=False)
+
+
+async def reload_emotes(ctx: Context, translations: translations_t) -> Response:
+    prefix = translations.emotes
+    try:
+        ctx.bot.Emotes = reload_and_get("bot.apis.emotes", "Emotes")(ctx.bot)
+        return translations.module_reloaded.format_response(ctx, prefix)
+    except Exception as exception:
+        ctx.bot.log.error(exception)
+        return translations.module_reloaded_error.format_response(ctx, prefix, exception, success=False)
+
+
+async def reload_commands(ctx: Context, translations: translations_t) -> Response:
+    await ctx.bot.CommandHandler.reload_cogs(ctx.bot)
+    return translations.commands_reloaded.format_response(ctx)

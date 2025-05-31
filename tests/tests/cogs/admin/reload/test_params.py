@@ -14,9 +14,28 @@ class Params:
         pytest.param("pt_BR", "Os emotes foram recarregadas com sucesso.", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    all = [
+    commands = [
         pytest.param("en", "The commands were successfully reloaded.", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "Os comando foram recarregados com sucesso.", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param("pt_BR", "Os comandos foram recarregados com sucesso.", marks=pytest.mark.pt_BR, id="pt_BR"),
+    ]
+
+    all = [
+        pytest.param(
+            "en",
+            "The translations were successfully reloaded. "
+            "The emotes were successfully reloaded. "
+            "The commands were successfully reloaded.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "As traduções foram recarregadas com sucesso. "
+            "Os emotes foram recarregadas com sucesso. "
+            "Os comandos foram recarregados com sucesso.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
     error_translations = [

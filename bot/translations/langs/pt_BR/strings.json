@@ -435,10 +435,11 @@
             "nada": "O comando foi executado com sucesso."
         },
         "Reload": {
-            "commands_reloaded": "Os comando foram recarregados com sucesso.",
+            "commands_reloaded": "Os comandos foram recarregados com sucesso.",
             "command_not_found": "Comando com nome {} não encontrado.",
             "command_reloaded": "Comando {} recarregado com sucesso.",
             "command_reloaded_error": "O comando {} teve um erro ao recarregar: {}",
+            "all": "{}",
             "translations_str": "As traduções",
             "emotes_str": "Os emotes",
             "module_reloaded": "{} foram recarregadas com sucesso.",

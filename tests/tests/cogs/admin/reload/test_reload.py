@@ -35,6 +35,12 @@ async def test_emotes(interact, mock_context: MockContext, lang: str, expected: 
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("lang, expected", Params.commands)
+async def test_commands(interact, mock_context: MockContext, lang: str, expected: str):
+    await reload_commands(interact, mock_context, lang=lang, command="commands", expected=expected)
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.all)
 async def test_all(interact, mock_context: MockContext, lang: str, expected: str):
     await reload_commands(interact, mock_context, lang=lang, command="all", expected=expected)

@@ -606,6 +606,7 @@ class BaseTranslations:
             command_not_found: Response
             command_reloaded: Response
             command_reloaded_error: Response
+            all: Response
             translations: str
             emotes: str
             module_reloaded: Response

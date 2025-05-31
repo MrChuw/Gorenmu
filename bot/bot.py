@@ -4,9 +4,9 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import datetime
+from asyncio import Task
 from logging import Logger
 from typing import Any, Callable, TYPE_CHECKING
-from asyncio import Task
 
 import twitchio
 from aiocache.backends.memcached import MemcachedCache
@@ -19,6 +19,7 @@ from twitchio import eventsub
 from twitchio.ext import commands
 from twitchio.ext.commands import Command, CommandErrorPayload
 
+from bot.apis import Emotes
 from bot.exceptions import (
     CommandNotFound, CommandOnCooldown, DevRequired, GuardFailure, InvalidArgument, OwnerRequired,
 )
@@ -26,10 +27,9 @@ from bot.ext import Bot, ChatMessage, Config, Context
 from bot.models import Channel as ChannelModel, TwitchTokens, User as UserModel
 from bot.models.User_extras import BotsIgnore
 from bot.translations import Response, TranslationManager
-from bot.apis import Emotes
 from bot.utils import (
-    Cache, Check, CommandHandler, DynamicDescriptions, LotteryTools, MarkovProcessor, SessionsCaches,
-    StringTools, ToolsTools, UploadThings, MemCache
+    Cache, Check, CommandHandler, DynamicDescriptions, LotteryTools, MarkovProcessor, MemCache, SessionsCaches,
+    StringTools, ToolsTools, UploadThings,
 )
 
 if TYPE_CHECKING:
@@ -183,6 +183,7 @@ class Gorenmu(Bot):
             return None
         if ctx.prefix != self.channels[ctx.channel.name].prefix:
             return None
+        # TODO: Add CommandInvokeError
         # TODO: Ativar de novo o develop.
         # if self.config.DevelopmentConfig.development:
         #     return None
@@ -206,7 +207,7 @@ class Gorenmu(Bot):
             return None
         if isinstance(error, GuardFailure):
             return None
-        self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
+        self.log.error(error, extra={"ctx": dict(ctx)})
         return await ctx.simple_response(ctx, translations.error_not_registered.format(self.dev_name))
 
     async def event_message(self, payload: ChatMessage):
@@ -254,13 +255,12 @@ class Gorenmu(Bot):
             error_not_registered = ctx.user.translations.Exceptions.error_not_registered
             return await ctx.simple_response(ctx, error_not_registered.format(self.config.BotConfig.dev_name))
         except Exception as error:
-            self.log.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
+            self.log.error(error, extra={"ctx": dict(ctx)})
 
     @commands.Component.listener('Whisper')
     async def event_message_whisper(self, payload: twitchio.Whisper):
         ctx: Context = await self.get_context(payload)
         ...
-
 
     async def listeners(self, ctx):
         if not ctx.user:
@@ -268,7 +268,6 @@ class Gorenmu(Bot):
         for listener in self.manual_event_message:
             if response := await listener(ctx):
                 await ctx.response(response)
-
 
     async def global_guard(self, ctx: commands.Context) -> bool:
         checks = [Check.online, Check.enabled, Check.banword]
