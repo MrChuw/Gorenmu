@@ -39,10 +39,10 @@ class RandomSCPCmd(commands.CustomComponent):
                 if scp.status != 404:
                     break
                 if asyncio.get_event_loop().time() - start_time >= 30:
-                    return ctx.user.translations.Scp.timeout.format_response(ctx)
+                    return ctx.user.translations.Exceptions.timeout.format_response(ctx)
                 await asyncio.sleep(1)
 
-            return ctx.user.translations.Scp.link.format_response(ctx, scp.url.human_repr())
+            return ctx.user.translations.Exceptions.link.format_response(ctx, scp.url.human_repr())
         except Exception as e:
             ctx.bot.log.error(e, exc_info=e)
             return ctx.user.translations.Exceptions.unexpected_error.format_response(ctx, success=False)

@@ -130,6 +130,8 @@
         "user_not_provided": "No target user provided!",
         "guard_caught": "You are not authorized to use the \"{}\" command due to \"{}\". If you think this is an error, contact @{}.",
         "unexpected_error": "An error occurred, please try again.",
+        "link": "{}",
+        "timeout": "It's been 30 seconds and I can't find any valid links.",
 
 
 
@@ -279,22 +281,14 @@
         "random_line": "{} (sent {} ago by @{})",
         "search_timeout": "30s has passed and I has unable to find a message from user @{} on channel @{}"
     },
-    "Scp": {
-        "link": "{}",
-        "timeout": "It's been 30 seconds and I can't find any valid links."
-    },
     "UpSideDown": {
         "upsidedown": "{}"
     },
     "Wikihow": {
-        "url_str": "https://www.wikihow.com/Special:Randomizer",
-        "timeout": "It's been 30 seconds and I can't find any valid links.",
-        "links": "{}"
+        "url_str": "https://www.wikihow.com/Special:Randomizer"
     },
     "Wikipedia": {
-        "url_str": "https://wikipedia.org/wiki/Special:Random",
-        "timeout": "It's been 30 seconds and I can't find any valid links.",
-        "links": "{}"
+        "url_str": "https://wikipedia.org/wiki/Special:Random"
     },
     "Annotations": {
         "title_too_long": "The title must have a maximum of 32 characters.",

@@ -37,10 +37,10 @@ class WikiHowCmd(commands.CustomComponent):
                 if wiki.status in [200, 304]:
                     break
                 if asyncio.get_event_loop().time() - start_time >= 30:
-                    return ctx.user.translations.Wikihow.timeout.format_response(ctx)
+                    return ctx.user.translations.Exceptions.timeout.format_response(ctx)
                 await asyncio.sleep(1)
 
-            return translations.links.format_response(ctx, wiki.url.human_repr())
+            return ctx.user.translations.Exceptions.link.format_response(ctx, wiki.url.human_repr())
         except Exception as e:
             ctx.bot.log.error(e, exc_info=e)
             return ctx.user.translations.Exceptions.unexpected_error.format_response(ctx, success=False)

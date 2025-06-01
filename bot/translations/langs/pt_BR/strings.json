@@ -123,6 +123,8 @@
         "user_not_provided": "Nenhum usuário alvo fornecido!",
         "guard_caught": "Você não está autorizado a usar o comando \"{}\" motivo: \"{}\". Se achar que isso é um erro, entre em contato com @{}.",
         "unexpected_error": "Ocorreu um erro. Tente novamente.",
+        "link": "{}",
+        "timeout": "Já se passaram 30 segundos e não consegui encontrar nenhum link válido.",
 
 
         "never_seen": "Não me lembro de ter visto nenhum @{}.",
@@ -282,22 +284,14 @@
         "random_line": "{} (enviado há {} por @{})",
         "search_timeout": "30s se passaram e não consegui encontrar uma mensagem do usuário @{} no canal @{}"
     },
-    "Scp": {
-        "link": "{}",
-        "timeout": "Já se passaram 30 segundos e não consegui encontrar nenhum link válido."
-    },
     "UpSideDown": {
         "upsidedown": "{}"
     },
     "Wikihow": {
-        "url_str": "https://pt.wikihow.com/Especial:Randomizer",
-        "timeout": "Já se passaram 30 segundos e não consegui encontrar nenhum link válido.",
-        "links": "{}"
+        "url_str": "https://pt.wikihow.com/Especial:Randomizer"
     },
     "Wikipedia": {
-        "url_str": "https://pt.wikipedia.org/wiki/Special:Random",
-        "timeout": "Já se passaram 30 segundos e não consegui encontrar nenhum link válido.",
-        "links": "{}"
+        "url_str": "https://pt.wikipedia.org/wiki/Special:Random"
     },
     "Annotations": {
         "too_much_characters": "A anotação deve ter um máximo de 450 caracteres.",

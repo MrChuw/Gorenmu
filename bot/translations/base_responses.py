@@ -124,6 +124,9 @@ class BaseTranslations:
         lottery_seed: str
         announcement: str
 
+        link: Response
+        timeout: Response
+
     class Pipe(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
@@ -351,22 +354,12 @@ class BaseTranslations:
 
         upsidedown: Response
 
-    class Scp(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.populate_responses()
-
-        link: Response
-        timeout: Response
-
     class Wikihow(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
             self.populate_responses()
 
         url: str
-        timeout: Response
-        links: Response
 
     class Wikipedia(BaseFunctions):
         def __init__(self, translation: dict):
@@ -374,8 +367,6 @@ class BaseTranslations:
             self.populate_responses()
 
         url: str
-        timeout: Response
-        links: Response
 
     class Annotations(BaseFunctions):
         def __init__(self, translation: dict):
