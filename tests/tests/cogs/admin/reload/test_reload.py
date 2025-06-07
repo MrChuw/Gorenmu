@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from unittest.mock import patch
 
 import pytest
@@ -16,10 +15,12 @@ async def reload_importlib_error(interact, mock_context: MockContext, lang: str,
         assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
 
 
-async def reload_commands(interact, mock_context: MockContext, lang: str, command: str, expected: str):
+async def reload_commands(
+    interact, mock_context: MockContext, lang: str, command: str, expected: str = None, re_expected: str = None
+):
     await mock_context.prepare_context(lang)
     response: Response = await interact.reload._callback(self=interact, ctx=mock_context, command=command)  # NOQA
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    mock_context.assert_response(response, expected, re_expected)
 
 
 @pytest.mark.asyncio

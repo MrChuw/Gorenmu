@@ -17,13 +17,11 @@ class UploadThings:
         self.bot = bot
 
     @staticmethod
-    async def pastbin_upload(text: str, bot: Gorenmu, cache: SQLiteBackend):
+    async def pastebin_upload(text: str, bot: Gorenmu, cache: SQLiteBackend):
         await asyncio.sleep(0)
         async with CachedSession(cache=cache) as session:
-            async with session.post(bot.config.BotConfig.pastbin_url, data=text.encode("utf-8")) as r:
-                if r.status != 200:
-                    return None
-                return (await r.read()).decode("utf8")
+            async with session.post(bot.config.BotConfig.pastebin_url, data=text.encode("utf-8")) as r:
+                return None if r.status != 200 else (await r.read()).decode("utf8")
 
     @staticmethod
     async def send_imgur(links: list[str], bot: Gorenmu, session: CachedSession):
@@ -31,7 +29,7 @@ class UploadThings:
             session.headers.update({"x-api-key": bot.config.ApisConfig.image_carousel_api_key})
             response = await session.post(bot.config.ApisConfig.image_carousel, json={"urls": links})
             embed = json.loads(await response.text())
-            session.headers.pop('x-api-key')
+            session.headers.pop("x-api-key")
             return embed["success"]
         except Exception as e:
             logger.error(e)
@@ -42,18 +40,16 @@ class UploadThings:
         shlink_url = bot.config.ApisConfig.shlink_url
         payload = {"longUrl": url, "forwardQuery": "true", "findIfExists": "true", "tags": tags}
         headers = {
-                "accept": "application/json",
-                "Content-Type": "application/json",
-                "X-Api-Key": bot.config.ApisConfig.shlink_key}
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "X-Api-Key": bot.config.ApisConfig.shlink_key,
+        }
         if url is None:
             return None
         try:
             response = await session.post(shlink_url, json=payload, headers=headers)
             response = await response.json()
-            if "status" in response:
-                return None
-            else:
-                return response["shortUrl"]
+            return None if "status" in response else response["shortUrl"]
         except Exception as e:
             logger.error(e)
             return None
@@ -62,13 +58,16 @@ class UploadThings:
     async def upload(data: bytes, bot: Gorenmu, tipo: str, nome: str, cache: SQLiteBackend) -> dict | None:
         try:
             async with CachedSession(cache=cache) as session:
-                body = (b"--faa88938ece74999ac092a3e782951fb\r\n"
-                        b'Content-Disposition: form-data; name="files"; filename="' + nome.encode() + b'"\r\n' b"Content-Type:" + tipo.encode() + b"\r\n\r\n")
+                body = (
+                    b"--faa88938ece74999ac092a3e782951fb\r\n"
+                    b'Content-Disposition: form-data; name="files"; filename="' + nome.encode() + b'"\r\n'
+                    b"Content-Type:" + tipo.encode() + b"\r\n\r\n"
+                )
                 body += data + b"\r\n"
                 body += b"--faa88938ece74999ac092a3e782951fb--\r\n"
 
                 headers = {
-                    "Content-Type": f"multipart/form-data; boundary=faa88938ece74999ac092a3e782951fb",
+                    "Content-Type": "multipart/form-data; boundary=faa88938ece74999ac092a3e782951fb",
                     "Authorization": bot.config.ApisConfig.file_upload_api_key,
                 }
 
@@ -81,6 +80,6 @@ class UploadThings:
 
     @staticmethod
     async def upload_alias(data: dict, session: CachedSession):
-        url = 'https://alias.mrchuw.com.br/submit'
+        url = "https://alias.mrchuw.com.br/submit"
         response = await session.post(url, data=data)
         return response.url.human_repr()

@@ -8,7 +8,7 @@ test = false
 bot_id = 707980467
 color = 0x9147FF
 dev_userid = 411010313
-dev_name = "mr_chuw"  # This name will be replaced by twitch name when bot fully starts, its used on start to create the channel on database, so put the our twitch nick
+dev_name = "mr_chuw"  # This name will be replaced by twitch name when bot fully starts, it is used on start to create the channel on database, so put our twitch nick.
 dev_display_name = "MrChuw"
 default_prefix = "+"
 allowed_prefix_list = false
@@ -18,7 +18,7 @@ imgur_authorized_ids = [184900613, 411010313]
 
 [apis]
 color_site_url = "https://color.mrchuw.com.br/"
-pastbin_url = "https://bin.mrchuw.com.br/documents"
+pastebin_url = "https://bin.mrchuw.com.br/documents"
 image_carousel = "https://car.mrchuw.com.br/upload"
 image_carousel_api_key = "${IMAGE_CAROUSEL_API_KEY}"
 file_upload_url = "https://im.mrchuw.com.br/api/files/"
@@ -51,9 +51,3 @@ password = "${REDIS_PASSWORD}"
 namespace = "${REDIS_NAMESPACE}"
 db = "${REDIS_DB}"
 
-
-[logger]
-format = "{time:YYYY-MM-DD HH:mm:ss} [{level}] {name} {module}.py:{line} {message}"
-level = "INFO"
-enqueue = true
-colorize = true

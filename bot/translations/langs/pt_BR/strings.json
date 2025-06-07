@@ -125,6 +125,8 @@
         "unexpected_error": "Ocorreu um erro. Tente novamente.",
         "link": "{}",
         "timeout": "Já se passaram 30 segundos e não consegui encontrar nenhum link válido.",
+        "pipe_response_str": "aqui está a resposta gerada pelo comando anterior: {}",
+        "pipe_response_error_str": "ocorreu um erro ao executar o comando anterior: {}",
 
 
         "never_seen": "Não me lembro de ter visto nenhum @{}.",
@@ -160,8 +162,8 @@
     "IsAfk": {
         "bot_nick": "Estou sempre aqui... assistindo.",
         "author_nick": "você não está afk... obviamente.",
-        "is_afk": "@{} {} {}",
-        "is_afk_content": "@{} {} {} e deixou uma nota: {}",
+        "is_afk": "@{} {} {} (há {})",
+        "is_afk_content": "@{} {} {} e deixou uma nota: {} (há {})",
         "is_not_afk": "@{} não é AFK."
     },
     "RAfk": {
@@ -434,8 +436,6 @@
             "command_reloaded": "Comando {} recarregado com sucesso.",
             "command_reloaded_error": "O comando {} teve um erro ao recarregar: {}",
             "all": "{}",
-            "translations_str": "As traduções",
-            "emotes_str": "Os emotes",
             "module_reloaded": "{} foram recarregadas com sucesso.",
             "module_reloaded_error": "{} tiveram um erro ao recarregar: {}"
         },

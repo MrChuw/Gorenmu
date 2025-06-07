@@ -8,11 +8,9 @@ from loguru import logger
 from nltk.tokenize import WhitespaceTokenizer
 from urlextract import URLExtract
 
-from bot.ext.commands import User
 from bot.ext import Context
-from bot.models import (
-    Channel as ChannelModel, MarkovChannels, MarkovUserChannel, MarkovUsers,
-)
+from bot.ext.commands import User
+from bot.models import Channel as ChannelModel, MarkovChannels, MarkovUserChannel, MarkovUsers
 
 
 class MarkovProcessor:
@@ -38,6 +36,7 @@ class MarkovProcessor:
             return await MarkovChannels.filter(curr_state=curr_state, channel=channel).first()
         elif user:
             return await MarkovUsers.filter(curr_state=curr_state, user=user).first()
+        return None
 
     @staticmethod
     async def _create_state(curr_state: str, next_state: dict[str, int], **kwargs):
@@ -75,8 +74,8 @@ class MarkovProcessor:
 
         for i in range(len(words) - ngram + 1):
             await asyncio.sleep(0)
-            curr_state = " ".join(words[i: i + ngram])
-            next_state = " ".join(words[i + ngram: i + ngram + ngram])
+            curr_state = " ".join(words[i : i + ngram])
+            next_state = " ".join(words[i + ngram : i + ngram + ngram])
 
             # Channel
             if user.id not in self.bots_ids:

@@ -1,24 +1,35 @@
 from __future__ import annotations
 
-from typing import Coroutine, List, Optional, TYPE_CHECKING, Union
+from typing import Optional, TYPE_CHECKING
+from zoneinfo import ZoneInfo
 
 from tortoise import fields
 from urlextract import URLExtract
 
-from bot.models.base import (
-    Base, BoolFieldBool, CharFieldStr, ContentMixin, DatetimeTzField, TimestampMixin,
-)
-from bot.models.User_extras import (
-    Annotation, Bug, Cookies, Copypasta, Imgur, ImgurAggregate, MessagesLog, NickHistory, Pets, Player, PlayerTower,
-    Reminder, Status, Suggest,
-)
-
-
-from zoneinfo import ZoneInfo
+from bot.models.base import Base, ContentMixin, TimestampMixin
+from bot.models.User_extras import MessagesLog, NickHistory
 
 if TYPE_CHECKING:
-    from bot.ext.commands import Context
+    from bot.ext import Context
     from bot.translations import Translations, Response
+    from bot.models.User_extras import (
+        Annotation,
+        Bug,
+        Cookies,
+        Copypasta,
+        Imgur,
+        ImgurAggregate,
+        Lottery,
+        MarkovUserChannel,
+        MarkovUsers,
+        Pets,
+        Player,
+        PlayerTower,
+        Reminder,
+        Status,
+        Suggest,
+    )
+
     GetReturnT = "User" | Response | None
 
 url_extractor = URLExtract()
@@ -37,31 +48,30 @@ class User(Base, TimestampMixin, ContentMixin):
     timestamp = fields.DatetimeField(null=True)
     language = fields.CharField(max_length=32, null=True)
     timezone = fields.CharField(max_length=50, default="UTC")
-    cookies: List[Cookies] = fields.ReverseRelation["Cookies"]
-    player: List[Player] = fields.ReverseRelation["Player"]
-    pets: List[Pets] = fields.ReverseRelation["Pets"]
-    player_torre: List[PlayerTower] = fields.ReverseRelation["Player_torre"]
-    suggest: List[Suggest] = fields.ReverseRelation["Suggest"]
-    bug: List[Bug] = fields.ReverseRelation["Bug"]
-    annotation: List[Annotation] = fields.ReverseRelation["Annotation"]
-    nick_history: List[Union[NickHistory, str]] = fields.ReverseRelation["NickHistory"]
-    status: List[Status] = fields.ReverseRelation["Status"]
-    user_1: User = fields.ReverseRelation["user_1"]
-    user_2: User = fields.ReverseRelation["user_2"]
-    reminder: List[Reminder] = fields.ReverseRelation["Reminder"]
-    reminder_to: User = fields.ReverseRelation["reminder_to"]
-    copypasta: List[Copypasta] = fields.ReverseRelation["Copypasta"]
-    messages: List[MessagesLog] = fields.ReverseRelation["MessagesLog"]
-    lottery: lottery = fields.ReverseRelation["Lottery"]
-    imgur_aggregate: List[ImgurAggregate] = fields.ReverseRelation["ImgurAggregate"]
-    imgur: List[Imgur] = fields.ReverseRelation["Imgur"]
+    cookies: fields.ReverseRelation["Cookies"]
+    player: fields.ReverseRelation["Player"]
+    pets: fields.ReverseRelation["Pets"]
+    player_torre: fields.ReverseRelation["PlayerTower"]
+    suggest: fields.ReverseRelation["Suggest"]
+    bug: fields.ReverseRelation["Bug"]
+    annotation: fields.ReverseRelation["Annotation"]
+    nick_history: fields.ReverseRelation["NickHistory"]
+    status: fields.ReverseRelation["Status"]
+    user_1: fields.ReverseRelation["User"]
+    user_2: fields.ReverseRelation["User"]
+    reminder: fields.ReverseRelation["Reminder"]
+    reminder_to: fields.ReverseRelation["Reminder"]
+    copypasta: fields.ReverseRelation["Copypasta"]
+    messages: fields.ReverseRelation["MessagesLog"]
+    lottery: fields.ReverseRelation["Lottery"]
+    imgur_aggregate: fields.ReverseRelation["ImgurAggregate"]
+    imgur: fields.ReverseRelation["Imgur"]
 
-    markov = fields.ReverseRelation["MarkovUsers"]
-    markov_channels = fields.ReverseRelation["MarkovUserChannel"]
+    markov: fields.ReverseRelation["MarkovUsers"]
+    markov_channels: fields.ReverseRelation["MarkovUserChannel"]
 
     translations: Translations = None
     user_id: int
-
 
     class Meta:
         table = "user"
@@ -90,10 +100,10 @@ class User(Base, TimestampMixin, ContentMixin):
     @staticmethod
     async def update_user(instance: User, ctx: Context) -> User:
         attrs = {
-                "name": ctx.author.name,
-                "channel": ctx.channel.name,
-                "content": ctx.message.text.replace("ACTION", "", 1),
-                "timestamp": ctx.message.timestamp,
+            "name": ctx.author.name,
+            "channel": ctx.channel.name,
+            "content": ctx.message.text.replace("ACTION", "", 1),
+            "timestamp": ctx.message.timestamp,
         }
         update_fields = []
 
@@ -116,12 +126,12 @@ class User(Base, TimestampMixin, ContentMixin):
     @staticmethod
     async def create_user(ctx: Context) -> User:
         user_data = {
-                "id": ctx.author.id,
-                "name": ctx.author.name,
-                "channel": ctx.channel.name,
-                "saved_color": ctx.author.colour,
-                "content": ctx.message.text,
-                "timestamp": ctx.message.timestamp,
+            "id": ctx.author.id,
+            "name": ctx.author.name,
+            "channel": ctx.channel.name,
+            "saved_color": ctx.author.colour,
+            "content": ctx.message.text,
+            "timestamp": ctx.message.timestamp,
         }
         user = await User.create(**user_data)
         await NickHistory.create(user=user, nicks=user.name)
@@ -132,23 +142,13 @@ class User(Base, TimestampMixin, ContentMixin):
     async def log_message(user: User, ctx: Context):
         message_type = "message_link" if url_extractor.find_urls(text=ctx.message.text) else "message"
         await MessagesLog.create(
-                user=user,
-                content=ctx.message.text[:500],
-                type=message_type,
-                channel=ctx.bot.channels[ctx.channel.name],
+            user=user, content=ctx.message.text[:500], type=message_type, channel=ctx.bot.channels[ctx.channel.name]
         )
 
     @staticmethod
-    async def create_or_none(id: int, name: str, **kwargs) -> Optional[User]:
-        if not await User.get_or_none(id=id):
-            user = {
-                    "id": id,
-                    "name": name,
-                    "channel": name,
-                    "content": "",
-                    "timestamp": 0,
-                    **kwargs,
-                    }
+    async def create_or_none(user_id: int, name: str, **kwargs) -> Optional[User]:
+        if not await User.get_or_none(id=user_id):
+            user = {"id": user_id, "name": name, "channel": name, "content": "", "timestamp": 0, **kwargs}
             user = await User.create(**user)
             await NickHistory.create(user=user, nicks=user.name)
             return user
@@ -162,7 +162,6 @@ class User(Base, TimestampMixin, ContentMixin):
             channel = ctx.bot.channels[channel]
             user.translations = ctx.bot.TranslationManager.get_translations(user.language or channel.language or "en")
         return user
-
 
     @staticmethod
     async def find_by_name(name: str, ctx: Context, is_none: bool = False) -> GetReturnT:
@@ -188,7 +187,6 @@ class User(Base, TimestampMixin, ContentMixin):
             await ctx.bot.memcache.User.set(user=user)
         return await User._set_translation(user, ctx)
 
-
     @staticmethod
     async def get_user(ctx: Context, name: str = None, user_id: int = None, is_none: bool = False) -> GetReturnT:
         if name:
@@ -197,7 +195,6 @@ class User(Base, TimestampMixin, ContentMixin):
             return await User.find_by_id(user_id=user_id, ctx=ctx, is_none=is_none)
         else:
             return await User.find_by_id(user_id=ctx.user.id, ctx=ctx, is_none=is_none)
-
 
     @staticmethod
     async def get_user_or_none(ctx: Context, name: str = None, user_id: int = None) -> GetReturnT:

@@ -70,9 +70,7 @@ class StringTools:
     def str2float(target: Optional[str]) -> Optional[float]:
         try:
             return float(target.replace(",", "."))
-        except ValueError:
-            return None
-        except TypeError:
+        except (ValueError, TypeError):
             return None
         except Exception as e:
             logging.info(e)
@@ -82,9 +80,7 @@ class StringTools:
     def str2int(target: Optional[str]) -> Optional[int]:
         try:
             return int(target)
-        except ValueError:
-            return None
-        except TypeError:
+        except (ValueError, TypeError):
             return None
         except Exception as e:
             logging.info(e)
@@ -117,15 +113,6 @@ class StringTools:
             return ""
 
     @staticmethod
-    def tpl2str2(target: Optional[tuple]) -> str:
-        try:
-            # return str(target)
-            return json.dumps(target)
-        except Exception as e:
-            logging.warning(e)
-            return ""
-
-    @staticmethod
     def remove_emoji(string: str) -> str:
         emoji_pattern = re.compile(
             "["
@@ -134,8 +121,7 @@ class StringTools:
             "🚀-🛿"  # transport & map symbols
             "🇠-🇿"  # flags (iOS)
             "─-▇"  # chinese char
-            "▉-⯯"  # I need Unicode Character “█” (U+2588)
-            "✂-➰"
+            "▉-⯯"
             "✂-➰"
             "Ⓜ-▇"
             "▉-🉑"
@@ -146,22 +132,11 @@ class StringTools:
             "‍"
             "⏏"
             "⌚"
-            "️"  # dingbats
+            "️"
             "〰"
             "⌛"
             "⌨"
-            ""
-            "⏩"
-            "⏪"
-            "⏫"
-            "⏬"
-            "⏭"
-            "⏮"
-            "⏯"
-            "⏰"
-            "⏱"
-            "⏲"
-            "⏳"
+            "⏩-⏳"
             "]+",
             flags=re.UNICODE,
         )
@@ -181,5 +156,55 @@ class StringTools:
         return re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", target)
 
     @staticmethod
-    def is_birthday(date: str) -> bool:
-        return "ano" in date and not any(x in date for x in ["mês", "meses", "semana", "dia"])
+    def find_prefixed_option(options: list[str], prefix: str) -> str | None:
+        return next((opt.replace(prefix, "") for opt in options if opt.startswith(prefix)), None)
+
+    def remove_prefixed_option(self, text: str, prefix: str) -> tuple[str, str | None]:
+        if option := self.find_prefixed_option(text.split(" "), prefix):
+            text = text.replace(f"{prefix}{option}", "").replace("  ", " ")
+        return text, option
+
+    @staticmethod
+    def extract_and_remove_field(text: str, field: str) -> tuple[str, str | None]:
+        pattern = rf'{field}:"(.*?)"'
+        if match := re.search(pattern, text):
+            value = match[1]
+            text = text.replace(value, "")
+            return text, value
+        return text, None
+
+    @staticmethod
+    def is_int(text: str) -> bool:
+        text = text.strip()
+        try:
+            int(text)
+            return True
+        except ValueError:
+            return False
+
+    @staticmethod
+    def is_float(text: str) -> bool:
+        text = text.strip().replace(",", ".")
+        try:
+            float(text)
+            return True
+        except ValueError:
+            return False
+
+    def to_amount(self, text: str, default: int = 1) -> int | float:
+        if not text:
+            return default
+        text = text.strip().replace(",", ".")
+        if self.is_int(text):
+            return int(text)
+        elif self.is_float(text):
+            return float(text)
+        return default
+
+    def to_all(self, text: str, amount_available: int, lang_all: str, default: int = 1) -> tuple[int | float, bool]:
+        if not text:
+            return default, False
+        text = text.strip().lower()
+        if text in ["all", lang_all]:
+            return amount_available, True
+        return self.to_amount(text, default), False

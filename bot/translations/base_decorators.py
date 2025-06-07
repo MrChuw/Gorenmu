@@ -1,68 +1,56 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import Any, Dict, TYPE_CHECKING
 
-
-from .extras.response import BaseFunctions, CommandExemples
 from twitchio.ext.commands import BucketType
 
-
+from .extras.response import BaseFunctions, CommandExemples
 
 if TYPE_CHECKING:
-    from bot.ext.commands import Context
+    from bot.ext import Context
     from bot.ext import Command
     from bot.translations import TranslationManager
 
 
 class Decorators(BaseFunctions):
     def __init__(self, translation: dict, fallback: dict = None):
-        fallback_decorators = fallback['decorators'] if fallback else None
-        extras = translation['extras'] if 'extras' in translation else fallback['extras']
-        extras_fallback = fallback['extras'] if fallback else None
-        extras = BaseFunctions(extras, extras_fallback)
-        super().__init__(translation['decorators'], fallback_decorators)
+        fallback_decorators = fallback.get("decorators") if fallback else None
+        translation_extras = translation.get("extras")
+        fallback_extras = fallback.get("extras") if fallback else None
+        extras = BaseFunctions(translation_extras or fallback_extras, fallback_extras)
+        super().__init__(translation["decorators"], fallback_decorators)
 
-        self.populate_subclasses(
-                base_cls=BaseDecorators(),
-                add_to_self=True
-        )
+        self.populate_subclasses(base_cls=BaseDecorators(), add_to_self=True)
 
-        self.decorators: dict[str, BaseDecorators] = {
-                'pipe': self.Pipe,
-                'afk': self.Afk,
-                'isafk': self.IsAfk,
-                'rafk': self.RAfk,
-                'alias': self.Alias,
-                'chance': self.Chance,
-                'choice': self.Choice,
-                'count': self.Count,
-                'hypertranslate': self.HyperTranslate,
-                'randomcolor': self.RandomColor,
-                'reverse': self.Reverse,
-                'randomline': self.RandomLine,
-                'randomscp': self.Scp,
-                'upsidedown': self.UpSideDown,
-                'wikihow': self.Wikihow,
-                "wikipedia": self.Wikipedia,
-                'annotations': self.Annotations,
-                'lottery': self.Lottery,
-                'safebooru': self.Safebooru,
-                'cookies': self.Cookies,
-
-
-                'NSFW': {
-                        'imgur': self.NSFW.Imgur,
-                        'imgur_repeated': self.NSFW.ImgurRepeated,
-                        'booru': self.NSFW.Boru
-                },
-
-                'Dev': {
-                        'nada': self.Admin.Nada,
-                        'reload': self.Admin.Reload,
-                        'restart': self.Admin.Restart,
-                        'disable_nsfw': self.Admin.DisableNSFW,
-                }
+        self.decorators: dict[str, BaseDecorators | Any] = {
+            "pipe": self.Pipe,
+            "afk": self.Afk,
+            "isafk": self.IsAfk,
+            "rafk": self.RAfk,
+            "alias": self.Alias,
+            "chance": self.Chance,
+            "choice": self.Choice,
+            "count": self.Count,
+            "hypertranslate": self.HyperTranslate,
+            "randomcolor": self.RandomColor,
+            "reverse": self.Reverse,
+            "randomline": self.RandomLine,
+            "randomscp": self.Scp,
+            "upsidedown": self.UpSideDown,
+            "wikihow": self.Wikihow,
+            "wikipedia": self.Wikipedia,
+            "annotations": self.Annotations,
+            "lottery": self.Lottery,
+            "safebooru": self.Safebooru,
+            "cookies": self.Cookies,
+            "NSFW": {"imgur": self.NSFW.Imgur, "imgur_repeated": self.NSFW.ImgurRepeated, "booru": self.NSFW.Boru},
+            "Dev": {
+                "nada": self.Admin.Nada,
+                "reload": self.Admin.Reload,
+                "restart": self.Admin.Restart,
+                "disable_nsfw": self.Admin.DisableNSFW,
+            },
         }
 
         self.categories: list[str] = ["NSFW", "Dev"]
@@ -102,24 +90,26 @@ class DecorationsFunctions(BaseFunctions):
             return cls  # NOQA
         decorator = ctx.command.decorators[ctx.user.language]
         for classe in dir(decorator):
-            if classe.startswith("__") or classe.startswith("get_"): continue
-            invoke_by = ctx.message.text.partition(" ")[0][len(ctx.prefix):].lower()
+            if classe.startswith("__") or classe.startswith("get_"):
+                continue
+            invoke_by = ctx.message.text.partition(" ")[0][len(ctx.prefix) :].lower()
             if invoke_by == classe.lower():
                 return getattr(decorator, classe)
 
     def get_object_or_false(self, key: str):
         obj = self.get_object_or_none(key)
-        if not obj or len(obj) == 0:
-            return False
-        return obj
+        return False if not obj or len(obj) == 0 else obj
 
 
 class Admonitions:
     def __init__(self, admonitions):
-        self.items = [AdmonitionItem(**item) for item in admonitions] if admonitions else False
+        if admonitions:
+            self.items = [AdmonitionItem(*item) for item in admonitions]
+        else:
+            self.items = []
 
     def __iter__(self):
-        return iter(self.items) if self.items else iter([])
+        return iter(self.items)
 
 
 class AdmonitionItem:
@@ -141,7 +131,7 @@ class DecoratorType:
     updated: str
     commands: CommandExemples = None
     admonitions: Admonitions = None
-    template: str
+    template: Dict[str]
 
 
 class BaseCommand(DecoratorType, DecorationsFunctions):
@@ -150,13 +140,12 @@ class BaseCommand(DecoratorType, DecorationsFunctions):
         self.helper = self.get_object("helper")
         self.usage = self.get_object("usage")
         self.description = self.get_object("description")
-        self.extras = self.get_object_or_none("extras")
+        self.extras: str = self.get_object_or_none("extras")  # NOQA
         self.commands = CommandExemples(self.get_object_or_false("commands"))
-        self.admonitions = self.get_object_or_false("admonitions")
+        self.admonitions = Admonitions(self.get_object_or_false("admonitions"))
         self.created = created
         self.updated = updated
-        self.template: dict[str] | None = self.get_object_or_none("template")
-
+        self.template: Dict[str] | None = self.get_object_or_none("template")
 
 
 class BaseDecorators:
@@ -186,7 +175,6 @@ class BaseDecorators:
 
     class TypeChecking(BaseFunctions):
         PlaceHolder: Decorators
-
 
     class Pipe(BaseCommand):
         def __init__(self, translation: dict):
@@ -295,7 +283,6 @@ class BaseDecorators:
         Stock: Stock
         Top: Top
 
-
     class NSFW(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
@@ -341,10 +328,6 @@ class BaseDecorators:
             def __init__(self, translation: dict):
                 super().__init__(translation, "2025-03-14T13:19:12.370-03:00", "2025-03-14T13:19:12.370-03:00")
         DisableNSFW: DisableNSFW
-
-
-
-
 
 
 def inject_translations(command: Command, translations: TranslationManager):

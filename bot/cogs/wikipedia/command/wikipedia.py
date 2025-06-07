@@ -19,15 +19,14 @@ class WikipediaCmd(commands.CustomComponent):
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
-        ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.base_decorator(BaseDecorators.Wikipedia)
-    @commands.command(name='wikipedia', aliases=[])
+    @commands.command(name="wikipedia", aliases=[])
     async def wikipedia(self, ctx: Context) -> Response:
         translations = ctx.user.translations.Wikipedia
         session = ctx.bot.SessionsCaches.WikipediaCachedSession.session
@@ -51,5 +50,4 @@ async def setup(bot: Gorenmu) -> None:
     await bot.add_component(WikipediaCmd(bot))
 
 
-async def teardown(bot: Gorenmu) -> None:
-    ...
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

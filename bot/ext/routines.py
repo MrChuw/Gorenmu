@@ -1,10 +1,16 @@
-from twitchio.ext.routines import compute_timedelta, Routine
 import asyncio
 import datetime
 from typing import Callable, Optional
 
+from twitchio.ext.routines import compute_timedelta, Routine as BaseRoutine
 
-class Routine(Routine):
+__all__ = "Routine"
+
+
+# TODO: Remake everything based on new routines
+
+
+class Routine(BaseRoutine):
     def __init__(
         self,
         *,
@@ -164,7 +170,7 @@ def routine(
     iterations: Optional[int] = None,
     wait_first: Optional[bool] = False,
     weekly_days: Optional[list[int]] = None,  # Lista de dias da semana
-    weekly_times: Optional[list[datetime.time]] = None  # Lista de horários
+    weekly_times: Optional[list[datetime.time]] = None,  # Lista de horários
 ):
     def decorator(coro: Callable) -> Routine:
         time_ = time
@@ -175,17 +181,18 @@ def routine(
             )
 
         if weekly_days and weekly_times:
-            if not isinstance(weekly_days, list) or not all(isinstance(day, int) and 0 <= day <= 6 for day in weekly_days):
+            if not isinstance(weekly_days, list) or not all(
+                isinstance(day, int) and 0 <= day <= 6 for day in weekly_days
+            ):
                 raise TypeError("weekly_days must be a list of integers between 0 and 6.")
             if not isinstance(weekly_time, list) or not all(isinstance(t, datetime.time) for t in weekly_time):
                 raise TypeError("weekly_time must be a list of datetime.time objects.")
-            
 
             if len(weekly_time) < len(weekly_days):
                 weekly_time += [datetime.time(hour=12, minute=0)] * (len(weekly_days) - len(weekly_time))
             elif len(weekly_time) > len(weekly_days):
-                weekly_time = weekly_time[:len(weekly_days)]
-            
+                weekly_time = weekly_time[: len(weekly_days)]
+
             delta = None
         else:
             if not time_:
@@ -211,7 +218,7 @@ def routine(
             iterations=iterations,
             wait_first=wait_first,
             weekly_days=weekly_days,
-            weekly_times=weekly_time
+            weekly_times=weekly_time,
         )
 
     return decorator

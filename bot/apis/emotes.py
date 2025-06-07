@@ -18,9 +18,9 @@ class Emotes:
         self.bot = bot
         self.session: CachedSession = bot.SessionsCaches.EmotesCachedSession.session
         self.cached_emotes = {}
-        self.sad_emotes = ['sadge', 'sadgecry', 'sadcat', 'sadchamp']  # NOQA
-        self.happy_emotes = ['peepoglad', 'gladge', 'peepohappy', 'peepohappyu', 'happycat']  # NOQA
-        self.pog_emotes = ['pog', 'pogu', 'pagbounce', 'pogg', 'pogs', 'noway', 'nowaying', 'nowaycat']  # NOQA
+        self.sad_emotes = ["sadge", "sadgecry", "sadcat", "sadchamp"]  # NOQA
+        self.happy_emotes = ["peepoglad", "gladge", "peepohappy", "peepohappyu", "happycat"]  # NOQA
+        self.pog_emotes = ["pog", "pogu", "pagbounce", "pogg", "pogs", "noway", "nowaying", "nowaycat"]  # NOQA
 
     async def fetch_json(self, url) -> dict:
         try:
@@ -31,44 +31,41 @@ class Emotes:
 
     async def get_7tv(self, channel_id):
         try:
-            url = f'https://7tv.io/v3/users/twitch/{channel_id}'
+            url = f"https://7tv.io/v3/users/twitch/{channel_id}"
             data = await self.fetch_json(url)
-            if not data or data.get('error_code') == 404 or data.get('emote_set') is None:
+            if not data or data.get("error_code") == 404 or data.get("emote_set") is None:
                 return []
-            return [emote['name'] for emote in data['emote_set']['emotes']]
+            return [emote["name"] for emote in data["emote_set"]["emotes"]]
         except Exception as e:
-            self.bot.log.error(f'Error fetching 7tv emotes for {channel_id}: {e}')
+            self.bot.log.error(f"Error fetching 7tv emotes for {channel_id}: {e}")
             return []
 
     async def get_bttv(self, channel_id):
         try:
-            url = f'https://api.betterttv.net/3/cached/users/twitch/{channel_id}'
+            url = f"https://api.betterttv.net/3/cached/users/twitch/{channel_id}"
             data = await self.fetch_json(url)
-            if not data or data.get('message'):
+            if not data or data.get("message"):
                 return []
-            return [emote['code'] for emote in data.get('channelEmotes', []) + data.get('sharedEmotes', [])]
+            return [emote["code"] for emote in data.get("channelEmotes", []) + data.get("sharedEmotes", [])]
         except Exception as e:
-            self.bot.log.error(f'Error fetching bttv emotes for {channel_id}: {e}')
+            self.bot.log.error(f"Error fetching bttv emotes for {channel_id}: {e}")
             return []
 
     async def get_ffz(self, channel_id):
         try:
-            url = f'https://api.frankerfacez.com/v1/room/id/{channel_id}'
+            url = f"https://api.frankerfacez.com/v1/room/id/{channel_id}"
             data = await self.fetch_json(url)
-            if not data or data.get('status') == 404:
+            if not data or data.get("status") == 404:
                 return []
-            set_id = data['room']['set']
-            return [emote['name'] for emote in data['sets'][str(set_id)]['emoticons']]
+            set_id = data["room"]["set"]
+            return [emote["name"] for emote in data["sets"][str(set_id)]["emoticons"]]
         except Exception as e:
-            self.bot.log.error(f'Error fetching ffz emotes for {channel_id}: {e}')
+            self.bot.log.error(f"Error fetching ffz emotes for {channel_id}: {e}")
             return []
 
     async def fetch_emotes(self, channel_id) -> list[str]:
         ttv, bttv, ffz = await asyncio.gather(
-                self.get_7tv(channel_id),
-                self.get_bttv(channel_id),
-                self.get_ffz(channel_id),
-                return_exceptions=True
+            self.get_7tv(channel_id), self.get_bttv(channel_id), self.get_ffz(channel_id), return_exceptions=True
         )
 
         all_emotes = []
@@ -80,8 +77,9 @@ class Emotes:
         return all_emotes
 
     async def get_emotes(self, channel_id: int) -> list[str]:
-        return (await self.bot.cache.get(channel_id, namespace="emotes") or
-                await self.fetch_emotes(channel_id=channel_id))
+        return await self.bot.cache.get(channel_id, namespace="emotes") or await self.fetch_emotes(
+            channel_id=channel_id
+        )
 
     async def get_happy(self, channel_id: int, user: User, amount: int = 1) -> list[str]:
         emotes_ = self.happy_emotes + user.translations.SupportTools.Emotes.emotions.pog

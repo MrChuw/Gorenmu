@@ -6,22 +6,21 @@ import os
 import twitchio
 from twitchio.web import StarletteAdapter
 
-
-
-from bot.bot import Gorenmu
-from bot.ext.config import Config
 from bot.api import api, api_start
-
+from bot.bot import Gorenmu
+from bot.utils.config import Config
 
 Configs = Config(os.path.join(os.path.dirname(__file__), "config.toml"))
 
 if os.getenv("NO_LOG") == "1":
     import logging
+
     log = logging.getLogger()
     twitchio.utils.setup_logging(level=logging.INFO)
 else:
     from loguru import logger as log
     from bot.logger import InterceptHandler
+
     twitchio.utils.setup_logging(handler=InterceptHandler(), level=logging.INFO)
 
 __title__ = "Gorenmu-bot"
@@ -38,13 +37,11 @@ if __name__ == "__main__":
         bot: Gorenmu = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
         bot.site = api
         bot.api_start = api_start
-        await bot.setup_database()
-        await bot.setup()
+        await bot.DatabaseHandler.setup_database()
+        await bot.LifecycleHandler.setup()
         await bot.start()
 
     try:
         asyncio.run(runner())
     except KeyboardInterrupt:
         log.warning("Shutting down due to KeyboardInterrupt...")
-
-

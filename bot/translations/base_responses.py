@@ -9,11 +9,9 @@ from typing import Any, Dict, TYPE_CHECKING
 from .extras import (
     Activity as ActivityExtras,
     BaseFunctions,
-    Dicio,
     EmoteEmotions,
     Humanize,
     Response,
-    TimeTools,
     WeatherTools,
 )
 
@@ -36,7 +34,6 @@ class BaseTranslations:
             super().__init__(translation, None)
             self.populate_responses()
             self.populate_subclasses(base_cls=self)
-            self.Dicio: Dicio = Dicio()
 
         Dicio: Dicio
 
@@ -64,7 +61,6 @@ class BaseTranslations:
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
                 self.populate_responses()
-                self.TimeTools: TimeTools = TimeTools(self.obj, self.fallback)
                 self.Humanize: Humanize = Humanize(
                     self.get_object("Humanize"), self.get_object("Pattern time")
                 )
@@ -120,6 +116,7 @@ class BaseTranslations:
         error_not_registered: str
         error_on_response: str
         pipe_response: str
+        pipe_response_error: str
         command_not_pipeble: str
         lottery_seed: str
         announcement: str
@@ -598,8 +595,6 @@ class BaseTranslations:
             command_reloaded: Response
             command_reloaded_error: Response
             all: Response
-            translations: str
-            emotes: str
             module_reloaded: Response
             module_reloaded_error: Response
 

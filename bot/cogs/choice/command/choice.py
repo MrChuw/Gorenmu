@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 
-
 class ChoiceCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
@@ -21,15 +20,14 @@ class ChoiceCmd(commands.CustomComponent):
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
-        ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.base_decorator(BaseDecorators.Choice)
-    @commands.command(name='choice', aliases=['pick'])
+    @commands.command(name="choice", aliases=["pick"])
     async def choice(self, ctx: Context, *, content: str) -> Response:
         pattern = ctx.user.translations.Choice.pattern
         choice = random.choice([arg for arg in re.split(pattern, content) if arg])
@@ -40,5 +38,4 @@ async def setup(bot: Gorenmu) -> None:
     await bot.add_component(ChoiceCmd(bot))
 
 
-async def teardown(bot: Gorenmu) -> None:
-    ...
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

@@ -1,37 +1,38 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
 from datetime import date
+from typing import TYPE_CHECKING
+
 from bot.translations import Translations
-from typing import Optional
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 
 class MockUser:
+
     def __init__(
-            self,
-            id: int,
-            name: str,
-            color: str = '',
-            channel: str = '',
-            saved_color: str = '',
-            city: str = '',
-            ping: str = '',
-            mention: bool = True,
-            block: bool = False,
-            sponsor: bool = True,
-            apelido: str = '',
-            content: str = '',
-            created_at: date = '',
-            updated_at: date = '',
-            nick_history: dict = None
+        self,
+        _id: int,
+        name: str,
+        color: str = "",
+        channel: str = "",
+        saved_color: str = "",
+        city: str = "",
+        ping: str = "",
+        mention: bool = True,
+        block: bool = False,
+        sponsor: bool = True,
+        apelido: str = "",
+        content: str = "",
+        created_at: date = "",
+        updated_at: date = "",
+        nick_history: dict = None,
     ):
         if nick_history is None:
             nick_history = []
-        self.id: int = id
+        self.id: int = _id
         self.name: str = name
         self.color: str = color
         self.channel: str = channel
@@ -46,16 +47,8 @@ class MockUser:
         self.nick_history: list = nick_history
         self.created_at: date = created_at
         self.updated_at: date = updated_at
-        self.profile_image: str = ''
+        self.profile_image: str = ""
         self.translations: Translations | None = None
 
-    def get_translation(self, bot: Gorenmu, lang: str = 'en'):
+    def get_translation(self, bot: Gorenmu, lang: str = "en"):
         self.translations = bot.TranslationManager.get_translations(language=lang)
-
-
-
-
-
-
-
-

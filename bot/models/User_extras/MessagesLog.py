@@ -36,9 +36,7 @@ class MessagesLog(Base):
     @staticmethod
     async def all_messages_generator(maximum=None, category=None, offset=0, channel_id=None):
         batch_size = 100
-        while True:
-            if maximum and offset >= maximum:
-                break
+        while not (maximum and offset >= maximum):
             cursor = MessagesLog.all()
 
             if category == "message":
@@ -63,16 +61,10 @@ class MessagesLog(Base):
 
         while users_fetched and (not maximum or len(all_users) < maximum):
             if category == "message":
-                users = (
-                        await MessagesLog.filter(type=category)
-                        .offset(offset)
-                        .limit(batch_size)
-                        .values("content")
-                )
+                users = await MessagesLog.filter(type=category).offset(offset).limit(batch_size).values("content")
             else:
                 users = await MessagesLog.all().offset(offset).limit(batch_size)
             if not users:
-                users_fetched = False
                 break
             await asyncio.sleep(0)
             all_users.extend(users)

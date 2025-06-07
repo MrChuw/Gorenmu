@@ -35,6 +35,7 @@ class MockMessage(MagicMock):
         self.subscription_type = "chat.message"
         self.broadcaster = broadcaster
         self.user_input = "Some Text"
+        self.reply = None
 
 
 class MockContext(AsyncMock):

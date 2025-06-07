@@ -14,8 +14,6 @@ from bot.translations import BaseDecorators, Response
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
-__all__ = 'HyperTranslateCmd'
-
 
 class HyperTranslateCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
@@ -25,15 +23,14 @@ class HyperTranslateCmd(commands.CustomComponent):
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
-        ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.HyperTranslate)
-    @commands.command(name='hypertranslate', aliases=['ht'])
+    @commands.base_decorator(BaseDecorators.HyperTranslate)  # TODO: add reply_to
+    @commands.command(name="hypertranslate", aliases=["ht"])
     async def hypertranslate(self, ctx: Context, quantity: str, *, text: str = "") -> Response:
         translations = ctx.user.translations.HyperTranslate
         session = ctx.bot.SessionsCaches.TranslateCachedSession.session
@@ -41,7 +38,7 @@ class HyperTranslateCmd(commands.CustomComponent):
             text = f"{quantity} {text}".replace("  ", " ")
             quantity = 10
         quantity = int(quantity)
-        text, output_lang = ctx.bot.ToolsTools.remove_prefixed_option(text, "lang:")
+        text, output_lang = ctx.bot.StringTools.remove_prefixed_option(text, "lang:")
         sleep = 0 if quantity > 500 else 0.5
         await ctx.simple_response(ctx, translations.starter_string)
         for runs in range(1, quantity + 2):
@@ -71,5 +68,4 @@ async def setup(bot: Gorenmu) -> None:
     await bot.add_component(HyperTranslateCmd(bot))
 
 
-async def teardown(bot: Gorenmu) -> None:
-    ...
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

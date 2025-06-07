@@ -12,10 +12,7 @@ class WeatherTools(BaseFunctions):
 
     @staticmethod
     def _generate_weather_codes(codes: BaseFunctions):
-        weather_codes = {}
-        for code in codes:
-            weather_codes[int(code)] = codes.get_object(code)
-        return weather_codes
+        return {int(code): codes.get_object(code) for code in codes}
 
     @staticmethod
     def _generate_wind_direction(names: BaseFunctions) -> dict:
@@ -30,7 +27,4 @@ class WeatherTools(BaseFunctions):
 
     @staticmethod
     def _generate_codes(codes: BaseFunctions):
-        wmo_codes = {}
-        for code in codes:
-            wmo_codes[int(code)] = codes.get_object(code)
-        return wmo_codes
+        return {int(code): codes.get_object(code) for code in codes}

@@ -19,16 +19,15 @@ class ChanceCmd(commands.CustomComponent):
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
-        ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.base_decorator(BaseDecorators.Chance)
-    @commands.command(name='chance', aliases=['%'])
-    async def chance(self, ctx: Context, *, args="") -> Response:
+    @commands.command(name="chance", aliases=["%"])
+    async def chance(self, ctx: Context) -> Response:
         chance = f'{("{:.2f}%".format(random.random() * 100))}'
         return ctx.user.translations.Chance.random_percentage.format_response(ctx, chance)
 
@@ -37,5 +36,4 @@ async def setup(bot: Gorenmu) -> None:
     await bot.add_component(ChanceCmd(bot))
 
 
-async def teardown(bot: Gorenmu) -> None:
-    ...
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

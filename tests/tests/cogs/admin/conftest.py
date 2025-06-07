@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from unittest.mock import MagicMock, patch
 
 import pytest_asyncio
@@ -14,4 +15,3 @@ async def silence_logging():
 @pytest_asyncio.fixture
 async def interact(mock_bot):
     return AdminSmallCmds(bot=mock_bot)
-

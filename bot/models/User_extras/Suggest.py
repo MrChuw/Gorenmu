@@ -17,9 +17,7 @@ class Suggest(Base, TimestampMixin):
     response = fields.TextField(default=None, null=True)
     reminded = fields.BooleanField(default=False)
 
-    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-            "models.User", related_name="suggest"
-    )
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="suggest")
 
     class Meta:
         table = "suggest"

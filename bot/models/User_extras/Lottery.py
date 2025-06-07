@@ -19,7 +19,7 @@ class Lottery(Base, TimestampMixin):
     closed_in: fields.DatetimeField = fields.DatetimeField(null=True)
     draw_sorted_numbers: fields.JSONField = fields.JSONField(null=True)
 
-    draw: LotteryBank = fields.ForeignKeyField('models.LotteryBank', related_name="User")
+    draw: LotteryBank = fields.ForeignKeyField("models.LotteryBank", related_name="User")
     user: User = fields.ForeignKeyField("models.User", related_name="Lottery")
 
     class Meta:

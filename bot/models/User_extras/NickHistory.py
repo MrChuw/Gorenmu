@@ -14,9 +14,7 @@ class NickHistory(Base):
     nicks: Union[List[str], fields.TextField] = fields.TextField()
     created_at: fields.DatetimeField = fields.DatetimeField(auto_now_add=True)
 
-    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-            "models.User", related_name="nick_history"
-    )
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="nick_history")
 
     def __sizeof__(self):
         return len(self.nicks)

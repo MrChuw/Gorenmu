@@ -40,7 +40,7 @@ class AliasCmd(commands.CustomComponent):
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.base_decorator(BaseDecorators.Alias)
@@ -81,7 +81,7 @@ class AliasCmd(commands.CustomComponent):
         return translations.Add.alias_created.format_response(ctx, alias.name, pipe=False)
 
     @alias.command(name="check", aliases=["list"])
-    async def check_alias(self, ctx: Context, *args):  # remains in class
+    async def check_alias(self, ctx: Context, *args):
         translations = ctx.user.translations.Alias
         first_name, second_name, *rest = chain(args, repeat(None, 2))
 

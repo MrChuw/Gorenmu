@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from tortoise import fields
 
 from bot.models.base import Base, TimestampMixin
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING, Union
+
 if TYPE_CHECKING:
     from bot.models.User import User
 

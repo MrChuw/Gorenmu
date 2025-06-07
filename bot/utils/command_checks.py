@@ -7,11 +7,20 @@ from datetime import datetime
 from tortoise.exceptions import DoesNotExist, MultipleObjectsReturned
 
 from bot.exceptions import (
-    BotOffline, CommandDisabled, ContentHasBanword, DevRequired, GameIsAlreadyRunning, ModRequired, OwnerRequired,
-    SubRequired, UnknownError, UserIsNotAllowed, VipRequired,
+    BotOffline,
+    CommandDisabled,
+    ContentHasBanword,
+    DevRequired,
+    GameIsAlreadyRunning,
+    ModRequired,
+    OwnerRequired,
+    SubRequired,
+    UnknownError,
+    UserIsNotAllowed,
+    VipRequired,
 )
-from bot.ext.commands import Context
-from bot.models import (Cookies, LotteryBank, User as UserModel)
+from bot.ext import Context
+from bot.models import Cookies, LotteryBank, User as UserModel
 from bot.translations import Response
 from bot.utils.string_manipulation import StringTools
 
@@ -52,7 +61,7 @@ class Role:
         return ctx.user and ctx.user.sponsor
 
     @staticmethod
-    def any(ctx: Context) -> bool:
+    def any(ctx: Context) -> bool:  # NOQA
         return True
 
 
@@ -97,7 +106,7 @@ class Check:
         except MultipleObjectsReturned as e:
             logging.error(e)
             await ctx.reply(ctx.user.translations.Exceptions.lottery_seed.format(ctx.bot.dev_name))
-            raise UnknownError
+            raise UnknownError from e
         if not await LotteryBank.get_or_none(closed=False, accumulated=True):
             await LotteryBank.create()
         ctx.bot.lottery_seed = datetime.now().toordinal()

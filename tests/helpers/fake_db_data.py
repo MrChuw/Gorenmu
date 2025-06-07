@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 async def create_fake_db(bot: Gorenmu):
-    channel_user = await User.create_or_none(id=123456, name="channelname")
+    channel_user = await User.create_or_none(user_id=123456, name="channelname")
     channel = await Channel.create(user=channel_user)
     ctx = MockContext("username", 12345, "channelname", 123456, bot)
     ctx.bot.channels["channelname"] = channel
@@ -27,14 +27,14 @@ async def create_fake_db(bot: Gorenmu):
         ctx.bot.channels[user.name] = channel
 
     ctx = MockContext("status_user_50", 12344321, "channelname", 123456, bot)  # NOQA
-    ctx.user.get_translation(bot, 'en')
+    ctx.user.get_translation(bot, "en")
     user = await User.create_or_update(ctx)
     afk = ctx.user.translations.Afk.afks.get("afk")  # NOQA
     ctx.user = user
     await Status.go_afk(ctx=ctx, status=afk, content="")
 
     ctx = MockContext("status_user_51", 123443210, "channelname", 123456, bot)  # NOQA
-    ctx.user.get_translation(bot, 'en')  # NOQA
+    ctx.user.get_translation(bot, "en")  # NOQA
     user = await User.create_or_update(ctx)
     afk = ctx.user.translations.Afk.afks.get("afk")  # NOQA
     ctx.user = user
@@ -42,14 +42,14 @@ async def create_fake_db(bot: Gorenmu):
 
     for num, item in enumerate(ctx.user.translations.Afk.afks):
         ctx = MockContext(f"status_user_{(num + 1) * 64}", (num + 1) * 64, "channelname", 123456, bot)  # NOQA
-        ctx.user.get_translation(bot, 'en')  # NOQA
+        ctx.user.get_translation(bot, "en")  # NOQA
         user = await User.create_or_update(ctx)
         afk = ctx.user.translations.Afk.afks.get(item)  # NOQA
         ctx.user = user
         await Status.go_afk(ctx=ctx, status=afk, content="")
 
         ctx = MockContext(f"status_user_{(num + 1) * 46}", (num + 1) * 46, "channelname", 123456, bot)  # NOQA
-        ctx.user.get_translation(bot, 'en')  # NOQA
+        ctx.user.get_translation(bot, "en")  # NOQA
         user = await User.create_or_update(ctx)
         ctx.user = user
         await Status.go_afk(ctx=ctx, status=afk, content="content")

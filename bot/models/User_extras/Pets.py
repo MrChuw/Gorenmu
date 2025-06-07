@@ -21,9 +21,7 @@ class Pets(Base, TimestampMixin):
     # hygiene = NumberAttribute(null=True)
     # love = NumberAttribute(null=True)
 
-    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-            "models.User", related_name="pets"
-    )
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="pets")
 
     class Meta:
         table = "pet"

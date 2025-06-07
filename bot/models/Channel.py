@@ -41,29 +41,7 @@ class Channel(Base, TimestampMixin):
     user = fields.ForeignKeyField("models.User", unique=True)
     followers = fields.IntField(null=True, description="Twitch followers")
     banwords = fields.JSONField(default={})
-    disabled: dict[str, str] = fields.JSONField(
-        default={
-            "booru": "booru",
-            "gelbooru": "gelbooru",
-            "danbooru": "danbooru",
-            "rule34": "rule34",
-            "realbooru": "realbooru",
-            "tbib": "tbib",
-            "xbooru": "xbooru",
-            "yandere": "yandere",
-            "lolibooru": "lolibooru",
-            "kanachan": "kanachan",
-            "kanachan_net": "kanachan_net",
-            "hypnohub": "hypnohub",
-            "e621": "e621",
-            "e926": "e926",
-            "derpibooru": "derpibooru",
-            "furbooru": "furbooru",
-            "atfbooru": "atfbooru",
-            "behoimi": "behoimi",
-            "paheal": "paheal",
-        }
-    )
+    disabled: dict[str, str] = fields.JSONField(default={})  # TODO: Remake disabled commands.
     online = fields.BooleanField(default=True)
     prefix = fields.CharField(max_length=2, default="+")
     removed = fields.BooleanField(default=False)

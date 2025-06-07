@@ -1,17 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""
-Simple module that "flips" latin characters in a string to create an
-"upside-down" impression. Makes extensive use of compatible latin characters
-encoded in Unicode.
-
-Support for diacritics offered through combining diacritical marks. Depends on
-proper rendering though.
-
-2008-2010 Christoph Burgmer (cburgmer@ira.uka.de)
-"""
-
 
 from __future__ import unicode_literals
 
@@ -25,19 +12,12 @@ import string
 
 import unicodedata
 
-# Define dual character. Make sure that mapping is bijective.
 FLIP_RANGES = [
     (string.ascii_lowercase, "ɐqɔpǝɟƃɥᴉɾʞꞁɯuodbɹsʇnʌʍxʎz"),  # NOQA
-    # alternatives: l:ʅ
     (string.ascii_uppercase, "ⱯᗺƆᗡƎᖵ⅁HIᒋ⋊ꞀWNOԀꝹᴚS⊥∩ɅMX⅄Z"),  # NOQA
-    # alternatives: L:ᒣ⅂, J:ſ, F:߃Ⅎ, A:∀ᗄ, U:Ⴖ, W:Ϻ, C:ϽↃ, Q:Ό, M:Ɯꟽ
     (string.digits, "0ІᘔƐᔭ59Ɫ86"),
     (string.punctuation, "¡„#$%⅋,)(*+'-˙/:؛>=<¿@]\\[ᵥ‾`}|{~"),
 ]
-# See also http://www.fileformat.info/convert/text/upside-down-map.htm
-
-# See:
-# http://de.wikipedia.org/wiki/Unicode-Block_Kombinierende_diakritische_Zeichen
 UNICODE_COMBINING_DIACRITICS = {
     "̈": "̤",
     "̊": "̥",
@@ -55,14 +35,11 @@ UNICODE_COMBINING_DIACRITICS = {
 
 TRANSLITERATIONS = {"ß": "ss"}
 
-# character lookup
 _CHARLOOKUP = {}
 for chars, flipped in FLIP_RANGES:
     _CHARLOOKUP |= zip(chars, flipped)
 
-# get reverse direction
 for char in _CHARLOOKUP.copy():
-    # make 1:1 back transformation possible
     assert (
         _CHARLOOKUP[char] not in _CHARLOOKUP or _CHARLOOKUP[_CHARLOOKUP[char]] == char
     ), f"{_CHARLOOKUP[char]} has ambiguous mapping"

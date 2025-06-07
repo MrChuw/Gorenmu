@@ -11,12 +11,8 @@ if TYPE_CHECKING:
 
 
 class Wedding(Base, TimestampMixin):
-    user_1: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-            "models.User", related_name="user_1"
-    )  # TODO: corrigir esse daqui tbm user_id_1
-    user_2: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-            "models.User", related_name="user_2"
-    )  # TODO: corrigir esse daqui tbm user_id_2
+    user_1: fields.ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="user_1")
+    user_2: fields.ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="user_2")
     active_marriage = fields.BooleanField(default=True)
     who_separated = fields.IntField(null=True)
 

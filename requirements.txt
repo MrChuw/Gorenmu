@@ -5,16 +5,14 @@ aiohttp_client_cache==0.13.0
 aioresponses==0.7.8
 async_timeout==4.0.3
 beautifulsoup4==4.13.4
-docx2txt==0.9
 emoji==2.12.1
 fastapi==0.115.12
 janus==1.0.0
 loguru==0.7.2
-nltk==3.8.1
+nltk==3.9.1
 pandas==2.2.3
 Pillow==11.2.1
 pydantic==2.11.4
-pypdf==5.4.0
 pytest==8.3.5
 pytest_asyncio==0.26.0
 pytest-xdist==3.6.1
@@ -22,7 +20,6 @@ python-dotenv==1.1.0
 python_dateutil==2.9.0.post0
 pytz==2024.1
 redis==5.1.0b7
-selenium==4.32.0
 toml==0.10.2
 tortoise-orm==0.21.4
 twitchio @ git+https://github.com/PythonistaGuild/TwitchIO.git@041bcf00ca5c0e19bb3fc613029c774c785ea0f2

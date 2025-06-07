@@ -21,15 +21,14 @@ class AFKCmd(commands.CustomComponent):
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
-        ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.base_decorator(BaseDecorators.Afk)
-    @commands.command(name='afk', aliases=afk_alias)
+    @commands.command(name="afk", aliases=afk_alias)
     async def afk(self, ctx: Context, *, content: str = "") -> Response:
         translations = ctx.user.translations
         if len(content) >= 450:
@@ -45,5 +44,4 @@ async def setup(bot: Gorenmu) -> None:
     await bot.add_component(AFKCmd(bot))
 
 
-async def teardown(bot: Gorenmu) -> None:
-    ...
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

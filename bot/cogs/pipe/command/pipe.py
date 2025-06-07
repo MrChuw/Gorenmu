@@ -18,15 +18,14 @@ class PipeCmd(commands.CustomComponent):
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
-        ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.base_decorator(BaseDecorators.Pipe)  # TODO: change when site is ready
-    @commands.command(name='pipe', aliases=[])
+    @commands.command(name="pipe", aliases=[])
     async def pipe(self, ctx: Context) -> Response:
         if ctx.user.language == ctx.bot.TranslationManager.languages[0]:
             url = f"{ctx.bot.config.BotConfig.site_url}{ctx.bot.TranslationManager.languages[0]}/commands/pipe.html"
@@ -42,5 +41,4 @@ async def setup(bot: Gorenmu) -> None:
     await bot.add_component(PipeCmd(bot))
 
 
-async def teardown(bot: Gorenmu) -> None:
-    ...
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

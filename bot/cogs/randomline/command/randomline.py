@@ -11,9 +11,6 @@ if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 
-# TODO: Test with a big message database
-
-
 class RandomLineCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
@@ -25,7 +22,7 @@ class RandomLineCmd(commands.CustomComponent):
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.base_decorator(BaseDecorators.RandomLine)
@@ -34,8 +31,8 @@ class RandomLineCmd(commands.CustomComponent):
         translations = ctx.user.translations
         humanize = ctx.user.translations.SupportTools.TimeTools.Humanize
         options_split = options.split(" ")
-        channel_original = self.bot.ToolsTools.find_prefixed_option(options_split, "channel:")
-        user_original = self.bot.ToolsTools.find_prefixed_option(options_split, "user:")
+        channel_original = self.bot.StringTools.find_prefixed_option(options_split, "channel:")
+        user_original = self.bot.StringTools.find_prefixed_option(options_split, "user:")
         user, channel = None, None
         if user_original:
             if user_original.lower() != ctx.author.name.lower():

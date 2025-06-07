@@ -1,8 +1,6 @@
-"""Asynchronous client for the Open-Meteo API."""
-
 from __future__ import annotations
 
-from enum import Enum, auto
+from enum import auto, Enum
 from typing import Any
 
 

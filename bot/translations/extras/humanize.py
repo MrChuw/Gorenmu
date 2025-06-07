@@ -1,6 +1,6 @@
 from datetime import datetime, UTC
+
 import humanize
-from .response import BaseFunctions
 
 
 class HumanizeContext:
@@ -8,7 +8,7 @@ class HumanizeContext:
         self.lang = lang
 
     def __enter__(self):
-        if self.lang != 'en':
+        if self.lang != "en":
             humanize.activate(self.lang)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -35,8 +35,9 @@ class Humanize:
             response = humanize.precisedelta(value, minimum_unit=minimum_unit, suppress=suppress, format=format)
         return response
 
-    def naturaltime(self, value, future: bool = False, months: bool = True, minimum_unit: str = "seconds",
-                    when: datetime = None, ) -> str:
+    def naturaltime(
+        self, value, future: bool = False, months: bool = True, minimum_unit: str = "seconds", when: datetime = None
+    ) -> str:
         with HumanizeContext(self.lang):
             response = humanize.naturaltime(value, future=future, months=months, minimum_unit=minimum_unit, when=when)
         return response
@@ -57,7 +58,7 @@ class Humanize:
         return response
 
     def _generate_options(self, units: dict):
-        options = {}  # NOQA
+        options = {}
         for value in units["years"]:
             options[value] = self._years
         for value in units["months"]:
@@ -79,18 +80,10 @@ class Humanize:
         options["time"] = ()
         return options
 
-    def created_a_time(self, created_at: datetime, timezone=UTC):
+    @staticmethod
+    def created_a_time(created_at: datetime, timezone=UTC):
         return humanize.precisedelta(datetime.now(timezone) - created_at.astimezone(timezone))
 
-    def updated_a_time(self, updated_at: datetime, timezone=UTC):
+    @staticmethod
+    def updated_a_time(updated_at: datetime, timezone=UTC):
         return humanize.precisedelta(datetime.now(timezone) - updated_at.astimezone(timezone))
-
-
-
-
-
-
-
-
-
-

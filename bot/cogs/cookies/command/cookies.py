@@ -15,8 +15,6 @@ from bot.utils import Check
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
-__all__ = "CookieCmd"
-
 
 class CookieCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
@@ -30,7 +28,7 @@ class CookieCmd(commands.CustomComponent):
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    async def guards_component(self, ctx: commands.Context) -> bool:
+    async def guards_component(self, ctx: Context) -> bool:
         return await Check.cookie_check(ctx)
 
     @commands.base_decorator(BaseDecorators.Cookies)
@@ -44,7 +42,7 @@ class CookieCmd(commands.CustomComponent):
         amount, *rest = chain(args, repeat(None, 1))
         cookie = await Cookies.get_cookie(ctx)
         amount_available = cookie.not_redeemed()
-        amount = self.bot.ToolsTools.to_amount(amount, 1)
+        amount = self.bot.StringTools.to_amount(amount, 1)
         cookie_cooldown = await calculate_cooldown(cookie)
         if amount == 0:
             return translations.not_eat.format_response(ctx, success=False)
@@ -108,7 +106,7 @@ class CookieCmd(commands.CustomComponent):
         cookie_cooldown = await calculate_cooldown(cookie_from)
         on_cooldown = datetime.datetime.now(datetime.UTC) < cookie_from.cooldown
         amount_available = cookie_from.stocked + cookie_from.not_redeemed()
-        amount, is_all = ctx.bot.ToolsTools.to_all(amount, amount_available, translations.all_string, default=1)
+        amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, translations.all_string, default=1)
         if amount <= 0:
             if amount == 0:
                 return translations.not_gifted.format_response(ctx, success=False)
@@ -146,7 +144,7 @@ class CookieCmd(commands.CustomComponent):
         cookie_cooldown = await calculate_cooldown(cookie)
         on_cooldown = datetime.datetime.now(datetime.UTC) < cookie.cooldown
         amount_available = cookie.not_redeemed()
-        amount, is_all = ctx.bot.ToolsTools.to_all(amount, amount_available, translations.all_string, default=1)
+        amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, translations.all_string, default=1)
 
         if on_cooldown:
             time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cookie_cooldown)
@@ -202,7 +200,7 @@ class CookieCmd(commands.CustomComponent):
             return await _cooldown_response(ctx, cookie)
 
         amount_available = cookie.not_redeemed()
-        parsed_amount, is_all = ctx.bot.ToolsTools.to_all(amount, amount_available, translations.all_string, default=1)
+        parsed_amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, translations.all_string, default=1)
 
         if parsed_amount is None:
             return translations.invalid_amount.format_response(ctx, amount, amount_available)
@@ -219,7 +217,7 @@ class CookieCmd(commands.CustomComponent):
         )
 
         reward_counts = sorted(reward_counts.items())  # NOQA
-        # Future: show reward breakdown.
+        # TODO Future: show reward breakdown.
         # breakdown = ", ".join([f"{count} of {value}" for value, count in reward counts])
 
         is_all_mode = not parsed_amount.is_integer() and is_all

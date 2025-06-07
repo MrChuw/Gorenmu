@@ -42,7 +42,8 @@ class Status(Base, TimestampMixin):
         user = user or ctx.user
         status = await ctx.bot.memcache.Afk.get(user_id=user.id)
         if not status:
-            status_db = (await Status.get_or_create(user=ctx.user))[0]
+            response = await Status.get_or_create(user=user)
+            status_db = response[0]
             await ctx.bot.memcache.Afk.set(user=user, value=status_db)
             status = status_db
 
@@ -54,5 +55,5 @@ class Status(Base, TimestampMixin):
         await status_db._go_afk(status=status, content=content)
 
     @staticmethod
-    async def go_rafk(ctx: Context, status: RAfkNamedTuple):
+    async def go_rafk(ctx: Context, status: RAfkNamedTuple):  # NOQA
         await status.afk._go_rafk(status=status)

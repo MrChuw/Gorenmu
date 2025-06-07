@@ -2,8 +2,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import NamedTuple, TYPE_CHECKING, Optional
-
+from typing import NamedTuple, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from bot.models import Alias
@@ -22,12 +21,3 @@ class RAfkNamedTuple(NamedTuple):
     updated_at: datetime.datetime
     alias: str
     afk: Status
-
-
-
-
-
-
-
-
-

@@ -25,9 +25,7 @@ class PlayerTower(Base, TimestampMixin):
     xp = fields.IntField(default=0)
     cooldown = fields.IntField(default=0)
 
-    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
-            "models.User", related_name="player_torre"
-    )
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField("models.User", related_name="player_torre")
 
     class Meta:
         table = "player_tower"

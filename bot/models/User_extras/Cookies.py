@@ -10,7 +10,7 @@ from bot.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
     from bot.models.User import User
-    from bot.ext.commands import Context
+    from bot.ext import Context
     from bot.translations import Response
 
 
@@ -124,7 +124,7 @@ class Cookies(Base, TimestampMixin):
             cookie = await Cookies.get_or_none(user_id=user_id)
             if not cookie:
                 return ctx.user.translations.Exceptions.user_not_found_name.format_response(ctx, name)
-            await ctx.bot.memcache.Cookie.set(user=[cookie.id, name],cookie=cookie)
+            await ctx.bot.memcache.Cookie.set(user=[cookie.id, name], cookie=cookie)
         return cookie
 
     @staticmethod
@@ -134,7 +134,7 @@ class Cookies(Base, TimestampMixin):
             cookie = await Cookies.get_or_none(id=user.id)
             if not cookie:
                 return ctx.user.translations.Exceptions.user_not_found_id.format_response(ctx, user.id)
-            await ctx.bot.memcache.Cookie.set(user=user, cookie=cookie,)
+            await ctx.bot.memcache.Cookie.set(user=user, cookie=cookie)
         return cookie
 
     @staticmethod

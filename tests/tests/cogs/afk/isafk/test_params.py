@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import pytest
 
 
@@ -15,14 +14,24 @@ class Params:
     ]
 
     no_content = [
-        pytest.param("en", "@status_user_50 it's afk 🏃⌨", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "@status_user_50 está ausente 🏃⌨", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param("en", r"it's afk 🏃⌨ \(for \d+\.\d{2} seconds\)", marks=pytest.mark.en, id="en"),
+        pytest.param(
+            "pt_BR", r"@status_user_50 está ausente 🏃⌨ \(há \d+\.\d{2} seconds\)", marks=pytest.mark.pt_BR, id="pt_BR"
+        ),
     ]
 
     content = [
-        pytest.param("en", "@status_user_51 it's afk 🏃⌨ and left a note: content", marks=pytest.mark.en, id="en"),
         pytest.param(
-            "pt_BR", "@status_user_51 está ausente 🏃⌨ e deixou uma nota: content", marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            r"@status_user_51 it's afk 🏃⌨ and left a note: content \(for \d+\.\d{2} seconds\)",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            r"@status_user_51 está ausente 🏃⌨ e deixou uma nota: content \(há \d+\.\d{2} seconds\)",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]
 

@@ -11,7 +11,6 @@ IntFieldInt = Union[int, fields.IntField]
 DatetimeTzField = Union[datetime, fields.DatetimeField]
 
 
-
 class Base(Model):
     id: IntFieldInt = fields.IntField(primary_key=True)
 
@@ -41,7 +40,6 @@ class TimestampMixin:
     @property
     def updated_em(self):
         return self.updated_at.strftime("%d/%m/%Y %H:%M:%S")
-
 
 
 class ContentMixin:

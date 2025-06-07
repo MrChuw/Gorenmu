@@ -10,8 +10,6 @@ from bot.translations import BaseDecorators, Response
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
-__all__ = 'AnnotationsCmd'
-
 
 # TODO: Maybe add whisper annotations
 
@@ -24,17 +22,16 @@ class AnnotationsCmd(commands.CustomComponent):
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
-        ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.base_decorator(BaseDecorators.Annotations)
-    @commands.group(name='annotations', aliases=['note', 'annotation'])
-    async def annotations(self, ctx: Context, *, content="") -> Response:
-        await ctx.simple_response(ctx, "Shush")  # Dont know what to put here
+    @commands.group(name="annotations", aliases=["note", "annotation"])
+    async def annotations(self, ctx: Context, *, content="") -> Response:  # NOQA
+        await ctx.simple_response(ctx, "Shush")
         return ctx.user.translations.Admin.Nada.vazio.format_response(ctx, success=False)
 
     @annotations.command(name="add", aliases=[])
@@ -42,7 +39,7 @@ class AnnotationsCmd(commands.CustomComponent):
         translations = ctx.user.translations.Annotations
         if not content:
             return ctx.user.translations.Exceptions.no_content_provided.format_response(ctx, success=False, pipe=False)
-        content, title = ctx.bot.ToolsTools.extract_and_remove_field(content, "title")
+        content, title = ctx.bot.StringTools.extract_and_remove_field(content, "title")
         if title and len(title) > 32:
             return translations.title_too_long.format_response(ctx, success=False, pipe=False)
         if len(content) > 450:
@@ -54,9 +51,9 @@ class AnnotationsCmd(commands.CustomComponent):
     async def check(self, ctx: Context, *, content: str = ""):
         translations = ctx.user.translations.Annotations
         if content and not content.isdigit():
-            return ctx.user.translations.Exceptions.id_not_valid.format_response(ctx, content, success=False,
-                                                                                 pipe=False
-                                                                                 )
+            return ctx.user.translations.Exceptions.id_not_valid.format_response(
+                ctx, content, success=False, pipe=False
+            )
         if not content:
             annotation = await Annotation.filter(user=ctx.user, deleted=False)
             if not annotation:
@@ -85,5 +82,4 @@ async def setup(bot: Gorenmu) -> None:
     await bot.add_component(AnnotationsCmd(bot))
 
 
-async def teardown(bot: Gorenmu) -> None:
-    ...
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

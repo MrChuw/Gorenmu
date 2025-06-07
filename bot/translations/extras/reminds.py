@@ -9,6 +9,5 @@ class RemindTime:
     @staticmethod
     def generate_time_regex(time_units: dict) -> re.Pattern:
         patterns = []
-        for unit, terms in time_units.items():
-            patterns.append(rf"(\b(?P<{unit}>\d+)\s?(?:{'|'.join(terms)})\b\s?)?")
+        patterns.extend(rf"(\b(?P<{unit}>\d+)\s?(?:{'|'.join(terms)})\b\s?)?" for unit, terms in time_units.items())
         return re.compile(r"\n".join(patterns), re.VERBOSE)

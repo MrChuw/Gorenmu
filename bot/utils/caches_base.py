@@ -11,7 +11,7 @@ import aiohttp
 from aiocache import Cache as aioCache, SimpleMemoryCache
 from aiohttp_client_cache import CacheBackend, CachedResponse, CachedSession, RedisBackend, SQLiteBackend
 
-from bot.ext.config import CacheType
+from bot.utils.config import CacheType
 
 
 class BaseCacheFunctions:
@@ -49,7 +49,6 @@ class BaseCacheFunctions:
         await self.cache.multi_set(pairs=items, ttl=lifespan, namespace=ns)
         if ns:
             self.key_index.setdefault(ns, set()).update(k for k, _ in items)
-        # agenda todas
         for key, _ in items:
             self._scheduler.schedule(key, ns, lifespan)
 

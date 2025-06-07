@@ -21,7 +21,7 @@ async def base_nada(
 ):
     await mock_context.prepare_context(lang)
     with (
-        patch("bot.apis.translate.google.GoogleTranslator.translate", return_value=AsyncMock()) as mock_google,
+        patch("bot.apis.translate.base.GoogleTranslator.translate", return_value=AsyncMock()) as mock_google,
         patch("asyncio.sleep", new=AsyncMock()),
     ):
         mock_google.return_value = expected

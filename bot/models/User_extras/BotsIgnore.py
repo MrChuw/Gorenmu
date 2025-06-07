@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from tortoise import fields
 
@@ -13,6 +13,8 @@ if TYPE_CHECKING:
 class BotsIgnore(Base, TimestampMixin):
     active: fields.BooleanField = fields.BooleanField(default=True)
     user: User = fields.ForeignKeyField("models.User", related_name="user_bot")
+
+    user_id: int
 
     class Meta:
         unique_together = ("id", "user")

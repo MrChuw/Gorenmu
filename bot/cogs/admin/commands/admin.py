@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import importlib
 import os
-import pkgutil
 import sys
 from typing import TYPE_CHECKING
 
@@ -13,6 +11,7 @@ from bot.utils import Role
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+
     translations_t = Translations.Admin.Reload
 
 BaseAdmin = BaseDecorators.Admin
@@ -26,16 +25,15 @@ class AdminSmallCmds(commands.CustomComponent):
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
-        ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
     @commands.Component.guard()
-    def is_dev(self, ctx: commands.Context) -> bool:
+    def is_dev(self, ctx: Context) -> bool:
         return Role.dev(ctx)
 
     @commands.base_decorator(BaseAdmin.Nada)
-    @commands.command(name='nada', aliases=[])
-    async def nada(self, ctx: Context, *, args, ) -> Response:
+    @commands.command(name="nada", aliases=[])
+    async def nada(self, ctx: Context, *, args) -> Response:
         translations = ctx.user.translations.Admin.Nada
         return translations.nada.format_response(ctx, args, success=True, handle=None, response_list=[])
 
@@ -54,48 +52,88 @@ class AdminSmallCmds(commands.CustomComponent):
             return translations.unexpected_error.format_response(ctx, e, success=False)
 
     @commands.base_decorator(BaseAdmin.Reload)
-    @commands.command(name='reload', aliases=[])
+    @commands.command(name="reload", aliases=[])
     async def reload(self, ctx: Context, command: str) -> Response:
         translations = ctx.user.translations.Admin.Reload
 
-        if command == "translations":
-            return await reload_translations(ctx, translations)
-
-        if command == "emotes":
-            return await reload_emotes(ctx, translations)
+        reloader_map = {
+            "translations": {
+                "attr": "TranslationManager",
+                "module": "bot.translations",
+                "class": "TranslationManager",
+                "args": [],
+            },
+            "emotes": {"attr": "Emotes", "module": "bot.apis.emotes", "class": "Emotes", "args": [self.bot]},
+            "tokens_handler": {
+                "attr": "TokensHandler",
+                "module": "bot.handlers.tokens_handler",
+                "class": "TokensHandler",
+                "args": [self.bot],
+            },
+            "channel_handler": {
+                "attr": "ChannelHandler",
+                "module": "bot.handlers.channel_handler",
+                "class": "ChannelHandler",
+                "args": [self.bot],
+            },
+            "lifecycle_handler": {
+                "attr": "LifecycleHandler",
+                "module": "bot.handlers.lifecycle_handler",
+                "class": "LifecycleHandler",
+                "args": [self.bot],
+            },
+            "command_handler": {
+                "attr": "CommandHandler",
+                "module": "bot.handlers.command_handler",
+                "class": "CommandHandler",
+                "args": [self.bot],
+            },
+        }
 
         if command == "commands":
-            return await reload_commands(ctx, translations)
+            await ctx.bot.CommandHandler.reload_cogs()
+            return translations.commands_reloaded.format_response(ctx)
 
         if command == "all":
-            res = await reload_translations(ctx, translations)
-            results = [res.response_string]
-            res = await reload_emotes(ctx, translations)
-            results.append(res.response_string)
-
-            res = await reload_commands(ctx, translations)
-            results.append(res.response_string)
-
+            results = []
+            for key in ["commands", *reloader_map]:
+                fake_ctx = await self.reload._callback(self, ctx, command=key)  # NOQA
+                results.append(fake_ctx.response_string)
             return translations.all.format_response(ctx, " ".join(results))
+
+        if command in reloader_map:
+            config = reloader_map[command]
+            try:
+                await ctx.bot.reload_component(
+                    attr_name=config["attr"],
+                    module_name=config["module"],
+                    class_name=config["class"],
+                    args=config.get("args", []),
+                )
+                return translations.module_reloaded.format_response(ctx, config["attr"])
+            except Exception as e:
+                ctx.bot.log.error(e)
+                return translations.module_reloaded_error.format_response(ctx, config["attr"], e, success=False)
 
         command_to_reload = ctx.bot.get_command(command)
         if not command_to_reload:
             return translations.command_not_found.format_response(ctx, command, success=False)
+
         module = command_to_reload.module
         try:
-            await self.bot.reload_module(module)
+            await ctx.bot.reload_module(module)
             return translations.command_reloaded.format_response(ctx, command)
         except Exception as e:
-            self.bot.log.error(e)
+            ctx.bot.log.error(e)
             return translations.command_reloaded_error.format_response(ctx, command, e, success=False)
 
     @commands.base_decorator(BaseAdmin.DisableNSFW)
-    @commands.command(name='disable_nsfw', aliases=[])
-    async def disable_nsfw(self, ctx: Context, *, args, ) -> Response:  # TODO: To Make.
+    @commands.command(name="disable_nsfw", aliases=[])
+    async def disable_nsfw(self, ctx: Context, *, args) -> Response:  # TODO: To Make.
         translations = ctx.user.translations.Admin.DisableNSFW
         try:
             for channel in self.bot.channels:
-                self.bot.channels[channel].disabled.update(self.bot.CommandHandler.COMMANDS_TO_DISABLE)
+                self.bot.channels[channel].disabled.update(self.bot.CommandHandler.COMMANDS_TO_DISABLE)  # NOQA
                 await self.bot.channels[channel].save()
             return translations.success.format_response(ctx, args, success=True)
         except Exception as e:
@@ -107,42 +145,4 @@ async def setup(bot: Gorenmu) -> None:
     await bot.add_component(AdminSmallCmds(bot))
 
 
-async def teardown(bot: Gorenmu) -> None: ... # NOQA
-
-
-def reload_and_get(module_name: str, element: str):
-    spec = importlib.util.find_spec(module_name)  # NOQA
-    if spec and spec.submodule_search_locations:
-        prefix = f"{module_name}."
-        for finder, name, ispkg in pkgutil.walk_packages(spec.submodule_search_locations, prefix):  # NOQA
-            sys.modules.pop(name, None)
-    sys.modules.pop(module_name, None)
-
-    importlib.invalidate_caches()
-    module = importlib.import_module(module_name)
-    return getattr(module, element)
-
-
-async def reload_translations(ctx: Context, translations: translations_t) -> Response:
-    prefix = translations.translations
-    try:
-        ctx.bot.TranslationManager = reload_and_get("bot.translations", "TranslationManager")()
-        return translations.module_reloaded.format_response(ctx, prefix)
-    except Exception as exception:
-        ctx.bot.log.error(exception)
-        return translations.module_reloaded_error.format_response(ctx, prefix, exception, success=False)
-
-
-async def reload_emotes(ctx: Context, translations: translations_t) -> Response:
-    prefix = translations.emotes
-    try:
-        ctx.bot.Emotes = reload_and_get("bot.apis.emotes", "Emotes")(ctx.bot)
-        return translations.module_reloaded.format_response(ctx, prefix)
-    except Exception as exception:
-        ctx.bot.log.error(exception)
-        return translations.module_reloaded_error.format_response(ctx, prefix, exception, success=False)
-
-
-async def reload_commands(ctx: Context, translations: translations_t) -> Response:
-    await ctx.bot.CommandHandler.reload_cogs(ctx.bot)
-    return translations.commands_reloaded.format_response(ctx)
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

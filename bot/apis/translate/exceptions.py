@@ -1,4 +1,4 @@
-__copyright__ = "Copyright (C) 2020 Nidhal Baccouri"
+__copyright__ = "Copyright (C) 2020 Nidhal Baccouri"  # NOQA
 
 
 class BaseError(Exception):
@@ -16,7 +16,7 @@ class BaseError(Exception):
         super().__init__()
 
     def __str__(self):
-        return "{} --> {}".format(self.val, self.message)
+        return f"{self.val} --> {self.message}"
 
 
 class LanguageNotSupportedException(BaseError):
@@ -25,9 +25,7 @@ class LanguageNotSupportedException(BaseError):
     that is not supported by the deep_translator
     """
 
-    def __init__(
-        self, val, message="There is no support for the chosen language"
-    ):
+    def __init__(self, val, message="There is no support for the chosen language"):
         super().__init__(val, message)
 
 
@@ -37,10 +35,7 @@ class NotValidPayload(BaseError):
     """
 
     def __init__(
-        self,
-        val,
-        message="text must be a valid text with maximum 5000 character,"
-        "otherwise it cannot be translated",
+        self, val, message="text must be a valid text with maximum 5000 character," "otherwise it cannot be translated"
     ):
         super(NotValidPayload, self).__init__(val, message)
 
@@ -59,11 +54,7 @@ class TranslationNotFound(BaseError):
     exception thrown if no translation was found for the text provided by the user
     """
 
-    def __init__(
-        self,
-        val,
-        message="No translation was found using the current translator. Try another translator?",
-    ):
+    def __init__(self, val, message="No translation was found using the current translator. Try another translator?"):
         super(TranslationNotFound, self).__init__(val, message)
 
 
@@ -72,9 +63,7 @@ class ElementNotFoundInGetRequest(BaseError):
     exception thrown if the html element was not found in the body parsed by beautifulsoup
     """
 
-    def __init__(
-        self, val, message="Required element was not found in the API response"
-    ):
+    def __init__(self, val, message="Required element was not found in the API response"):
         super(ElementNotFoundInGetRequest, self).__init__(val, message)
 
 
@@ -114,7 +103,7 @@ class MicrosoftAPIerror(Exception):
         self.message = "Microsoft API returned the following error"
 
     def __str__(self):
-        return "{}: {}".format(self.message, self.api_message)
+        return f"{self.message}: {self.api_message}"
 
 
 class TooManyRequests(Exception):
@@ -151,7 +140,7 @@ class ServerException(Exception):
         422: "ERR_UNPROCESSABLE_TEXT",
         500: "ERR_INTERNAL_SERVER_ERROR",
         501: "ERR_LANG_NOT_SUPPORTED",
-        503: "ERR_SERVICE_NOT_AVAIBLE",
+        503: "ERR_SERVICE_NOT_AVAILABLE",
     }
 
     def __init__(self, status_code, *args):
@@ -178,31 +167,5 @@ Example: export {env_var}="your_api_key"
 
 class AuthorizationException(Exception):
     def __init__(self, api_key, *args):
-        msg = "Unauthorized access with the api key " + api_key
+        msg = f"Unauthorized access with the api key {api_key}"
         super().__init__(msg, *args)
-
-
-class TencentAPIerror(Exception):
-    """
-    exception thrown if Tencent API returns one of its errors
-    """
-
-    def __init__(self, api_message):
-        self.api_message = str(api_message)
-        self.message = "Tencent API returned the following error"
-
-    def __str__(self):
-        return "{}: {}".format(self.message, self.api_message)
-
-
-class BaiduAPIerror(Exception):
-    """
-    exception thrown if Baidu API returns one of its errors
-    """
-
-    def __init__(self, api_message):
-        self.api_message = str(api_message)
-        self.message = "Baidu API returned the following error"
-
-    def __str__(self):
-        return "{}: {}".format(self.message, self.api_message)

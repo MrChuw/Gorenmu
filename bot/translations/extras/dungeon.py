@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+
 import random
 from typing import Optional, Tuple, TYPE_CHECKING
 
-
 if TYPE_CHECKING:
     from bot.models import Player
-
-
 
 
 class Rank:
@@ -34,19 +32,17 @@ class Rank:
         return self._class
 
 
-
 class Dungeon:
     def __init__(self, data: dict) -> None:
         self.rank_dict = self.generate_rank(data["Rank"])
         self.classes = self.create_classes(data["Classes"])
         self.quotes: list[dict] = data["Quotes"]
-        pass
 
     @staticmethod
     def generate_rank(data: dict) -> dict:
         ranks = {}
         for key, value in data.items():
-            if key is "winrate":
+            if key == "winrate":
                 ranks[key] = Rank(_name=key, _order_by="wins", _title=value, _class=None)
             elif key in ["victory", "victories", "win", "wins"]:
                 ranks[key] = Rank(_name=key, _order_by="wins", _title=value, _class=None)
@@ -58,7 +54,7 @@ class Dungeon:
                 ranks[key] = Rank(_name=key, _order_by="level", _title=value, _class="m")
             elif key in ["archer", "archers", "archer_f", "archers_f"]:
                 ranks[key] = Rank(_name=key, _order_by="level", _title=value, _class="a")
-            elif key is "default":
+            elif key == "default":
                 ranks[key] = Rank(_name=key, _order_by="level", _title=value, _class=None)
         return ranks
 
@@ -82,12 +78,10 @@ class Dungeon:
             "m": {"M": {"A": __m_M_A, "B": __m_M_B}, "F": {"A": __m_F_A, "B": __m_F_B}, "emoji": "🧙"},
         }
 
-
-    def generate_dungeon(self, dungeon: int = None) -> Tuple[dict, int]:
+    def generate_dungeon(self, dungeon: str = None) -> Tuple[dict, int]:
         dungeons = self.quotes
         dungeon = int(dungeon) if dungeon else random.randint(0, len(dungeons) - 1)
         return dungeons[dungeon], dungeon
-
 
     # TODO: Add the translations here.
     def resume_dungeon(self, player: Player, choice: str = None, multiplier: int = 1) -> Tuple[Player, str]:
@@ -96,9 +90,7 @@ class Dungeon:
         if not choice:
             choice = random.choice(["1", "2"])
             quote, options = d["quote"].split('"+ed 1"')
-            option = (
-                options.split('ou "+ed 2"')[int(choice) - 1].replace("para", "Você decide", 1).rstrip()
-            )
+            option = options.split('ou "+ed 2"')[int(choice) - 1].replace("para", "Você decide", 1).rstrip()
             response = quote + option + ". "
             response += d[choice][result]
         else:
@@ -129,7 +121,6 @@ class Dungeon:
         player.dungeon = ""
         return player, response
 
-
     def options_class(self) -> dict:
         initial_classes = {}
         for class_, c in self.classes.items():
@@ -137,23 +128,17 @@ class Dungeon:
             initial_classes[c["F"]["A"][0]] = {"class_": class_, "gender": "F"}
         return initial_classes
 
-
     def options_sub_class(self, class_: str, gender: str) -> tuple[str, str]:
         option_a = self.classes[class_][gender]["A"][3]
         option_b = self.classes[class_][gender]["B"][3]
         return option_a, option_b
 
-
     def choose_class(self, choice: str) -> Optional[str]:
         options = self.options_class()
-        for option, values in options.items():
-            if choice == option.lower():
-                return values
-
+        return next((values for option, values in options.items() if choice == option.lower()), None)
 
     def choose_sub_class(self, choice: str, class_: str, gender: str) -> Optional[str]:
         options = self.options_sub_class(class_, gender)
         if choice == options[0].lower():
             return "A"
-        if choice == options[1].lower():
-            return "B"
+        return "B" if choice == options[1].lower() else None

@@ -1,5 +1,3 @@
-"""Asynchronous client for the Open-Meteo API."""
-
 from .exceptions import OpenMeteoConnectionError, OpenMeteoError
 from .models import (
     CurrentWeather,

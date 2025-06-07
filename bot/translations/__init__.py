@@ -1,6 +1,5 @@
 # translations/__init__.py
 import json
-import os
 import pathlib
 
 from bot.translations.base_decorators import BaseCommand, BaseDecorators, Decorators
@@ -16,23 +15,21 @@ def open_file(filepath: pathlib.Path, fallback=None):
         return json.load(file)
 
 
-fullpath = pathlib.Path(__file__).parent / "langs"
-folder_name = os.path.basename(fullpath)
-base_path = fullpath
+base_path = pathlib.Path(__file__).parent / "langs"
 afks = Activity(open_file(base_path / "en/extras/activity.json")["Activity"])
 
-# TODO: Lidar com acentos,
+
 def load_langs():
     en_paths = [
-            base_path / "en/strings.json",
-            base_path / "en/decorators.json",
-            base_path / "en/site_stuff.json",
-            base_path / "en/extras/cookies.json",
-            base_path / "en/extras/activity.json",
-            base_path / "en/extras/dungeon.json",
-            base_path / "en/extras/games.json",
-            base_path / "en/extras/pets.json",
-            base_path / "en/extras/weather.json",
+        base_path / "en/strings.json",
+        base_path / "en/decorators.json",
+        base_path / "en/site_stuff.json",
+        base_path / "en/extras/cookies.json",
+        base_path / "en/extras/activity.json",
+        base_path / "en/extras/dungeon.json",
+        base_path / "en/extras/games.json",
+        base_path / "en/extras/pets.json",
+        base_path / "en/extras/weather.json",
     ]
 
     langs = {
@@ -77,7 +74,8 @@ class Translation:
 
 
 class TranslationManager:
-    def __init__(self, mock: bool = False):
+
+    def __init__(self):
         langs = load_langs()
         self.languages = {"en": Translation(Decorators(langs["en"]), Translations(langs["en"], "en"))}
 
@@ -85,18 +83,10 @@ class TranslationManager:
             if lang == "en":
                 continue
             self.languages[lang] = Translation(
-                    Decorators(langs[lang], langs["en"]),
-                    Translations(langs[lang], lang, fallback=langs["en"])
+                Decorators(langs[lang], langs["en"]), Translations(langs[lang], lang, fallback=langs["en"])
             )
 
         self.default_language = "en"
-        # if mock:
-        #     from .en.site_templates import EnSiteTemplates
-        #     from .pt_br.site_templates import PtBrSiteTemplates
-        #     self.site: dict[str, EnSiteTemplates] = {  # NOQA
-        #             "en": EnSiteTemplates,
-        #             "pt_br": PtBrSiteTemplates,
-        #     }
 
     def get_decorators(self, language: str) -> Decorators:
         return self.languages.get(language, self.languages[self.default_language]).decorators

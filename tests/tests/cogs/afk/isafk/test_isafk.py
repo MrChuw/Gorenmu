@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -14,10 +13,12 @@ async def interact(mock_bot):
     return IsAfkCmd(bot=mock_bot)
 
 
-async def base_isafk(interact, mock_context: MockContext, lang: str, content: str, expected: str):
+async def base_isafk(
+    interact, mock_context: MockContext, lang: str, content: str, expected: str = None, re_expected: str = None
+):
     await mock_context.prepare_context(lang)
     response: Response = await interact.isafk._callback(self=interact, ctx=mock_context, content=content)  # NOQA
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    mock_context.assert_response(response, expected=expected, re_expected=re_expected)
 
 
 @pytest.mark.asyncio
@@ -35,13 +36,13 @@ async def test_isafk_bot_nick(interact, mock_context: MockContext, lang: str, ex
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_isafk_no_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_isafk(interact, mock_context, lang=lang, content="status_user_50", expected=expected)
+    await base_isafk(interact, mock_context, lang=lang, content="status_user_50", re_expected=expected)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.content)
 async def test_isafk_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_isafk(interact, mock_context, lang=lang, content="status_user_51", expected=expected)
+    await base_isafk(interact, mock_context, lang=lang, content="status_user_51", re_expected=expected)
 
 
 @pytest.mark.asyncio

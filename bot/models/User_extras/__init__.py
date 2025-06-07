@@ -1,25 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from .Activity import Status  # NOQA
-from .Annotation import Annotation  # NOQA
-from .Bug import Bug  # NOQA
-from .Cookies import Cookies  # NOQA
-from .CopyPasta import Copypasta  # NOQA
-from .Imgur import Imgur  # NOQA
-from .ImgurAggregate import ImgurAggregate  # NOQA
-from .Lottery import Lottery  # NOQA
-from .LotteryBank import LotteryBank  # NOQA
-from .MessagesLog import MessagesLog  # NOQA
-from .NickHistory import NickHistory  # NOQA
-from .Pets import Pets  # NOQA
-from .Player import Player  # NOQA
-from .PlayerTower import PlayerTower  # NOQA
-from .Reminder import Reminder  # NOQA
-from .Suggest import Suggest  # NOQA
-from .Weddings import Wedding  # NOQA
-
-from .MarkovUsers import MarkovUsers
-from .MarkovUserChannel import MarkovUserChannel
-from .MarkovChannels import MarkovChannels
-
+from .Activity import Status
+from .Annotation import Annotation
 from .BotsIgnore import BotsIgnore
+from .Bug import Bug
+from .Cookies import Cookies
+from .CopyPasta import Copypasta
+from .Imgur import Imgur
+from .ImgurAggregate import ImgurAggregate
+from .Lottery import Lottery
+from .LotteryBank import LotteryBank
+from .MarkovChannels import MarkovChannels
+from .MarkovUserChannel import MarkovUserChannel
+from .MarkovUsers import MarkovUsers
+from .MessagesLog import MessagesLog
+from .NickHistory import NickHistory
+from .Pets import Pets
+from .Player import Player
+from .PlayerTower import PlayerTower
+from .Reminder import Reminder
+from .Suggest import Suggest
+from .Weddings import Wedding

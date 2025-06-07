@@ -1,38 +1,46 @@
 """base translator class"""
 
-__copyright__ = "Copyright (C) 2020 Nidhal Baccouri"
+__copyright__ = "Copyright (C) 2020 Nidhal Baccouri"  # NOQA
 
-from abc import ABC, abstractmethod
-from pathlib import Path
+from abc import abstractmethod
 from typing import List, Optional, Union
 
-from .constants import GOOGLE_LANGUAGES_TO_CODES
+import aiohttp
+from aiohttp_client_cache import CachedSession
+from bs4 import BeautifulSoup
+
+from .constants import BASE_URLS, GOOGLE_LANGUAGES_TO_CODES
 from .exceptions import (
-    InvalidSourceOrTargetLanguage,
-    LanguageNotSupportedException,
+    InvalidSourceOrTargetLanguage, LanguageNotSupportedException, NotValidLength, NotValidPayload, RequestError,
+    TooManyRequests, TranslationNotFound,
 )
 
 
-class BaseTranslator(ABC):
+class GoogleTranslator:
     """
     Abstract class that serve as a base translator for other different translators
     """
 
     def __init__(
         self,
-        base_url: str = None,
+        session: aiohttp.ClientResponse | CachedSession = aiohttp.ClientResponse,
+        base_url: str = BASE_URLS.get("GOOGLE_TRANSLATE"),
         languages: dict = GOOGLE_LANGUAGES_TO_CODES,
         source: str = "auto",
         target: str = "en",
-        payload_key: Optional[str] = None,
-        element_tag: Optional[str] = None,
-        element_query: Optional[dict] = None,
+        payload_key: Optional[str] = "q",
+        element_tag: Optional[str] = "div",
+        element_query=None,
         **url_params,
     ):
         """
         @param source: source language to translate from
         @param target: target language to translate to
         """
+        if element_query is None:
+            element_query = {"class": "t0"}
+        self.session: aiohttp.ClientResponse | CachedSession = session
+        self._alt_element_query = {"class": "result-container"}
         self._base_url = base_url
         self._languages = languages
         self._supported_languages = list(self._languages.keys())
@@ -68,13 +76,6 @@ class BaseTranslator(ABC):
         return self.__class__.__name__
 
     def _map_language_to_code(self, *languages):
-        """
-        map language to its corresponding code (abbreviation) if the language was passed
-        by its full name by the user
-        @param languages: list of languages
-        @return: mapped value of the language or raise an exception if the language is
-        not supported
-        """
         for language in languages:
             if language in self._languages.values() or language == "auto":
                 yield language
@@ -91,82 +92,56 @@ class BaseTranslator(ABC):
     def _same_source_target(self) -> bool:
         return self._source == self._target
 
-    def get_supported_languages(
-        self, as_dict: bool = False, **kwargs
-    ) -> Union[list, dict]:
-        """
-        return the supported languages by the Google translator
-        @param as_dict: if True, the languages will be returned as a dictionary
-        mapping languages to their abbreviations
-        @return: list or dict
-        """
-        return self._supported_languages if not as_dict else self._languages
+    def get_supported_languages(self, as_dict: bool = False) -> Union[list, dict]:
+        return self._languages if as_dict else self._supported_languages
 
-    def is_language_supported(self, language: str, **kwargs) -> bool:
-        """
-        check if the language is supported by the translator
-        @param language: a string for 1 language
-        @return: bool or raise an Exception
-        """
-        if (
-            language == "auto"
-            or language in self._languages.keys()
-            or language in self._languages.values()
-        ):
-            return True
-        else:
-            return False
+    def is_language_supported(self, language: str) -> bool:
+        return language == "auto" or language in self._languages.keys() or language in self._languages.values()
 
     @abstractmethod
-    async def translate(self, text: str, **kwargs) -> str:
+    async def translate(self, text: str, **kwargs) -> str | None:
         """
-        translate a text using a translator under the hood and return
-        the translated text
-        @param text: text to translate
-        @param kwargs: additional arguments
-        @return: str
+        function to translate a text
+        @param text: desired text to translate
+        @return: str: translated text
         """
-        return NotImplemented("You need to implement the translate method!")
+        if is_input_valid(text, max_chars=5000):
+            text = text.strip()
+            if self._same_source_target() or is_empty(text):
+                return text
+            self._url_params["tl"] = self._target
+            self._url_params["sl"] = self._source
 
-    def _read_docx(self, f: str):
-        import docx2txt
+            if self.payload_key:
+                self._url_params[self.payload_key] = text
 
-        return docx2txt.process(f)
+            response = await self.session.get(self._base_url, params=self._url_params)
+            if response.status == 429:
+                raise TooManyRequests()
 
-    def _read_pdf(self, f: str):
-        import pypdf
+            if request_failed(status_code=response.status):
+                raise RequestError()
 
-        reader = pypdf.PdfReader(f)
-        page = reader.pages[0]
-        return page.extract_text()
+            soup = BeautifulSoup(await response.text(), "html.parser")
 
-    async def _translate_file(self, path: str, **kwargs) -> str:
-        """
-        translate directly from file
-        @param path: path to the target file
-        @type path: str
-        @param kwargs: additional args
-        @return: str
-        """
-        if not isinstance(path, Path):
-            path = Path(path)
+            element = soup.find(self._element_tag, self._element_query)
+            response.close()
 
-        if not path.exists():
-            print("Path to the file is wrong!")
-            exit(1)
+            if not element:
+                if not (element := soup.find(self._element_tag, self._alt_element_query)):
+                    raise TranslationNotFound(text)
+            if element.get_text(strip=True) != text.strip():
+                return element.get_text(strip=True)
+            to_translate_alpha = "".join(ch for ch in text.strip() if ch.isalnum())
+            translated_alpha = "".join(ch for ch in element.get_text(strip=True) if ch.isalnum())
+            if to_translate_alpha and translated_alpha and to_translate_alpha == translated_alpha:
+                self._url_params["tl"] = self._target
+                if "hl" not in self._url_params:
+                    return text.strip()
+                del self._url_params["hl"]
+                return await self.translate(text)
 
-        ext = path.suffix
-
-        if ext == ".docx":
-            text = self._read_docx(f=str(path))
-
-        elif ext == ".pdf":
-            text = self._read_pdf(f=str(path))
-        else:
-            with open(path, "r", encoding="utf-8") as f:
-                text = f.read().strip()
-
-        return await self.translate(text)
+        return None
 
     async def _translate_batch(self, batch: List[str], **kwargs) -> List[str]:
         """
@@ -177,7 +152,49 @@ class BaseTranslator(ABC):
         if not batch:
             raise Exception("Enter your text list that you want to translate")
         arr = []
-        for i, text in enumerate(batch):
+        for text in batch:
             translated = await self.translate(text, **kwargs)
             arr.append(translated)
         return arr
+
+    async def translate_batch(self, batch: List[str], **kwargs) -> List[str]:
+        """
+        translate a list of texts
+        @param batch: list of texts you want to translate
+        @return: list of translations
+        """
+        return await self._translate_batch(batch, **kwargs)
+
+
+def is_empty(text: str) -> bool:
+    return not text
+
+
+def request_failed(status_code: int) -> bool:
+    """Check if a request has failed or not.
+    A request is considered successfull if the status code is in the 2** range.
+
+    Args:
+        status_code (int): status code of the request
+
+    Returns:
+        bool: indicates request failure
+    """
+    return status_code > 299 or status_code < 200
+
+
+def is_input_valid(text: str, min_chars: int = 0, max_chars: Optional[int] = None) -> bool:
+    """
+    validate the target text to translate
+    @param min_chars: min characters
+    @param max_chars: max characters
+    @param text: text to translate
+    @return: bool
+    """
+
+    if not isinstance(text, str):
+        raise NotValidPayload(text)
+    if max_chars and (not min_chars <= len(text) < max_chars):
+        raise NotValidLength(text, min_chars, max_chars)
+
+    return True
