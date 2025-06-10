@@ -6,14 +6,7 @@ import random
 import re
 from typing import Any, Dict, TYPE_CHECKING
 
-from .extras import (
-    Activity as ActivityExtras,
-    BaseFunctions,
-    EmoteEmotions,
-    Humanize,
-    Response,
-    WeatherTools,
-)
+from .extras import Activity as ActivityExtras, BaseFunctions, EmoteEmotions, Humanize, Response
 
 if TYPE_CHECKING:
     from bot.ext import Context
@@ -27,15 +20,52 @@ if TYPE_CHECKING:
 class BaseTranslations:
     class TypeChecking(BaseFunctions):
         response: Response
-        PlaceHolder2: Response
+
+    class Admin(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_subclasses(base_cls=self)
+
+        class Nada(BaseFunctions):
+            def __init__(self, translation: dict):
+                super().__init__(translation, None)
+                self.populate_responses()
+
+            nada: Response
+            vazio: Response
+
+        Nada: Nada
+
+        class Reload(BaseFunctions):
+            def __init__(self, translation: dict):
+                super().__init__(translation, None)
+                self.populate_responses()
+
+            commands_reloaded: Response
+            command_not_found: Response
+            command_reloaded: Response
+            command_reloaded_error: Response
+            all: Response
+            module_reloaded: Response
+            module_reloaded_error: Response
+
+        Reload: Reload
+
+        class Restart(BaseFunctions):
+            def __init__(self, translation: dict):
+                super().__init__(translation, None)
+                self.populate_responses()
+
+            success: Response
+            unexpected_error: Response
+
+        Restart: Restart
 
     class SupportTools(BaseFunctions):
         def __init__(self, translation: dict):
             super().__init__(translation, None)
             self.populate_responses()
             self.populate_subclasses(base_cls=self)
-
-        Dicio: Dicio
 
         class LanguageContext(BaseFunctions):
             def __init__(self, translation: dict):
@@ -61,9 +91,7 @@ class BaseTranslations:
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
                 self.populate_responses()
-                self.Humanize: Humanize = Humanize(
-                    self.get_object("Humanize"), self.get_object("Pattern time")
-                )
+                self.Humanize: Humanize = Humanize(self.get_object("Humanize"), self.get_object("Pattern time"))
 
             strftime: str
 
@@ -82,7 +110,7 @@ class BaseTranslations:
             def __init__(self, translation: dict):
                 super().__init__(translation, None)
                 self.populate_responses()
-                self.emotions = EmoteEmotions(self.emotions) # NOQA
+                self.emotions = EmoteEmotions(self.emotions)  # NOQA
 
             emotions: EmoteEmotions
 
@@ -93,36 +121,32 @@ class BaseTranslations:
             super().__init__(translation, None)
             self.populate_responses()
 
-        guard_caught: Response
-
+        # Responses
         user_not_found_id: Response
         user_not_found_name: Response
         time_expired: Response
         no_content_provided: Response
+        too_much_characters: Response
         no_id_provided: Response
         id_not_valid: Response
-
         user_not_provided: Response
+        guard_caught: Response
+        unexpected_error: Response
+        link: Response
+        timeout: Response
         never_seen: Response
         channel_not_found: Response
-        message_too_long: Response
-        unexpected_error: Response
-        too_much_characters: Response
 
+        # Strings
         dev_required: str
+        message_too_long: str
         owner_required: str
         command_on_cooldown: str
         not_implemented: str
         error_not_registered: str
-        error_on_response: str
-        pipe_response: str
-        pipe_response_error: str
         command_not_pipeble: str
-        lottery_seed: str
-        announcement: str
-
-        link: Response
-        timeout: Response
+        pipe_response_error: str
+        pipe_response: str
 
     class Pipe(BaseFunctions):
         def __init__(self, translation: dict):
@@ -300,12 +324,8 @@ class BaseTranslations:
             super().__init__(translation, None)
             self.populate_responses()
             self.base_separators: list[str] = [",", r"\s+"]
-            self.choice_separators: list[str] = self.base_separators + getattr(
-                self, "additional_separators"
-            )
-            self.pattern: str = "|".join(
-                s if s.startswith("\\") else re.escape(s) for s in self.choice_separators
-            )
+            self.choice_separators: list[str] = self.base_separators + getattr(self, "additional_separators")
+            self.pattern: str = "|".join(s if s.startswith("\\") else re.escape(s) for s in self.choice_separators)
 
         chosen_option: Response
         choice_separators: list[str]
@@ -398,7 +418,7 @@ class BaseTranslations:
 
         cookies_path: pathlib.Path
         order_dict: dict[str, dict[str, list[str]]]
-
+        formats_cookie_count: dict[str, str]
         invalid_option: Response
         daily_limit_reached: Response
         user_not_found: Response
@@ -410,7 +430,6 @@ class BaseTranslations:
 
         cookie_not_found: Response
 
-        formats_cookie_count: dict[str, str]
         cc_bot_nick: Response
 
         gift_bot_nick: Response
@@ -478,163 +497,6 @@ class BaseTranslations:
 
             return Response({"ctx": ctx, "response_string": response})
 
-    class Lottery(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.bets_values: dict[int, int] = {
-                1: 5,
-                2: 5,
-                3: 5,
-                4: 5,
-                5: 5,
-                6: 5,
-                7: 11,
-                8: 25,
-                9: 63,
-                10: 187,
-                11: 346,
-                12: 649,
-                13: 943,
-                14: 1038,
-                15: 1294,
-            }
-            self.past: list[str] = self.get_object("past")
-            self.current: list[str] = self.get_object("current")
-
-            self.only_numbers: Response = Response(response=self.get_object("only_numbers"))
-            self.duplicate_numbers: Response = Response(
-                response=self.get_object("duplicate_numbers")
-            )
-            self.not_enough_cookies: Response = Response(
-                response=self.get_object("not_enough_cookies")
-            )
-            self.not_enough_cookies_more_five: Response = Response(
-                response=self.get_object("not_enough_cookies_more_five")
-            )
-            self.bet_place: Response = Response(response=self.get_object("bet_place"))
-            self.lottery_lock: Response = Response(response=self.get_object("lottery_lock"))
-            self.timeout: Response = Response(response=self.get_object("timeout"))
-            self.too_much_numbers: Response = Response(response=self.get_object("too_much_numbers"))
-            self.minimum_bet: Response = Response(response=self.get_object("minimum_bet"))
-
-            self.no_bet_id: Response = Response(response=self.get_object("no_bet_id"))
-            self.ticket_info: Response = Response(response=self.get_object("ticket_info"))
-            self.no_old_bets_found: Response = Response(
-                response=self.get_object("no_old_bets_found")
-            )
-            self.old_bets: Response = Response(response=self.get_object("old_bets"))
-            self.no_active_bets_found: Response = Response(
-                response=self.get_object("no_active_bets_found")
-            )
-            self.active_bets: Response = Response(response=self.get_object("active_bets"))
-            self.no_bets: Response = Response(response=self.get_object("no_bets"))
-            self.all_bets: Response = Response(response=self.get_object("all_bets"))
-            self.unknown_option: Response = Response(response=self.get_object("unknown_option"))
-            self.lottery_announce_messages: list[str] = self.get_object("lottery_announce_messages")
-
-            self.winners: str = self.get_object("winners")
-            self.no_winners: str = self.get_object("no_winners")
-
-            self.lottery_result_announce: str = self.get_object("lottery_result_announce")
-            self.remind_message: str = self.get_object("remind_message")
-
-    class NSFW(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.populate_subclasses(base_cls=self)
-
-        class Imgur(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.links: Response = Response({})
-                self.timeout: Response = Response(response=self.get_object("timeout"))
-                self.time_message: str = self.get_object("time_message")
-                self.all_images_embed: str = self.get_object("all_images_embed")
-                self.all_images_embed_time: str = self.get_object("all_images_embed_time")
-
-        class ImgurRepeated(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.links_repeated: Response = Response(response=self.get_object("links_repeated"))
-                self.no_repeated: Response = Response(response=self.get_object("no_repeated"))
-
-        class Boru(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.original: str = self.get_object("original")
-                self.preview: str = self.get_object("preview")
-                self.pls_wait: str = self.get_object("pls_wait")
-                self.unexpected_error: Response = Response(
-                    response=self.get_object("unexpected_error")
-                )
-                self.success: Response = Response(response=self.get_object("success"))
-                self.too_much_tags: Response = Response(response=self.get_object("too_much_tags"))
-
-    class Admin(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.populate_subclasses(base_cls=self)
-
-        class Nada(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.populate_responses()
-
-            nada: Response
-            vazio: Response
-
-        Nada: Nada
-
-        class Reload(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.populate_responses()
-
-            commands_reloaded: Response
-            command_not_found: Response
-            command_reloaded: Response
-            command_reloaded_error: Response
-            all: Response
-            module_reloaded: Response
-            module_reloaded_error: Response
-
-        Reload: Reload
-
-        class Restart(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.populate_responses()
-
-            success: Response
-            unexpected_error: Response
-
-        Restart: Restart
-
-        class DisableNSFW(BaseFunctions):
-            def __init__(self, translation: dict):
-                super().__init__(translation, None)
-                self.populate_responses()
-
-            success: Response
-            unexpected_error: Response
-
-        DisableNSFW: DisableNSFW
-
-    # TODO
-    class Markov(BaseFunctions):
-        def __init__(self, translation: dict):
-            super().__init__(translation, None)
-            self.purge: str = self.get_object("purge")
-            self.replace: str = self.get_object("replace")
-            self.unlearn: str = self.get_object("unlearn")
-
-    class Weather(BaseFunctions):
-        def __init__(self, translation: dict, extras: BaseFunctions):
-            super().__init__(translation, None)
-            self.weather_codes = WeatherTools(
-                tuple(obj["Weather"] for obj in extras.get_base("weather"))
-            )
-
 
 # TODO: Lembrar dos pets, games, dungeons, Weather
 class Translations(BaseFunctions, BaseTranslations):
@@ -651,8 +513,5 @@ class Translations(BaseFunctions, BaseTranslations):
 
         extras_fields = {"Afk", "Cookies", "Weather"}
         self.populate_subclasses(
-            extras=extras,
-            extras_fields=extras_fields,
-            base_cls=BaseTranslations(),
-            add_to_self=True,
+            extras=extras, extras_fields=extras_fields, base_cls=BaseTranslations(), add_to_self=True
         )

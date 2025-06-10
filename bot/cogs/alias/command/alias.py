@@ -479,8 +479,6 @@ async def handle_alias_lookup(ctx: Context, user, alias_name: str, translations:
             ctx,
             parent_alias.name,
             original_user.name,
-            parent_alias.name,
-            parent_alias.name,
             invocation,
             url,
             pipe=False,

@@ -74,10 +74,10 @@ class Translation:
 
 
 class TranslationManager:
-
     def __init__(self):
         langs = load_langs()
-        self.languages = {"en": Translation(Decorators(langs["en"]), Translations(langs["en"], "en"))}
+        self.en = Translation(Decorators(langs["en"]), Translations(langs["en"], "en"))
+        self.languages = {"en": self.en}
 
         for lang in langs:
             if lang == "en":

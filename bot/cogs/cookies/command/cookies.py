@@ -89,6 +89,7 @@ class CookieCmd(commands.CustomComponent):
     @cookies.command(name="gift")
     async def gift(self, ctx: Context, *args):
         translations = ctx.user.translations.Cookies
+        all_options = [translations.all_string, ctx.bot.TranslationManager.en.strings.Cookies.all_string]
         name, amount, *rest = chain(args, repeat(None, 2))
         name = ctx.bot.StringTools.str2name(name) or ctx.author.name
         if name == ctx.bot.bot_nick:
@@ -106,7 +107,7 @@ class CookieCmd(commands.CustomComponent):
         cookie_cooldown = await calculate_cooldown(cookie_from)
         on_cooldown = datetime.datetime.now(datetime.UTC) < cookie_from.cooldown
         amount_available = cookie_from.stocked + cookie_from.not_redeemed()
-        amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, translations.all_string, default=1)
+        amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, all_options, default=1)
         if amount <= 0:
             if amount == 0:
                 return translations.not_gifted.format_response(ctx, success=False)
@@ -138,13 +139,14 @@ class CookieCmd(commands.CustomComponent):
     @cookies.command(name="stock")
     async def stock(self, ctx: Context, *args):
         translations = ctx.user.translations.Cookies
+        all_options = [translations.all_string, ctx.bot.TranslationManager.en.strings.Cookies.all_string]
         amount, *rest = chain(args, repeat(None, 1))
 
         cookie = await Cookies.get(user=ctx.user)
         cookie_cooldown = await calculate_cooldown(cookie)
         on_cooldown = datetime.datetime.now(datetime.UTC) < cookie.cooldown
         amount_available = cookie.not_redeemed()
-        amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, translations.all_string, default=1)
+        amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, all_options, default=1)
 
         if on_cooldown:
             time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cookie_cooldown)
@@ -192,6 +194,7 @@ class CookieCmd(commands.CustomComponent):
     async def slotmachine(self, ctx: Context, amount: str = "1"):
         user = ctx.user
         translations = user.translations.Cookies
+        all_options = [translations.all_string, ctx.bot.TranslationManager.en.strings.Cookies.all_string]
 
         await user.fetch_related("cookies")
         cookie = await Cookies.get_cookie(ctx)
@@ -200,7 +203,7 @@ class CookieCmd(commands.CustomComponent):
             return await _cooldown_response(ctx, cookie)
 
         amount_available = cookie.not_redeemed()
-        parsed_amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, translations.all_string, default=1)
+        parsed_amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, all_options, default=1)
 
         if parsed_amount is None:
             return translations.invalid_amount.format_response(ctx, amount, amount_available)

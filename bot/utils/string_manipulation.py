@@ -201,10 +201,10 @@ class StringTools:
             return float(text)
         return default
 
-    def to_all(self, text: str, amount_available: int, lang_all: str, default: int = 1) -> tuple[int | float, bool]:
+    def to_all(self, text: str, amount_available: int, lang_all: list, default: int = 1) -> tuple[int | float, bool]:
         if not text:
             return default, False
         text = text.strip().lower()
-        if text in ["all", lang_all]:
+        if text in lang_all:
             return amount_available, True
         return self.to_amount(text, default), False
