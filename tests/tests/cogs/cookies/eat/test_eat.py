@@ -9,6 +9,15 @@ from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.cookies.eat.test_params import Params
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.eat, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
+
+
 async def base_eat(
     interact: CookieCmd, mock_context: MockContext, lang: str, content: list, expected: list[str], amount: int = 1
 ):
@@ -16,9 +25,7 @@ async def base_eat(
     await Check.cookie_check(mock_context)
     for num in range(amount):
         response: Response = await interact.eat._callback(interact, mock_context, *content)  # NOQA
-        assert (
-            expected[num] in response.response_string
-        ), f"Expected {expected[num]!r}, got: {response.response_string!r}"
+        mock_context.Asserter.assert_string(response.response_string, expected[num])
 
 
 @pytest.mark.asyncio

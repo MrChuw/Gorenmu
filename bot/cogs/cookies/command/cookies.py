@@ -9,7 +9,7 @@ from typing import List, TYPE_CHECKING
 
 from bot.ext import commands, Context
 from bot.models import Cookies, User
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 from bot.utils import Check
 
 if TYPE_CHECKING:
@@ -31,11 +31,12 @@ class CookieCmd(commands.CustomComponent):
     async def guards_component(self, ctx: Context) -> bool:
         return await Check.cookie_check(ctx)
 
-    @commands.base_decorator(BaseDecorators.Cookies)
+    @commands.base_decorator("Cookies")
     @commands.group(name="cookies", aliases=["cookie"], invoke_fallback=True)
     async def cookies(self, ctx: Context) -> Response:
         return ctx.user.translations.Cookies.invalid_option.format_response(ctx, success=False)
 
+    @commands.base_decorator("Cookies.Eat")
     @cookies.command(name="eat")
     async def eat(self, ctx: Context, *args):
         translations = ctx.user.translations.Cookies
@@ -59,6 +60,7 @@ class CookieCmd(commands.CustomComponent):
             time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cookie_cooldown)
             return translations.daily_limit_reached.format_response(ctx, time, success=False)
 
+    @commands.base_decorator("Cookies.Count")
     @cookies.command(name="count", aliases=["cc"])
     async def count(self, ctx: Context, *args):
         translations = ctx.user.translations.Cookies
@@ -86,6 +88,7 @@ class CookieCmd(commands.CustomComponent):
         cookie = await Cookies.get_or_none(user=user)
         return translations.format_cookie_count(ctx, mention=mention, cookie=cookie, verb=verb)  # NOQA
 
+    @commands.base_decorator("Cookies.Gift")
     @cookies.command(name="gift")
     async def gift(self, ctx: Context, *args):
         translations = ctx.user.translations.Cookies
@@ -104,7 +107,6 @@ class CookieCmd(commands.CustomComponent):
             return translations.user_not_found.format_response(ctx, name, success=False)
         if not cookie_to:
             return translations.cookie_not_found.format_response(ctx, name, success=False)
-        cookie_cooldown = await calculate_cooldown(cookie_from)
         on_cooldown = datetime.datetime.now(datetime.UTC) < cookie_from.cooldown
         amount_available = cookie_from.stocked + cookie_from.not_redeemed()
         amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, all_options, default=1)
@@ -113,6 +115,7 @@ class CookieCmd(commands.CustomComponent):
                 return translations.not_gifted.format_response(ctx, success=False)
             return translations.negative_gift.format_response(ctx, success=False)
         if on_cooldown and not int(cookie_from.stocked):
+            cookie_cooldown = await calculate_cooldown(cookie_from)
             time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cookie_cooldown)
             return translations.gift_on_cooldown_no_stock.format_response(ctx, time, success=False)
         if is_all:
@@ -136,6 +139,7 @@ class CookieCmd(commands.CustomComponent):
             ctx.bot.log.error("Unexpected status: Unable to process cookie donation.")
             return ctx.user.translations.Exceptions.unexpected_error.format_response(ctx)
 
+    @commands.base_decorator("Cookies.Stock")
     @cookies.command(name="stock")
     async def stock(self, ctx: Context, *args):
         translations = ctx.user.translations.Cookies
@@ -166,14 +170,17 @@ class CookieCmd(commands.CustomComponent):
             ctx.bot.log.error("Unexpected status: Unable to process cookie donation.")
             return ctx.user.translations.Exceptions.unexpected_error.format_response(ctx)
 
+    @commands.base_decorator("Cookies.Top")
     @cookies.command(name="top")
     async def top(self, ctx: Context, *args):
         translations = ctx.user.translations.Cookies
         order_by, *rest = chain(args, repeat(None, 1))
-        if order_by not in translations.order_dict:
+        if order_by not in translations.order_dict and order_by is not None:
             return translations.ranks.format_response(
                 ctx, ", ".join(list(translations.order_dict.keys())), success=False
             )
+        elif order_by is None:
+            order_by = "stocked"
 
         order_by, title = translations.order_dict[order_by]
 
@@ -190,6 +197,7 @@ class CookieCmd(commands.CustomComponent):
             ctx, len(top_10ish), title, tops, user_index, getattr(cookie_user, order_by)
         )
 
+    @commands.base_decorator("Cookies.SlotMachine")
     @cookies.command(name="sm", aliases=["slotmachine"])
     async def slotmachine(self, ctx: Context, amount: str = "1"):
         user = ctx.user

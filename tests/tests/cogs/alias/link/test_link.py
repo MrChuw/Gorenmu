@@ -5,6 +5,15 @@ from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.alias.link.test_params import Params
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.link_alias, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
+
+
 @pytest.mark.template
 @pytest.mark.asyncio
 async def alias_link(
@@ -13,7 +22,7 @@ async def alias_link(
     await mock_context.prepare_context(lang)
     await mock_context.prepare_alias(special_user)
     response: Response = await interact.link_alias._callback(interact, mock_context, *content)  # NOQA
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    mock_context.Asserter.assert_string(response.response_string, expected)
 
 
 @pytest.mark.asyncio

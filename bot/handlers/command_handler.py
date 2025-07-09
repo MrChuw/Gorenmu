@@ -150,10 +150,10 @@ class CommandHandler:
         if isinstance(error, NotImplementedError):
             return await ctx.simple_response(ctx, translations.not_implemented)
         if isinstance(error, InvalidArgument) and ctx.command:
-            decorator = ctx.command.decorators[ctx.user.language or ctx.bot.config.default_lang]
+            decorator = ctx.bot.TranslationManager.get_decorator(ctx.command, ctx)
             await ctx.reply(decorator.usage.format(ctx.prefix))
             return None
         if isinstance(error, GuardFailure):
             return None
-        self.bot.log.error(error, extra={"ctx": dict(ctx)})  # NOQA
+        self.bot.log.error(error)
         return await ctx.simple_response(ctx, translations.error_not_registered.format(self.bot.dev_name))

@@ -10,7 +10,7 @@ from twitchio.ext.commands import GuardFailure
 
 from bot.ext import Command, commands, Context
 from bot.models import Alias, User
-from bot.translations import BaseDecorators, BaseTranslations, Response
+from bot.translations import BaseTranslations, Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -43,13 +43,14 @@ class AliasCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.Alias)
+    @commands.base_decorator("Alias", template=True)
     @commands.group(name="alias")
     @commands.cooldown(rate=10, per=10, key=commands.BucketType.user)
     async def alias(self, ctx: Context, *, args) -> Response:  # NOQA
         await ctx.simple_response(ctx, "Shush")
         return ctx.user.translations.Admin.Nada.vazio.format_response(ctx, success=False)
 
+    @commands.base_decorator("Alias.Add")
     @alias.command(name="add")
     async def add_command(self, ctx: Context, *args):
         translations = ctx.user.translations.Alias
@@ -80,6 +81,7 @@ class AliasCmd(commands.CustomComponent):
         )
         return translations.Add.alias_created.format_response(ctx, alias.name, pipe=False)
 
+    @commands.base_decorator("Alias.Check")
     @alias.command(name="check", aliases=["list"])
     async def check_alias(self, ctx: Context, *args):
         translations = ctx.user.translations.Alias
@@ -123,6 +125,7 @@ class AliasCmd(commands.CustomComponent):
 
         return await handle_alias_lookup(ctx, user, alias_name, translations)  # NOQA
 
+    @commands.base_decorator("Alias.Copy")
     @alias.command(name="copy")
     async def copy_alias(self, ctx: Context, *args):
         translations = ctx.user.translations.Alias
@@ -168,6 +171,7 @@ class AliasCmd(commands.CustomComponent):
             return translations.Copy.copy_success.format_response(ctx, target_alias_name, new_alias.name, pipe=False)
         return translations.Copy.copy_success.format_response(ctx, new_alias.name, pipe=False)
 
+    @commands.base_decorator("Alias.Describe")
     @alias.command(name="describe")
     async def describe_alias(self, ctx: Context, *args):
         translations = ctx.user.translations.Alias
@@ -191,6 +195,7 @@ class AliasCmd(commands.CustomComponent):
             await alias.save()
             return translations.Describe.description_updated.format_response(ctx, name, pipe=False)
 
+    @commands.base_decorator("Alias.Edit")
     @alias.command(name="edit")
     async def edit_alias(self, ctx: Context, *args):
         translations = ctx.user.translations.Alias
@@ -222,6 +227,7 @@ class AliasCmd(commands.CustomComponent):
         await alias.save()
         return translations.Edit.edit_success.format_response(ctx, alias.name, pipe=False)
 
+    @commands.base_decorator("Alias.Link")
     @alias.command(name="link")
     async def link_alias(self, ctx: Context, *args):
         translations = ctx.user.translations.Alias
@@ -282,6 +288,7 @@ class AliasCmd(commands.CustomComponent):
 
         return translations.Link.link_success.format_response(ctx, name_string, pipe=False)
 
+    @commands.base_decorator("Alias.Remove")
     @alias.command(name="remove")
     async def remove_alias(self, ctx: Context, *args):
         translations = ctx.user.translations.Alias
@@ -295,6 +302,7 @@ class AliasCmd(commands.CustomComponent):
         await alias.save()
         return translations.Remove.alias_removed.format_response(ctx, name, pipe=False)
 
+    @commands.base_decorator("Alias.Rename")
     @alias.command(name="rename")
     async def rename_alias(self, ctx: Context, *args):
         translations = ctx.user.translations.Alias
@@ -318,6 +326,11 @@ class AliasCmd(commands.CustomComponent):
         old_alias.name = new_alias_name
         await old_alias.save()
         return translations.Rename.alias_renamed.format_response(ctx, old_alias_name, new_alias_name, pipe=False)
+
+    @commands.base_decorator("Alias.Extras")
+    @alias.command(name="extras")
+    async def extras_alias(self, ctx: Context):  # NOQA
+        return None
 
 
 async def setup(bot: Gorenmu) -> None:
@@ -476,12 +489,7 @@ async def handle_alias_lookup(ctx: Context, user, alias_name: str, translations:
         parent_alias = await Alias.get(id=alias.parent.id, deleted=False)
         original_user = await User.get(id=parent_alias.user.id)
         return translations.Check.appendix_message.format_response(
-            ctx,
-            parent_alias.name,
-            original_user.name,
-            invocation,
-            url,
-            pipe=False,
+            ctx, parent_alias.name, original_user.name, invocation, url, pipe=False
         )
 
     return translations.Check.normal_message.format_response(ctx, alias.name, invocation, url, pipe=False)

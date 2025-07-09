@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 from bot.apis import Color
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -27,7 +27,7 @@ class RandomColorCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.RandomColor)
+    @commands.base_decorator("RandomColor")
     @commands.command(name="randomcolor", aliases=["rc"])
     async def randomcolor(self, ctx: Context, tipo: str = None) -> Response:
         translations = ctx.user.translations.RandomColor

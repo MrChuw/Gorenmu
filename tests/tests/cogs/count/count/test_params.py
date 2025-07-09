@@ -4,6 +4,22 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param(
+            "en",
+            "Counts the number of symbols in a text or a URL.",
+            "To use: {}count (text) or type:url (URL URL URL URL)",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Conta o número de símbolos em um texto ou uma URL.",
+            "Para usar: {}count <texto> ou type:url <quantas URLs você quiser>",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
     no_content = [
         pytest.param(
             "en",

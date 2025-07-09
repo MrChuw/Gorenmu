@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
 from bot.models import MessagesLog, User
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -25,7 +25,7 @@ class RandomLineCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.RandomLine)
+    @commands.base_decorator("RandomLine")
     @commands.command(name="randomline", aliases=["rl"])
     async def randomline(self, ctx: Context, *, options: str = "") -> Response:
         translations = ctx.user.translations

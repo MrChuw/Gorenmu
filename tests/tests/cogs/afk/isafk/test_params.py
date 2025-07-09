@@ -3,6 +3,23 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param(
+            "en",
+            "Type the command and the user's name to see if they are AFK.",
+            "How to use: {}IsAfk (username)",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Digite o comando e o nome do usuário para ver se eles são AFK.",
+            "Como usar: {}IsAfk (nome de usuário)",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
     own_user = [
         pytest.param("en", "you're not afk… obviously.", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "você não está afk... obviamente.", marks=pytest.mark.pt_BR, id="pt_BR"),

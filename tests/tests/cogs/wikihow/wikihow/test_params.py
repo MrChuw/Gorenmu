@@ -4,6 +4,17 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param("en", "Sends a random wikihow.", "To use: {}wikihow (amount)", marks=pytest.mark.en, id="en"),
+        pytest.param(
+            "pt_BR",
+            "Envia um wikihow aleatório.",
+            "Para usar: {}wikihow <quantidade>",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
     two_hundred = [
         pytest.param("en", "www.some_url.com", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "www.some_url.com", marks=pytest.mark.pt_BR, id="pt_BR"),

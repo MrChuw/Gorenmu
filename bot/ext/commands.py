@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Callable, Coroutine, Iterable
-from typing import Any, Concatenate, ParamSpec, Self, Sequence, Type, TYPE_CHECKING, TypeAlias, TypeVar, Union
+from typing import Any, Concatenate, ParamSpec, Self, Sequence, TYPE_CHECKING, TypeAlias, TypeVar, Union
 
 from twitchio import ChatMessage, ChatMessage, User, User
 from twitchio.ext.commands import (
@@ -25,8 +25,7 @@ from twitchio.ext.commands.exceptions import CommandError
 from twitchio.ext.commands.types_ import Component_T
 from twitchio.ext.routines import routine, routine
 
-from bot.translations import BaseCommand, Decorators
-from bot.translations.base_decorators import inject_translations
+from bot.translations import BaseCommand
 
 T = TypeVar("T")
 Coro: TypeAlias = Coroutine[Any, Any, None]
@@ -61,10 +60,14 @@ minimum_delay_messages = 0.2
 
 
 class Command(TwitchioCommand):
-    decorators: dict[str, BaseCommand]
-    decorators_original: Decorators
+    decorator_path: str
     _cooldowns: Cooldown
-    docs: dict[str, dict[str, str]]
+    docs: Callable[[], dict[str, dict[str, str]]]
+    template: bool
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.decorators: dict[str, BaseCommand] = {}
 
     def command(
         self,
@@ -82,6 +85,10 @@ class Command(TwitchioCommand):
     async def dispatch_error(self, context: Context, exception: CommandError) -> None:
         await self._dispatch_error(context, exception)
 
+    @property
+    def buckets(self) -> list[Bucket]:
+        return self._buckets
+
 
 class CustomComponent(Component):
     def __new__(cls, *args, **kwargs) -> Self:
@@ -92,26 +99,38 @@ class CustomComponent(Component):
         per = getattr(self, "cooldown_per", 3)
         key = getattr(self, "cooldown_key", BucketType.user)
         bucket_: Bucket[Context] = Bucket.from_cooldown(base=Cooldown, key=key, **{"per": per, "rate": rate})
+        category_name: str = getattr(self, "name", self.__class__.__name__)
+        category_name = category_name.removesuffix("Cmd").removesuffix("Cmds")
 
         for command_name in self.__all_commands__:
-            command_ = self.__all_commands__[command_name]
-            if command_name in ["alias", "socials"]:
-                ...
-            self.__all_commands__[command_name] = inject_translations(command_, translations)
-            if len(command_._buckets) == 0:  # NOQA
-                command_._buckets.append(bucket_)  # NOQA
+            command_: Command = self.__all_commands__[command_name]
+            if hasattr(command_, "commands"):
+                for name in command_.commands:
+                    self._extras(command_.commands[name], bucket_, bot, translations)
+                    bot.docs[category_name][command_.commands[name].name] = command_.commands[name].docs
 
-            if command_.name.lower() in ["alias"]:
-                command_.docs = lambda: bot.docs_handler.template_description(command_)
-            else:
-                command_.docs = lambda: bot.docs_handler.normal_description(command_)
-
+            self._extras(command_, bucket_, bot, translations)
+            bot.docs[category_name][command_.name] = command_.docs
         return self
 
+    @staticmethod
+    def _extras(new_command: Command, bucket_, bot: Gorenmu, translations):
+        if len(new_command._buckets) == 0:  # NOQA
+            new_command._buckets.append(bucket_)  # NOQA
 
-def base_decorator(base: Decorators | Type[T]) -> Callable[[Command], Command]:
+        def docs():
+            if new_command.template:
+                return bot.docs_handler.template_description(new_command)
+            else:
+                return bot.docs_handler.normal_description(new_command)
+
+        new_command.docs = docs
+
+
+def base_decorator(base: str, template=False) -> Callable[[Command], Command]:
     def decorator(command: Command) -> Command:  # NOQA
-        command.decorators_original = base
+        command.decorator_path = base
+        command.template = template
         return command
 
     return decorator

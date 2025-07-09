@@ -10,6 +10,15 @@ from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.cookies.count.test_params import Params
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.count, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
+
+
 async def base_count(
     interact: CookieCmd, mock_context: MockContext, lang: str, expected: str, content: list, target_user: bool
 ):
@@ -26,7 +35,7 @@ async def base_count(
         await mock_context.create_cookie(user=mock_context.user, received=25, consumed=54, donated=93, stocked=8534)
         response: Response = await interact.count._callback(interact, mock_context, *content)  # NOQA
 
-    assert response.response_string == expected, f"Expected {expected}, got: {response.response_string!r}"
+    mock_context.Asserter.assert_string(response.response_string, expected)
 
 
 @pytest.mark.asyncio

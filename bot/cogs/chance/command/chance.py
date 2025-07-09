@@ -5,7 +5,7 @@ import random
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -25,7 +25,7 @@ class ChanceCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.Chance)
+    @commands.base_decorator("Chance")
     @commands.command(name="chance", aliases=["%"])
     async def chance(self, ctx: Context) -> Response:
         chance = f'{("{:.2f}%".format(random.random() * 100))}'

@@ -2,19 +2,18 @@
 from __future__ import annotations
 
 import random
-import re
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock
 
 from twitchio.models import ChatMessage
 
 from bot.models import Alias, Channel, Cookies, MessagesLog, User
+from .Asserter import Asserter
 from .Channel import MockChannel
 from .User import MockUser
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.translations import Response
 
 
 class MockAuthor:
@@ -51,11 +50,13 @@ class MockContext(AsyncMock):
         self.resposta = AsyncMock()
         self.message = MockMessage(broadcaster=self.broadcaster, spec=ChatMessage)
         self.prefix = "+"
+        self.Asserter: Asserter = Asserter()
 
     async def prepare_context(self, translation: str = "en", seed: int = 0):
         random.seed(seed)
         self.user = await User.create_or_update(self)
         self.user.translations = self.bot.TranslationManager.get_translations(language=translation)
+        self.user.language = translation
 
     async def prepare_alias(self, special_user):
         command_check = self.bot.get_command("chance")
@@ -134,23 +135,6 @@ class MockContext(AsyncMock):
             cookie.cooldown = cooldown
             await cookie.save()
         return cookie
-
-    @staticmethod
-    def assert_response(
-        response: Response, expected: str | None = None, re_expected: str | None = None, strict: bool = False
-    ):
-        helper = f"Expected {(expected or re_expected)!r}, got: {response.response_string!r}"
-        if re_expected:
-            assert re.search(
-                re_expected, response.response_string
-            ), f"Expected pattern {re_expected!r}, got: {response.response_string!r}"
-        elif expected:
-            if strict:
-                assert response.response_string == expected, helper
-            else:
-                assert expected in response.response_string, helper
-        else:
-            raise ValueError("You must provide either `expected` or `expected_regex`.")
 
     @staticmethod
     async def fake_messages():

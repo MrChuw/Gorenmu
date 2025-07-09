@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
 from bot.models import Annotation
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -28,12 +28,13 @@ class AnnotationsCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.Annotations)
+    @commands.base_decorator("Annotations")
     @commands.group(name="annotations", aliases=["note", "annotation"])
-    async def annotations(self, ctx: Context, *, content="") -> Response:  # NOQA
+    async def annotations(self, ctx: Context) -> Response:  # NOQA
         await ctx.simple_response(ctx, "Shush")
         return ctx.user.translations.Admin.Nada.vazio.format_response(ctx, success=False)
 
+    @commands.base_decorator("Annotations.Add")
     @annotations.command(name="add", aliases=[])
     async def add(self, ctx: Context, *, content: str = ""):
         translations = ctx.user.translations.Annotations
@@ -47,6 +48,7 @@ class AnnotationsCmd(commands.CustomComponent):
         annotation = await Annotation.create(content=content, user=ctx.user, title=title)
         return translations.annotation_created.format_response(ctx, annotation.id)
 
+    @commands.base_decorator("Annotations.Check")
     @annotations.command(name="check", aliases=[])
     async def check(self, ctx: Context, *, content: str = ""):
         translations = ctx.user.translations.Annotations
@@ -65,6 +67,7 @@ class AnnotationsCmd(commands.CustomComponent):
             return translations.no_annotations_with_id.format_response(ctx, int(content), success=False, pipe=False)
         return translations.annotation_content.format_response(ctx, annotation.content)
 
+    @commands.base_decorator("Annotations.Delete")
     @annotations.command(name="delete", aliases=[])
     async def delete(self, ctx: Context, *, content: str = ""):
         if content.isdigit():

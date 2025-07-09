@@ -161,7 +161,7 @@
         "dev_required_str": "você precisa ser meu criador para executar este comando.",
         "message_too_long": "Esta mensagem é muito longa.",
         "owner_required_str": "comandos reservados para o proprietário do bot.",
-        "command_on_cooldown_srt": "para usar o comando novamente, volte em {}.",
+        "command_on_cooldown_str": "para usar o comando novamente, volte em {}.",
         "not_implemented_str": "este comando está temporariamente desativado.",
         "error_not_registered_str": "um erro inesperado ocorreu, por favor informe o erro para @{}.",
         "command_not_pipeble_str": "este comando não pôde ser utilizado com pipe.",

@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from urlextract import URLExtract
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -28,7 +28,7 @@ class CountCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.Count)
+    @commands.base_decorator("Count")
     @commands.command(name="count", aliases=[])
     async def count(self, ctx: Context, *, content: str) -> Response:
         if (urls := URLExtract().find_urls(text=content)) and "type:url" in content:

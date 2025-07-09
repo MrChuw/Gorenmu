@@ -4,9 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
-
-# from bot.utils import Role, Check
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -26,10 +24,10 @@ class SafeBooruCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.Safebooru)
+    @commands.base_decorator("Safebooru")
     @commands.command(name="safebooru", aliases=[])
     async def safebooru(self, ctx: Context, *, args) -> Response:
-        translations = ctx.user.translations.TypeChecking
+        translations = ctx.user.translations.Admin.Nada
         return translations.nada.format_response(ctx, args, success=True, handle=None, response_list=[])
 
 

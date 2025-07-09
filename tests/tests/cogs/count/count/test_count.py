@@ -18,6 +18,15 @@ async def interact(mock_bot):
     return CountCmd(bot=mock_bot)
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.count, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
+
+
 async def base_count(interact, mock_context: MockContext, lang: str, content: str, expected, size=500):
     await mock_context.prepare_context(lang)
     random.seed(2)
@@ -27,7 +36,7 @@ async def base_count(interact, mock_context: MockContext, lang: str, content: st
     mock_get = AsyncMock(return_value=mock_response)
     with patch.object(mock_context.bot.SessionsCaches.CountCachedSession.session, "get", mock_get):
         response: Response = await interact.count._callback(interact, mock_context, content=content)  # NOQA
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    mock_context.Asserter.assert_string(response.response_string, expected)
 
 
 @pytest.mark.asyncio

@@ -14,12 +14,21 @@ async def interact(mock_bot):
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.afk, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_no_content(interact, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang)
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context)
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    mock_context.Asserter.assert_string(response.response_string, expected)
 
 
 @pytest.mark.asyncio
@@ -28,7 +37,7 @@ async def test_afk_content(interact, mock_context: MockContext, lang: str, expec
     await mock_context.prepare_context(lang)
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context, content="Just a test")
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    mock_context.Asserter.assert_string(response.response_string, expected)
 
 
 @pytest.mark.asyncio
@@ -37,4 +46,4 @@ async def test_afk_too_much_content(interact, mock_context: MockContext, lang: s
     await mock_context.prepare_context(lang)
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context, content="a" * 500)
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    mock_context.Asserter.assert_string(response.response_string, expected)

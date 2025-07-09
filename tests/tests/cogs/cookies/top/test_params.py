@@ -4,13 +4,36 @@ import pytest
 
 
 class Params:
-    no_content = [
+    decorators = [
         pytest.param(
-            "en", "the ranks are: stocked, streak, consumed, donated, received, total", marks=pytest.mark.en, id="en"
+            "en",
+            "See who are the top cookie eaters or donors.",
+            "To use: {}cookie top (or pass one of the options stocked|streak|consumed|donated|received|total)",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
-            "as categoria são: stocked, streak, consumed, donated, received, total",
+            "Veja quem são os melhores comedores, doadores ou acumuladores de cookies.",
+            "Para usar: {}cookie top "
+            "(ou passe uma das opções stocked | streak | consumed | donated | received | total)",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
+    no_content = [
+        pytest.param(
+            "en",
+            "top 5 stocked: 🏆 @channelname: (8534) 🥈 @some_user_45: (4185) 🥉 @some_user_44: (4092) "
+            "🏅 @some_user_43: (3999) 🏅 @some_user_42: (3906) || You are in the 8th position in the ranking with 10.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "top 5 stocked: 🏆 @channelname: (8534) 🥈 @some_user_45: (4185) 🥉 @some_user_44: (4092) "
+            "🏅 @some_user_43: (3999) 🏅 @some_user_42: (3906) || Você está na 8ª posição na classificação com 10.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

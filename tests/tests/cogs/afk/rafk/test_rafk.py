@@ -17,23 +17,31 @@ async def interact(mock_bot):
     return RAfkCmd(bot=mock_bot)
 
 
-async def base_rafk(interact, mock_context: MockContext, lang: str, content: str, expected: str):
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    afk = (await Status.get_or_create(user=mock_context.user))[0]
-    afk_str = RAfkNamedTuple(
-        content=content, updated_at=datetime.strptime("2025-01-01 06:00", "%Y-%m-%d %H:%M"), alias="afk", afk=afk
-    )
-    await interact.bot.memcache.RAfk.set([int(mock_context.author.id), "username"], afk_str)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.rafk, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
+
+
+async def base_rafk(interact, mock_context: MockContext, lang: str, content: str, expected: str, time=True):
+    await mock_context.prepare_context(lang)
+    if time:
+        afk = (await Status.get_or_create(user=mock_context.user))[0]
+        afk_str = RAfkNamedTuple(
+            content=content, updated_at=datetime.strptime("2025-01-01 06:00", "%Y-%m-%d %H:%M"), alias="afk", afk=afk
+        )
+        await interact.bot.memcache.RAfk.set([int(mock_context.author.id), "username"], afk_str)
     response: Response = await interact.rafk._callback(self=interact, ctx=mock_context)  # NOQA
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    mock_context.Asserter.assert_string(response.response_string, expected)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.not_in_time)
 async def test_rafk_not_in_time(interact, mock_context: MockContext, lang: str, expected: str):
-    await mock_context.prepare_context(lang)
-    response: Response = await interact.rafk._callback(self=interact, ctx=mock_context)
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    await base_rafk(interact, mock_context, lang=lang, content="content", expected=expected, time=False)
 
 
 @pytest.mark.asyncio

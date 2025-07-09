@@ -4,6 +4,22 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param(
+            "en",
+            "This subcommand is used to rename an alias.",
+            "How to use: {}alias rename cool_name new_cool_name",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Este subcomando é usado para renomear um alias.",
+            "Como usar: {}alias rename cool_name new_cool_name",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
     no_content = [
         pytest.param(
             "en", "You must provide both the current alias name and the new one!", marks=pytest.mark.en, id="en"

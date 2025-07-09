@@ -6,7 +6,7 @@ import re
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -26,7 +26,7 @@ class ChoiceCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.Choice)
+    @commands.base_decorator("Choice")
     @commands.command(name="choice", aliases=["pick"])
     async def choice(self, ctx: Context, *, content: str) -> Response:
         pattern = ctx.user.translations.Choice.pattern

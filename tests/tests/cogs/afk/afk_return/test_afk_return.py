@@ -22,7 +22,7 @@ async def interact(mock_bot):
 async def test_not_afk(interact, mock_context: MockContext, lang: str, expected: bool):
     await mock_context.prepare_context(lang)
     response: Response | bool = await event_message(ctx=mock_context)
-    assert response is expected, f"Expected {expected!r}, got: {response!r}"
+    mock_context.Asserter.assert_boolean(response, expected)
 
 
 @pytest.mark.asyncio
@@ -35,9 +35,7 @@ async def test_no_content(interact, mock_context: MockContext, lang: str, expect
     afk.online = False
     await afk.save()
     response: Response = await event_message(ctx=mock_context)
-    assert (
-        expected in response.response_string
-    ), f"Expected {expected!r} to be in response.response_string, got: {response.response_string!r}"
+    mock_context.Asserter.assert_string(response.response_string, expected)
 
 
 @pytest.mark.asyncio
@@ -51,6 +49,4 @@ async def test_content(interact, mock_context: MockContext, lang: str, expected:
     afk.online = False
     await afk.save()
     response: Response = await event_message(ctx=mock_context)
-    assert (
-        expected in response.response_string
-    ), f"Expected {expected!r} to be in response.response_string, got: {response.response_string!r}"
+    mock_context.Asserter.assert_string(response.response_string, expected)

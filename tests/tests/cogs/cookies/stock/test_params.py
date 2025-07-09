@@ -4,6 +4,16 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param("en", "Stock your daily cookie.", "To use: {}cookie stock (all)", marks=pytest.mark.en, id="en"),
+        pytest.param(
+            "pt_BR",
+            "Estoque seus cookies diários para usar depois.",
+            "Para usar: {}cookie stock (all)",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
     on_cooldown = [
         pytest.param(
             "en",

@@ -45,6 +45,8 @@ class LifecycleHandler:
         await super(type(self.bot), self.bot).close()
 
     async def event_ready(self):
+        if not self.bot.mock:
+            await self.bot.TokensHandler.setup_conduit()
         self.bot.dev_name = (await self.bot.fetch_users(ids=[self.config.BotConfig.dev_userid]))[0].display_name
         self.bot.dev_display_name = self.config.BotConfig.dev_display_name
         self.config.BotConfig.dev_name = self.bot.dev_name
@@ -100,7 +102,7 @@ class LifecycleHandler:
             error_not_registered = ctx.user.translations.Exceptions.error_not_registered
             return await ctx.simple_response(ctx, error_not_registered.format(self.config.BotConfig.dev_name))
         except Exception as error:
-            self.bot.log.error(error, extra={"ctx": ctx.__dict__})
+            self.bot.log.error(error)
             return False
 
     async def event_message_whisper(self, payload: twitchio.Whisper):  # TODO: TODO

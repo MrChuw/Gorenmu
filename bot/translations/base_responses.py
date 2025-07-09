@@ -498,7 +498,6 @@ class BaseTranslations:
             return Response({"ctx": ctx, "response_string": response})
 
 
-# TODO: Lembrar dos pets, games, dungeons, Weather
 class Translations(BaseFunctions, BaseTranslations):
     def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):
         super().__init__(translation["strings"], fallback["strings"] if fallback else None)

@@ -155,7 +155,7 @@
         "dev_required_str": "you need to be my creator to run this command.",
         "message_too_long": "This message is too long.",
         "owner_required_str": "commands reserved for the bot owner.",
-        "command_on_cooldown_srt": "to use the command again, come back in {}.",
+        "command_on_cooldown_str": "to use the command again, come back in {}.",
         "not_implemented_str": "this command is temporarily disabled.",
         "error_not_registered_str": "an unexpected error occurred, please report the error to @{}.",
         "command_not_pipeble_str": "this command could not be used with the pipe.",

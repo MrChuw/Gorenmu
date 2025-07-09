@@ -8,7 +8,7 @@ from aiohttp_client_cache import CachedSession, response
 from bs4 import BeautifulSoup
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -28,7 +28,7 @@ class RandomSCPCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.Scp)
+    @commands.base_decorator("Scp")
     @commands.command(name="randomscp", aliases=["rscp"])
     async def randomscp(self, ctx: Context) -> Response:
         session = ctx.bot.SessionsCaches.ScpCachedSession.session

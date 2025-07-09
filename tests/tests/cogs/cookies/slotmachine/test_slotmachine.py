@@ -71,11 +71,19 @@ def mock_external_apis(emotes: bool = True):
             mocked.get(re.compile(r"https://7tv\.io/v3/users/twitch/.*"), payload=payload, status=200)
         else:
             mocked.get(re.compile(r"https://7tv\.io/v3/users/twitch/.*"), payload={}, status=404)
-
         yield mocked
 
 
 # endregion
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.slotmachine, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
 
 
 async def base_slotmachine(
@@ -93,7 +101,7 @@ async def base_slotmachine(
     with mock_external_apis(emotes=emotes):
         response: Response = await interact.slotmachine._callback(interact, mock_context, amount=content)  # NOQA
 
-    mock_context.assert_response(response, expected, re_expected)
+    mock_context.Asserter.assert_string(response.response_string, expected, re_expected)
 
 
 # region Not need.

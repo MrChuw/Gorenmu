@@ -16,6 +16,15 @@ async def interact(mock_bot):
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.wikipedia, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.two_hundred)
 async def test_two_hundred(interact, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang)
@@ -25,7 +34,7 @@ async def test_two_hundred(interact, mock_context: MockContext, lang: str, expec
         mock_url = MagicMock(human_repr=MagicMock(return_value="www.some_url.com"))
         mock_get_scp.return_value = MagicMock(status=200, url=mock_url)
         response: Response = await interact.wikipedia._callback(interact, mock_context)
-        mock_context.assert_response(response, expected=expected, re_expected=None)
+        mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=None)
 
 
 @pytest.mark.asyncio
@@ -50,7 +59,7 @@ async def test_timeout(interact, mock_context: MockContext, lang: str, expected:
     ):
         mock_loop.return_value.time.side_effect = [0] + list(range(1, 35))
         response: Response = await interact.wikipedia._callback(interact, mock_context)
-        mock_context.assert_response(response, expected=expected, re_expected=None)
+        mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=None)
 
 
 @pytest.mark.asyncio
@@ -67,4 +76,4 @@ async def test_unexpected_exception(interact, mock_context: MockContext, lang: s
         patch.object(mock_context.bot.log, "error"),
     ):
         response: Response = await interact.wikipedia._callback(interact, mock_context)
-        mock_context.assert_response(response, expected=expected, re_expected=None)
+        mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=None)

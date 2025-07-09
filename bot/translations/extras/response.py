@@ -47,8 +47,10 @@ class CommandExemples:
 
 class CommandExemplesItem:
     def __init__(self, data: dict):
+        self.prefix = data.get("prefix", "")
         self.args = data.get("args", "")
         self.response = data.get("response", "")
+        self.suffix = data.get("suffix", "")
 
 
 class Admonitions:
@@ -105,7 +107,7 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
         else:
             raise KeyError(f"Key '{key}' not found in either base or fallback.")
 
-    def get_object_or_none(self, key: str) -> dict | None:
+    def get_object_or_none(self, key: str) -> dict | str | None:
         if key in self.obj:
             return self.obj[key]
         elif key in self.fallback:

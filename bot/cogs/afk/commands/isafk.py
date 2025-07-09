@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
 from bot.models import User
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -26,7 +26,7 @@ class IsAfkCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.IsAfk)
+    @commands.base_decorator("IsAfk")
     @commands.command(name="isafk", aliases=[])
     async def isafk(self, ctx: Context, *, content: str) -> Response:
         translations = ctx.user.translations

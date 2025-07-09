@@ -26,7 +26,6 @@ class BaseAdmonitions:
 
 def custom_format(template, **kwargs):
     placeholders = ["rate", "per", "description", "command_title", "command_name", "prefix", "aliases", "cooldown_type"]
-
     pattern = re.compile(r"\{(" + "|".join(placeholders) + r")}")
 
     def replace(match: re.Match[str]) -> str:
@@ -42,7 +41,7 @@ class DynamicDescriptions:
 
     def normal_description(self, command_data: Command) -> dict[str, dict[str, str]]:
         responses = defaultdict(dict)
-        cooldown_ = command_data._buckets[0]  # NOQA
+        cooldown_ = command_data.buckets[0]
         for lang in command_data.decorators:
             language: Translation = self.bot.TranslationManager.languages[lang]
             decorator: BaseCommand = command_data.decorators[lang]
@@ -57,7 +56,7 @@ class DynamicDescriptions:
 
     def template_description(self, command_data: Command, ctx: Context = None) -> dict[str, dict[str, str]]:
         responses = defaultdict(dict)
-        cooldown_ = command_data._buckets[0]  # NOQA
+        cooldown_ = command_data.buckets[0]
         per = cooldown_._cooldown._per  # NOQA
         rate = cooldown_._cooldown._rate  # NOQA
         prefix = ctx.prefix if ctx else self.bot.config.BotConfig.prefix[0]
@@ -109,20 +108,24 @@ class DynamicDescriptions:
         command_body += language.decorators.Templates.template_part2.format(
             description=decorator.description, aliases=aliases
         )
+        if decorator.extras:
+            command_body += f"{decorator.extras}\n\n"
+
         command_body += self._add_admonitions(
             decorator.admonitions, "middle", language.decorators.Templates.admonition_template
         )
 
         if commands := decorator.commands:
             command_body += language.decorators.Templates.template_part3
-            command_body += "".join(
-                [
-                    language.decorators.Templates.command_template.format(
-                        prefix=prefix, command_name=command_name.lower(), args=item.args, response=item.response
+            for usage in commands:
+                if usage.prefix:
+                    command_body += f"{usage.prefix}\n"
+                if usage.response or usage.args:
+                    command_body += language.decorators.Templates.command_template.format(
+                        prefix=prefix, command_name=command_name.lower(), args=usage.args, response=usage.response
                     )
-                    for item in commands
-                ]
-            )
+                if usage.suffix:
+                    command_body += f"{usage.suffix}\n"
 
         command_body += self._add_admonitions(
             decorator.admonitions, "bottom", language.decorators.Templates.admonition_template

@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -24,7 +24,7 @@ class ReverseCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.Reverse)
+    @commands.base_decorator("Reverse")
     @commands.command(name="reverse", aliases=["invert"])
     async def reverse(self, ctx: Context, *, content) -> Response:
         return ctx.user.translations.Reverse.reversed_string.format_response(ctx, content[::-1])

@@ -12,6 +12,15 @@ from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.cookies.gift.test_params import Params
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.gift, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
+
+
 async def prepare_and_create_cookie(mock_context: MockContext, lang, content, cookie_data=None):
     await mock_context.prepare_context(lang)
     await Check.cookie_check(mock_context)
@@ -23,17 +32,11 @@ async def prepare_and_create_cookie(mock_context: MockContext, lang, content, co
 
 async def call_and_assert(interact: CookieCmd, mock_context: MockContext, content, expected, index=None):
     response: Response = await interact.gift._callback(interact, mock_context, *content)  # NOQA
-    if not index and isinstance(expected, list):
-        assert (
-            expected[0] in response.response_string
-        ), f"Expected {expected[index]!r}, got: {response.response_string!r}"
-    elif isinstance(expected, list):
-        assert (
-            expected[index] in response.response_string
-        ), f"Expected {expected[index]!r}, got: {response.response_string!r}"
+    if isinstance(expected, list):
+        selected = expected[0] if index is None else expected[index]
     else:
-        assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
-    return response
+        selected = expected
+    mock_context.Asserter.assert_string(response.response_string, selected)
 
 
 async def base_gift(interact, mock_context: MockContext, lang: str, content: list[str], expected: str):

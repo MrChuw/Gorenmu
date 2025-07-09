@@ -4,6 +4,22 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param(
+            "en",
+            "This subcommand is used to create link for an alias.",
+            "How to use: {}alias link (user) cool_name",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Este subcomando é usado para criar um link para um alias.",
+            "Como usar: {}alias link (usuário) cool_name",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
     no_content = [
         pytest.param(
             "en",

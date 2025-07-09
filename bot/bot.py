@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import datetime
 from asyncio import Task
+from collections import defaultdict
 from logging import Logger
 from typing import Callable, TYPE_CHECKING
 
@@ -13,7 +14,7 @@ from aiocache.backends.memory import SimpleMemoryCache
 from aiocache.backends.redis import RedisCache
 from loguru import logger
 from twitchio.ext import commands
-from twitchio.ext.commands import Bot, CommandErrorPayload
+from twitchio.ext.commands import CommandErrorPayload
 
 from bot.apis import Emotes
 from bot.ext import ChatMessage
@@ -31,7 +32,7 @@ if TYPE_CHECKING:
     from bot.ext import Routine, Context
 
 
-class Gorenmu(Bot):
+class Gorenmu(commands.AutoBot):
     def __init__(self, configs: Config, case_insensitive: bool, log: logger, adapter) -> None:
         super().__init__(
             client_id=configs.ApisConfig.api_client_id,
@@ -62,6 +63,7 @@ class Gorenmu(Bot):
         self.docs_handler: DynamicDescriptions = DynamicDescriptions(self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(self)
         self.UploadThings: UploadThings = UploadThings(self)
+        self.docs: defaultdict = defaultdict(dict)
 
         self.TranslationManager: TranslationManager = TranslationManager()
         self.Emotes: Emotes = Emotes(bot=self)
@@ -71,15 +73,16 @@ class Gorenmu(Bot):
         self.CommandHandler: CommandHandler = CommandHandler(bot=self)
         self.LifecycleHandler: LifecycleHandler = LifecycleHandler(bot=self)
         self.ContextHandler: ContextHandler = ContextHandler(bot=self)
-
-    async def setup_hook(self) -> None:
-        await self.TokensHandler.setup_hook()
+        self.mock: bool = False
 
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
         return await self.TokensHandler.add_token(token, refresh)
 
     async def load_tokens(self, path: str | None = None) -> None:
         await self.TokensHandler.load_tokens(path)
+
+    async def event_oauth_authorized(self, payload: twitchio.authentication.UserTokenPayload) -> None:
+        await self.TokensHandler.event_oauth_authorized(payload)
 
     async def reload_component(self, attr_name: str, module_name: str, class_name: str, args: list = None):
         from bot.utils.reload_util import reload_and_get

@@ -4,6 +4,23 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param(
+            "en",
+            "This subcommand is used to check infos for an alias.",
+            "How to use: {}alias description cool_name (new description)",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Este subcomando é usado para adicionar ou verificar a descrição de um alias.",
+            "Como usar: {}alias description cool_name (nova descrição)",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
     no_content = [
         pytest.param(
             "en",

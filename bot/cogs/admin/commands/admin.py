@@ -6,7 +6,7 @@ import sys
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response, Translations
+from bot.translations import Response, Translations
 from bot.utils import Role
 
 if TYPE_CHECKING:
@@ -14,13 +14,12 @@ if TYPE_CHECKING:
 
     translations_t = Translations.Admin.Reload
 
-BaseAdmin = BaseDecorators.Admin
-
 
 class AdminSmallCmds(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
 
+    name = "Admin Commands"
     cooldown_rate = 3
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
@@ -31,13 +30,25 @@ class AdminSmallCmds(commands.CustomComponent):
     def is_dev(self, ctx: Context) -> bool:
         return Role.dev(ctx)
 
-    @commands.base_decorator(BaseAdmin.Nada)
+    @commands.base_decorator("Admin.Nada")
     @commands.command(name="nada", aliases=[])
     async def nada(self, ctx: Context, *, args) -> Response:
         translations = ctx.user.translations.Admin.Nada
+        # for command_name in self.bot.commands:
+        #     command = self.bot.commands[command_name]
+        #     if hasattr(command, "commands"):
+        #         for subcommand_name in command.commands:
+        #             try:
+        #                 subcommand = command.commands[subcommand_name]
+        #                 decorator = ctx.bot.TranslationManager.get_decorator(subcommand, ctx)
+        #                 print(decorator.usage)
+        #             except Exception as e:
+        #                 print(e)
+        #     decorator = ctx.bot.TranslationManager.get_decorator(command, ctx)
+        #     print(decorator.usage)
         return translations.nada.format_response(ctx, args, success=True, handle=None, response_list=[])
 
-    @commands.base_decorator(BaseAdmin.Restart)
+    @commands.base_decorator("Admin.Restart")
     @commands.command(name="restart", aliases=[])
     async def restart(self, ctx: Context) -> Response:
         translations = ctx.user.translations.Admin.Restart
@@ -51,7 +62,7 @@ class AdminSmallCmds(commands.CustomComponent):
             self.bot.log.error(e)
             return translations.unexpected_error.format_response(ctx, e, success=False)
 
-    @commands.base_decorator(BaseAdmin.Reload)
+    @commands.base_decorator("Admin.Reload")
     @commands.command(name="reload", aliases=[])
     async def reload(self, ctx: Context, command: str) -> Response:
         translations = ctx.user.translations.Admin.Reload
@@ -126,19 +137,6 @@ class AdminSmallCmds(commands.CustomComponent):
         except Exception as e:
             ctx.bot.log.error(e)
             return translations.command_reloaded_error.format_response(ctx, command, e, success=False)
-
-    @commands.base_decorator(BaseAdmin.DisableNSFW)
-    @commands.command(name="disable_nsfw", aliases=[])
-    async def disable_nsfw(self, ctx: Context, *, args) -> Response:  # TODO: To Make.
-        translations = ctx.user.translations.Admin.DisableNSFW
-        try:
-            for channel in self.bot.channels:
-                self.bot.channels[channel].disabled.update(self.bot.CommandHandler.COMMANDS_TO_DISABLE)  # NOQA
-                await self.bot.channels[channel].save()
-            return translations.success.format_response(ctx, args, success=True)
-        except Exception as e:
-            self.bot.log.error(e)
-            return translations.unexpected_error.format_response(ctx, e, success=False)
 
 
 async def setup(bot: Gorenmu) -> None:

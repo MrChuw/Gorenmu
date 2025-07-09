@@ -3,6 +3,22 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param(
+            "en",
+            "Reloads the commands using all or command name.",
+            "How to use: {}reload (all) or (command_name)",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Recarregar os comandos usando all ou nome do comando.",
+            "Como usar: {}reload (all) ou (command_name)",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
     translations = [
         pytest.param("en", "TranslationManager were successfully reloaded.", marks=pytest.mark.en, id="en"),
         pytest.param(

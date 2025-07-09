@@ -5,13 +5,22 @@ from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.alias.remove.test_params import Params
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.remove_alias, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
+
+
 async def alias_remove(
     interact, mock_context: MockContext, lang: str, content: list[str], expected: str, special_user: bool = False
 ):
     await mock_context.prepare_context(lang)
     await mock_context.prepare_alias(special_user)
     response: Response = await interact.remove_alias._callback(interact, mock_context, *content)  # NOQA
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    mock_context.Asserter.assert_string(response.response_string, expected)
 
 
 @pytest.mark.asyncio

@@ -4,6 +4,17 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param("en", "Get your daily fortune.", "To use: {}cookie eat", marks=pytest.mark.en, id="en"),
+        pytest.param(
+            "pt_BR",
+            "Pegue seu biscoito da sorte diário.",
+            "Para usar: {}cookie eat",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
     with_nothing = [
         pytest.param(
             "en",

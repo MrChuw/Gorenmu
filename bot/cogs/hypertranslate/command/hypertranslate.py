@@ -9,7 +9,7 @@ from bot.apis import GoogleTranslator
 from bot.apis.translate.constants import GOOGLE_LANGUAGES_TO_CODES as GOOGLE_LANGS
 from bot.apis.translate.exceptions import TooManyRequests
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -29,7 +29,7 @@ class HyperTranslateCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.HyperTranslate)  # TODO: add reply_to
+    @commands.base_decorator("HyperTranslate")  # TODO: add reply_to
     @commands.command(name="hypertranslate", aliases=["ht"])
     async def hypertranslate(self, ctx: Context, quantity: str, *, text: str = "") -> Response:
         translations = ctx.user.translations.HyperTranslate

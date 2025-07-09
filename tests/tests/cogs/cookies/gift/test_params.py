@@ -4,6 +4,23 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param(
+            "en",
+            "Gift someone your daily cookie.",
+            "To use: {}cookie gift (user_name) (amount|all)",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Presenteie alguém com seus cookies.",
+            "Para usar: {}cookie gift (nome_do_usuário) (quantidade|all)",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
     bot_nick = [
         pytest.param("en", "I don't want your cookie.", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "Não quero a seu cookie.", marks=pytest.mark.pt_BR, id="pt_BR"),

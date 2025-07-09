@@ -21,6 +21,17 @@ def silence_tortoise_logs():
     logging.getLogger("tortoise").setLevel(logging.WARNING)
 
 
+class FilterOutConduitWarnings(logging.Filter):
+    def filter(self, record):
+        return "conduit_id" not in record.getMessage()
+
+
+@pytest.fixture(autouse=True)
+def filter_twitchio_conduit_warnings():
+    logger = logging.getLogger("twitchio.client")
+    logger.addFilter(FilterOutConduitWarnings())
+
+
 @pytest.fixture
 def mock_context(mock_bot):
     return MockContext("username", 12345, "channelname", 123456, mock_bot)  # NOQA
@@ -41,6 +52,7 @@ async def mock_bot():
 
         twitchio.utils.setup_logging(handler=InterceptHandler(), level=logging.INFO)
     bot = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
+    bot.mock = True
     bot.bot_nick = "bot_name"
     bot.dev_name = "dev_name"
     bot.tests_sessions = SessionsCaches(bot)

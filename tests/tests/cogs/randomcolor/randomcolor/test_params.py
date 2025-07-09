@@ -4,6 +4,23 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param(
+            "en",
+            "Sends a random color.",
+            "To use: {}random_color or add type:hex / type:rgb to specify the type.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Envia uma cor aleatória.",
+            "Para usar: {}random_color ou adicione type:hex / type:rgb para especificar o tipo.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
     no_tipo = [
         pytest.param(
             "en", "#C53EDF is Medium Purple. https://color.mrchuw.com.br/hex/c53edf", marks=pytest.mark.en, id="en"

@@ -1,10 +1,16 @@
-# translations/__init__.py
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import json
 import pathlib
+from typing import Any, Awaitable, Callable, TYPE_CHECKING, Union
 
 from bot.translations.base_decorators import BaseCommand, BaseDecorators, Decorators
 from bot.translations.base_responses import BaseTranslations, Translations
 from bot.translations.extras import Activity, Response
+
+if TYPE_CHECKING:
+    from bot.ext import Command, Context
 
 
 def open_file(filepath: pathlib.Path, fallback=None):
@@ -76,14 +82,15 @@ class Translation:
 class TranslationManager:
     def __init__(self):
         langs = load_langs()
-        self.en = Translation(Decorators(langs["en"]), Translations(langs["en"], "en"))
+        self.en = Translation(Decorators(langs["en"], "en"), Translations(langs["en"], "en"))
         self.languages = {"en": self.en}
 
         for lang in langs:
             if lang == "en":
                 continue
             self.languages[lang] = Translation(
-                Decorators(langs[lang], langs["en"]), Translations(langs[lang], lang, fallback=langs["en"])
+                Decorators(langs[lang], lang, fallback=langs["en"]),
+                Translations(langs[lang], lang, fallback=langs["en"]),
             )
 
         self.default_language = "en"
@@ -95,8 +102,17 @@ class TranslationManager:
         translation_class = self.languages.get(language, self.languages[self.default_language]).strings
         return getattr(translation_class, key, key)
 
-    def get_decorator(self, language: str) -> Decorators:
-        return self.get_decorators(language)
+    def get_decorator(self, command: Union[Command, Callable[..., Awaitable]], ctx: Context) -> BaseCommand:
+        decorators = self.get_decorators(ctx.user.language or ctx.bot.config.default_lang)
+        return resolve_decorator(decorators, command.decorator_path)
 
     def get_translations(self, language: str) -> Translations:
         return self.languages.get(language, self.languages[self.default_language]).strings
+
+
+def resolve_decorator(base: Any, dotted_path: str):
+    parts = dotted_path.split(".")
+    current = base
+    for part in parts:
+        current = getattr(current, part)
+    return current

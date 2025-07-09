@@ -5,7 +5,7 @@ import asyncio
 from typing import TYPE_CHECKING
 
 from bot.ext import commands, Context
-from bot.translations import BaseDecorators, Response
+from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -25,7 +25,7 @@ class WikipediaCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator(BaseDecorators.Wikipedia)
+    @commands.base_decorator("Wikipedia")
     @commands.command(name="wikipedia", aliases=[])
     async def wikipedia(self, ctx: Context) -> Response:
         translations = ctx.user.translations.Wikipedia

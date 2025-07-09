@@ -18,30 +18,57 @@ class TokensHandler:
         self.bot = bot
         self.config: Config = bot.config
 
-    async def setup_hook(self) -> None:
+    async def setup_conduit(self) -> None:
         tokens = await TwitchTokens.all()
+        subs: list[eventsub.SubscriptionPayload] = []
         for token in tokens:
             await token.fetch_related("user")
             user: UserModel = token.user
-            subscription = eventsub.ChatMessageSubscription(
-                broadcaster_user_id=str(user.id), user_id=str(self.config.BotConfig.bot_id)
-            )
-            await self.bot.subscribe_websocket(payload=subscription)
-            subscription = eventsub.StreamOnlineSubscription(broadcaster_user_id=str(user.id))
-            await self.bot.subscribe_websocket(payload=subscription)
 
-        subscription = eventsub.ChatMessageSubscription(
-            broadcaster_user_id=str(self.config.BotConfig.dev_userid), user_id=str(self.config.BotConfig.bot_id)
-        )
-        await self.bot.subscribe_websocket(payload=subscription)
+            subs += [
+                eventsub.ChatMessageSubscription(
+                    broadcaster_user_id=str(user.id), user_id=str(self.config.BotConfig.bot_id)
+                ),
+                eventsub.StreamOnlineSubscription(broadcaster_user_id=str(user.id)),
+            ]
 
-        subscription = eventsub.StreamOnlineSubscription(broadcaster_user_id=str(self.config.BotConfig.dev_userid))
-        await self.bot.subscribe_websocket(payload=subscription)
+        subs += [
+            eventsub.ChatMessageSubscription(
+                broadcaster_user_id=str(self.config.BotConfig.dev_userid), user_id=str(self.config.BotConfig.bot_id)
+            ),
+            eventsub.StreamOnlineSubscription(broadcaster_user_id=str(self.config.BotConfig.dev_userid)),
+            eventsub.WhisperReceivedSubscription(
+                broadcaster_user_id=str(self.config.BotConfig.bot_id), user_id=str(self.config.BotConfig.bot_id)
+            ),
+        ]
 
-        subscription = eventsub.WhisperReceivedSubscription(
-            broadcaster_user_id=str(self.config.BotConfig.bot_id), user_id=str(self.config.BotConfig.bot_id)
-        )
-        await self.bot.subscribe_websocket(subscription)
+        resp: twitchio.MultiSubscribePayload = await self.bot.multi_subscribe(subs)
+        if resp.errors:
+            for err in resp.errors:
+                if err.error.extra["status"] == 409:
+                    continue
+                else:
+                    self.bot.log.warning(
+                        f"Failed to subscribe {err.subscription.user_id}, " f"type: {err.subscription.type}"
+                    )
+
+    async def event_oauth_authorized(self, payload: twitchio.authentication.UserTokenPayload) -> None:
+        await self.add_token(payload.access_token, payload.refresh_token)
+
+        if not payload.user_id:
+            return
+
+        if payload.user_id == self.config.BotConfig.bot_id:
+            return
+
+        subs: list[eventsub.SubscriptionPayload] = [
+            eventsub.ChatMessageSubscription(broadcaster_user_id=payload.user_id, user_id=self.config.BotConfig.bot_id),
+            eventsub.StreamOnlineSubscription(broadcaster_user_id=payload.user_id),
+        ]
+
+        resp: twitchio.MultiSubscribePayload = await self.bot.multi_subscribe(subs)
+        if resp.errors:
+            self.bot.log.warning("Failed to subscribe to: %r, for user: %s", resp.errors, payload.user_id)
 
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
         resp = await super(type(self.bot), self.bot).add_token(token, refresh)

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-import re
 
 import pytest
 
@@ -10,6 +9,15 @@ from bot.translations import Response
 from bot.utils import Check
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.cookies.stock.test_params import Params
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.stock, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
 
 
 async def base_stock(
@@ -31,14 +39,7 @@ async def base_stock(
     cookie.cooldown = values[4]
     await cookie.save()
     response: Response = await interact.stock._callback(interact, mock_context, *content)  # NOQA
-    if re_expected:
-        assert re.search(
-            re_expected, response.response_string
-        ), f"Expected pattern {re_expected!r}, got: {response.response_string!r}"
-    elif expected:
-        assert expected in response.response_string, f"Expected {expected!r}, got: {response.response_string!r}"
-    else:
-        raise ValueError("You must provide either `expected` or `expected_regex`.")
+    mock_context.Asserter.assert_string(response.response_string, expected, re_expected)
 
 
 @pytest.mark.asyncio

@@ -4,6 +4,18 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param(
+            "en", "Get status about cookies.", "To use: {}cookie count (user_name)", marks=pytest.mark.en, id="en"
+        ),
+        pytest.param(
+            "pt_BR",
+            "Veja o status dos cookies.",
+            "Para usar: {}cookie count (nome_do_usuário)",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
     no_name = [
         pytest.param(
             "en",

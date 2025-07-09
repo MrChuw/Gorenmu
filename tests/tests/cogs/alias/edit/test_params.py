@@ -4,6 +4,22 @@ import pytest
 
 
 class Params:
+    decorators = [
+        pytest.param(
+            "en",
+            "This subcommand is used to edit the command and arguments for an alias.",
+            "How to use: {}alias edit (alias) (command) (…arguments)",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Este subcomando é usado para editar o comando e os argumentos de um alias.",
+            "Como usar: {}alias edit (alias) (comando) (…argumentos)",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
     no_content = [
         pytest.param("en", "No alias or command name provided!", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "Nenhum alias ou nome de comando fornecido!", marks=pytest.mark.pt_BR, id="pt_BR"),
