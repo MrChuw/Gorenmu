@@ -6,7 +6,7 @@ import os
 import twitchio
 from twitchio.web import StarletteAdapter
 
-from bot.api import api, api_start
+# from bot.api import api, api_start
 from bot.bot import Gorenmu
 from bot.utils.config import Config
 
@@ -35,8 +35,8 @@ if __name__ == "__main__":
     async def runner() -> None:
         adapter: StarletteAdapter = StarletteAdapter(host="0.0.0.0")
         bot: Gorenmu = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
-        bot.site = api
-        bot.api_start = api_start
+        # bot.site = api
+        # bot.api_start = api_start
         await bot.DatabaseHandler.setup_database()
         await bot.LifecycleHandler.setup()
         await bot.start()

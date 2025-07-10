@@ -1,10 +1,15 @@
 __version__ = "1.0.15"
-import importlib
+
 from random import randint
+from typing import List
 
 from aiohttp_client_cache import CachedSession
 
 from .classes import parser
+from .classes.parser import (
+    Atfbooru, Behoimi, Danbooru, Derpibooru, E621, E926, Furbooru, Gelbooru, Hypnohub, Konachan, Konachan_Net,
+    Lolibooru, Paheal, Realbooru, Rule34, Safebooru, Tbib, Xbooru, Yandere,
+)
 from .client.atfbooru import Atfbooru as AtfbooruClient
 from .client.behoimi import Behoimi as BehoimiClient
 from .client.danbooru import Danbooru as DanbooruClient
@@ -26,37 +31,10 @@ from .client.xbooru import Xbooru as XbooruClient
 from .client.yandere import Yandere as YandereClient
 from .utils.parser import resolve
 
+
 # GelbooruClient = importlib.reload(GelbooruClient)
 
-from .classes.parser import (
-    Gelbooru,
-    Rule34,
-    Tbib,
-    Safebooru,
-    Xbooru,
-    Realbooru,
-    Hypnohub,
-    Danbooru,
-    Atfbooru,
-    Yandere,
-    Konachan,
-    Konachan_Net,
-    Lolibooru,
-    E621,
-    E926,
-    Derpibooru,
-    Furbooru,
-    Behoimi,
-    Paheal,
-)
-
-from typing import List
-
 # TODO: Refazer isso, organizar melhor.
-
-
-
-
 
 
 class Booru:
@@ -111,7 +89,8 @@ class Booru:
         return getattr(self, name)
 
     class Gelbooru(GelbooruClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -127,7 +106,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Rule34(Rule34Client):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -143,7 +123,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Tbib(TbibClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -159,7 +140,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Safebooru(SafebooruClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -175,7 +157,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Xbooru(XbooruClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -191,7 +174,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Realbooru(RealbooruClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -207,7 +191,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Hypnohub(HypnohubClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -223,7 +208,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Danbooru(DanbooruClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -239,7 +225,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Yandere(YandereClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -255,7 +242,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Konachan(KonachanClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -271,7 +259,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class KonachanNet(Konachan_NetClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -287,7 +276,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class E621(E621Client):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -303,7 +293,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class E926(E926Client):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -319,7 +310,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Derpibooru(DerpibooruClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -335,7 +327,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Furbooru(FurbooruClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -351,7 +344,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Behoimi(BehoimiClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -367,7 +361,8 @@ class Booru:
                 raise ValueError("Input must be a list or a dictionary.")
 
     class Paheal(PahealClient):
-        def __init__(self, session: CachedSession, amount: int):
+
+        def __init__(self, session: CachedSession, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
@@ -381,6 +376,3 @@ class Booru:
                 return self.from_dict(data)
             else:
                 raise ValueError("Input must be a list or a dictionary.")
-
-
-

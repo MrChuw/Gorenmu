@@ -497,6 +497,17 @@ class BaseTranslations:
 
             return Response({"ctx": ctx, "response_string": response})
 
+    class Safebooru(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+
+        original: str
+        preview: str
+        too_much_tags: Response
+        unexpected_error: Response
+        success: Response
+
 
 class Translations(BaseFunctions, BaseTranslations):
     def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):

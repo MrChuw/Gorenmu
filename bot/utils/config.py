@@ -5,14 +5,13 @@ from enum import Enum
 from itertools import product
 from typing import Any, Dict, List
 
-import nltk
 import toml
 from dotenv import load_dotenv
 from yarl import URL
 
 from bot.exceptions import MissingOAuthTokenError
 
-nltk.download("wordnet")
+# nltk.download("wordnet")
 load_dotenv()
 
 

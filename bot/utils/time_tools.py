@@ -1,3 +1,4 @@
+import asyncio
 import re
 from datetime import datetime, timedelta
 
@@ -212,3 +213,23 @@ class TimeTools:
             if result := parser(content):
                 return result
         return None
+
+    class Timeout:
+        def __init__(self, timeout: float):
+            self.timeout = timeout
+            self.start_time = asyncio.get_event_loop().time()
+
+        def still_valid(self) -> bool:
+            return not self.expired()
+
+        def expired(self) -> bool:
+            return self.elapsed() >= self.timeout
+
+        def elapsed(self) -> float:
+            return asyncio.get_event_loop().time() - self.start_time
+
+        def remaining(self) -> float:
+            return self.timeout - self.elapsed()
+
+        def reset(self):
+            self.start_time = asyncio.get_event_loop().time()

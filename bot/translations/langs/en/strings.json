@@ -381,5 +381,12 @@
         "cookie_loss_suffix_str": "and lost everything. {}",
         "accumulated_message": "{} You have used {} unredeemed cookie(s) {} {}",
         "last_cookie_message": "{} You used your last available cookie {} {}"
+    },
+    "Safebooru": {
+        "original_str": "Original",
+        "preview_str": "Preview",
+        "too_much_tags": "Number of tags exceeded the allowed limit of {}.",
+        "unexpected_error": "{}",
+        "success": "{}"
     }
 }

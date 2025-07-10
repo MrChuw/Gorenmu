@@ -206,7 +206,7 @@
         {
           "prefix": "## How to check an alias:",
           "args": "check cool_name",
-          "response": "User, the alias \"cool_name\" has the arguments: choice 1234 123456 | count || Link: <url>",
+          "response": "User, the alias \"cool_name\" has the arguments: choice 1234 123456 | count || Link: (URL)",
           "suffix": ""
         }
       ],
@@ -697,19 +697,15 @@
   },
   "Safebooru": {
     "helper": "Command used to generate random images from Safebooru.",
-    "usage": "To use: {}safebooru <quantity> <tags>",
+    "usage": "To use: {}safebooru (tags)",
     "description": "This command is used to generate random images from Safebooru and shorten them for convenience.",
     "commands": [
       {
-        "response": "Original: <URL> || Preview: <URL>"
-      },
-      {
-        "args": "3",
-        "response": "Original: <URL> ||  Preview: <URL> Original: <URL> ||  Preview: <URL> Original: <URL> ||  Preview: <URL>"
+        "response": "Original: (URL) || Preview: (URL)"
       },
       {
         "args": "some_tag",
-        "response": "Original: <URL> || Preview: <URL>"
+        "response": "Original: (URL) || Preview: (URL)"
       }
     ],
     "admonitions": [

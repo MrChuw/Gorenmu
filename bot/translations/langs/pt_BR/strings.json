@@ -387,5 +387,12 @@
         "cookie_loss_suffix_str": "e perdeu tudo. {}",
         "accumulated_message": "{} Você usou {} cookie(s) não resgatado(s) {} {}",
         "last_cookie_message": "{} Você usou seu último cookie disponível {} {}"
+    },
+    "Safebooru": {
+        "original_str": "Original",
+        "preview_str": "Preview",
+        "too_much_tags": "Quantidade de tags ultrapassou o limite permitido de {}.",
+        "unexpected_error": "{}",
+        "success": "{}"
     }
 }

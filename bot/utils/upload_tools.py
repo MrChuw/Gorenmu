@@ -37,6 +37,8 @@ class UploadThings:
 
     @staticmethod
     async def shortener(url: str | None, tags: list[str], bot: Gorenmu, session: CachedSession):
+        if url is None:
+            return None
         shlink_url = bot.config.ApisConfig.shlink_url
         payload = {"longUrl": url, "forwardQuery": "true", "findIfExists": "true", "tags": tags}
         headers = {
@@ -44,8 +46,6 @@ class UploadThings:
             "Content-Type": "application/json",
             "X-Api-Key": bot.config.ApisConfig.shlink_key,
         }
-        if url is None:
-            return None
         try:
             response = await session.post(shlink_url, json=payload, headers=headers)
             response = await response.json()

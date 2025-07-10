@@ -1,12 +1,11 @@
 import json
 import re
 import time
-from random import randint, shuffle
+from random import randint
 
 from aiohttp_client_cache import CachedSession
 
-from ..utils.parser import Api, deserialize
-from yarl import URL
+from ..utils.parser import Api
 
 Booru = Api()
 

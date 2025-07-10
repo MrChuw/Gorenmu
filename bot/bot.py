@@ -23,11 +23,11 @@ from bot.handlers import (
 )
 from bot.translations import TranslationManager
 from bot.utils import (
-    Cache, Config, DynamicDescriptions, MarkovProcessor, MemCache, SessionsCaches, StringTools, UploadThings,
+    Cache, Config, DynamicDescriptions, MarkovProcessor, MemCache, SessionsCaches, StringTools, TimeTools, UploadThings,
 )
 
 if TYPE_CHECKING:
-    from bot.api import api, api_start
+    # from bot.api import api, api_start
     from bot.models import Channel as ChannelModel
     from bot.ext import Routine, Context
 
@@ -61,10 +61,10 @@ class Gorenmu(commands.AutoBot):
         self.StringTools: StringTools = StringTools()
         self.cache: RedisCache | MemcachedCache | SimpleMemoryCache = Cache.cache_load(bot=self)
         self.docs_handler: DynamicDescriptions = DynamicDescriptions(self)
-        self.SessionsCaches: SessionsCaches = SessionsCaches(self)
         self.UploadThings: UploadThings = UploadThings(self)
         self.docs: defaultdict = defaultdict(dict)
 
+        self.SessionsCaches: SessionsCaches = SessionsCaches(self)
         self.TranslationManager: TranslationManager = TranslationManager()
         self.Emotes: Emotes = Emotes(bot=self)
         self.TokensHandler: TokensHandler = TokensHandler(bot=self)
@@ -73,6 +73,7 @@ class Gorenmu(commands.AutoBot):
         self.CommandHandler: CommandHandler = CommandHandler(bot=self)
         self.LifecycleHandler: LifecycleHandler = LifecycleHandler(bot=self)
         self.ContextHandler: ContextHandler = ContextHandler(bot=self)
+        self.TimeTools: TimeTools = TimeTools()
         self.mock: bool = False
 
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
@@ -90,6 +91,9 @@ class Gorenmu(commands.AutoBot):
         try:
             new_class = reload_and_get(module_name, class_name)
             instance = new_class(*args) if args else new_class()
+            old_instance = getattr(self, attr_name)
+            if getattr(old_instance, "close", None):
+                old_instance.close()
             setattr(self, attr_name, instance)
             self.log.info(f"Reloaded {attr_name} from {module_name}.{class_name}")
         except Exception as e:

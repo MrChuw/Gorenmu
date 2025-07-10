@@ -5,6 +5,7 @@ from datetime import timedelta
 from typing import TYPE_CHECKING
 
 import aiohttp
+import asyncio
 
 from bot.utils.caches_base import BaseCachedSession
 
@@ -23,6 +24,9 @@ class SessionsCaches:
         for session in vars(self).values():
             if isinstance(session, BaseCachedSession):
                 await session.close()
+
+    def close(self):
+        asyncio.create_task(self.close_all_sessions())
 
     class AdminCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -192,7 +196,7 @@ class SessionsCaches:
 
     WikipediaCachedSession: WikipediaCachedSession
 
-    class BooruCachedSession(BaseCachedSession):
+    class SafebooruCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
             self.extra_headers = {"Alt-Used": "danbooru.donmai.us", "TE": "trailers"}
@@ -201,29 +205,11 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {
-                self.bot.config.ApisConfig.shlink_url: timedelta(hours=24),
-                "https://gelbooru.com/": timedelta(hours=1),
-                "https://rule34.xxx/": timedelta(hours=1),
-                "https://tbib.org/": timedelta(hours=1),
+                str(self.bot.config.ApisConfig.shlink_url): timedelta(hours=24),
                 "https://safebooru.org/": timedelta(hours=1),
-                "https://xbooru.com/": timedelta(hours=1),
-                "https://realbooru.com/": timedelta(hours=1),
-                "https://hypnohub.net/": timedelta(hours=1),
-                "https://danbooru.donmai.us/": timedelta(hours=1),
-                "https://booru.allthefallen.moe/": timedelta(hours=1),
-                "https://yande.re/": timedelta(hours=1),
-                "https://konachan.com/": timedelta(hours=1),
-                "https://konachan.net/": timedelta(hours=1),
-                "https://lolibooru.moe/": timedelta(hours=1),
-                "https://e621.net/": timedelta(hours=1),
-                "https://e926.net/": timedelta(hours=1),
-                "https://derpibooru.org/": timedelta(hours=1),
-                "https://furbooru.com/": timedelta(hours=1),
-                "http://behoimi.org/": timedelta(hours=1),
-                "https://rule34.paheal.net/": timedelta(hours=1),
             }
 
-    BooruCachedSession: BooruCachedSession
+    SafebooruCachedSession: SafebooruCachedSession
 
     class EmotesCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
