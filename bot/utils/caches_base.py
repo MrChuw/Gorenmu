@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
 import contextlib
 import heapq
 import time
+from abc import ABC, abstractmethod
 from datetime import timedelta
 from typing import Any, Callable, Iterable, Tuple
 
@@ -84,12 +86,11 @@ class BaseCacheFunctions:
         keys = list(self.key_index.get(namespace, set()))
         return [await self._get(k, namespace=namespace) for k in keys]
 
-
     async def close(self):
         await self._scheduler.close()
 
 
-class BaseCachedSession:
+class BaseCachedSession(ABC):
     def __init__(self, bot, cache_name: str, useragent: str):
         self.bot = bot
         self.timeout = aiohttp.ClientTimeout(total=240)
@@ -124,9 +125,10 @@ class BaseCachedSession:
 
         self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers, timeout=self.timeout)
 
+    @abstractmethod
     def get_expiry_times(self) -> dict:
-        """ Sets expiration times for different URLs. Can be overridden. """
-        return {}
+        """Must be implemented by subclasses to set URL expiration times."""
+        pass
 
     def create_cache_backend(self, cache_name: str = "Default-Cache"):
         """ Abstract method to create the cache backend. Can be overridden. """

@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import asyncio
-import json
 from typing import TYPE_CHECKING
 
-from aiohttp_client_cache import CachedSession, SQLiteBackend
+from aiohttp_client_cache import CachedSession
 from loguru import logger
 
 if TYPE_CHECKING:
@@ -17,69 +15,81 @@ class UploadThings:
         self.bot = bot
 
     @staticmethod
-    async def pastebin_upload(text: str, bot: Gorenmu, cache: SQLiteBackend):
-        await asyncio.sleep(0)
-        async with CachedSession(cache=cache) as session:
-            async with session.post(bot.config.BotConfig.pastebin_url, data=text.encode("utf-8")) as r:
-                return None if r.status != 200 else (await r.read()).decode("utf8")
-
-    @staticmethod
-    async def send_imgur(links: list[str], bot: Gorenmu, session: CachedSession):
+    async def _safe_post(session: CachedSession, url: str, **kwargs):
         try:
-            session.headers.update({"x-api-key": bot.config.ApisConfig.image_carousel_api_key})
-            response = await session.post(bot.config.ApisConfig.image_carousel, json={"urls": links})
-            embed = json.loads(await response.text())
-            session.headers.pop("x-api-key")
-            return embed["success"]
+            response = await session.post(url, **kwargs)
+            if response.status == 200:
+                return response
+            logger.warning(f"Request to {url} failed with status {response.status}")
         except Exception as e:
-            logger.error(e)
-            return None
+            logger.exception(f"Error posting to {url}: {e}")
+        return None
 
-    @staticmethod
-    async def shortener(url: str | None, tags: list[str], bot: Gorenmu, session: CachedSession):
+    async def _bytes_post(self, session: CachedSession, url: str, **kwargs) -> str:
+        response = await self._safe_post(session, url, **kwargs)
+        return (await response.read()).decode("utf-8") if response else None
+
+    async def _json_post(self, session: CachedSession, url: str, **kwargs) -> dict:
+        response = await self._safe_post(session, url, **kwargs)
+        return await response.json() if response else None
+
+    async def pastebin_upload(self, text: str, session: CachedSession):
+        return await self._bytes_post(session, self.bot.config.BotConfig.pastbin_url, data=text.encode("utf-8"))
+
+    async def send_imgur(self, links: list[str], session: CachedSession):
+        url = self.bot.config.ApisConfig.image_carousel
+        headers = {"x-api-key": self.bot.config.ApisConfig.image_carousel_api_key}
+        data = await self._json_post(session, url, json={"urls": links}, headers=headers)
+        session.headers.pop("x-api-key", None)
+        if data:
+            try:
+                return data.get("success")
+            except Exception as e:
+                logger.error(f"Failed to parse Imgur response: {e}")
+        return None
+
+    async def shortener(self, url: str | None, tags: list[str], session: CachedSession):
         if url is None:
             return None
-        shlink_url = bot.config.ApisConfig.shlink_url
+        shlink_url = self.bot.config.ApisConfig.shlink_url
         payload = {"longUrl": url, "forwardQuery": "true", "findIfExists": "true", "tags": tags}
         headers = {
             "accept": "application/json",
             "Content-Type": "application/json",
-            "X-Api-Key": bot.config.ApisConfig.shlink_key,
+            "X-Api-Key": self.bot.config.ApisConfig.shlink_key,
         }
-        try:
-            response = await session.post(shlink_url, json=payload, headers=headers)
-            response = await response.json()
-            return None if "status" in response else response["shortUrl"]
-        except Exception as e:
-            logger.error(e)
-            return None
+        data = await self._json_post(session, shlink_url, json=payload, headers=headers)
+        session.headers.pop("x-api-key", None)
+        if data:
+            try:
+                return None if "status" in data else data.get("shortUrl")
+            except Exception as e:
+                logger.error(f"Failed to parse shortener response: {e}")
+        return None
 
-    @staticmethod
-    async def upload(data: bytes, bot: Gorenmu, tipo: str, nome: str, cache: SQLiteBackend) -> dict | None:
-        try:
-            async with CachedSession(cache=cache) as session:
-                body = (
-                    b"--faa88938ece74999ac092a3e782951fb\r\n"
-                    b'Content-Disposition: form-data; name="files"; filename="' + nome.encode() + b'"\r\n'
-                    b"Content-Type:" + tipo.encode() + b"\r\n\r\n"
-                )
-                body += data + b"\r\n"
-                body += b"--faa88938ece74999ac092a3e782951fb--\r\n"
+    async def upload(self, data: bytes, mime_type: str, filename: str, session: CachedSession) -> dict | None:
+        boundary = "faa88938ece74999ac092a3e782951fb"
+        url = self.bot.config.BotConfig.file_upload_url
+        headers = {
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+            "Authorization": self.bot.config.ApisConfig.file_upload_api_key,
+        }
 
-                headers = {
-                    "Content-Type": "multipart/form-data; boundary=faa88938ece74999ac092a3e782951fb",
-                    "Authorization": bot.config.ApisConfig.file_upload_api_key,
-                }
+        body = (
+            (
+                f"--{boundary}\r\n"
+                f'Content-Disposition: form-data; name="files"; filename="{filename}"\r\n'
+                f"Content-Type: {mime_type}\r\n\r\n"
+            ).encode("utf-8")
+            + data
+            + f"\r\n--{boundary}--\r\n".encode("utf-8")
+        )
 
-                async with session.post(bot.config.BotConfig.file_upload_url, data=body, headers=headers) as resp:
-                    return json.loads(await resp.text())
+        data = await self._json_post(session, url, data=body, headers=headers)
+        session.headers.pop("x-api-key", None)
+        return data or None
 
-        except Exception as e:
-            logger.error(e)
-            return None
-
-    @staticmethod
-    async def upload_alias(data: dict, session: CachedSession):
-        url = "https://alias.mrchuw.com.br/submit"
-        response = await session.post(url, data=data)
-        return response.url.human_repr()
+    async def upload_alias(self, data: dict, session: CachedSession):
+        url = self.bot.config.ApisConfig.alias_url
+        response = await self._safe_post(session, url, data=data)
+        return response.url.human_repr() if response else None

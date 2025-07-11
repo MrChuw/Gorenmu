@@ -432,7 +432,7 @@ async def upload_alias(ctx: Context, aliases: list[Alias], table_name: str):
     alias_cached_session = ctx.bot.SessionsCaches.AliasCachedSession.session
     response_url = await ctx.bot.UploadThings.upload_alias(data=data, session=alias_cached_session)
 
-    return await ctx.bot.UploadThings.shortener(response_url, ["aliases"], ctx.bot, alias_cached_session)
+    return await ctx.bot.UploadThings.shortener(response_url, ["aliases"], alias_cached_session)
 
 
 # endregion

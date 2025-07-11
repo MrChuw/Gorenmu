@@ -110,6 +110,7 @@ class ApisConfig:
         self.file_upload_api_key: URL = URL(data.get("file_upload_api_key", "https://upload.exemple.org"))
         self.pastebin_url: URL = URL(data.get("pastebin_url", "https://bit.exemple.org"))
         self.enable_site_endpoints: bool = data.get("enable_site_endpoints", False)
+        self.alias_url: URL = URL(data.get("alias_url", "https://exemple.org"))
 
 
 class DatabaseConfig:

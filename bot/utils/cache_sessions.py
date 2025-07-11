@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import asyncio
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
 import aiohttp
-import asyncio
 
 from bot.utils.caches_base import BaseCachedSession
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class SessionsCaches:
-    def __init__(self, bot):
+    def __init__(self, bot: Gorenmu):
         self.UserAgent: str = "Mozilla/5.0 (compatible; Gorenmu/2.0; +https://github.com/MrChuw/Gorenmu)"
         for name, cls in vars(self.__class__).items():
             if isinstance(cls, type) and issubclass(cls, BaseCachedSession):
@@ -27,6 +27,8 @@ class SessionsCaches:
 
     def close(self):
         asyncio.create_task(self.close_all_sessions())
+
+    # Old
 
     class AdminCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -116,36 +118,6 @@ class SessionsCaches:
 
     ToolsCachedSession: ToolsCachedSession
 
-    class AliasCachedSession(BaseCachedSession):
-        def __init__(self, bot: Gorenmu, useragent: str):
-            self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Alias_requests", useragent=useragent)
-
-        def get_expiry_times(self) -> dict:
-            return {"*/*": -1}
-
-    AliasCachedSession: AliasCachedSession
-
-    class CountCachedSession(BaseCachedSession):
-        def __init__(self, bot: Gorenmu, useragent: str):
-            self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Count_requests", useragent=useragent)
-
-        def get_expiry_times(self) -> dict:
-            return {"*/*": timedelta(minutes=30)}
-
-    CountCachedSession: CountCachedSession
-
-    class TranslateCachedSession(BaseCachedSession):
-        def __init__(self, bot: Gorenmu, useragent: str):
-            self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Translate_requests", useragent=useragent)
-
-        def get_expiry_times(self) -> dict:
-            return {"*/*": timedelta(weeks=4 * 6)}
-
-    TranslateCachedSession: TranslateCachedSession
-
     class ImgurCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -156,13 +128,25 @@ class SessionsCaches:
 
     ImgurCachedSession: ImgurCachedSession
 
+    # New
+
+    class AliasCachedSession(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, cache_name="Alias_requests", useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {self.bot.config.ApisConfig.alias_url.human_repr(): timedelta(days=100)}
+
+    AliasCachedSession: AliasCachedSession
+
     class ColorCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
             super().__init__(bot=bot, cache_name="Color_requests", useragent=useragent)
 
         def get_expiry_times(self) -> dict:
-            return {"thecolorapi.com": timedelta(days=30)}
+            return {"thecolorapi.com/*": timedelta(days=30)}
 
     ColorCachedSession: ColorCachedSession
 
@@ -205,7 +189,7 @@ class SessionsCaches:
 
         def get_expiry_times(self) -> dict:
             return {
-                str(self.bot.config.ApisConfig.shlink_url): timedelta(hours=24),
+                self.bot.config.ApisConfig.shlink_url.human_repr(): timedelta(hours=24),
                 "https://safebooru.org/": timedelta(hours=1),
             }
 
@@ -223,3 +207,23 @@ class SessionsCaches:
             }
 
     EmotesCachedSession: EmotesCachedSession
+
+    class TranslateCachedSession(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, cache_name="Translate_requests", useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {"https://translate.google.com/*": timedelta(weeks=4 * 6)}
+
+    TranslateCachedSession: TranslateCachedSession
+
+    class CountCachedSession(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, cache_name="Count_requests", useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {"*/*": timedelta(minutes=30)}
+
+    CountCachedSession: CountCachedSession

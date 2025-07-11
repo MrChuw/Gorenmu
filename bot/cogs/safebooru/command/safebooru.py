@@ -93,7 +93,7 @@ async def shortener(images: list[URL], images_preview: list[URL], ctx: Context):
     shortener_ = ctx.bot.UploadThings.shortener
 
     async def shorten(imagem):
-        return await shortener_(imagem.human_repr() if imagem else None, ["booru"], ctx.bot, session)
+        return await shortener_(imagem.human_repr() if imagem else None, ["booru"], session)
 
     return (
         [await shorten(imagem) for imagem in images],
