@@ -48,10 +48,10 @@ class Gorenmu(commands.AutoBot):
         self.routines: list[Routine] = []
         self.bots_ids: list[int] = []
         self.manual_event_message: list[Callable] = []
-        self.api: api | None = None
+        # self.api: api | None = None
+        # self.api_start: api_start = None
         self.MarkovProcessor: MarkovProcessor | None = None
         self.MarkovTask: Task[None] | None = None
-        self.api_start: api_start = None
         self.dev_name: str | None = None
         self.dev_display_name: str
         self.bot_nick: str | None = None

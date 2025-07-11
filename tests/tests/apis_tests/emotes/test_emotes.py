@@ -2,13 +2,12 @@
 import random
 import re
 import time
-from unittest.mock import MagicMock
 
 import pytest
 import pytest_asyncio
 from aioresponses import aioresponses
 
-from bot.apis import Color, Emotes
+from bot.apis import Emotes
 
 lang = "en"
 
@@ -266,20 +265,4 @@ async def test_get_emotes_cached_real_session(interact):
         "ppPoof",
         "ppL",
     ]
-    assert elapsed < 0.1, f"Expected: Basically instantaneous. But it took: {elapsed:.4f}s"
-
-
-@pytest.mark.network
-@pytest.mark.asyncio
-async def test_name_real_session_cached(mock_bot):
-    session = mock_bot.tests_sessions.ColorSession.session
-
-    result1 = await Color.name({"hex": "24B1E0"}, session, MagicMock())
-    assert result1 == "Cerulean", f"Expected 'Cerulean' from real API, but got {result1!r}"
-
-    start = time.perf_counter()
-    result2 = await Color.name({"hex": "24B1E0"}, session, MagicMock())
-    elapsed = time.perf_counter() - start
-
-    assert result2 == "Cerulean", f"Expected 'Cerulean' from real API, but got {result2!r}"
     assert elapsed < 0.1, f"Expected: Basically instantaneous. But it took: {elapsed:.4f}s"

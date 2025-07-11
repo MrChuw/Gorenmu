@@ -141,7 +141,7 @@ class Booru:
 
     class Safebooru(SafebooruClient):
 
-        def __init__(self, session: CachedSession, amount: int = 1):
+        def __init__(self, session: CachedSession | None, amount: int = 1):
             super().__init__(session, amount)
 
         @staticmethod
