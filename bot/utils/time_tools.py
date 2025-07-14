@@ -223,6 +223,8 @@ class TimeTools:
             self.error = asyncio.CancelledError
 
         def still_valid(self) -> bool:
+            if not self.start_time:
+                self.start_time = asyncio.get_event_loop().time()
             return not self.expired()
 
         def expired(self) -> bool:
