@@ -217,7 +217,10 @@ class TimeTools:
     class Timeout:
         def __init__(self, timeout: float):
             self.timeout = timeout
-            self.start_time = asyncio.get_event_loop().time()
+            self.start_time = None
+            self._task = None
+            self._timeout_handle = None
+            self.error = asyncio.CancelledError
 
         def still_valid(self) -> bool:
             return not self.expired()
@@ -229,7 +232,22 @@ class TimeTools:
             return asyncio.get_event_loop().time() - self.start_time
 
         def remaining(self) -> float:
-            return self.timeout - self.elapsed()
+            return max(0, self.timeout - self.elapsed())  # NOQA
 
         def reset(self):
             self.start_time = asyncio.get_event_loop().time()
+
+        async def __aenter__(self):
+            self.start_time = asyncio.get_event_loop().time()
+            self._task = asyncio.current_task()
+            self._timeout_handle = asyncio.get_event_loop().call_later(self.timeout, self._cancel_task)  # NOQA
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            if self._timeout_handle:
+                self._timeout_handle.cancel()
+            return isinstance(exc, asyncio.CancelledError)
+
+        def _cancel_task(self):
+            if self._task:
+                self._task.cancel()

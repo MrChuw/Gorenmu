@@ -67,9 +67,9 @@ class UploadThings:
                 logger.error(f"Failed to parse shortener response: {e}")
         return None
 
-    async def upload(self, data: bytes, mime_type: str, filename: str, session: CachedSession) -> dict | None:
+    async def upload_file(self, data: bytes, mime_type: str, filename: str, session: CachedSession) -> dict | None:
         boundary = "faa88938ece74999ac092a3e782951fb"
-        url = self.bot.config.BotConfig.file_upload_url
+        url = self.bot.config.ApisConfig.file_upload_url
         headers = {
             "Content-Type": f"multipart/form-data; boundary={boundary}",
             "Authorization": self.bot.config.ApisConfig.file_upload_api_key,
@@ -87,7 +87,7 @@ class UploadThings:
 
         data = await self._json_post(session, url, data=body, headers=headers)
         session.headers.pop("x-api-key", None)
-        return data or None
+        return data["url"] or None
 
     async def upload_alias(self, data: dict, session: CachedSession):
         url = self.bot.config.ApisConfig.alias_url

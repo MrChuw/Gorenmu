@@ -17,7 +17,7 @@ class DecorationsFunctions(BaseFunctions):
         if "usage" in dir(cls):
             return cls  # NOQA
         decorator = ctx.command.decorators[ctx.user.language]
-        for classe in dir(decorator):
+        for classe in dir(decorator):  # NOQA
             if classe.startswith("__") or classe.startswith("get_"):
                 continue
             invoke_by = ctx.message.text.partition(" ")[0][len(ctx.prefix) :].lower()
@@ -245,6 +245,9 @@ class BaseDecorators:
             pass
 
     class Safebooru(BaseCommand):
+        pass
+
+    class PixelSorting(BaseCommand):
         pass
 
 

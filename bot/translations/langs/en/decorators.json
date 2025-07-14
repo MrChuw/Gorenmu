@@ -715,5 +715,51 @@
         "message": "For tags containing spaces, the space must be replaced with \"_\"."
       }
     ]
+  },
+  "PixelSorting": {
+    "helper": "Command used to make basic pixel sorting in images.",
+    "usage": "To use: {}pxs (url or shortened direct link) ",
+    "description": "This command processes an image using pixel sorting algorithms. You can specify the color mode, intensity, direction, crop tiles, randomization, and masking options.",
+    "extras": "",
+    "commands": [
+      {
+        "prefix": "An image URL with no default arguments.",
+        "args": "(image url)",
+        "response": "(link for the image.)",
+        "suffix": ""
+      },
+      {
+        "prefix": "An image URL with with arguments.",
+        "args": "type:red crop:100px:100px maskmode:internal dire:horizontal",
+        "response": "(link for the image.)",
+        "suffix": ""
+      }
+    ],
+    "admonitions": [
+      {
+        "admonition_type": "info",
+        "position": "top",
+        "title": "Multiple Sorting Modes",
+        "message": "You can use modes like red, green, blue, sum, rgb, hue, saturation, value, luma, and more."
+      },
+      {
+        "admonition_type": "info",
+        "position": "middle",
+        "title": "Masking Options",
+        "message": "You can control which pixels are affected using [maskmode:internal|external] and [maskthreshold:128]."
+      },
+      {
+        "admonition_type": "info",
+        "position": "bottom",
+        "title": "Random Segments",
+        "message": "Set [rand:true] to introduce randomness into which segments are sorted."
+      },
+      {
+        "admonition_type": "warning",
+        "position": "top",
+        "title": "Max Resolution",
+        "message": "Images larger than 1920x1080 will be resized automatically."
+      }
+    ]
   }
 }

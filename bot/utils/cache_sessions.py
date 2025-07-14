@@ -227,3 +227,13 @@ class SessionsCaches:
             return {"*/*": timedelta(minutes=30)}
 
     CountCachedSession: CountCachedSession
+
+    class PixelSortingCachedSession(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, cache_name="PixelSorting_requests", useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {"*/*": timedelta(hours=6)}
+
+    PixelSortingCachedSession: PixelSortingCachedSession

@@ -388,5 +388,11 @@
         "too_much_tags": "Number of tags exceeded the allowed limit of {}.",
         "unexpected_error": "{}",
         "success": "{}"
+    },
+    "PixelSorting": {
+        "no_url": "No valid URL provided.",
+        "invalid_content_type": "Only real image files (like .jpg, .png) are accepted, no previews or unsupported links.",
+        "took_too_long": "{} seconds have passed and the process has not finished. Try a smaller image or less types.",
+        "image": "{}"
     }
 }

@@ -7,14 +7,16 @@ import random
 import re
 from datetime import datetime
 from string import ascii_letters, digits
-from typing import Optional, Union
+from typing import List, Optional, Tuple, Union
 
 from emoji import demojize
 from unidecode import unidecode
+from urlextract import URLExtract
 
 from bot.exceptions import InvalidUsername
 
 letters_and_digits = ascii_letters + digits
+url_extractor = URLExtract()
 
 
 class StringTools:
@@ -165,13 +167,23 @@ class StringTools:
         return text, option
 
     @staticmethod
-    def extract_and_remove_field(text: str, field: str) -> tuple[str, str | None]:
-        pattern = rf'{field}:"(.*?)"'
+    def extract_and_remove_field(text: str, field: str, default: str | float = None) -> tuple[str, str | None]:
+        pattern = rf'{field}:(?:"(.*?)"|(\S+))'
         if match := re.search(pattern, text):
             value = match[1]
             text = text.replace(value, "")
             return text, value
-        return text, None
+        return text, default
+
+    @staticmethod
+    def extract_and_remove_all_fields(text: str, field: str, default: List[str] = None) -> Tuple[str, List[str]]:
+        if default is None:
+            default = []
+        pattern = rf'{field}:(?:"(.*?)"|(\S+))'
+        matches = re.findall(pattern, text)
+        values = [m[0] or m[1] for m in matches]
+        cleaned_text = re.sub(pattern, "", text).strip()
+        return cleaned_text, values or default
 
     @staticmethod
     def is_int(text: str) -> bool:
@@ -208,3 +220,7 @@ class StringTools:
         if text in lang_all:
             return amount_available, True
         return self.to_amount(text, default), False
+
+    @staticmethod
+    def urls_extract(text: str):
+        return url_extractor.find_urls(text=text)

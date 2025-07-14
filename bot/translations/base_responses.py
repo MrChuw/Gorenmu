@@ -508,6 +508,16 @@ class BaseTranslations:
         unexpected_error: Response
         success: Response
 
+    class PixelSorting(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+
+        no_url: Response
+        invalid_content_type: Response
+        took_too_long: Response
+        image: Response
+
 
 class Translations(BaseFunctions, BaseTranslations):
     def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):

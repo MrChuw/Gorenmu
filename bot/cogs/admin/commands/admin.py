@@ -105,6 +105,12 @@ class AdminSmallCmds(commands.CustomComponent):
                 "class": "SessionsCaches",
                 "args": [self.bot],
             },
+            "string_mani": {
+                "attr": "StringTools",
+                "module": "bot.utils.string_manipulation",
+                "class": "StringTools",
+                "args": [],
+            },
         }
 
         if command == "commands":

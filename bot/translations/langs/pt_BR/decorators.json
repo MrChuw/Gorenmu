@@ -715,5 +715,51 @@
         "message": "Para tags contendo espaços, o espaço deve ser substituído por \"_\"."
       }
     ]
+  },
+  "PixelSorting": {
+    "helper": "Comando usado para aplicar pixel sorting básico em imagens.",
+    "usage": "Como usar: {}pxs (url ou link direto encurtado)",
+    "description": "Este comando processa uma imagem utilizando algoritmos de pixel sorting. Você pode especificar o modo de cor, intensidade, direção, recorte por blocos, aleatoriedade e opções de máscara.",
+    "extras": "",
+    "commands": [
+      {
+        "prefix": "Uma URL de imagem sem argumentos.",
+        "args": "(url da imagem)",
+        "response": "(link da imagem gerada.)",
+        "suffix": ""
+      },
+      {
+        "prefix": "Uma URL de imagem com argumentos.",
+        "args": "type:red crop:100px:100px maskmode:internal dire:horizontal",
+        "response": "(link da imagem gerada.)",
+        "suffix": ""
+      }
+    ],
+    "admonitions": [
+      {
+        "admonition_type": "info",
+        "position": "top",
+        "title": "Múltiplos modos de ordenação",
+        "message": "Você pode usar modos como red, green, blue, sum, rgb, hue, saturation, value, luma e outros."
+      },
+      {
+        "admonition_type": "info",
+        "position": "middle",
+        "title": "Opções de máscara",
+        "message": "Você pode controlar quais pixels serão afetados usando [maskmode:internal|external] e [maskthreshold:128]."
+      },
+      {
+        "admonition_type": "info",
+        "position": "bottom",
+        "title": "Segmentos aleatórios",
+        "message": "Defina [rand:true] para introduzir aleatoriedade nos segmentos que serão ordenados."
+      },
+      {
+        "admonition_type": "warning",
+        "position": "top",
+        "title": "Resolução máxima",
+        "message": "Imagens maiores que 1920x1080 serão redimensionadas automaticamente."
+      }
+    ]
   }
 }

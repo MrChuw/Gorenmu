@@ -28,3 +28,4 @@ urlextract==1.9.0
 uvicorn==0.34.2
 humanize==4.12.3
 yarl==1.19.0
+pillow==11.3.0

@@ -4,7 +4,6 @@ from typing import Optional, TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 from tortoise import fields
-from urlextract import URLExtract
 
 from bot.models.base import Base, ContentMixin, TimestampMixin
 from bot.models.User_extras import MessagesLog, NickHistory
@@ -31,8 +30,6 @@ if TYPE_CHECKING:
     )
 
     GetReturnT = "User" | Response | None
-
-url_extractor = URLExtract()
 
 
 class User(Base, TimestampMixin, ContentMixin):
@@ -140,7 +137,7 @@ class User(Base, TimestampMixin, ContentMixin):
 
     @staticmethod
     async def log_message(user: User, ctx: Context):
-        message_type = "message_link" if url_extractor.find_urls(text=ctx.message.text) else "message"
+        message_type = "message_link" if ctx.bot.StringTools.urls_extract(ctx.message.text) else "message"
         await MessagesLog.create(
             user=user, content=ctx.message.text[:500], type=message_type, channel=ctx.bot.channels[ctx.channel.name]
         )
