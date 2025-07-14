@@ -394,5 +394,8 @@
         "invalid_content_type": "Only real image files (like .jpg, .png) are accepted, no previews or unsupported links.",
         "took_too_long": "{} seconds have passed and the process has not finished. Try a smaller image or less types.",
         "image": "{}"
+    },
+    "Ping": {
+        "ping": "{} || TMI: {} || RAM: {} || {}"
     }
 }

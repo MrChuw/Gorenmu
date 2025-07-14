@@ -761,5 +761,36 @@
         "message": "Imagens maiores que 1920x1080 serão redimensionadas automaticamente."
       }
     ]
+  },
+  "Ping": {
+    "helper": "Comando para verificar se o bot esta vivo.",
+    "usage": "Como usar: {}ping ou {}pong",
+    "description": "Este comando mede o tempo de resposta do bot, mostra o uso de memória e há quanto tempo o bot está online.",
+    "commands": [
+      {
+        "args": "",
+        "response": "pong 🏓 || TMI: 123 ms || RAM: 123 MB || ligado há 1 hora"
+      }
+    ],
+    "admonitions": [
+      {
+        "admonition_type": "info",
+        "position": "bottom",
+        "title": "TMI",
+        "message": "TMI representa o tempo de mensagem interna — o tempo entre o envio da sua mensagem e a execução do comando."
+      },
+      {
+        "admonition_type": "info",
+        "position": "bottom",
+        "title": "RAM",
+        "message": "Mostra quanta memória RAM o processo atual do bot está utilizando."
+      },
+      {
+        "admonition_type": "info",
+        "position": "bottom",
+        "title": "Tempo de atividade",
+        "message": "Mostra há quanto tempo o bot está online desde o último boot."
+      }
+    ]
   }
 }

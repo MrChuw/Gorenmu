@@ -400,5 +400,8 @@
         "invalid_content_type": "Somente arquivos de imagem reais (como .jpg, .png) são aceitos, sem pré-visualizações ou links não suportados.",
         "took_too_long": "{} segundos se passaram e o processo não foi concluído. Tente uma imagem menor ou menos tipos.",
         "image": "{}"
+    },
+    "Ping": {
+        "ping": "{} || TMI: {} || RAM: {} || {}"
     }
 }
