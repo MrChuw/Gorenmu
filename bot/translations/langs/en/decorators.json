@@ -761,5 +761,48 @@
         "message": "Images larger than 1920x1080 will be resized automatically."
       }
     ]
+  },
+  "Ping": {
+    "helper": "Command to check if the bot is alive.",
+    "usage": "How to use: {}ping or {}pong",
+    "description": "This command measures the bot's response time, shows memory usage, and how long the bot has been online.",
+    "commands": [
+      {
+        "args": "",
+        "response": "pong 🏓 || TMI: 123 ms || RAM: 123 MB || up for 1 hour"
+      }
+    ],
+    "admonitions": [
+      {
+        "admonition_type": "info",
+        "position": "bottom",
+        "title": "TMI",
+        "message": "TMI stands for Internal Message Time — the time between the message being sent and the bot replying."
+      },
+      {
+        "admonition_type": "info",
+        "position": "bottom",
+        "title": "RAM",
+        "message": "Shows how much RAM memory the current bot process is using."
+      },
+      {
+        "admonition_type": "info",
+        "position": "bottom",
+        "title": "Uptime",
+        "message": "Shows how long the bot has been online since the last boot."
+      }
+    ]
+  },
+  "BotInfo": {
+    "helper": "Shows general bot statistics, uptime, and metadata like site and developer.",
+    "usage": "How to use: {}botinfo | {}site | {}uptime",
+    "description": "Displays information about the bot, such as number of channels, total commands, developer, uptime, and site.",
+    "extras": "",
+    "commands": [
+      {
+        "response": "I am connected to 10 channels, with 50 commands, made by @DevName in Python (Twitchio). Bot website: https://example.com"
+      }
+    ],
+    "admonitions": []
   }
 }

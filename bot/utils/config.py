@@ -81,7 +81,6 @@ class BotConfig:
         self.color: str = data.get("color", "#000000")
         self.dev_userid: str = data.get("dev_userid", "Exemple")
         self.dev_name: str = data.get("dev_name", "Exemple")
-        self.dev_display_name: str = data.get("dev_display_name", "Exemple")
         self.prefix: List[str] = [data.get("default_prefix", "+")]
         if allowed_prefix := data.get("allowed_prefix_list"):
             self.prefix = prefix_generator(f"{self.prefix}{allowed_prefix}")

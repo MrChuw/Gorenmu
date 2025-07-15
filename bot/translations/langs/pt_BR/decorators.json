@@ -792,5 +792,17 @@
         "message": "Mostra há quanto tempo o bot está online desde o último boot."
       }
     ]
+  },
+  "BotInfo": {
+    "helper": "Exibe estatísticas gerais do bot, tempo de atividade e metadados como site e desenvolvedor.",
+    "usage": "Como usar: {}botinfo | {}site | {}uptime",
+    "description": "Mostra informações sobre o bot, como número de canais, total de comandos, desenvolvedor, tempo online e site.",
+    "extras": "",
+    "commands": [
+      {
+        "response": "Estou conectado a 10 canais, com 50 comandos, feito por @DevName em Python (Twitchio). Site do bot: https://exemplo.com"
+      }
+    ],
+    "admonitions": []
   }
 }

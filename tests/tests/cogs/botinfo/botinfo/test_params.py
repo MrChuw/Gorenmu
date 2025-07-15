@@ -1,0 +1,48 @@
+# -*- coding: utf-8 -*-
+
+import pytest
+
+
+class Params:
+    decorators = [
+        pytest.param(
+            "en",
+            "Shows general bot statistics, uptime, and metadata like site and developer.",
+            "How to use: {}botinfo | {}site | {}uptime",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Exibe estatísticas gerais do bot, tempo de atividade e metadados como site e desenvolvedor.",
+            "Como usar: {}botinfo | {}site | {}uptime",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+    no_content = [
+        pytest.param(
+            "en",
+            "I am connected to 8 channels, with 70 commands, "
+            "made by @mr_chuw in Python (Twitchio). Bot website: https://gorenmu.vercel.app/",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Estou conectado a canais 8, com comandos 70, "
+            "criados por @mr_chuw em Python (Twitchio). Site do bot: https://gorenmu.vercel.app/",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
+    site = [
+        pytest.param("en", "https://gorenmu.vercel.app/", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", "https://gorenmu.vercel.app/", marks=pytest.mark.pt_BR, id="pt_BR"),
+    ]
+
+    uptime = [
+        pytest.param("en", r"I woke up \d+\.\d{2} seconds ago.", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", r"Eu acordei há \d+\.\d{2} segundo", marks=pytest.mark.pt_BR, id="pt_BR"),
+    ]

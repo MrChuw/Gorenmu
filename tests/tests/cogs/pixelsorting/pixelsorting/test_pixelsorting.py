@@ -5,7 +5,7 @@ import pytest_asyncio
 
 from bot.cogs.pixelsorting.command.pixelsorting import PixelSortCmd
 from tests.helpers.mock_classes import MockContext
-from tests.tests.cogs.pixelsorting.test_params import Params
+from tests.tests.cogs.pixelsorting.pixelsorting.test_params import Params
 
 
 @pytest_asyncio.fixture

@@ -403,5 +403,10 @@
     },
     "Ping": {
         "ping": "{} || TMI: {} || RAM: {} || {}"
+    },
+    "BotInfo": {
+        "info": "Estou conectado a canais {}, com comandos {}, criados por @{} em Python (Twitchio). Site do bot: {}",
+        "site": "{}",
+        "uptime": "Eu acordei há {}"
     }
 }

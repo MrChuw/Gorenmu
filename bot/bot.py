@@ -53,7 +53,6 @@ class Gorenmu(commands.AutoBot):
         self.MarkovProcessor: MarkovProcessor | None = None
         self.MarkovTask: Task[None] | None = None
         self.dev_name: str | None = None
-        self.dev_display_name: str
         self.bot_nick: str | None = None
         self.log: Logger = log
         self.config: Config = configs

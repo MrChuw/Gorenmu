@@ -48,7 +48,6 @@ class LifecycleHandler:
         if not self.bot.mock:
             await self.bot.TokensHandler.setup_conduit()
         self.bot.dev_name = (await self.bot.fetch_users(ids=[self.config.BotConfig.dev_userid]))[0].display_name
-        self.bot.dev_display_name = self.config.BotConfig.dev_display_name
         self.config.BotConfig.dev_name = self.bot.dev_name
 
         self.bot.log.info(

@@ -397,5 +397,10 @@
     },
     "Ping": {
         "ping": "{} || TMI: {} || RAM: {} || {}"
+    },
+    "BotInfo": {
+        "info": "I am connected to {} channels, with {} commands, made by @{} in Python (Twitchio). Bot website: {}",
+        "site": "{}",
+        "uptime": "I woke up {} ago."
     }
 }

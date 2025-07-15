@@ -525,6 +525,15 @@ class BaseTranslations:
 
         ping: Response
 
+    class BotInfo(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+
+        info: Response
+        uptime: Response
+        site: Response
+
 
 class Translations(BaseFunctions, BaseTranslations):
     def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):

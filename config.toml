@@ -9,7 +9,6 @@ bot_id = 707980467
 color = 0x9147FF
 dev_userid = 411010313
 dev_name = "mr_chuw"  # This name will be replaced by twitch name when bot fully starts, it is used on start to create the channel on database, so put our twitch nick.
-dev_display_name = "MrChuw"
 default_prefix = "+"
 allowed_prefix_list = false
 allowed_prefix_size = 10
