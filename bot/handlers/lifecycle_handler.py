@@ -31,8 +31,8 @@ class LifecycleHandler:
         await self.bot.ChannelHandler.load_channels()
         self.bot.MarkovTask = asyncio.create_task(self.bot.MarkovProcessor.process_message(), name="process_message")
         await self.bot.CommandHandler.load_cogs()
-        if self.config.ApisConfig.enable_site_endpoints:
-            asyncio.create_task(self.bot.api_start(self.bot))
+        # if self.config.ApisConfig.enable_site_endpoints:
+        #     asyncio.create_task(self.bot.api_start(self.bot))
 
     async def close(self):
         await self.bot.DatabaseHandler.close_db()
@@ -128,13 +128,16 @@ class LifecycleHandler:
     async def get_context(self, payload: ChatMessage | twitchio.Whisper) -> Context:
         if "\x01ACTION " in payload.text:
             payload.text = payload.text.replace("\x01ACTION ", "").replace("\x01", "")
-        prefix = await self.get_prefix(payload)
         invoke_by = None
         if payload.reply:
             payload.text = payload.text.removeprefix(payload.reply.parent_user.mention).lstrip()
+            payload.text = f"{payload.text} {payload.reply.parent_message_body}"
 
-        if payload and payload.text and prefix in payload.text:
+        prefix = await self.get_prefix(payload)
+        prefix_in = prefix in payload.text
+        if payload and payload.text and prefix_in:
             invoke_by = payload.text.partition(" ")[0][len(prefix) :].lower()
-        ctx = Context(message=payload, bot=self.bot, prefix=prefix, invoke_by=invoke_by)
+
+        ctx = Context(message=payload, bot=self.bot, prefix=prefix if prefix_in else None, invoke_by=invoke_by)
         ctx.get_command()
         return ctx
