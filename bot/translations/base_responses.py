@@ -541,6 +541,7 @@ class BaseTranslations:
 
         color: Response
         no_user_hex: Response
+        user_not_color: Response
         user_color: str
         hex_color: str
         saved_color: str

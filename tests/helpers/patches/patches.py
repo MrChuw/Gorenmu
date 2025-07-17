@@ -28,7 +28,7 @@ class MockBuilder:
         mock_color = MagicMock()
         mock_color.hex_clean = return_value
         mock_chatter = MagicMock()
-        mock_chatter.color = mock_color
+        mock_chatter.color = mock_color if return_value else return_value
         mock_fetch = AsyncMock(return_value=[mock_chatter])
         self.patches.append(patch.object(self.mock_context.bot, "fetch_chatters_color", mock_fetch))
         return self

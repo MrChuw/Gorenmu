@@ -63,3 +63,10 @@ async def test_user_db(interact, mock_context: MockContext, lang: str, expected:
 async def test_no_user_no_hex(interact, mock_context: MockContext, lang: str, expected: str):
     async with mock_context.MockBuilder.color_name().bot_fetch_user(None):
         await base_color(interact, mock_context, lang=lang, content="some_text", expected=expected)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, expected", Params.user_no_color)
+async def test_user_no_color(interact, mock_context: MockContext, lang: str, expected: str):
+    async with mock_context.MockBuilder.color_name().bot_fetch_user().bot_fetch_chatters_color(None):
+        await base_color(interact, mock_context, lang=lang, content="@some_user", expected=expected)

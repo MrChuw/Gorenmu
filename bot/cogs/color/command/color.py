@@ -61,7 +61,9 @@ class ColorCmd(commands.CustomComponent):
                 await get_color_info(user_db.saved_color, translations.saved_color)
 
         if not tmi_color and not color_hex:
-            return translations.no_user_hex.format_response(ctx, success=False)
+            if not user:
+                return translations.no_user_hex.format_response(ctx, success=False)
+            return translations.user_not_color.format_response(ctx, success=False)
 
         url_previews = list(dict.fromkeys(urls))
         return translations.color.format_response(ctx, " || ".join(responses), " || ".join(url_previews))

@@ -406,6 +406,7 @@
     "Color": {
         "color": "{} {}",
         "no_user_hex": "User not found or valid hex color provided.",
+        "user_not_color": "Provided user has no color defined on twitch.",
         "user_color_str": "@{} color is: #{}. Named: {}",
         "hex_color_str": "#{} its Named: {}",
         "saved_color_str": "And has the following saved color: #{}. Named: {}."

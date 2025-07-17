@@ -87,3 +87,9 @@ class Params:
             "pt_BR", "Usuário não encontrado ou cor hexadecimal válida fornecida.", marks=pytest.mark.pt_BR, id="pt_BR"
         ),
     ]
+    user_no_color = [
+        pytest.param("en", "Provided user has no color defined on twitch.", marks=pytest.mark.en, id="en"),
+        pytest.param(
+            "pt_BR", "O usuário não tenha nenhuma cor definida no Twitch.", marks=pytest.mark.pt_BR, id="pt_BR"
+        ),
+    ]

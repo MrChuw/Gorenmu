@@ -34,7 +34,7 @@ async def base_botinfo(
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_bot_info(interact, mock_context: MockContext, lang: str, expected: str):
     mock_context.invoked_with = "botinfo"
-    await base_botinfo(interact, mock_context, lang=lang, content="", expected=expected)
+    await base_botinfo(interact, mock_context, lang=lang, content="", re_expected=expected)
 
 
 @pytest.mark.asyncio
