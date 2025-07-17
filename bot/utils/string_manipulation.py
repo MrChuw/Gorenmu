@@ -107,6 +107,16 @@ class StringTools:
         raise InvalidUsername
 
     @staticmethod
+    def str2name_or(target: str) -> Optional[str]:
+        if target[0] == "@":
+            target = target[1:]
+        if target[-1] == ",":
+            target = target[:-1]
+        if target.replace("_", "").isalnum() and unidecode(target) == target:
+            return target.lower()
+        return target
+
+    @staticmethod
     def tpl2str(target: Optional[tuple]) -> str:
         try:
             return json.dumps(target)

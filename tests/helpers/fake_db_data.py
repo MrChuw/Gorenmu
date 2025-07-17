@@ -15,7 +15,9 @@ async def create_fake_db(bot: Gorenmu):
     channel = await Channel.create(user=channel_user)
     ctx = MockContext("username", 12345, "channelname", 123456, bot)
     ctx.bot.channels["channelname"] = channel
-    await User.create_or_update(ctx)
+    user = await User.create_or_update(ctx)
+    user.saved_color = "FF4500"
+    await user.save()
 
     for num in range(50):
         ctx = MockContext(f"some_user_{num+1}", num + 1, "channelname", 123456, bot)  # NOQA

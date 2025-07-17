@@ -28,13 +28,13 @@ class RAfkCmd(commands.CustomComponent):
         return True
 
     @commands.base_decorator("RAfk")
-    @commands.command(name="rafk", aliases=rafk_alias)
+    @commands.command(name="rafk", aliases=rafk_alias, pipeble=False)
     async def rafk(self, ctx: Context, *, content: str = "") -> Response:
         translations = ctx.user.translations
         rafk = await self.bot.memcache.RAfk.get(user_id=ctx.author.id)
         if rafk is None:
             return translations.Exceptions.time_expired.format_response(
-                ctx, ctx.user.translations.RAfk.return_expired, success=False, pipe=False
+                ctx, ctx.user.translations.RAfk.return_expired, success=False
             )
 
         status = ctx.user.translations.Afk.afks[rafk.alias]
@@ -42,11 +42,9 @@ class RAfkCmd(commands.CustomComponent):
             rafk.content = content
         await Status.go_rafk(ctx, rafk)
         if rafk.content == "":
-            return translations.RAfk.is_afk.format_response(ctx, status.leave_again, status.emoji, pipe=False)
+            return translations.RAfk.is_afk.format_response(ctx, status.leave_again, status.emoji)
         else:
-            return translations.RAfk.is_afk_content.format_response(
-                ctx, status.leave_again, status.emoji, rafk.content, pipe=False
-            )
+            return translations.RAfk.is_afk_content.format_response(ctx, status.leave_again, status.emoji, rafk.content)
 
 
 async def setup(bot: Gorenmu) -> None:

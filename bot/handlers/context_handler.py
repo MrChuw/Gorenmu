@@ -146,15 +146,21 @@ class ContextHandler:
             ctx.get_command()
             ctx.user = external_ctx.user
             ctx.bot.CommandHandler.load_language(ctx)
+            if not ctx.command.pipeble:
+                await self.simple_response(ctx, translation.command_not_pipeble.format(ctx.command.name))
+                if response_str:
+                    await self.simple_response(ctx, translation.pipe_response.format(response_str))
+                break
+
             response: Response = await ctx.invoke()
-            if not response:
+            if not response and response_str:
                 return await self.simple_response(ctx, response_str)
-            if not response.pipe:
-                await self.simple_response(ctx, translation.command_not_pipeble)
-                return await self.response(response)
             if not response.success:
                 await self.simple_response(ctx, translation.pipe_response_error.format(ctx.command.name))
-                await self.simple_response(ctx, translation.pipe_response.format(response_str))
+                if response_str:
+                    await self.simple_response(ctx, translation.pipe_response.format(response_str))
+                if response:
+                    response.response_string = f"{translation.pipe_response} {response.response_string}"
                 break
             response_str = response.response_string
         if response:

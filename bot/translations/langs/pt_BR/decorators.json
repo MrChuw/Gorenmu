@@ -804,5 +804,36 @@
       }
     ],
     "admonitions": []
+  },
+  "Color": {
+    "helper": "Comando para obter informações de cor do Twitch ou hexadecimal.",
+    "usage": "Como usar: {}color (usuário | hex)",
+    "description": "Este comando retorna informações sobre a cor do Twitch de um usuário, uma cor salva ou uma cor hexadecimal informada. Inclui busca pelo nome da cor e links de visualização.",
+    "extras": "",
+    "commands": [
+      {
+        "prefix": "Se um usuário válido do Twitch for informado.",
+        "args": "mr_chuw",
+        "response": "A cor de @mr_chuw é: #00FFFF. Nome: Cyan / Aqua."
+      },
+      {
+        "prefix": "Se um código hexadecimal válido for informado.",
+        "args": "#FF4500",
+        "response": "#FF4500 é chamada de: Vermilion."
+      },
+      {
+        "prefix": "Se o usuário tiver uma cor salva no banco de dados.",
+        "args": "mr_chuw",
+        "response": "A cor de @mr_chuw é: #00FFFF. Nome: Cyan / Aqua. E possui a seguinte cor salva: #1E90FF. Nome: Dodger Blue."
+      }
+    ],
+    "admonitions": [
+      {
+        "admonition_type": "info",
+        "position": "top",
+        "title": "Usuário ou HEX",
+        "message": "Você pode informar um nome de usuário do Twitch ou um código hexadecimal de 6 dígitos como #FF00FF."
+      }
+    ]
   }
 }

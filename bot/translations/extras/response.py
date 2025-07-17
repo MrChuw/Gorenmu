@@ -18,7 +18,6 @@ class Response:
         self.response_list: Optional[List[str]] = data.get("response_list")
         self.object: Optional[object] = data.get("object")
         self.handle: Optional[str] = data.get("handle")
-        self.pipe: bool = data.get("pipe", True)
         self.response_string: str = data.get("response_string")
 
     def format_response(self, ctx: Context, *args: Any, **kwargs: Any) -> Response:
@@ -26,7 +25,6 @@ class Response:
         self.success = kwargs.pop("success", True)
         self.response_list = kwargs.pop("response_list", None)
         self.handle = kwargs.pop("handle", None)
-        self.pipe = kwargs.pop("pipe", True)
         if args:
             self.response_string = self.response.format(*args, **kwargs)
         else:

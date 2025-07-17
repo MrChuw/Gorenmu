@@ -8,18 +8,13 @@ from typing import Any, Concatenate, ParamSpec, Self, Sequence, TYPE_CHECKING, T
 from twitchio import ChatMessage, ChatMessage, User, User
 from twitchio.ext.commands import (
     Bucket,
-    Bucket,
-    BucketType,
     BucketType,
     Command as TwitchioCommand,
     CommandErrorPayload,
     Component,
-    Component,
-    cooldown,
     cooldown,
     Cooldown,
-    group,
-    group,
+    Group as TwitchioGroup,
 )
 from twitchio.ext.commands.exceptions import CommandError
 from twitchio.ext.commands.types_ import Component_T
@@ -51,7 +46,6 @@ __all__ = (
     "Component",
     "BucketType",
     "guard",
-    "group",
     "CommandErrorPayload",
 )
 
@@ -64,6 +58,7 @@ class Command(TwitchioCommand):
     _cooldowns: Cooldown
     docs: Callable[[], dict[str, dict[str, str]]]
     template: bool
+    pipeble: bool
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
@@ -74,9 +69,10 @@ class Command(TwitchioCommand):
         name: str | None = None,
         aliases: list[str] | None = None,
         extras: dict[Any, Any] | None = None,
+        pipeble: bool = True,
         **kwargs: Any,
     ):
-        return super().command(name=name, aliases=aliases, extras=extras, **kwargs)  # NOQA
+        return super().command(name=name, aliases=aliases, extras=extras, pipeble=pipeble, **kwargs)  # NOQA
 
     @property
     def all_guards(self):
@@ -94,7 +90,6 @@ class CustomComponent(Component):
     def __new__(cls, *args, **kwargs) -> Self:
         self: Self = super().__new__(cls, *args, **kwargs)
         bot: Gorenmu = args[0] if args else kwargs.get("bot")
-        translations = bot.TranslationManager
         rate = getattr(self, "cooldown_rate", 10)
         per = getattr(self, "cooldown_per", 3)
         key = getattr(self, "cooldown_key", BucketType.user)
@@ -106,15 +101,15 @@ class CustomComponent(Component):
             command_: Command = self.__all_commands__[command_name]
             if hasattr(command_, "commands"):
                 for name in command_.commands:
-                    self._extras(command_.commands[name], bucket_, bot, translations)
+                    self._extras(command_.commands[name], bucket_, bot)
                     bot.docs[category_name][command_.commands[name].name] = command_.commands[name].docs
 
-            self._extras(command_, bucket_, bot, translations)
+            self._extras(command_, bucket_, bot)
             bot.docs[category_name][command_.name] = command_.docs
         return self
 
     @staticmethod
-    def _extras(new_command: Command, bucket_, bot: Gorenmu, translations):
+    def _extras(new_command: Command, bucket_, bot: Gorenmu):
         if len(new_command._buckets) == 0:  # NOQA
             new_command._buckets.append(bucket_)  # NOQA
 
@@ -137,7 +132,11 @@ def base_decorator(base: str, template=False) -> Callable[[Command], Command]:
 
 
 def command(
-    name: str | None = None, aliases: list[str] | None = None, extras: dict[Any, Any] | None = None, **kwargs: Any
+    name: str | None = None,
+    aliases: list[str] | None = None,
+    extras: dict[Any, Any] | None = None,
+    pipeble: bool = True,
+    **kwargs: Any,
 ) -> Any:
     def wrapper(
         func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
@@ -150,8 +149,9 @@ def command(
 
         func_name = func.__name__
         name_ = name.strip().replace(" ", "") or func_name if name else func_name
-
-        return Command(name=name_, callback=func, aliases=aliases or [], extras=extras or {}, **kwargs)
+        command_ = Command(name=name_, callback=func, aliases=aliases or [], extras=extras or {}, **kwargs)
+        command_.pipeble = pipeble
+        return command_
 
     return wrapper
 
@@ -169,5 +169,45 @@ def guard(predicates: Union[Callable[..., bool], Callable[..., CoroC], Sequence[
             except AttributeError:
                 func.__command_guards__ = list(predicates)
         return func  # type: ignore
+
+    return wrapper
+
+
+class Group(TwitchioGroup):
+    def command(
+        self,
+        name: str | None = None,
+        aliases: list[str] | None = None,
+        extras: dict[Any, Any] | None = None,
+        pipeble: bool = True,  # NOQA
+        **kwargs: Any,
+    ) -> Any:
+        def wrapper(
+            func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
+        ) -> Command[Any, ...]:
+            new = command(name=name, aliases=aliases, extras=extras, parent=self, pipeble=pipeble, **kwargs)(func)
+
+            self.add_command(new)
+            return new
+
+        return wrapper
+
+
+def group(
+    name: str | None = None, aliases: list[str] | None = None, extras: dict[Any, Any] | None = None, **kwargs: Any
+) -> Any:
+    def wrapper(
+        func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
+    ) -> Group[Any, ...]:
+        if isinstance(func, Command):
+            raise ValueError(f'Callback "{func._callback.__name__}" is already a Command.')  # NOQA
+
+        if not asyncio.iscoroutinefunction(func):
+            raise TypeError(f'Group callback for "{func.__qualname__}" must be a coroutine function.')
+
+        func_name = func.__name__
+        name_ = name.strip().replace(" ", "") or func_name if name else func_name
+
+        return Group(name=name_, callback=func, aliases=aliases or [], extras=extras or {}, **kwargs)
 
     return wrapper

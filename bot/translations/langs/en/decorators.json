@@ -804,5 +804,36 @@
       }
     ],
     "admonitions": []
+  },
+  "Color": {
+    "helper": "Command to get Twitch or hex color info.",
+    "usage": "How to use: {}color (username | hex)",
+    "description": "This command returns information about a user's Twitch color, a saved color, or a given hex color. It includes name lookup and color preview links.",
+    "extras": "",
+    "commands": [
+      {
+        "prefix": "If a valid twitch user is passed.",
+        "args": "mr_chuw",
+        "response": "@mr_chuw color is: #00FFFF. Named: Cyan / Aqua."
+      },
+      {
+        "prefix": "If a valid hex code is passed.",
+        "args": "#FF4500",
+        "response": "#FF4500 is named: Vermilion."
+      },
+      {
+        "prefix": "If the user has a saved color in the database.",
+        "args": "mr_chuw",
+        "response": "@mr_chuw color is: #00FFFF. Named: Cyan / Aqua. And has the following saved color: #1E90FF. Named: Dodger Blue."
+      }
+    ],
+    "admonitions": [
+      {
+        "admonition_type": "info",
+        "position": "top",
+        "title": "Username or HEX",
+        "message": "You can input a Twitch username or a 6-digit hexadecimal color code like #FF00FF."
+      }
+    ]
   }
 }

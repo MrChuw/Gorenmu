@@ -534,6 +534,17 @@ class BaseTranslations:
         uptime: Response
         site: Response
 
+    class Color(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+
+        color: Response
+        no_user_hex: Response
+        user_color: str
+        hex_color: str
+        saved_color: str
+
 
 class Translations(BaseFunctions, BaseTranslations):
     def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):

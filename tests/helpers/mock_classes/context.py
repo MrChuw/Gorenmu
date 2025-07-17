@@ -11,6 +11,7 @@ from bot.models import Alias, Channel, Cookies, MessagesLog, User
 from .Asserter import Asserter
 from .Channel import MockChannel
 from .User import MockUser
+from ..patches.patches import MockBuilder
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -51,6 +52,7 @@ class MockContext(AsyncMock):
         self.message = MockMessage(broadcaster=self.broadcaster, spec=ChatMessage)
         self.prefix = "+"
         self.Asserter: Asserter = Asserter()
+        self.MockBuilder: MockBuilder = MockBuilder(self)
 
     async def prepare_context(self, translation: str = "en", seed: int = 0):
         random.seed(seed)
