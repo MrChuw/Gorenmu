@@ -17,8 +17,6 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
     mock_context.Asserter.assert_string(decorator.helper, helper)
 
 
-@pytest.mark.template
-@pytest.mark.asyncio
 async def alias_describe(
     interact, mock_context: MockContext, lang: str, content: list[str], expected: str, special_user: bool = False
 ):

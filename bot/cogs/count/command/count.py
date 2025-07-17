@@ -35,8 +35,8 @@ class CountCmd(commands.CustomComponent):
             content = ""
             cache_session = ctx.bot.SessionsCaches.CountCachedSession
             for url in urls:
-                teste = await cache_session.session.get(url)
-                content += f"{await teste.text()} "
+                response = await cache_session.session.get(url)
+                content += f"{await response.text()} "
         uppercase_count = len(re.findall(r"[A-Z]", content))
         punctuations_count = len(re.findall(f"[{re.escape(string.punctuation)}]", content))
         special_chars_count = len([char for char in re.findall(r"[^\w\s]", content) if char not in string.punctuation])

@@ -2,7 +2,6 @@
 
 import random
 import string
-from unittest.mock import AsyncMock, patch
 
 import pytest
 import pytest_asyncio
@@ -31,10 +30,8 @@ async def base_count(interact, mock_context: MockContext, lang: str, content: st
     await mock_context.prepare_context(lang)
     random.seed(2)
     text = "".join(random.choices(f"{string.printable}©®€¥µ±§¶†‡∞∑∆∏ΩæÆßøØ¿¡†•√π÷×≠≈😊", k=size))
-    mock_response = AsyncMock()
-    mock_response.text.return_value = text
-    mock_get = AsyncMock(return_value=mock_response)
-    with patch.object(mock_context.bot.SessionsCaches.CountCachedSession.session, "get", mock_get):
+    session = mock_context.bot.SessionsCaches.CountCachedSession.session
+    async with mock_context.MockBuilder.Session.get(session, text):
         response: Response = await interact.count._callback(interact, mock_context, content=content)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected)
 

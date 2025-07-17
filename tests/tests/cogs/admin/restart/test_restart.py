@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-from unittest.mock import patch
 
 import pytest
 
@@ -22,10 +21,11 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 @pytest.mark.parametrize("lang, expected", Params.success)
 async def test_success(interact, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang)
-    with patch("os.execv") as mock_execv:
+    async with mock_context.MockBuilder.Errors.os_execv() as mock_execv:
         response: Response = await interact.restart._callback(self=interact, ctx=mock_context)
-    assert mock_execv.call_count == 1, "Expected os.execv to be called once, but it wasn't"
-    called_args = mock_execv.call_args[0]
+    execv = mock_execv.patched.execv
+    assert execv.call_count == 1, "Expected os.execv to be called once, but it wasn't"
+    called_args = execv.call_args[0]
     exec_path = called_args[0]
     exec_args = called_args[1]
     exec_basename = os.path.basename(exec_path)
@@ -40,6 +40,6 @@ async def test_success(interact, mock_context: MockContext, lang: str, expected:
 @pytest.mark.parametrize("lang, expected", Params.failure)
 async def test_failure(interact, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang)
-    with patch("os.execv", side_effect=OSError("exec failed")):  # NOQA
+    async with mock_context.MockBuilder.Errors.os_execv(OSError("exec failed")):
         response: Response = await interact.restart._callback(self=interact, ctx=mock_context)
     mock_context.Asserter.assert_string(response.response_string, expected)

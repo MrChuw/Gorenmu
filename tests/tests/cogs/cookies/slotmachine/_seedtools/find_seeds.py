@@ -30,7 +30,6 @@ async def base_find_seed(
         print(f"\nSeed not found in block {bloco}")
 
 
-# @pytest.mark.template
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang", [pytest.param("en", id="en"), pytest.param("pt_BR", id="pt_BR")])
 async def test_find_seed_for_reward_no_emotes(interact, mock_context: MockContext, lang: str):

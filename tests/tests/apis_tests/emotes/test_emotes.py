@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import random
-import re
 import time
 
 import pytest
 import pytest_asyncio
-from aioresponses import aioresponses
 
 from bot.apis import Emotes
+from tests.helpers.patches.patches import MockBuilder
 
 lang = "en"
 
@@ -26,8 +25,8 @@ ttv_payload = {
 bttv_payload = {"channelEmotes": [{"code": "Sadge"}, {"code": "Despair"}, {"code": "chuw"}, {"code": "AYAYA"}]}
 
 ffz_payload = {
-    "room": {"set": 1010},
-    "sets": {1010: {"emoticons": [{"name": "ppL"}, {"name": "Clueless"}, {"name": "COPIUM"}, {"name": "papaoRun"}]}},
+    "room": {"set": "1010"},
+    "sets": {"1010": {"emoticons": [{"name": "ppL"}, {"name": "Clueless"}, {"name": "COPIUM"}, {"name": "papaoRun"}]}},
 }
 
 
@@ -38,58 +37,60 @@ async def interact(mock_bot):
 
 @pytest.mark.asyncio
 async def test_7tv_success(interact):
-    with aioresponses() as mocked:
-        mocked.get(re.compile(r"https://7tv\.io/v3/users/twitch/.*"), payload=ttv_payload, status=200)
+    session = interact.bot.SessionsCaches.EmotesCachedSession.session
+    async with MockBuilder(interact.bot).Session.get_json(session, ttv_payload):
         response = await interact.get_7tv(411010313)
         assert response == ["GIGACHAD", "NOOOO", "ppPoof", "modCheck", "catJAM"]
 
 
 @pytest.mark.asyncio
 async def test_7tv_404(interact):
-    with aioresponses() as mocked:
-        mocked.get(re.compile(r"https://7tv\.io/v3/users/twitch/.*"), payload=ttv_payload, status=404)
+    session = interact.bot.SessionsCaches.EmotesCachedSession.session
+    async with MockBuilder(interact.bot).Session.get_json(session, ttv_payload, status=404):
         response = await interact.get_7tv(411010313)
         assert response == []
 
 
 @pytest.mark.asyncio
 async def test_bttv_success(interact):
-    with aioresponses() as mocked:
-        mocked.get(re.compile(r"https://api\.betterttv\.net/.*"), payload=bttv_payload, status=200)
+    session = interact.bot.SessionsCaches.EmotesCachedSession.session
+    async with MockBuilder(interact.bot).Session.get_json(session, bttv_payload):
         response = await interact.get_bttv(411010313)
         assert response == ["Sadge", "Despair", "chuw", "AYAYA"]
 
 
 @pytest.mark.asyncio
 async def test_bttv_404(interact):
-    with aioresponses() as mocked:
-        mocked.get(re.compile(r"https://api\.betterttv\.net/.*"), payload=bttv_payload, status=404)
+    session = interact.bot.SessionsCaches.EmotesCachedSession.session
+    async with MockBuilder(interact.bot).Session.get_json(session, bttv_payload, status=404):
         response = await interact.get_bttv(411010313)
         assert response == []
 
 
 @pytest.mark.asyncio
 async def test_ffz_success(interact):
-    with aioresponses() as mocked:
-        mocked.get(re.compile(r"https://api\.frankerfacez\.com/.*"), payload=ffz_payload, status=200)
+    session = interact.bot.SessionsCaches.EmotesCachedSession.session
+    async with MockBuilder(interact.bot).Session.get_json(session, ffz_payload):
         response = await interact.get_ffz(411010313)
         assert response == ["ppL", "Clueless", "COPIUM", "papaoRun"]
 
 
 @pytest.mark.asyncio
 async def test_ffz_404(interact):
-    with aioresponses() as mocked:
-        mocked.get(re.compile(r"https://api\.frankerfacez\.com/.*"), payload=ffz_payload, status=404)
+    session = interact.bot.SessionsCaches.EmotesCachedSession.session
+    async with MockBuilder(interact.bot).Session.get_json(session, ffz_payload, status=404):
         response = await interact.get_ffz(411010313)
         assert response == []
 
 
 @pytest.mark.asyncio
 async def test_fetch_emotes(interact):
-    with aioresponses() as mocked:
-        mocked.get(re.compile(r"https://7tv\.io/v3/users/twitch/.*"), payload=ttv_payload, status=200)
-        mocked.get(re.compile(r"https://api\.betterttv\.net/.*"), payload=bttv_payload, status=200)
-        mocked.get(re.compile(r"https://api\.frankerfacez\.com/.*"), payload=ffz_payload, status=200)
+    async with (
+        MockBuilder(interact.bot)
+        .Emotes.get_7tv(["GIGACHAD", "NOOOO", "ppPoof", "modCheck", "catJAM"])
+        .Emotes.get_bttv(["Sadge", "Despair", "chuw", "AYAYA"])
+        .Emotes.get_ffz(["ppL", "Clueless", "COPIUM", "papaoRun"])
+    ):
         response = await interact.fetch_emotes(411010313)
         assert response == [
             "GIGACHAD",
@@ -110,10 +111,12 @@ async def test_fetch_emotes(interact):
 
 @pytest.mark.asyncio
 async def test_get_emotes(interact):
-    with aioresponses() as mocked:
-        mocked.get(re.compile(r"https://7tv\.io/v3/users/twitch/.*"), payload=ttv_payload, status=200)
-        mocked.get(re.compile(r"https://api\.betterttv\.net/.*"), payload=bttv_payload, status=200)
-        mocked.get(re.compile(r"https://api\.frankerfacez\.com/.*"), payload=ffz_payload, status=200)
+    async with (
+        MockBuilder(interact.bot)
+        .Emotes.get_7tv(["GIGACHAD", "NOOOO", "ppPoof", "modCheck", "catJAM"])
+        .Emotes.get_bttv(["Sadge", "Despair", "chuw", "AYAYA"])
+        .Emotes.get_ffz(["ppL", "Clueless", "COPIUM", "papaoRun"])
+    ):
         response = await interact.get_emotes(411010313)
         assert response == [
             "GIGACHAD",
@@ -134,10 +137,12 @@ async def test_get_emotes(interact):
 
 @pytest.mark.asyncio
 async def test_get_emotes_cached(interact):
-    with aioresponses() as mocked:
-        mocked.get(re.compile(r"https://7tv\.io/v3/users/twitch/.*"), payload=ttv_payload, status=200)
-        mocked.get(re.compile(r"https://api\.betterttv\.net/.*"), payload=bttv_payload, status=200)
-        mocked.get(re.compile(r"https://api\.frankerfacez\.com/.*"), payload=ffz_payload, status=200)
+    async with (
+        MockBuilder(interact.bot)
+        .Emotes.get_7tv(["GIGACHAD", "NOOOO", "ppPoof", "modCheck", "catJAM"])
+        .Emotes.get_bttv(["Sadge", "Despair", "chuw", "AYAYA"])
+        .Emotes.get_ffz(["ppL", "Clueless", "COPIUM", "papaoRun"])
+    ):
         response = await interact.fetch_emotes(411010313)
         assert response == [
             "GIGACHAD",
@@ -175,10 +180,12 @@ async def test_get_emotes_cached(interact):
 @pytest.mark.asyncio
 async def test_get_emotes_random_by_amount_cached(interact):
     random.seed(411010313)
-    with aioresponses() as mocked:
-        mocked.get(re.compile(r"https://7tv\.io/v3/users/twitch/.*"), payload=ttv_payload, status=200)
-        mocked.get(re.compile(r"https://api\.betterttv\.net/.*"), payload=bttv_payload, status=200)
-        mocked.get(re.compile(r"https://api\.frankerfacez\.com/.*"), payload=ffz_payload, status=200)
+    async with (
+        MockBuilder(interact.bot)
+        .Emotes.get_7tv(["GIGACHAD", "NOOOO", "ppPoof", "modCheck", "catJAM"])
+        .Emotes.get_bttv(["Sadge", "Despair", "chuw", "AYAYA"])
+        .Emotes.get_ffz(["ppL", "Clueless", "COPIUM", "papaoRun"])
+    ):
         response = await interact.get_random_by_amount(411010313, 1)
         assert response == ["Despair"]
         response = await interact.get_random_by_amount(411010313, 5)
