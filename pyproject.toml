@@ -1,12 +1,8 @@
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
 
 [tool.black]
-line-length = 100  # Comprimento máximo das linhas
-target-version = ['py36', 'py37', 'py38', 'py39', 'py310', 'py311']  # Versões target do Python
-include = '\.pyi?$'  # Padrão para incluir arquivos
+line-length = 120
+target-version = ['py312']
+include = '\.pyi?$'
 exclude = '''
 /(
     \.git
@@ -20,7 +16,23 @@ exclude = '''
   | dist
   | models/__init__\.py
 )/
-'''  # Padrão para excluir arquivos e diretórios
-skip-string-normalization = false  # Não normaliza aspas (para True, ignora normalização)
-skip-magic-trailing-comma = true  # Não pula a vírgula mágica
-preview = false  # Usar recursos experimentais do Black
+'''
+skip-string-normalization = false
+skip-magic-trailing-comma = true
+
+[tool.flake8]
+ignore = ["E203", "W503"]
+
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+markers = ["network: tests that make real requests", "template: just the template for the test.",
+    "pt_BR: Test for Portuguse language.", "en: Test for English language."]
+#addopts = "-m 'not template'"
+#addopts = "-n auto -m 'not template'"
+addopts = "-m 'not network and not template'"
+#addopts = "-n auto -m 'not network and not template'"
+
+

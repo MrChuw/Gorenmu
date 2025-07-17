@@ -1,5 +1,3 @@
-"""Asynchronous client for the Open-Meteo API."""
-
 from __future__ import annotations
 
 import asyncio
@@ -50,10 +48,6 @@ class OpenMeteo:
             OpenMeteoError: Received an unexpected response from the Open-Meteo
                 API.
         """
-        # if self.session is None:
-        #     self.session = CachedSession(cache=cache)
-        #     # self.session = ClientSession()
-        #     self._close_session = True
 
         try:
             async with async_timeout.timeout(self.request_timeout):
@@ -97,26 +91,6 @@ class OpenMeteo:
         timeformat: TimeFormat = TimeFormat.ISO_8601,
         wind_speed_unit: WindSpeedUnit = WindSpeedUnit.KILOMETERS_PER_HOUR,
     ) -> Forecast:
-        """Get weather forecast.
-
-        Args:
-            latitude: Latitude of the location.
-            longitude: Longitude of the location.
-            current_weather: Include current weather conditions.
-            daily: A list of weather variables to query for.
-            hourly: A list of weather variables to query for.
-            past_days: If set, yesterdays or the day before yesterdays are also
-                returned (0-2).
-            precipitation_unit: Precipitation unit.
-            temperature_unit: Temperature unit.
-            timeformat: Timeformat.
-            timezone: All timestamps are returned as local-time and data is
-                returned starting at 0:00 local-time.
-            wind_speed_unit: Wind speed unit.
-
-        Returns:
-            A forecast object.
-        """
         url = URL("https://api.open-meteo.com/v1/forecast").with_query(
             current_weather="true" if current_weather else "false",
             daily=",".join(daily) if daily is not None else [],
@@ -131,36 +105,17 @@ class OpenMeteo:
             timezone=timezone,
         )
         data = await self._request(url=url)
-        return Forecast.parse_obj(data)
+        return Forecast.model_validate(data)
 
-    async def geocoding(self, *, name: str, count: int = 10, language: str = "en") -> Geocoding:
-        """Get geocoding result.
-
-        Args:
-            name: String to search for. An empty string or only 1 character
-                will return an empty resultset. 2 characters will only match
-                exact matching locations. 3 and more locations will perform
-                fuzzy matching. The search string can be a location name or
-                a postal code.
-            count: The number of search results to return. Up up 100 results
-                can be retrieved.
-            language: Return translated results, if available, otherwise return
-                english or the native location name. Lower-cased.
-
-        Returns:
-            An Geocoding object.
-        """
-        # url = URL("https://geocoding-api.open-meteo.com/v1/search").with_query(
+    async def geocoding(self, *, name: str, language: str = "en") -> Geocoding:
         url = URL("https://nominatim.openstreetmap.org/search.php").with_query(
             q=name,  # name=name,
             # count=count,
-            # language=language,
-            # format="json",
+            language=language,
             format="jsonv2",
         )
         data = await self._request(url=url)
-        # return Geocoding.parse_obj({'results': data['results']})
-        return Geocoding.parse_obj({"results": data})
+        return Geocoding.model_validate({"results": data})
 
     async def close(self) -> None:
         """Close open client session."""

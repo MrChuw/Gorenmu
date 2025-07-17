@@ -1,144 +1,82 @@
 # -*- coding: utf-8 -*-
-import random
+from __future__ import annotations
 
-from bot.bot import Gorenmu
-from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
-from bot.models import Channel, MessagesLog, User
-from bot.translations import EnDecorators, Response
+from typing import TYPE_CHECKING
 
+from bot.ext import commands, Context
+from bot.models import MessagesLog, User
+from bot.translations import Response
 
-async def get_user(ctx: Context, user: str) -> User | None:
-    if user.lower() is ctx.author.name.lower():
-        user = ctx.user
-    else:
-        user = await User.get_or_none(name=user)
-    return user
+if TYPE_CHECKING:
+    from bot.bot import Gorenmu
 
 
-async def get_channel(ctx: Context, channel: str) -> Channel | None:
-    if channel.lower() in ctx.bot.channels:
-        channel = ctx.bot.channels[channel]
-        return channel
-    return None
+class RandomLineCmd(commands.CustomComponent):
+    def __init__(self, bot: Gorenmu) -> None:
+        self.bot = bot
+
+    cooldown_rate = 1
+    cooldown_per = 5
+    cooldown_key = commands.BucketType.user
+
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    @commands.Component.guard()
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
+        return True
+
+    @commands.base_decorator("RandomLine")
+    @commands.command(name="randomline", aliases=["rl"])
+    async def randomline(self, ctx: Context, *, options: str = "") -> Response:
+        translations = ctx.user.translations
+        humanize = ctx.user.translations.SupportTools.TimeTools.Humanize
+        options_split = options.split(" ")
+        channel_original = self.bot.StringTools.find_prefixed_option(options_split, "channel:")
+        user_original = self.bot.StringTools.find_prefixed_option(options_split, "user:")
+        user, channel = None, None
+        if user_original:
+            if user_original.lower() != ctx.author.name.lower():
+                user = await User.get_user(ctx, user_original)
+            else:
+                user = ctx.user
+            if isinstance(user, Response):
+                return user
+
+        if channel_original and channel_original != "global":
+            channel = ctx.bot.channels.get(channel_original)
+            if not channel:
+                return translations.Exceptions.channel_not_found.format_response(ctx, channel_original)
+
+        if channel is None and channel_original != "global":
+            channel = ctx.bot.channels.get(ctx.channel.name)
+
+        message, count = await MessagesLog.get_random_message(user=user, channel=channel)
+        message: MessagesLog
+        if count == 0:
+            if not channel and user:
+                return translations.RandomLine.no_user_message.format_response(ctx, user_original)
+            elif channel and not user:
+                return translations.RandomLine.no_channel_message.format_response(
+                    ctx, channel_original or ctx.channel.name
+                )
+
+            return translations.RandomLine.no_user_on_channel.format_response(
+                ctx, user_original, channel_original or ctx.channel.name
+            )
+        if not count:
+            return translations.RandomLine.search_timeout.format_response(
+                ctx, user_original or "", channel_original or ctx.channel.name
+            )
+        return translations.RandomLine.random_line.format_response(
+            ctx,
+            message.content,
+            humanize.created_a_time(created_at=message.created_at, timezone=ctx.user.timezone_),
+            message.user.nickname or message.user.name,
+        )
 
 
-async def get_random_message(user=None, channel=None):
-    query = MessagesLog.filter()
-    if user:
-        query = query.filter(user=user)
-    if channel:
-        query = query.filter(channel=channel)
-
-    count = await query.count()
-    if not count or count == 0:
-        return None, 0
-
-    value = random.randint(0, count - 1)
-    message = await query.offset(value).limit(1).first().prefetch_related("user")
-    return message, count
+async def setup(bot: Gorenmu) -> None:
+    await bot.add_component(RandomLineCmd(bot))
 
 
-@base_decorator(EnDecorators.RandomLine)
-@cooldown(rate=3, per=10, bucket=Bucket.user)
-@check([])
-@command(name='randomline', aliases=['rl'])
-async def command(ctx: Context, *, options: str = "") -> Response:
-    translations = ctx.translations.RandomLine
-    humanize = ctx.translations.SupportTools.Humanize
-    options_splited = options.split(" ")
-
-    channel_original = next((opt.replace("channel:", "") for opt in options_splited if "channel:" in opt), None)
-    user_original = next((opt.replace("user:", "") for opt in options_splited if "user:" in opt), None)
-
-    user, channel = None, None
-    if user_original:
-        user = await get_user(ctx, user_original)
-        if not user:
-            return translations.user_not_found.format_response(ctx, user_original)
-
-    if channel_original:
-        channel = await get_channel(ctx, channel_original)
-        if not channel:
-            return translations.channel_not_found.format_response(ctx, channel_original)
-
-    channel = await get_channel(ctx, ctx.channel.name)
-
-    message, count = await get_random_message(user=user, channel=channel)
-    if not count:
-        return translations.no_message_found.format_response(ctx, user_original or "",
-                                                             channel_original or ctx.channel.name
-                                                             )
-
-    return translations.random_line.format_response(ctx,
-                                                    message.content,
-                                                    message.created_a_time(humanize=humanize,
-                                                                           timezone=ctx.user.timezone_),
-                                                    message.user.nickname or message.user.name
-                                                    )
-
-
-def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) -> dict[str, dict[str, str]]:
-    responses: dict[str, dict[str, str]] = {}
-    cooldown_ = command_._cooldowns[0]  # NOQA
-    per = cooldown_._per  # NOQA
-    rate = cooldown_._rate  # NOQA
-    prefix = ctx.prefix if ctx else bot.config.BotConfig.prefix[0]
-    for lang in command_.decorators:
-        if lang not in responses:
-            responses[lang] = {}
-        decorator: EnDecorators.RandomLine = command_.decorators[lang]
-        description = decorator.get_description(decorator)  # NOQA
-        base_decorators = bot.TranslationManager.get_decorator(lang)
-        cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
-
-        language: EnDecorators = bot.TranslationManager.languages[lang][0]
-        command_body_template1: str = getattr(language, 'template_part1', EnDecorators.template_part1)
-        command_body_template2: str = getattr(language, 'template_part2', EnDecorators.template_part2)
-        command_body_template3: str = getattr(language, 'template_part3', EnDecorators.template_part3)
-        alias_template: str = getattr(language, 'alias_template', EnDecorators.alias_template)
-        command_template: str = getattr(language, 'command_template', EnDecorators.command_template)
-        admonition_template: str = getattr(language, 'admonition_template', EnDecorators.admonition_template)
-
-        aliases = ""
-        if command_.aliases:
-            aliases = alias_template.format(command_title=command_.name.capitalize(),
-                                            aliases=", ".join(command_.aliases)
-                                            )
-
-        command_body = command_body_template1.format(command_title=command_.name.capitalize(), rate=rate, per=per,
-                                                     cooldown_type=cooldown_type, )
-        commands_admonitions = getattr(decorator, 'admonitions', EnDecorators.RandomLine.admonitions)
-        if commands_admonitions:
-            for admonition in commands_admonitions:
-                if admonition.position == "top":
-                    command_body += admonition_template.format(type=admonition.type, title=admonition.title,
-                                                               message=admonition.message
-                                                               )
-
-        command_body += command_body_template2.format(description=description, aliases=aliases)
-
-        if commands_admonitions:
-            for admonition in commands_admonitions:
-                if admonition.position == "middle":
-                    command_body += admonition_template.format(type=admonition.type, title=admonition.title,
-                                                               message=admonition.message
-                                                               )
-
-        command_body += command_body_template3
-
-        if commands := getattr(decorator, 'commands', EnDecorators.RandomLine.commands):
-            command_body += "".join([
-                    command_template.format(prefix=prefix, command_name=command_.name.lower(), args=item.args,
-                                            response=item.response
-                                            ) for item in commands])
-
-        if commands_admonitions:
-            for admonition in commands_admonitions:
-                if admonition.position == "bottom":
-                    command_body += admonition_template.format(type=admonition.type, title=admonition.title,
-                                                               message=admonition.message
-                                                               )
-
-        responses[lang][command_.name.lower()] = command_body
-
-    return responses
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA

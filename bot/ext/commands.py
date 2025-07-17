@@ -2,414 +2,212 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Callable, TYPE_CHECKING
+from collections.abc import Callable, Coroutine, Iterable
+from typing import Any, Concatenate, ParamSpec, Self, Sequence, TYPE_CHECKING, TypeAlias, TypeVar, Union
 
-from twitchio import Channel, Message, User
+from twitchio import ChatMessage, ChatMessage, User, User
 from twitchio.ext.commands import (
-    BadArgument, Bot, Bucket, Cog, Command, Context as TwitchioContext, cooldown,
-    MissingRequiredArgument, command, Cooldown
+    Bucket,
+    BucketType,
+    Command as TwitchioCommand,
+    CommandErrorPayload,
+    Component,
+    cooldown,
+    Cooldown,
+    Group as TwitchioGroup,
 )
-from twitchio.ext.routines import routine
+from twitchio.ext.commands.exceptions import CommandError
+from twitchio.ext.commands.types_ import Component_T
+from twitchio.ext.routines import routine, routine
 
-from bot.models import User as UserModel, Alias
-from bot.translations import EnTranslations
-from bot.translations import EnDecorators, BaseClass
-from bot.translations import Response
-from bot.translations.en.decorators import BaseDecorator
-from typing import Type, TypeVar
-from twitchio.ext.commands.stringparser import StringParser
-from twitchio.ext.commands.errors import CommandNotFound
-import re
+from bot.translations import BaseCommand
 
-
-T = TypeVar('T')
+T = TypeVar("T")
+Coro: TypeAlias = Coroutine[Any, Any, None]
+CoroC: TypeAlias = Coroutine[Any, Any, bool]
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+    from bot.ext import Context
 
-max_message_len = 450
-minimum_delay_messages = 0.1
+    PrefixT: TypeAlias = (
+        str | Iterable[str] | Callable[[Gorenmu, ChatMessage], Coroutine[Any, Any, str | Iterable[str]]]
+    )
+
+    P = ParamSpec("P")
 
 __all__ = (
-        "Bot", "Bucket", "Channel", "Cog", "Context", "Message", "User", "check", "Command",
-        "cooldown", "routine", "base_decorator", "usage", "helper", "command")
+    "ChatMessage",
+    "Bucket",
+    "User",
+    "cooldown",
+    "routine",
+    "base_decorator",
+    "Command",
+    "Component",
+    "BucketType",
+    "guard",
+    "CommandErrorPayload",
+)
+
+max_message_len = 450
+minimum_delay_messages = 0.2
 
 
-class Command(Command):
-    # decorators: dict[str, EnDecorators | BaseClass | BaseDecorator]
-    decorators_original: EnDecorators | BaseClass
+class Command(TwitchioCommand):
+    decorator_path: str
     _cooldowns: Cooldown
-    docs: dict[str, dict[str, str]]
+    docs: Callable[[], dict[str, dict[str, str]]]
+    template: bool
+    pipeble: bool
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.decorators: dict[str, BaseCommand] = {}
+
+    def command(
+        self,
+        name: str | None = None,
+        aliases: list[str] | None = None,
+        extras: dict[Any, Any] | None = None,
+        pipeble: bool = True,
+        **kwargs: Any,
+    ):
+        return super().command(name=name, aliases=aliases, extras=extras, pipeble=pipeble, **kwargs)  # NOQA
+
+    @property
+    def all_guards(self):
+        return self.component.guards() + self.guards
+
+    async def dispatch_error(self, context: Context, exception: CommandError) -> None:
+        await self._dispatch_error(context, exception)
+
+    @property
+    def buckets(self) -> list[Bucket]:
+        return self._buckets
 
 
-class Bot(Bot):
-    async def invoke(self, context: Context, *, index=0) -> Response | None:  # NOQA
-        if not context.prefix or not context.is_valid:
-            return
-        context.bot.run_event("command_invoke", context)
+class CustomComponent(Component):
+    def __new__(cls, *args, **kwargs) -> Self:
+        self: Self = super().__new__(cls, *args, **kwargs)
+        bot: Gorenmu = args[0] if args else kwargs.get("bot")
+        rate = getattr(self, "cooldown_rate", 10)
+        per = getattr(self, "cooldown_per", 3)
+        key = getattr(self, "cooldown_key", BucketType.user)
+        bucket_: Bucket[Context] = Bucket.from_cooldown(base=Cooldown, key=key, **{"per": per, "rate": rate})
+        category_name: str = getattr(self, "name", self.__class__.__name__)
+        category_name = category_name.removesuffix("Cmd").removesuffix("Cmds")
 
-        if not context.view:
-            return
+        for command_name in self.__all_commands__:
+            command_: Command = self.__all_commands__[command_name]
+            if hasattr(command_, "commands"):
+                for name in command_.commands:
+                    self._extras(command_.commands[name], bucket_, bot)
+                    bot.docs[category_name][command_.commands[name].name] = command_.commands[name].docs
 
-        async def try_run(func, *, to_command=False):
+            self._extras(command_, bucket_, bot)
+            bot.docs[category_name][command_.name] = command_.docs
+        return self
+
+    @staticmethod
+    def _extras(new_command: Command, bucket_, bot: Gorenmu):
+        if len(new_command._buckets) == 0:  # NOQA
+            new_command._buckets.append(bucket_)  # NOQA
+
+        def docs():
+            if new_command.template:
+                return bot.docs_handler.template_description(new_command)
+            else:
+                return bot.docs_handler.normal_description(new_command)
+
+        new_command.docs = docs
+
+
+def base_decorator(base: str, template=False) -> Callable[[Command], Command]:
+    def decorator(command: Command) -> Command:  # NOQA
+        command.decorator_path = base
+        command.template = template
+        return command
+
+    return decorator
+
+
+def command(
+    name: str | None = None,
+    aliases: list[str] | None = None,
+    extras: dict[Any, Any] | None = None,
+    pipeble: bool = True,
+    **kwargs: Any,
+) -> Any:
+    def wrapper(
+        func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
+    ) -> Command[Any, ...]:
+        if isinstance(func, Command):
+            raise ValueError(f'Callback "{func._callback}" is already a Command.')  # NOQA
+
+        if not asyncio.iscoroutinefunction(func):
+            raise TypeError(f'Command callback for "{func.__qualname__}" must be a coroutine function.')
+
+        func_name = func.__name__
+        name_ = name.strip().replace(" ", "") or func_name if name else func_name
+        command_ = Command(name=name_, callback=func, aliases=aliases or [], extras=extras or {}, **kwargs)
+        command_.pipeble = pipeble
+        return command_
+
+    return wrapper
+
+
+def guard(predicates: Union[Callable[..., bool], Callable[..., CoroC], Sequence[Callable[..., Any]]]) -> Any:
+    if not isinstance(predicates, (list, tuple)):
+        predicates = [predicates]
+
+    def wrapper(func: Any) -> Any:
+        if isinstance(func, Command):
+            func._guards.extend(predicates)  # NOQA
+        else:
             try:
-                await func
-            except Exception as _e:
-                if not to_command:
-                    context.bot.run_event("error", _e)
-                else:
-                    context.bot.run_event("command_error", context, _e)
-
-        try:
-            args, kwargs = await context.command.parse_args(context, context.command._instance, context.view.words, index=index)  # NOQA
-        except (MissingRequiredArgument, BadArgument) as e:
-            if self.event_error:
-                args_ = ([context.command._instance, context] if context.command._instance else [context]  # NOQA
-                         )
-                await try_run(self.event_error(*args_, e))  # NOQA
-
-            context.bot.run_event("command_error", context, e)
-            return
-
-        context.args, context.kwargs = args, kwargs
-        check_result = await context.command.handle_checks(context)
-
-        if check_result is not True:
-            context.bot.run_event("command_error", context, check_result)
-            return
-        limited = context.command._run_cooldowns(context)  # NOQA
-
-        if limited:
-            context.bot.run_event("command_error", context, limited[0])
-            return
-        instance = context.command._instance  # NOQA
-        args = [instance, context] if instance else [context]
-        await try_run(context.bot.global_before_invoke(context))
-
-        if context.command._before_invoke:  # NOQA
-            await try_run(context.command._before_invoke(*args), to_command=True)  # NOQA
-
-        callback_result = None
-        try:
-            callback_result = await context.command._callback(  # NOQA
-                    *args, *context.args, **context.kwargs
-            )
-        except Exception as e:
-            if self.event_error:
-                await try_run(self.event_error(*args, e))  # NOQA
-            context.bot.run_event("command_error", context, e)
-        else:
-            context.bot.run_event("command_complete", context)
-
-        if context.command._after_invoke:  # NOQA
-            await try_run(context.command._after_invoke(*args), to_command=True)  # NOQA
-        await try_run(context.bot.global_after_invoke(context))
-
-        return callback_result
-
-    async def get_prefix(self: Gorenmu, message: Message):
-        return self.channels[message.channel.name].prefix
-
-    async def get_context(self, message, *, cls=None):
-        """Get a Context object from a message.
-
-        Parameters
-        ----------
-        message: :class:`.Message`
-            The message object to get context for.
-        cls
-            The class to return. Defaults to Context. Its constructor must take message, prefix, valid, and bot
-            as arguments.
-
-        Returns
-        ---------
-        An instance of cls.
-
-        Raises
-        ---------
-        :class:`.CommandNotFound` No valid command was passed
-        """
-        if "\x01ACTION " in message.content:
-            message.content = message.content.replace("\x01ACTION ", "").replace("\x01", "")
-        if not cls:
-            cls = Context
-        prefix = await self.get_prefix(message)
-        if not prefix:
-            return cls(message=message, prefix=prefix, valid=False, bot=self)
-        content = message.content
-        if "reply-parent-msg-id" in message.tags:  # Remove @username from reply message
-            content = content.split(" ", 1)[1]
-        content = content[len(prefix)::].lstrip()  # Strip prefix and remainder whitespace
-        view = StringParser()
-        parsed = view.process_string(content)  # Return the string as a dict view
-
-        try:
-            command_ = parsed.pop(0)
-        except KeyError:
-            context = cls(message=message, bot=self, prefix=prefix, command=None, valid=False, view=view)
-            error = CommandNotFound("No valid command was passed.", "")
-
-            self.run_event("command_error", context, error)
-            return context
-        try:
-            command_ = self._command_aliases[command_]
-        except KeyError:
-            pass
-        if command_ in self.commands:
-            command_ = self.commands[command_]
-        else:
-            context = cls(message=message, bot=self, prefix=prefix, command=None, valid=False, view=view)
-            error = CommandNotFound(f'No command "{command_}" was found.', command_)
-
-            self.run_event("command_error", context, error)
-            return context
-
-        invoke_by = None
-
-        if message and message.content and prefix in message.content:
-            cls.invoke_by = message.content.partition(" ")[0][len(prefix):].lower()
-
-        context = cls(message=message, bot=self, prefix=prefix, command=command_, valid=True, view=view, invoke_by=invoke_by)
-
-        return context
-
-
-class Context(TwitchioContext):
-    user: UserModel
-    bot: Gorenmu
-    translations: EnTranslations
-    decorators: dict[str, EnDecorators | BaseClass | dict[str, EnDecorators | BaseClass]]
-    command: Command
-    invoke_by: str | None = None
-
-    def __iter__(self):
-        yield "author", self.author.name if self.author and self.author.name else None
-        yield "channel", self.channel.name if self.channel and self.channel.name else None
-        yield "message", self.message.content if self.message and self.message.content else None
-        yield "command", self.command.name if self.command and self.command.name else None
-
-
-
-    @staticmethod
-    async def extract_response(response: Response):
-        if response:
-            handle = response.handle
-        else:
-            handle = None
-        if response.response_string:
-            response_str = response.response_string
-        else:
-            response_str = None
-        if response.response_list:
-            response_list = response.response_list
-        else:
-            response_list = None
-        return handle, response_str, response_list, response.success
-
-    @staticmethod
-    async def handle_response(ctx: Context, full_response: str):
-        chunks = []
-        while len(full_response) > max_message_len:
-            index_space = full_response.rfind(" ", 0, max_message_len)
-            if index_space == -1:
-                chunks.append(full_response[:max_message_len])
-                full_response = full_response[max_message_len:]
-            else:
-                chunks.append(full_response[:index_space])
-                full_response = full_response[index_space + 1:]
-
-        chunks.append(full_response)
-
-        for chunk in chunks:
-            await ctx.reply(chunk)
-            await asyncio.sleep(minimum_delay_messages)
-
-    @staticmethod
-    async def handle_echo(ctx: Context, response_str: str):
-        if len(response_str) < max_message_len:
-            return await ctx.reply(f"{response_str}")
-        part1 = response_str[:max_message_len]
-        part2 = response_str[max_message_len:]
-        await ctx.reply(f"{part1}")
-        await asyncio.sleep(0.5)
-        await ctx.reply(f"{part2}")
-
-    @staticmethod
-    async def handle_banwords(ctx: Context, response_str: str):
-        banwords = ctx.bot.channels[ctx.channel.name].banwords
-        user_handler = ctx.user.nickname or ctx.author.name
-        for word in banwords.keys():
-            if word in response_str:
-                tamanho = len(word)
-                asteriscos = "".join("*" for _ in range(tamanho))
-                response_str = response_str.replace(word, asteriscos)
-            if word in ctx.user.nickname:
-                user_handler = ctx.author.name
-        return response_str, user_handler
-
-    async def handle_response_list(self, ctx: Context, response_list: list[str], handle: str | None):
-        for response in response_list:
-            response_str, user_handler = await self.handle_banwords(ctx=ctx, response_str=response)
-            full_response: str = f"{user_handler} {response_str}"
-            if handle == "echo":
-                await self.handle_echo(ctx=ctx, response_str=response_str)
-            else:
-                await self.handle_response(ctx=ctx, full_response=full_response)
-            await asyncio.sleep(minimum_delay_messages)
-
-    async def send_response(self, ctx: Context, user_handler: str, response_str: str):
-        full_response: str = f"{user_handler} {response_str}"
-        if len(full_response) < max_message_len:
-            return await ctx.reply(full_response)
-        else:
-            await self.handle_response(ctx=ctx, full_response=full_response)
-
-    async def response(self, response: Response) -> None | bool:  # NOQA
-        ctx: Context = response.ctx
-        if ctx.bot.channels[ctx.channel.name].online is False:
-            return False
-        if ctx.bot.channels[ctx.channel.name].prefix == "ƚ":
-            return False
-        handle, response_str, response_list, success = await self.extract_response(response)
-        response_str, user_handler = await self.handle_banwords(ctx, response_str)
-
-        if handle == "echo" and not response_list:
-            await self.handle_echo(ctx=ctx, response_str=response_str)
-        if response_str:
-            await self.send_response(ctx, user_handler, response_str)
-        if response_list:
-            await self.handle_response_list(ctx, response_list, handle)
-
-    async def simple_response(self, ctx: Context, response: str, handle: str = None) -> None | bool:  # NOQA
-        if ctx.bot.channels[ctx.channel.name].online is False:
-            return False
-        if ctx.bot.channels[ctx.channel.name].prefix == "ƚ":
-            return False
-        response_str = response
-        response_str, user_handler = await self.handle_banwords(ctx, response_str)
-
-        if handle == "echo":
-            await self.handle_echo(ctx=ctx, response_str=response_str)
-        await self.send_response(ctx, user_handler, response_str)
-
-    async def pipe_handler(self, external_ctx: Context, message: Message):
-        response_str = ""
-        translations = external_ctx.bot.TranslationManager.get_translations(external_ctx.user.language or "en")
-        translation = translations.Exceptions.ResponseExceptions()
-        message.content = message.content.replace(" | ", f" | {external_ctx.prefix}")
-        original_message = message
-        response: Response | None = None
-        for command in message.content.split(" | "):  # NOQA
-            message = original_message
-            if "{output}" in command:  # NOQA
-                message.content = command.replace("{output}", response_str)  # NOQA
-            else:
-                message.content = f"{command} {response_str}"  # NOQA
-            ctx = await self.bot.get_context(message, cls=Context)
-            ctx.user = external_ctx.user
-            ctx.bot.CommandHandler.load_language(ctx)
-            response: Response = await self.bot.invoke(ctx)  # NOQA
-            if not response:
-                return await self.simple_response(ctx, response_str)
-            if not response.pipe:
-                await self.simple_response(ctx, translation.command_not_pipeble)
-                return await self.response(response)
-            if not response.success:
-                await self.simple_response(ctx, translation.error_on_command.format(ctx.command.name))  # NOQA
-                await self.simple_response(ctx, translation.pipe_response.format(response_str))
-                break
-            response_str = response.response_string
-        if response:
-            await self.response(response)
-
-    async def alias_handler(self, external_ctx: Context, message: Message):
-        args: list[str] = message.content.replace(f"{external_ctx.prefix}{external_ctx.prefix}", f"").split()
-        name: str = args.pop(0)
-        alias = await Alias.get_or_none(user=external_ctx.user, name=name, deleted=False)
-        if not alias.command:  # NOQA
-            alias = await alias.parent
-        if not alias:
-            return None
-        message.content = f"{external_ctx.prefix}{alias.invocation} {' '.join(alias.arguments)}"
-
-        if "{channel}" in message.content:
-            message.content = message.content.replace("{channel}", external_ctx.channel.name)
-        if "{user}" in message.content:
-            message.content = message.content.replace("{user}", external_ctx.user.name)
-        if args:
-            message.content = format_content(message.content, args)
-        if " | " in message.content:
-            return await self.pipe_handler(external_ctx, message)
-        else:
-            ctx = await self.bot.get_context(message, cls=Context)
-            ctx.user = external_ctx.user
-            ctx.bot.CommandHandler.load_language(ctx)
-            return await self.bot.invoke(ctx)
-
-
-
-def check(check_list: list) -> Callable[[Command], Command]:
-    def decorator(command: Command) -> Command:  # NOQA
-        for c in check_list:
-            command._checks.append(c)  # NOQA
-        return command
-
-    return decorator
-
-
-def usage(usage: str) -> Callable[[Command], Command]:  # NOQA
-    def decorator(command: Command) -> Command:  # NOQA
-        # if type(command) != Command:
-        #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
-        command.usage = usage
-        return command
-
-    return decorator
-
-
-def helper(description: str) -> Callable[[Command], Command]:
-    def decorator(command: Command) -> Command:  # NOQA
-        # if type(command) != Command:
-        #     raise TypeError(f"Expected 'twitchio.ext.commands.Command', not '{type(command)}'")
-        command.description = description
-        return command
-
-    return decorator
-
-
-def base_decorator(base: BaseDecorator | Type[T]) -> Callable[[Command], Command]:
-    def decorator(command: Command) -> Command:  # NOQA
-        command.decorators_original = base
-        return command
-
-    return decorator
-
-
-def format_content(content: str, values: list[str]) -> str:
-    def replace_match(match):
-        index_str = match.group(0)[1:-1]
-        if '+' in index_str:
-            return " ".join(values[int(index_str[0]):])
-        return values[int(index_str)]
-
-    return re.sub(r'\{\d+(?:\+\d*)?}', replace_match, content)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                func.__command_guards__.extend(predicates)
+            except AttributeError:
+                func.__command_guards__ = list(predicates)
+        return func  # type: ignore
+
+    return wrapper
+
+
+class Group(TwitchioGroup):
+    def command(
+        self,
+        name: str | None = None,
+        aliases: list[str] | None = None,
+        extras: dict[Any, Any] | None = None,
+        pipeble: bool = True,  # NOQA
+        **kwargs: Any,
+    ) -> Any:
+        def wrapper(
+            func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
+        ) -> Command[Any, ...]:
+            new = command(name=name, aliases=aliases, extras=extras, parent=self, pipeble=pipeble, **kwargs)(func)
+
+            self.add_command(new)
+            return new
+
+        return wrapper
+
+
+def group(
+    name: str | None = None, aliases: list[str] | None = None, extras: dict[Any, Any] | None = None, **kwargs: Any
+) -> Any:
+    def wrapper(
+        func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
+    ) -> Group[Any, ...]:
+        if isinstance(func, Command):
+            raise ValueError(f'Callback "{func._callback.__name__}" is already a Command.')  # NOQA
+
+        if not asyncio.iscoroutinefunction(func):
+            raise TypeError(f'Group callback for "{func.__qualname__}" must be a coroutine function.')
+
+        func_name = func.__name__
+        name_ = name.strip().replace(" ", "") or func_name if name else func_name
+
+        return Group(name=name_, callback=func, aliases=aliases or [], extras=extras or {}, **kwargs)
+
+    return wrapper

@@ -3,16 +3,14 @@ from __future__ import annotations
 import asyncio
 import random
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 import pytz
 from tortoise import fields
 
-from bot.models.base import Base, TimestampMixin
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING, Union
-
+from bot.models.base import Base
 
 if TYPE_CHECKING:
-    from bot.bot import Context
     from bot.models.User import User
     from bot.models.Channel import Channel
 
@@ -32,18 +30,13 @@ class MessagesLog(Base):
     def created_ago(self):
         return datetime.now(pytz.utc) - self.created_at
 
-
-
     def created_a_time(self, humanize, timezone):
         return humanize.precisedelta(datetime.now(timezone) - self.created_at.astimezone(timezone))
-
 
     @staticmethod
     async def all_messages_generator(maximum=None, category=None, offset=0, channel_id=None):
         batch_size = 100
-        while True:
-            if maximum and offset >= maximum:
-                break
+        while not (maximum and offset >= maximum):
             cursor = MessagesLog.all()
 
             if category == "message":
@@ -68,16 +61,10 @@ class MessagesLog(Base):
 
         while users_fetched and (not maximum or len(all_users) < maximum):
             if category == "message":
-                users = (
-                    await MessagesLog.filter(type=category)
-                    .offset(offset)
-                    .limit(batch_size)
-                    .values("content")
-                )
+                users = await MessagesLog.filter(type=category).offset(offset).limit(batch_size).values("content")
             else:
                 users = await MessagesLog.all().offset(offset).limit(batch_size)
             if not users:
-                users_fetched = False
                 break
             await asyncio.sleep(0)
             all_users.extend(users)
@@ -86,27 +73,26 @@ class MessagesLog(Base):
         return all_users
 
     @staticmethod
-    async def random_line(ctx: Context, category, target=None):
-        line = None
-        if category == "channel":
-            if target:
-                channel = ctx.bot.channels[target]
-            else:
-                channel = ctx.bot.channels[ctx.channel.name]
-            count_value = await MessagesLog.filter(channel=channel).count()
-            random_offset = random.randint(0, count_value - 1)
-            line = (
-                await MessagesLog.filter(channel=channel).offset(random_offset).limit(1).first()
-            )
-        elif category == "global":
-            count_value = await MessagesLog.all().count()
-            random_offset = random.randint(0, count_value - 1)
-            line = await MessagesLog.all().offset(random_offset).limit(1).first()
-        elif category == "user":
-            user = await User.get(name=target) if target else ctx.user
-            count_value = await MessagesLog.filter(
-                channel=ctx.bot.channels[ctx.channel.name], user=user
-            ).count()
-            random_offset = random.randint(0, count_value - 1)
-            line = await MessagesLog.filter(user=user).offset(random_offset).limit(1).first()
-        return line
+    async def get_random_message(user=None, channel=None):
+        query = MessagesLog.filter()
+        if user:
+            query = query.filter(user=user)
+        if channel:
+            query = query.filter(channel=channel)
+
+        min_id = await query.order_by("id").limit(1).values_list("id", flat=True)
+        max_id = await query.order_by("-id").limit(1).values_list("id", flat=True)
+
+        if not min_id or not max_id:
+            return None, 0
+
+        start_time = asyncio.get_event_loop().time()
+        timeout = 30
+
+        while asyncio.get_event_loop().time() - start_time < timeout:
+            random_id = random.randint(min_id[0], max_id[0])
+            message = await query.filter(id=random_id).prefetch_related("user").first()
+            if message:
+                return message, True
+
+        return None, False

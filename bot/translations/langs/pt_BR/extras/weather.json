@@ -1,0 +1,401 @@
+{
+    "Weather": {
+        "Weather Codes": {
+            "0": {
+                "day": {
+                    "description": "Ensolarado",
+                    "emoji": "☀️"
+                },
+                "night": {
+                    "description": "Céu Limpo",
+                    "emoji": "🌙"
+                }
+            },
+            "1": {
+                "day": {
+                    "description": "Principalmente Ensolarado",
+                    "emoji": "🌤️"
+                },
+                "night": {
+                    "description": "Principalmente Limpo",
+                    "emoji": "🌙"
+                }
+            },
+            "2": {
+                "day": {
+                    "description": "Parcialmente Nublado",
+                    "emoji": "⛅"
+                },
+                "night": {
+                    "description": "Parcialmente Nublado",
+                    "emoji": "⛅"
+                }
+            },
+            "3": {
+                "day": {
+                    "description": "Nublado",
+                    "emoji": "☁️"
+                },
+                "night": {
+                    "description": "Nublado",
+                    "emoji": "☁️"
+                }
+            },
+            "45": {
+                "day": {
+                    "description": "Neblina",
+                    "emoji": "🌫️"
+                },
+                "night": {
+                    "description": "Neblina",
+                    "emoji": "🌫️"
+                }
+            },
+            "48": {
+                "day": {
+                    "description": "Nevoeiro de Gelo",
+                    "emoji": "🌫️"
+                },
+                "night": {
+                    "description": "Nevoeiro de Gelo",
+                    "emoji": "🌫️"
+                }
+            },
+            "51": {
+                "day": {
+                    "description": "Chuvisco Fraco",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuvisco Fraco",
+                    "emoji": "🌧️"
+                }
+            },
+            "53": {
+                "day": {
+                    "description": "Chuvisco",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuvisco",
+                    "emoji": "🌧️"
+                }
+            },
+            "55": {
+                "day": {
+                    "description": "Chuvisco Forte",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuvisco Forte",
+                    "emoji": "🌧️"
+                }
+            },
+            "56": {
+                "day": {
+                    "description": "Chuvisco Fraco Congelante",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuvisco Fraco Congelante",
+                    "emoji": "🌧️"
+                }
+            },
+            "57": {
+                "day": {
+                    "description": "Chuvisco Congelante",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuvisco Congelante",
+                    "emoji": "🌧️"
+                }
+            },
+            "61": {
+                "day": {
+                    "description": "Chuva Fraca",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuva Fraca",
+                    "emoji": "🌧️"
+                }
+            },
+            "63": {
+                "day": {
+                    "description": "Chuva",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuva",
+                    "emoji": "🌧️"
+                }
+            },
+            "65": {
+                "day": {
+                    "description": "Chuva Forte",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuva Forte",
+                    "emoji": "🌧️"
+                }
+            },
+            "66": {
+                "day": {
+                    "description": "Chuva Fraca Congelante",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuva Fraca Congelante",
+                    "emoji": "🌧️"
+                }
+            },
+            "67": {
+                "day": {
+                    "description": "Chuva Congelante",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuva Congelante",
+                    "emoji": "🌧️"
+                }
+            },
+            "71": {
+                "day": {
+                    "description": "Neve Fraca",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Neve Fraca",
+                    "emoji": "🌧️"
+                }
+            },
+            "73": {
+                "day": {
+                    "description": "Neve",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Neve",
+                    "emoji": "🌧️"
+                }
+            },
+            "75": {
+                "day": {
+                    "description": "Neve Forte",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Neve Forte",
+                    "emoji": "🌧️"
+                }
+            },
+            "77": {
+                "day": {
+                    "description": "Granizo",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Granizo",
+                    "emoji": "🌧️"
+                }
+            },
+            "80": {
+                "day": {
+                    "description": "Chuvas Leves",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuvas Leves",
+                    "emoji": "🌧️"
+                }
+            },
+            "81": {
+                "day": {
+                    "description": "Chuvas",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuvas",
+                    "emoji": "🌧️"
+                }
+            },
+            "82": {
+                "day": {
+                    "description": "Chuvas Fortes",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuvas Fortes",
+                    "emoji": "🌧️"
+                }
+            },
+            "85": {
+                "day": {
+                    "description": "Chuvas de Neve Leve",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuvas de Neve Leve",
+                    "emoji": "🌧️"
+                }
+            },
+            "86": {
+                "day": {
+                    "description": "Chuvas de Neve",
+                    "emoji": "🌧️"
+                },
+                "night": {
+                    "description": "Chuvas de Neve",
+                    "emoji": "🌧️"
+                }
+            },
+            "95": {
+                "day": {
+                    "description": "Tempestade",
+                    "emoji": "⛈️"
+                },
+                "night": {
+                    "description": "Tempestade",
+                    "emoji": "⛈️"
+                }
+            },
+            "96": {
+                "day": {
+                    "description": "Tempestades Leves com Granizo",
+                    "emoji": "⛈️"
+                },
+                "night": {
+                    "description": "Tempestades Leves com Granizo",
+                    "emoji": "⛈️"
+                }
+            },
+            "99": {
+                "day": {
+                    "description": "Tempestade com Granizo",
+                    "emoji": "⛈️"
+                },
+                "night": {
+                    "description": "Tempestade com Granizo",
+                    "emoji": "⛈️"
+                }
+            },
+            "99999": {
+                "day": {
+                    "description": "Desconhecido",
+                    "emoji": "❓"
+                },
+                "night": {
+                    "description": "Desconhecido",
+                    "emoji": "❓"
+                }
+            }
+        },
+        "Cardinals": {
+            "North": {
+                "short": "N",
+                "long": "Norte",
+                "angles": [
+                    337,
+                    360
+                ]
+            },
+            "North2": {
+                "short": "N",
+                "long": "Norte",
+                "angles": [
+                    0,
+                    23
+                ]
+            },
+            "North-East": {
+                "short": "NE",
+                "long": "Nordeste",
+                "angles": [
+                    23,
+                    68
+                ]
+            },
+            "East": {
+                "short": "L",
+                "long": "Leste",
+                "angles": [
+                    68,
+                    113
+                ]
+            },
+            "South-East": {
+                "short": "SE",
+                "long": "Sudeste",
+                "angles": [
+                    113,
+                    158
+                ]
+            },
+            "South": {
+                "short": "S",
+                "long": "Sul",
+                "angles": [
+                    158,
+                    203
+                ]
+            },
+            "South-West": {
+                "short": "SO",
+                "long": "Sudoeste",
+                "angles": [
+                    203,
+                    248
+                ]
+            },
+            "West": {
+                "short": "O",
+                "long": "Oeste",
+                "angles": [
+                    248,
+                    293
+                ]
+            },
+            "North-West": {
+                "short": "NO",
+                "long": "Noroeste",
+                "angles": [
+                    293,
+                    337
+                ]
+            }
+        },
+        "WMO Codes": {
+            "0": "Céu Limpo",
+            "1": "Principalmente Limpo",
+            "2": "Parcialmente Nublado",
+            "3": "Nublado",
+            "45": "Nebuloso",
+            "48": "Nevoeiro com Geada",
+            "51": "Chuvisco Leve",
+            "53": "Chuvisco Moderado",
+            "55": "Chuvisco Forte",
+            "56": "Chuvisco Leve Congelante",
+            "57": "Chuvisco Congelante",
+            "61": "Chuva Leve",
+            "63": "Chuva Moderada",
+            "65": "Chuva Forte",
+            "66": "Chuva Fraca Congelante",
+            "67": "Chuva Congelante",
+            "71": "Neve Leve",
+            "73": "Neve Moderada",
+            "75": "Neve Forte",
+            "77": "Granizo",
+            "80": "Pancadas de Chuva Leve",
+            "81": "Pancadas de Chuva Moderada",
+            "82": "Pancadas de Chuva Forte",
+            "85": "Pancadas de Neve Leve",
+            "86": "Pancadas de Neve Forte",
+            "95": "Trovoada",
+            "96": "Trovoada com Granizo Leve",
+            "99": "Trovoada com Granizo Forte",
+            "99999": "desconhecido"
+        }
+    }
+}

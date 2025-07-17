@@ -8,10 +8,9 @@ from loguru import logger
 from nltk.tokenize import WhitespaceTokenizer
 from urlextract import URLExtract
 
+from bot.ext import Context
 from bot.ext.commands import User
-from bot.models import (
-    Channel as ChannelModel, MarkovChannels, MarkovUserChannel, MarkovUsers,
-)
+from bot.models import Channel as ChannelModel, MarkovChannels, MarkovUserChannel, MarkovUsers
 
 
 class MarkovProcessor:
@@ -24,11 +23,8 @@ class MarkovProcessor:
         most_common_word_count = Counter(message.split()).most_common(1)[0][1]
         return most_common_word_count / len(message.split()) > threshold
 
-    async def put_markov_queue(self, ctx):
-        words = WhitespaceTokenizer().tokenize(text=ctx.message.content)
-        if not self.is_repetitive(ctx.message.content) and len(words) >= 3:
-            await self.message_queue.async_q.put((ctx.message.content, ctx.bot.channels[ctx.channel.name], ctx.user))
-        del words
+    async def put_markov_queue(self, ctx: Context):
+        await self.message_queue.async_q.put((ctx.message.text, ctx.bot.channels[ctx.channel.name], ctx.user))
 
     @staticmethod
     async def _get_current_state(curr_state: str, **kwargs):
@@ -40,6 +36,7 @@ class MarkovProcessor:
             return await MarkovChannels.filter(curr_state=curr_state, channel=channel).first()
         elif user:
             return await MarkovUsers.filter(curr_state=curr_state, user=user).first()
+        return None
 
     @staticmethod
     async def _create_state(curr_state: str, next_state: dict[str, int], **kwargs):
@@ -77,8 +74,8 @@ class MarkovProcessor:
 
         for i in range(len(words) - ngram + 1):
             await asyncio.sleep(0)
-            curr_state = " ".join(words[i: i + ngram])
-            next_state = " ".join(words[i + ngram: i + ngram + ngram])
+            curr_state = " ".join(words[i : i + ngram])
+            next_state = " ".join(words[i + ngram : i + ngram + ngram])
 
             # Channel
             if user.id not in self.bots_ids:
@@ -112,11 +109,17 @@ class MarkovProcessor:
             try:
                 message, channel, user = await self.message_queue.async_q.get()
 
+                words = WhitespaceTokenizer().tokenize(text=message)
+                if not self.is_repetitive(message) and len(words) <= 3:
+                    return
+
                 if self.message_queue.async_q.qsize() > 100:
                     logger.info(f"Queue size: {self.message_queue.async_q.qsize()}")
 
                 await self.train_and_save_to_database(message, channel, user)
 
                 self.message_queue.async_q.task_done()
+            except asyncio.CancelledError:
+                raise
             except Exception as e:
                 logger.error(e)

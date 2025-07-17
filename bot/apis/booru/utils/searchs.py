@@ -1,12 +1,12 @@
 import json
 import re
 import time
-from random import randint, shuffle
+from random import randint
 
+from aiohttp import ClientResponse
 from aiohttp_client_cache import CachedSession
 
-from ..utils.parser import Api, deserialize
-from yarl import URL
+from ..utils.parser import Api
 
 Booru = Api()
 
@@ -72,6 +72,26 @@ class SearchListType(object):
             raise ValueError(Booru.error_handling_null)
 
         return self.final
+
+    async def _get(
+        self, url: str, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
+    ) -> ClientResponse:
+        if gacha:
+            limit = 100
+
+        if limit > 1000:
+            raise ValueError(Booru.error_handling_limit)
+
+        if block and re.findall(block, query):
+            raise ValueError(Booru.error_handling_sameval)
+
+        self.query = f"{query} -{block}*" if block != "" else query
+        self.specs["tags"] = str(self.query)
+        self.specs["limit"] = str(limit)
+        self.specs["pid"] = str(page)
+        self.specs["json"] = "1"
+        self.final = {"teste": 1}
+        return await self.session.get(url, params=self.specs, allow_redirects=True)
 
 
 class SearchListType2(object):

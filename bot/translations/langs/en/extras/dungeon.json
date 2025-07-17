@@ -1,0 +1,615 @@
+{
+    "Dungeon": {
+        "Rank": {
+            "victory": "victory",
+            "victories": "victories",
+            "win": "victory",
+            "wins": "victories",
+            "defeat": "defeat",
+            "defeats": "defeats",
+            "lose": "defeat",
+            "losses": "defeats",
+            "winrate": "winrate",
+            "warrior": "warrior",
+            "warriors": "warriors",
+            "warrior_f": "warrior (female)",
+            "warriors_f": "warriors (female)",
+            "mage": "mage",
+            "mages": "mages",
+            "mage_f": "mage (female)",
+            "mages_f": "mages (female)",
+            "archer": "archer",
+            "archers": "archers",
+            "archer_f": "archer (female)",
+            "archers_f": "archers (female)",
+            "default": "dungeons"
+        },
+        "Quotes": [
+            {
+                "quote": "The dungeon is full of spider webs! 🕸 \"{}ed 1\" to try to cross them or \"{}ed 2\" to think of another alternative.",
+                "1": {
+                    "win": "You easily pass through the webs and find the exit!",
+                    "lose": "You get stuck in the webs and spend hours unable to get out of there."
+                },
+                "2": {
+                    "win": "You throw a fireball at the webs, clearing the way and finding the exit!",
+                    "lose": "You end up not thinking about anything and decide to leave."
+                }
+            },
+            {
+                "quote": "The dungeon is full of zombies! 🧟 \"{}ed 1\" to try to eliminate them or \"{}ed 2\" to disguise yourself as a zombie.",
+                "1": {
+                    "win": "You manage to deal with all the zombies and continue to the exit!",
+                    "lose": "You are unable to handle so many zombies and retreat, injured."
+                },
+                "2": {
+                    "win": "You disguise yourself very well, deceiving the zombies and finding the exit!",
+                    "lose": "The zombies notice your terrible disguise and chase you, forcing you to flee."
+                }
+            },
+            {
+                "quote": "The dungeon is infested with spiders! 🕷️ \"{}ed 1\" to try to cross or \"{}ed 2\" to cast a spell.",
+                "1": {
+                    "win": "You easily pass through the spiders and find the exit!",
+                    "lose": "The spiders corner you, and you end up getting bitten by them."
+                },
+                "2": {
+                    "win": "You throw various projectiles at the spiders, clearing the way!",
+                    "lose": "You fail to cast your spell and flee home in fear."
+                }
+            },
+            {
+                "quote": "The dungeon is infested with rats! 🐀 \"{}ed 1\" to confront them or \"{}ed 2\" to think of another plan.",
+                "1": {
+                    "win": "You manage to defeat all the rats, finding the exit!",
+                    "lose": "More rats appear than you can handle, and you flee in fear of leptospirosis."
+                },
+                "2": {
+                    "win": "You throw pieces of bologna from your bag, persuading the rats until you find the exit!",
+                    "lose": "You don't think of anything and give up on the dungeon."
+                }
+            },
+            {
+                "quote": "Upon entering the dungeon, you find a banana. 🍌 \"{}ed 1\" to eat it or \"{}ed 2\" to step on it.",
+                "1": {
+                    "win": "You eat the banana, and it fills you with determination!",
+                    "lose": "You eat the banana, and after a while, you feel an unbearable stomachache."
+                },
+                "2": {
+                    "win": "You step on the banana and slip on it, giving you a burst of speed to the exit.",
+                    "lose": "You slip when stepping on the banana, hitting your head on the ground and becoming unconscious."
+                }
+            },
+            {
+                "quote": "Upon entering the dungeon, you find a scroll. 📜 \"{}ed 1\" to read it or \"{}ed 2\" to ignore it.",
+                "1": {
+                    "win": "You read the scroll, which contained tips for finding the exit!",
+                    "lose": "The scroll said \"Imminent death,\" and out of fear, you give up on the dungeon."
+                },
+                "2": {
+                    "win": "You ignore the scroll and finish the dungeon naturally.",
+                    "lose": "You ignore the scroll and are cursed by a creature incredulous at your ignorance."
+                }
+            },
+            {
+                "quote": "An egg with legs is trying to climb a platform. 🥚 \"{}ed 1\" to help it or \"{}ed 2\" to push it.",
+                "1": {
+                    "win": "You manage to help the egg, and in return, you receive a blessing!",
+                    "lose": "You end up knocking it down and breaking it. Immediately, you are cursed!"
+                },
+                "2": {
+                    "win": "You push the egg, and it falls off the platform. You find it funny and continue the dungeon, happy.",
+                    "lose": "You fail in your attempt to push it and fall off the platform. The egg laughs at you."
+                }
+            },
+            {
+                "quote": "You find a dog! 🐕 \"{}ed 1\" to pet it or \"{}ed 2\" to bark at it.",
+                "1": {
+                    "win": "You manage to pet the dog, and it lifts your spirits!",
+                    "lose": "The dog bites your hand very hard, forcing you to return to get medical treatment."
+                },
+                "2": {
+                    "win": "You bark at the dog, and it barks back. This fills you with courage!",
+                    "lose": "The dog gets scared and starts chasing you relentlessly until you leave."
+                }
+            },
+            {
+                "quote": "You find a druid drinking soda. 🥤 \"{}ed 1\" to ask for a soda or \"{}ed 2\" to ask for a blessing.",
+                "1": {
+                    "win": "You sit down to have a soda with him, and it heals all your wounds!",
+                    "lose": "The druid refuses your request and spits soda at you."
+                },
+                "2": {
+                    "win": "The druid grants you a blessing, and it helps you complete the dungeon!",
+                    "lose": "The druid laughs and does not grant you any blessing. Sad, you return home."
+                }
+            },
+            {
+                "quote": "You find a lamp genie! 🧞 \"{}ed 1\" to make a wish or \"{}ed 2\" to free him from the lamp.",
+                "1": {
+                    "win": "You wish for the genie to take you to the end of the dungeon, and the wish is granted!",
+                    "lose": "You ask the genie for a lot of money. Suddenly, a million coins fall on you, crushing you."
+                },
+                "2": {
+                    "win": "You free the genie from the lamp, and in return for your kindness, he gives you a lot of gold.",
+                    "lose": "You free the genie from the lamp, and he rebels, trapping you in the lamp."
+                }
+            },
+            {
+                "quote": "You encounter a warrior who insists on helping you. 🛡️ \"{}ed 1\" to trust the warrior or \"{}ed 2\" to attack him.",
+                "1": {
+                    "win": "The warrior offers great help, and together, you finish the dungeon!",
+                    "lose": "The warrior takes you to unknown paths and abandons you. You are left lost and alone."
+                },
+                "2": {
+                    "win": "Fearing betrayal, you attack the warrior and defeat him, allowing you to cross the dungeon.",
+                    "lose": "You attempt a surprise attack, but the warrior is stronger than you thought and knocks you out."
+                }
+            },
+            {
+                "quote": "You find a man playing classical music. 🍷 \"{}ed 1\" to talk or \"{}ed 2\" to negotiate.",
+                "1": {
+                    "win": "The man ends up liking you and shares good strategies for the dungeon.",
+                    "lose": "The man finds you unbearable and says things that lower your spirits."
+                },
+                "2": {
+                    "win": "You obtain rare items in exchange for a few coins!",
+                    "lose": "The man refuses all your offers, and you return home, defeated."
+                }
+            },
+            {
+                "quote": "You find a wolf holding a sword in its mouth! 🐺 \"{}ed 1\" to tame it or \"{}ed 2\" to take the sword from it.",
+                "1": {
+                    "win": "You manage to tame the wolf! It accompanies and protects you until the end of the dungeon.",
+                    "lose": "You try to tame it, but fail! Sad, you attempt to continue alone."
+                },
+                "2": {
+                    "win": "You manage to take the rare sword from the wolf, making it easy to complete the dungeon!",
+                    "lose": "You follow the wolf, waiting for an opportunity to grab its sword, but get lost in the process."
+                }
+            },
+            {
+                "quote": "You find a magical crystal ball! 🔮 \"{}ed 1\" to touch it or \"{}ed 2\" to collect it.",
+                "1": {
+                    "win": "You touch the crystal ball and are transported to the exit of the dungeon!",
+                    "lose": "You touch it and are transported back to the beginning of the dungeon."
+                },
+                "2": {
+                    "win": "You collect the crystal ball, and it increases your collection of artifacts!",
+                    "lose": "The crystal ball senses your evil energy and transports you to a room full of monsters."
+                }
+            },
+            {
+                "quote": "You find a box! 📦 \"{}ed 1\" to open it or \"{}ed 2\" to ignore it.",
+                "1": {
+                    "win": "You find various riches inside it that help you complete the dungeon!",
+                    "lose": "There is another box inside the box. You open it. Inside another box, there is a paper that says: \"Nothing.\""
+                },
+                "2": {
+                    "win": "You ignore the box and continue your journey normally until you finish it.",
+                    "lose": "The box was a disguised monster, and it attacks you unexpectedly!"
+                }
+            },
+            {
+                "quote": "You find a house with many doors. 🏠 \"{}ed 1\" to enter the house or \"{}ed 2\" to investigate behind it.",
+                "1": {
+                    "win": "Upon opening one of the doors, you see that it was a shortcut to the exit!",
+                    "lose": "You open one of the doors and fall into a hole that was disguised in the floor."
+                },
+                "2": {
+                    "win": "In the ground behind the house, you find a chest full of gold!",
+                    "lose": "You encounter an alligator behind the house and need to escape the dungeon quickly."
+                }
+            },
+            {
+                "quote": "You find a shining star. ⭐ \"{}ed 1\" to touch it or \"{}ed 2\" to punch it.",
+                "1": {
+                    "win": "You touch the star, absorbing it and becoming invincible for a short time.",
+                    "lose": "You touch the star, receiving a stunning shock and falling asleep."
+                },
+                "2": {
+                    "win": "The star shatters with your punch, and the dust enchants your fists, making you stronger.",
+                    "lose": "You realize that the star is as hard as stone and end up hurting your hands by punching it."
+                }
+            },
+            {
+                "quote": "You find a cookie machine! 🍪 \"{}ed 1\" to kick it or \"{}ed 2\" to investigate it.",
+                "1": {
+                    "win": "You decide to kick it, and this releases a delicious cookie!",
+                    "lose": "You punch the machine, and it, offended, returns the punch you gave it."
+                },
+                "2": {
+                    "win": "You investigate the machine and find lost coins inside it!",
+                    "lose": "You investigate the machine for hours and only waste your time!"
+                }
+            },
+            {
+                "quote": "You find a table full of sandwiches. 🥪 \"{}ed 1\" to eat one or \"{}ed 2\" to take them all.",
+                "1": {
+                    "win": "You eat a sandwich, and it boosts your motivation!",
+                    "lose": "You eat a sandwich, and after a while, you feel an unbearable stomachache."
+                },
+                "2": {
+                    "win": "You store all the sandwiches, increasing your reserve supplies!",
+                    "lose": "As you clear the table of sandwiches, a trap is triggered, and the exit becomes blocked."
+                }
+            },
+            {
+                "quote": "You find a television turned on. 📺 \"{}ed 1\" to watch it or \"{}ed 2\" to turn it off.",
+                "1": {
+                    "win": "You decide to watch the television and find shows that boost your self-esteem.",
+                    "lose": "A girl comes out of the television, and you flee the dungeon in a panic."
+                },
+                "2": {
+                    "win": "You turn off the television and continue your journey normally until you complete it.",
+                    "lose": "As you press the button to turn it off, you receive a shock that leaves you unconscious."
+                }
+            },
+            {
+                "quote": "You see a huge colony of bees! 🐝 \"{}ed 1\" to steal the honey or \"{}ed 2\" to flee immediately.",
+                "1": {
+                    "win": "You eat the honey, and it gives you the energy to finish the dungeon quickly!",
+                    "lose": "As you approach the hive, the bees attack you and leave you unconscious."
+                },
+                "2": {
+                    "win": "The fear of the bees makes you run so fast that you reach the other side of the dungeon!",
+                    "lose": "As you try to escape, the bees chase after you. The bees attack you and leave you unconscious."
+                }
+            },
+            {
+                "quote": "You bump into a man with wavering eyes 👀 \"{}ed 1\" to stare at him without blinking or \"{}ed 2\" to look away.",
+                "1": {
+                    "win": "He blinks at you and gives you a new pair of boots that make you faster!",
+                    "lose": "As you look deep into his eyes, you become extremely unlucky."
+                },
+                "2": {
+                    "win": "The man notices your fear and, feeling sorry for you, gives you a pair of boots that make you faster!",
+                    "lose": "While you're not looking, he approaches and steals your artifacts."
+                }
+            },
+            {
+                "quote": "You hear two wizards talking. 🧙🧙 \"{}ed 1\" to sneak and listen to them or \"{}ed 2\" to show them your strength.",
+                "1": {
+                    "win": "They talk about potions, and suddenly you become invisible!",
+                    "lose": "They say some words of enchantment, and you become hopelessly in love."
+                },
+                "2": {
+                    "win": "They become afraid of your incredible muscles and give you a potion!",
+                    "lose": "They laugh at your arrogance and curse you."
+                }
+            },
+            {
+                "quote": "You find a key and see two doors. 🚪 \"{}ed 1\" to open the left one or \"{}ed 2\" to open the right one.",
+                "1": {
+                    "win": "You free a drunken druid and help him remember how he got locked in there!",
+                    "lose": "You release a feathered creature that takes your clothes and disappears."
+                },
+                "2": {
+                    "win": "You find the exit of the dungeon!",
+                    "lose": "You encounter a magical trap that leaves you dizzy for hours."
+                }
+            },
+            {
+                "quote": "You find a key and a chest. 🔑 \"{}ed 1\" to open it or \"{}ed 2\" to take the chest without opening it.",
+                "1": {
+                    "win": "Inside, there was a map with the path to the end of the dungeon!",
+                    "lose": "The chest was a mimic monster! You flee the dungeon to survive."
+                },
+                "2": {
+                    "win": "You encounter an undead wizard who only allows you to live in exchange for the chest!",
+                    "lose": "The chest gives you back pain because it's too heavy, and you need to rest."
+                }
+            },
+            {
+                "quote": "Your torch goes out, and you fall into a hole. 🕳 \"{}ed 1\" to climb or \"{}ed 2\" to fly.",
+                "1": {
+                    "win": "You manage to climb easily using angular speed!",
+                    "lose": "After several attempts, you give up and cry in a fetal position, waiting for someone."
+                },
+                "2": {
+                    "win": "You remember the training in the mountains and perform an incredible flight!",
+                    "lose": "You concentrate for hours until you finally realize that you don't know how to fly."
+                }
+            },
+            {
+                "quote": "You find a map with an \"X\" marked. 🗺 \"{}ed 1\" to follow the map or \"{}ed 2\" to discard it.",
+                "1": {
+                    "win": "The \"X\" leads you to the exit of the dungeon!",
+                    "lose": "You walk for hours until you realize that you are walking in circles."
+                },
+                "2": {
+                    "win": "You crumple the map and throw it away, realizing it hits a lost chest filled with gold!",
+                    "lose": "You continue on your path and stop in a dead end. Maybe the map would have been useful…"
+                }
+            },
+            {
+                "quote": "You encounter a knight who challenges you! ⚔ \"{}ed 1\" to accept or \"{}ed 2\" to refuse.",
+                "1": {
+                    "win": "You defeat the knight, dodging all of his attacks!",
+                    "lose": "He gives you a terrible beating and leaves you unconscious."
+                },
+                "2": {
+                    "win": "Out of pity for your cowardice, he gives you a new sword for future battles.",
+                    "lose": "You refuse the challenge and walk away. Nothing happens."
+                }
+            },
+            {
+                "quote": "You find a talking owl. 🦉 \"{}ed 1\" to listen to her or \"{}ed 2\" to put her in a cage.",
+                "1": {
+                    "win": "The old and wise owl gives you the encouragement you needed to fight through the dungeon!",
+                    "lose": "You fall into an illusion spell from the owl and wake up hours later."
+                },
+                "2": {
+                    "win": "Now you have an owl to talk to during your journey and ask for advice!",
+                    "lose": "As you approach, the owl transforms into a wizard who gives you a beating."
+                }
+            },
+            {
+                "quote": "You enter a cave full of bats. 🦇 \"{}ed 1\" to advance silently or \"{}ed 2\" to attack them.",
+                "1": {
+                    "win": "You sneak to avoid alerting them and manage to advance!",
+                    "lose": "Your silence doesn't last long; you soon trip and bring all the bats down on you."
+                },
+                "2": {
+                    "win": "You take out all the bats with ease.",
+                    "lose": "You defeat all of them and decide to make a soup with them, but it doesn't sit well with you…"
+                }
+            },
+            {
+                "quote": "You see a giant rat! 🐀 \"{}ed 1\" to attack it or \"{}ed 2\" to retreat and set a trap.",
+                "1": {
+                    "win": "In an epic battle, you defeat the rat and find legendary gloves!",
+                    "lose": "After several attacks, you become exhausted, and it lands a solid hit on you."
+                },
+                "2": {
+                    "win": "You set up the perfect trap with some tasty cheese, and it gets caught!",
+                    "lose": "After setting up the trap, you realize it was just the shadow of a regular rat…"
+                }
+            },
+            {
+                "quote": "You see a maiden being escorted by several knights. 😍 \"{}ed 1\" to seduce her or \"{}ed 2\" to wave.",
+                "1": {
+                    "win": "She responds with a shy smile that boosts your motivation!",
+                    "lose": "Immediately, all the warriors head in your direction, and you find yourself forced to flee."
+                },
+                "2": {
+                    "win": "She thinks you are begging and gives you some gold coins.",
+                    "lose": "One of the knights dismounts from his horse and gives you a beating."
+                }
+            },
+            {
+                "quote": "You see a handsome, muscular man ahead. 💪 \"{}ed 1\" to flirt or \"{}ed 2\" to ask for help.",
+                "1": {
+                    "win": "He responds, and the atmosphere heats up. Things happen that leave you extremely invigorated.",
+                    "lose": "He laughs loudly in a mocking way and completely ignores you."
+                },
+                "2": {
+                    "win": "He points to the exit of the dungeon, striking a pose that highlights all his muscles!",
+                    "lose": "You ask for help, but he doesn't hear you. When you insist, you wake up from the dream."
+                }
+            },
+            {
+                "quote": "You see a beautiful red-haired woman ahead. 😍 \"{}ed 1\" to flirt or \"{}ed 2\" to ask for help.",
+                "1": {
+                    "win": "She responds, and the atmosphere heats up. Things happen that leave you extremely invigorated.",
+                    "lose": "She laughs loudly in a mocking way and completely ignores you."
+                },
+                "2": {
+                    "win": "She shares one of the many pearls from her necklace, which makes you incredibly skilled!",
+                    "lose": "You ask for help, but she doesn't hear you. When you insist, you wake up from the dream."
+                }
+            },
+            {
+                "quote": "There are many frogs in the dungeon! 🐸 \"{}ed 1\" to kiss them or \"{}ed 2\" to burn them.",
+                "1": {
+                    "win": "You pick up one of the frogs and kiss it, gaining extra strength!",
+                    "lose": "You kiss several frogs and start to feel confused. Then, you get lost for hours in hallucinations."
+                },
+                "2": {
+                    "win": "You incinerate all the frogs and see that from their ashes you can make some explosives.",
+                    "lose": "You try to burn them, but they are immune. They revolt and jump on you, stunning you."
+                }
+            },
+            {
+                "quote": "In the middle of the dungeon, you find a dancing alien 👽 \"{}ed 1\" to dance along or \"{}ed 2\" to turn off the music.",
+                "1": {
+                    "win": "You both have fun dancing, and he gives you a vigor potion as a thank you.",
+                    "lose": "You give up on completing the dungeon to dance with him."
+                },
+                "2": {
+                    "win": "The alien thanks you and tells you that he has been trapped for years in the curse of not being able to stop dancing.",
+                    "lose": "Enraged, the alien shoots lasers from his fingers, and you flee desperately."
+                }
+            },
+            {
+                "quote": "You see a button at the entrance of the dungeon. 🔘 \"{}ed 1\" to press it or \"{}ed 2\" to press it with the tip of your nose.",
+                "1": {
+                    "win": "A cabin rises from the ground containing a shining sword.",
+                    "lose": "Several bombs explode at the entrance of the dungeon, blocking the way."
+                },
+                "2": {
+                    "win": "The wall next to the button rotates, revealing a shining and powerful armor.",
+                    "lose": "Several bombs explode at the entrance of the dungeon, blocking the way. And your nose is left dirty."
+                }
+            },
+            {
+                "quote": "A man with a trumpet appears. 🎺 \"{}ed 1\" to ask him to play or \"{}ed 2\" to ignore him.",
+                "1": {
+                    "win": "His music inspires you, and you feel more determined!",
+                    "lose": "He plays poorly, and your ears start to ring. This gives you a strong headache."
+                },
+                "2": {
+                    "win": "You realize how lucky you are when you hear terrible trumpet sounds in the distance.",
+                    "lose": "He chases you and starts playing music extremely badly."
+                }
+            },
+            {
+                "quote": "A dwarf riding a beetle approaches. 🐞 \"{}ed 1\" to talk or \"{}ed 2\" to push them and steal the beetle.",
+                "1": {
+                    "win": "You become friends and he gives you a sort of compass for the dungeon.",
+                    "lose": "He insists that you see his beetle collection, delaying you."
+                },
+                "2": {
+                    "win": "You knock the dwarf off the large beetle and acquire a mount to traverse the dungeon.",
+                    "lose": "The beetle counterattacks to protect its owner and leaves you stunned."
+                }
+            },
+            {
+                "quote": "There is a guild fighting against a huge dragon! 🐉 \"{}ed 1\" to help or \"{}ed 2\" to hide.",
+                "1": {
+                    "win": "The dragon is defeated when you deliver the final blow, bringing glory!",
+                    "lose": "The dragon's wing beat is strong enough to throw you far. You hit your head and pass out."
+                },
+                "2": {
+                    "win": "You hide and, after seeing the dragon kill everyone, You Return to Avenge Them!",
+                    "lose": "The guild members defeat the dragon and then come after you for not helping them."
+                }
+            },
+            {
+                "quote": "A cheerful man is serving pies. 🥧 \"{}ed 1\" to eat now or \"{}ed 2\" to save for later.",
+                "1": {
+                    "win": "With the extra energy from the pie, you run faster through the dungeon!",
+                    "lose": "When you approach to take the pie, he throws it in your face."
+                },
+                "2": {
+                    "win": "You save it and, some time later, eating it restores your energy completely!",
+                    "lose": "Some time later, you see that the pie you saved has messed everything up in your bag. You lose time cleaning things up."
+                }
+            },
+            {
+                "quote": "An animal is coming your way! \"{}ed 1\" to wait for it or \"{}ed 2\" to run away.",
+                "1": {
+                    "win": "A beautiful unicorn approaches and the magic of its horn brings you extra strength. 🦄",
+                    "lose": "A bird delivers a message: \"You will never succeed.\" You sit and cry. 🐦"
+                },
+                "2": {
+                    "win": "You run, but a monkey with tiny legs catches up to you and throws white powder. This makes you more alert. 🦍",
+                    "lose": "You run, but a sinister duck catches up to you and steals your clothes. You are forced to return. 🦆"
+                }
+            },
+            {
+                "quote": "The dungeon is haunted by a ghost! 👻 \"{}ed 1\" to try to confront it or \"{}ed 2\" to try to avoid it.",
+                "1": {
+                    "win": "You exorcise the ghost, clearing the path to the exit!",
+                    "lose": "You are defeated by the ghost and end up being cursed."
+                },
+                "2": {
+                    "win": "You sneak past the ghost until you reach the exit!",
+                    "lose": "The ghost notices your presence and ends up possessing you."
+                }
+            }
+        ],
+        "Classes": {
+            "Warrior 1": [
+                "Warrior",
+                "Mercenary",
+                "Knight",
+                "Lord",
+                "Grand Master",
+                "Sword Emperor",
+                "Divine Guardian"
+            ],
+            "Warrior 2": [
+                "Warrior",
+                "Mercenary",
+                "Knight",
+                "Dark Knight",
+                "Arcane Warrior",
+                "Demon Swordsman",
+                "Immortal Ascendant"
+            ],
+            "Female Warrior 1": [
+                "Female Warrior",
+                "Female Mercenary",
+                "Female Knight",
+                "Lady",
+                "Female Grand Master",
+                "Female Sword Emperor",
+                "Female Divine Guardian"
+            ],
+            "Female Warrior 2": [
+                "Female Warrior",
+                "Female Mercenary",
+                "Female Knight",
+                "Dark Lady",
+                "Female Arcane Warrior",
+                "Female Demon Swordsman",
+                "Female Immortal Ascendant"
+            ],
+            "Archer 1": [
+                "Archer",
+                "Elite Archer",
+                "Sentinel",
+                "Beast Tamer",
+                "Demon Hunter",
+                "Master of Winds",
+                "Goddess Dawn",
+                "Goddess Night"
+            ],
+            "Archer 2": [
+                "Archer",
+                "Elite Archer",
+                "Sentinel",
+                "Hunter",
+                "Arcane Assassin",
+                "Living Shadow",
+                "God's Twilight"
+            ],
+            "Female Archer 1": [
+                "Female Archer",
+                "Female Elite Archer",
+                "Female Sentinel",
+                "Female Beast Tamer",
+                "Female Demon Hunter",
+                "Female Master of Winds",
+                "Female Goddess Dawn",
+                "Female Goddess Night"
+            ],
+            "Female Archer 2": [
+                "Female Archer",
+                "Female Elite Archer",
+                "Female Sentinel",
+                "Female Hunter",
+                "Female Arcane Assassin",
+                "Female Living Shadow",
+                "Female God's Twilight"
+            ],
+            "Mage 1": [
+                "Mage",
+                "Sorcerer",
+                "Elemental Master",
+                "Alchemist",
+                "Mind Thief",
+                "Necromancer",
+                "Lich"
+            ],
+            "Mage 2": [
+                "Mage",
+                "Sorcerer",
+                "Elemental Master",
+                "Cleric",
+                "Archbishop",
+                "Divine Conjurer",
+                "Angel"
+            ],
+            "Female Mage 1": [
+                "Female Mage",
+                "Female Sorcerer",
+                "Female Elemental Master",
+                "Female Alchemist",
+                "Female Mind Thief",
+                "Female Necromancer",
+                "Female Lich"
+            ],
+            "Female Mage 2": [
+                "Female Mage",
+                "Female Sorcerer",
+                "Female Elemental Master",
+                "Female Cleric",
+                "Female Archbishop",
+                "Female Divine Conjurer",
+                "Female Angel"
+            ]
+        }
+    }
+}

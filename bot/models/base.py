@@ -3,21 +3,16 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Union
 
-import humanize as Humanize
+import pytz
 from tortoise import fields, Model
 
-
-Union[str, fields.TextField]
 CharFieldStr = Union[str, fields.CharField]
 IntFieldInt = Union[int, fields.IntField]
 DatetimeTzField = Union[datetime, fields.DatetimeField]
 
-import pytz
-
-
 
 class Base(Model):
-    id: IntFieldInt = fields.IntField(pk=True)
+    id: IntFieldInt = fields.IntField(primary_key=True)
 
     class Meta:
         abstract = True
@@ -32,19 +27,11 @@ class TimestampMixin:
 
     @property
     def created_ago(self):
-        return datetime.utcnow() - self.created_at
+        return datetime.now(pytz.utc) - self.created_at
 
     @property
     def updated_ago(self):
-        return datetime.utcnow() - self.updated_at
-
-
-    def created_a_time(self, humanize: Humanize, timezone):
-        return humanize.precisedelta(datetime.now(timezone) - self.created_at.astimezone(timezone))
-
-
-    def updated_a_time(self, humanize: Humanize, timezone):
-        return humanize.precisedelta(datetime.now(timezone) - self.updated_at.astimezone(timezone))
+        return datetime.now(pytz.utc) - self.updated_at
 
     @property
     def created_em(self):
@@ -53,11 +40,6 @@ class TimestampMixin:
     @property
     def updated_em(self):
         return self.updated_at.strftime("%d/%m/%Y %H:%M:%S")
-
-
-class UserMixin:
-    id: IntFieldInt = fields.IntField(pk=True, description="Twitch ID")
-    name: CharFieldStr = fields.CharField(unique=True, index=True, max_length=64, description="Twitch username")
 
 
 class ContentMixin:

@@ -1,14 +1,10 @@
-"""Asynchronous client for the Open-Meteo API."""
-
 from __future__ import annotations
 
 from datetime import date, datetime
 from enum import auto
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
-
-import re
 
 from .util import StrEnum
 

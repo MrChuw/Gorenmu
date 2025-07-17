@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from tortoise import fields
 
@@ -12,8 +11,8 @@ if TYPE_CHECKING:
 
 
 class Imgur(Base):
-    created_at: Union[datetime, fields.DatetimeField] = fields.DatetimeField(auto_now_add=True)
-    link: Union[str, fields.TextField] = fields.TextField()
+    created_at: fields.DatetimeField = fields.DatetimeField(auto_now_add=True)
+    link: fields.TextField = fields.TextField()
 
     user: User = fields.ForeignKeyField("models.User", related_name="Imgur")
 

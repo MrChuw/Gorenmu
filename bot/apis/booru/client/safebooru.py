@@ -1,8 +1,10 @@
-from random import randint, shuffle, choice
+from random import choice, randint, shuffle
 
-from ..utils import SearchListType, Api
-from ..schemas import safebooru_from_dict, SafebooruElement
+from aiohttp import ClientResponse
 from yarl import URL
+
+from ..schemas import safebooru_from_dict, SafebooruElement
+from ..utils import Api, SearchListType
 
 Booru = Api()
 
@@ -19,8 +21,16 @@ class Safebooru(SearchListType):
         Gets images, image urls only from safebooru.
 
     """
-    async def search(self, query: str, url: str = Booru.safebooru, block: str = "", limit: int = 100,
-                     page: int = randint(0, 100), gacha: bool = False) -> list[SafebooruElement] | None:
+
+    async def search(
+        self,
+        query: str,
+        url: str = Booru.safebooru,
+        block: str = "",
+        limit: int = 100,
+        page: int = randint(0, 100),
+        gacha: bool = False,
+    ) -> list[SafebooruElement] | None:
         """Search and gets images from safebooru.
 
         Parameters
@@ -58,14 +68,9 @@ class Safebooru(SearchListType):
         response = safebooru_from_dict(response)
         return response
 
-
-    async def random(self,
-                     query: str,
-                     block: str = "",
-                     limit: int = 100,
-                     page: int = randint(0, 100),
-                     gacha: bool = False
-                     ):
+    async def random(
+        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
+    ):
         results = await self.search(url=Booru.safebooru, query=query, block=block, limit=limit, page=page, gacha=gacha)
         if not results:
             return None, None
@@ -83,3 +88,8 @@ class Safebooru(SearchListType):
 
         post = choice(results)
         return [URL(post.file_url)], [URL(post.preview_url)]
+
+    async def get(
+        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
+    ) -> ClientResponse:
+        return await self._get(url=Booru.safebooru, query=query, block=block, limit=limit, page=page, gacha=gacha)

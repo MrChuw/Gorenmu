@@ -1,22 +1,24 @@
-from __future__ import annotations
+from __future__ import annotations, annotations
 
-from datetime import datetime
-from typing import Union
+from typing import TYPE_CHECKING
 
 from tortoise import fields
 
 from bot.models.base import Base, TimestampMixin
 
+if TYPE_CHECKING:
+    from bot.models import User
+
 
 class LotteryBank(Base, TimestampMixin):
-    quantity: Union[int, fields.IntField] = fields.IntField(default=0)
-    closed_in: Union[datetime, fields.DatetimeField] = fields.DatetimeField(null=True)
-    closed: Union[bool, fields.BooleanField] = fields.BooleanField(default=False)
-    accumulated: Union[bool, fields.BooleanField] = fields.BooleanField(default=True)
-    drawn_numbers: Union[list, fields.JSONField] = fields.JSONField(null=True)
-    accumulated_quantity: Union[int, fields.IntField] = fields.IntField(default=0)
+    quantity: fields.IntField = fields.IntField(default=0)
+    closed_in: fields.DatetimeField = fields.DatetimeField(null=True)
+    closed: fields.BooleanField = fields.BooleanField(default=False)
+    accumulated: fields.BooleanField = fields.BooleanField(default=True)
+    drawn_numbers: fields.JSONField = fields.JSONField(null=True)
+    accumulated_quantity: fields.IntField = fields.IntField(default=0)
 
-    users = fields.ReverseRelation["User"]
+    users: fields.ReverseRelation["User"]
 
     class Meta:
         table = "lottery_bank"

@@ -2,10 +2,13 @@ version = "2.0.0"
 
 [development]
 development = true
+test = false
 
 [bot]
+bot_id = 707980467
 color = 0x9147FF
 dev_userid = 411010313
+dev_name = "mr_chuw"  # This name will be replaced by twitch name when bot fully starts, it is used on start to create the channel on database, so put our twitch nick.
 default_prefix = "+"
 allowed_prefix_list = false
 allowed_prefix_size = 10
@@ -13,20 +16,24 @@ site_url = "https://gorenmu.vercel.app/"
 imgur_authorized_ids = [184900613, 411010313]
 
 [apis]
-hex_site_url = "${HEX_SITE_URL}"
-image_carousel = "${IMAGE_CAROUSEL}"
+color_site_url = "https://color.mrchuw.com.br/"
+pastebin_url = "https://bin.mrchuw.com.br/documents"
+image_carousel = "https://car.mrchuw.com.br/upload"
 image_carousel_api_key = "${IMAGE_CAROUSEL_API_KEY}"
-site_api_key = "${SITE_API_KEY}"
+file_upload_url = "https://im.mrchuw.com.br/api/files/"
+file_upload_api_key = "${FILE_UPLOAD_API_KEY}"
+shlink_url = "https://shlink.mrchuw.com.br/rest/v3/short-urls"
+alias_url = "https://alias.mrchuw.com.br/submit"
 shlink_key = "${SHLINK_KEY}"
-shlink_url = "${SHLINK_URL}"
 access_token = "${ACCESS_TOKEN}"
 access_oauth_token = "${ACCESS_OAUTH_TOKEN}"
 refresh_token = "${REFRESH_TOKEN}"
 client_id = "${CLIENT_ID}"
-api_client_secret = "${API_CLIENT_SECRET}"
+
 api_client_id = "${API_CLIENT_ID}"
-pastbin_url="https://bin.mrchuw.com.br/documents"
-file_upload_url = "${FILE_UPLOAD_URL}"
+api_client_secret = "${API_CLIENT_SECRET}"
+
+enable_site_endpoints = false
 
 [database]
 type = "mariadb"
@@ -44,9 +51,3 @@ password = "${REDIS_PASSWORD}"
 namespace = "${REDIS_NAMESPACE}"
 db = "${REDIS_DB}"
 
-
-[logger]
-format = "{time:YYYY-MM-DD HH:mm:ss} [{level}] {name} {module}.py:{line} {message}"
-level = "INFO"
-enqueue = true
-colorize = true

@@ -1,80 +1,75 @@
 # -*- coding: utf-8 -*-
-from twitchio.ext.commands.errors import (  # NOQA
+from twitchio.ext.commands import (  # NOQA
     BadArgument,
-    CheckFailure,
+    CommandExistsError,
+    CommandInvokeError,
     CommandNotFound,
     CommandOnCooldown,
+    GuardFailure,
     MissingRequiredArgument,
-    TwitchCommandError,
-    InvalidCogMethod,
-    InvalidCog,
-    ArgumentParsingFailed,
+    ModuleAlreadyLoadedError,
+    ModuleLoadFailure,
 )
 
-# TODO: Limpar os erros.
-InvalidArgument = (ArgumentParsingFailed, BadArgument, MissingRequiredArgument)
+InvalidArgument = (BadArgument, MissingRequiredArgument)
 
 
 class InvalidUsername(BadArgument):
-    """Username invalido."""
+    pass
 
 
-class AlreadyPlaying(CheckFailure):
-    """Um jogo ja esta rodando nesse canal."""
+# Base custom Guard error
+class CustomGuardError(GuardFailure):
+    __slots__ = ()
 
 
-class BotOffline(CheckFailure):
-    """Bot offline neste canal."""
+class AlreadyPlaying(CustomGuardError):
+    pass
 
 
-class CommandDisabled(CheckFailure):
-    """Comando esta disablilitado neste canal."""
+class BotOffline(CustomGuardError):
+    pass
 
 
-class InappropriateMessage(CheckFailure):
-    """Mensagem contem conteúdo inapropriado para o canal."""
+class CommandDisabled(CustomGuardError):
+    pass
 
 
-class ModRequired(CheckFailure):
-    """Usuário não é autorizado a usar este comando no canal."""
+class ModRequired(CustomGuardError):
+    pass
 
 
-class PremiumRequired(CheckFailure):
-    """Usuário não é autorizado a usar este comando no canal."""
+class DevRequired(CustomGuardError):
+    pass
 
 
-class DevRequired(CheckFailure):
-    """Usuário não é autorizado a usar este comando."""
+class OwnerRequired(CustomGuardError):
+    pass
 
 
-class OwnerRequired(CheckFailure):
-    """Usuário não é autorizado a usar este comando."""
+class UserIsNotAllowed(CustomGuardError):
+    pass
 
 
-class ConfRequired(CheckFailure):
-    """Você precisa receber a confiança para usar este comando."""
+class ContentHasBanword(CustomGuardError):
+    pass
 
 
-class UserIsNotAllowed(CheckFailure):
-    """ """
+class GameIsAlreadyRunning(CustomGuardError):
+    pass
 
 
-class ContentHasBanword(CheckFailure):
-    """ """
+class VipRequired(CustomGuardError):
+    pass
 
 
-class GameIsAlreadyRunning(CheckFailure):
-    """ """
+class SubRequired(CustomGuardError):
+    pass
 
 
-class VipRequired(CheckFailure):
-    """ """
+class UnknownError(CustomGuardError):
+    pass
 
 
-class SubRequired(CheckFailure):
-    """ """
-
-
-class UnknownError(CheckFailure):
-    """ """
-
+class MissingOAuthTokenError(Exception):
+    pass

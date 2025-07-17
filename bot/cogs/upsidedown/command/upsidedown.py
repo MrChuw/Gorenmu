@@ -1,80 +1,38 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from bot.apis.upsidedown import transform
-from bot.bot import Gorenmu
-from bot.ext.commands import base_decorator, Bucket, check, command, Command, Context, cooldown
-from bot.translations import EnDecorators, Response
+from bot.ext import commands, Context
+from bot.translations import Response
+
+if TYPE_CHECKING:
+    from bot.bot import Gorenmu
 
 
-@base_decorator(EnDecorators.UpSideDown)
-@cooldown(rate=3, per=10, bucket=Bucket.user)
-@check([])
-@command(name='upsidedown', aliases=['updown'])
-async def command(ctx: Context, *, content, ) -> Response:
-    return ctx.translations.UpSideDown.upsidedown.format_response(ctx, transform(content))
+class UpSideDownCmd(commands.CustomComponent):
+    def __init__(self, bot: Gorenmu) -> None:
+        self.bot = bot
+
+    cooldown_rate = 3
+    cooldown_per = 10
+    cooldown_key = commands.BucketType.user
+
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    @commands.Component.guard()
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
+        return True
+
+    @commands.base_decorator("UpSideDown")
+    @commands.command(name="upsidedown", aliases=["updown"])
+    async def upsidedown(self, ctx: Context, *, content) -> Response:
+        return ctx.user.translations.UpSideDown.upsidedown.format_response(ctx, transform(content))
 
 
-def dynamic_description(command_: Command, bot: Gorenmu, ctx: Context = None, ) -> dict[str, dict[str, str]]:
-    responses: dict[str, dict[str, str]] = {}
-    cooldown_ = command_._cooldowns[0]  # NOQA
-    per = cooldown_._per  # NOQA
-    rate = cooldown_._rate  # NOQA
-    prefix = ctx.prefix if ctx else bot.config.BotConfig.prefix[0]
-    for lang in command_.decorators:
-        if lang not in responses:
-            responses[lang] = {}
-        decorator: EnDecorators.UpSideDown = command_.decorators[lang]
-        description = decorator.get_description(decorator)  # NOQA
-        base_decorators = bot.TranslationManager.get_decorator(lang)
-        cooldown_type = base_decorators.get_bucket_type(cooldown_.bucket)
+async def setup(bot: Gorenmu) -> None:
+    await bot.add_component(UpSideDownCmd(bot))
 
-        language: EnDecorators = bot.TranslationManager.languages[lang][0]
-        command_body_template1: str = getattr(language, 'template_part1', EnDecorators.template_part1)
-        command_body_template2: str = getattr(language, 'template_part2', EnDecorators.template_part2)
-        command_body_template3: str = getattr(language, 'template_part3', EnDecorators.template_part3)
-        alias_template: str = getattr(language, 'alias_template', EnDecorators.alias_template)
-        command_template: str = getattr(language, 'command_template', EnDecorators.command_template)
-        admonition_template: str = getattr(language, 'admonition_template', EnDecorators.admonition_template)
 
-        aliases = ""
-        if command_.aliases:
-            aliases = alias_template.format(command_title=command_.name.capitalize(),
-                                            aliases=", ".join(command_.aliases)
-                                            )
-
-        command_body = command_body_template1.format(command_title=command_.name.capitalize(), rate=rate, per=per,
-                                                     cooldown_type=cooldown_type, )
-        commands_admonitions = getattr(decorator, 'admonitions', EnDecorators.UpSideDown.admonitions)
-        if commands_admonitions:
-            for admonition in commands_admonitions:
-                if admonition.position == "top":
-                    command_body += admonition_template.format(type=admonition.type, title=admonition.title,
-                                                               message=admonition.message
-                                                               )
-
-        command_body += command_body_template2.format(description=description, aliases=aliases)
-
-        if commands_admonitions:
-            for admonition in commands_admonitions:
-                if admonition.position == "middle":
-                    command_body += admonition_template.format(type=admonition.type, title=admonition.title,
-                                                               message=admonition.message
-                                                               )
-
-        command_body += command_body_template3
-
-        if commands := getattr(decorator, 'commands', EnDecorators.UpSideDown.commands):
-            command_body += "".join([
-                    command_template.format(prefix=prefix, command_name=command_.name.lower(), args=item.args,
-                                            response=item.response
-                                            ) for item in commands])
-
-        if commands_admonitions:
-            for admonition in commands_admonitions:
-                if admonition.position == "bottom":
-                    command_body += admonition_template.format(type=admonition.type, title=admonition.title,
-                                                               message=admonition.message
-                                                               )
-
-        responses[lang][command_.name.lower()] = command_body
-
-    return responses
+async def teardown(bot: Gorenmu) -> None: ...  # NOQA
