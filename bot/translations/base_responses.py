@@ -546,6 +546,33 @@ class BaseTranslations:
         hex_color: str
         saved_color: str
 
+    class Help(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+
+        help: Response
+        command_site: Response
+        suggested_command: Response
+
+    class Set(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+
+        mention_on: Response
+        mention_off: Response
+        on_off_wrong_option: Response
+        city_added: Response
+        city_removed: Response
+        nick_too_large: Response
+        nick_removed: Response
+        nick_changed: Response
+        color_removed: Response
+        color_changed: Response
+        reminder_on: Response
+        reminder_off: Response
+
 
 class Translations(BaseFunctions, BaseTranslations):
     def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):

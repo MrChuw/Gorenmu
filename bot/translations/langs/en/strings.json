@@ -1,7 +1,7 @@
 {
     "Admin": {
         "Nada": {
-            "nada": "The command was executed successfully.",
+            "nada": "The command was executed successfully. {}",
             "vazio": ""
         },
         "Reload": {
@@ -410,5 +410,24 @@
         "user_color_str": "@{} color is: #{}. Named: {}",
         "hex_color_str": "#{} its Named: {}",
         "saved_color_str": "And has the following saved color: #{}. Named: {}."
+    },
+    "Help": {
+        "help": "{}{}: {} - Cooldown: {} {} - Aliases: {}",
+        "command_site": "Site in construction, here is the list of commands: {}",
+        "suggested_command": "I dont have command with name \"{}\", maybe you meant \"{}\"."
+    },
+    "Set": {
+        "on_off_wrong_option": "{} its not a valid option, choose between \"on\" or \"off\"",
+        "mention_on": "You will start receiving pings from the bot on commands again.",
+        "mention_off": "Every time the bot says your nick it will place an invisible character to prevent ping.",
+        "city_added": "City added successfully.",
+        "city_removed": "City removed successfully",
+        "nick_too_large": "Nick must be max 32 characters long not {}.",
+        "nick_removed": "Nick removed successfully.",
+        "nick_changed": "Nick changed successfully.",
+        "color_removed": "Saved color removed successfully.",
+        "color_changed": "Saved color changed successfully.",
+        "reminder_on": "Reminder successfully turned on.",
+        "reminder_off": "Reminder successfully turned off."
     }
 }

@@ -1,839 +1,1011 @@
 {
-  "Templates": {
-    "template_part1": "# {command_title}\n\n## This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.\n\n",
-    "template_part2": "{description}\n\n{aliases}\n\n",
-    "template_part3": "## The way to use this command is:\n\n",
-    "alias_template": "## All the alias available for {command_title} are:\n    - {aliases}\n\n",
-    "command_template": "```text\n    user: {prefix}{command_name} {args}\n\n    bot: User, {response}\n```\n",
-    "admonition_template": "!!! {type} \"{title}\"\n    \n        {message}\n\n    ",
-    "bucket_type": {
-      "default": "user",
-      "channel": "all user per channel",
-      "member": "user per channel",
-      "user": "user independent of channel",
-      "subscriber": "subscriber",
-      "mod": "moderation"
-    }
-  },
-  "Admin": {
-    "Nada": {
-      "helper": "This command is used for testing.",
-      "usage": "How to use: {}nada (text)",
-      "description": "This command is used for testing."
+    "Templates": {
+        "template_part1": "# {command_title}\n\n## This command can be used {rate} times in succession, with a cooldown of {per} per {cooldown_type}.\n\n",
+        "template_part2": "{description}\n\n{aliases}\n\n",
+        "template_part3": "## The way to use this command is:\n\n",
+        "alias_template": "## All the alias available for {command_title} are:\n    - {aliases}\n\n",
+        "command_template": "```text\n    user: {prefix}{command_name} {args}\n\n    bot: User, {response}\n```\n",
+        "admonition_template": "!!! {type} \"{title}\"\n    \n        {message}\n\n    ",
+        "bucket_type": {
+            "default": "user",
+            "channel": "all user per channel",
+            "member": "user per channel",
+            "user": "user independent of channel",
+            "subscriber": "subscriber",
+            "mod": "moderation"
+        }
     },
-    "Reload": {
-      "helper": "Reloads the commands using all or command name.",
-      "usage": "How to use: {}reload (all) or (command_name)",
-      "description": "This command is used to reload all bot commands. If any have been updated and don't require a full restart.",
-      "commands": [
-        {
-          "args": "commands",
-          "response": "the commands have been successfully reloaded."
+    "Admin": {
+        "Nada": {
+            "helper": "This command is used for testing.",
+            "usage": "How to use: {}nada (text)",
+            "description": "This command is used for testing."
         },
-        {
-          "args": "emotes",
-          "response": "Emotes were successfully reloaded."
+        "Reload": {
+            "helper": "Reloads the commands using all or command name.",
+            "usage": "How to use: {}reload (all) or (command_name)",
+            "description": "This command is used to reload all bot commands. If any have been updated and don't require a full restart.",
+            "commands": [
+                {
+                    "args": "commands",
+                    "response": "the commands have been successfully reloaded."
+                },
+                {
+                    "args": "emotes",
+                    "response": "Emotes were successfully reloaded."
+                },
+                {
+                    "args": "commands",
+                    "response": "The commands were successfully reloaded."
+                },
+                {
+                    "args": "translations",
+                    "response": "TranslationManager were successfully reloaded."
+                },
+                {
+                    "args": "tokens_handler",
+                    "response": "TokensHandler were successfully reloaded."
+                },
+                {
+                    "args": "channel_handler",
+                    "response": "ChannelHandler were successfully reloaded."
+                },
+                {
+                    "args": "lifecycle_handler",
+                    "response": "LifecycleHandler were successfully reloaded."
+                },
+                {
+                    "args": "command_handler",
+                    "response": "CommandHandler were successfully reloaded."
+                }
+            ]
         },
-        {
-          "args": "commands",
-          "response": "The commands were successfully reloaded."
-        },
-        {
-          "args": "translations",
-          "response": "TranslationManager were successfully reloaded."
-        },
-        {
-          "args": "tokens_handler",
-          "response": "TokensHandler were successfully reloaded."
-        },
-        {
-          "args": "channel_handler",
-          "response": "ChannelHandler were successfully reloaded."
-        },
-        {
-          "args": "lifecycle_handler",
-          "response": "LifecycleHandler were successfully reloaded."
-        },
-        {
-          "args": "command_handler",
-          "response": "CommandHandler were successfully reloaded."
+        "Restart": {
+            "helper": "Restarts the bot.",
+            "usage": "To use: {}restart",
+            "description": "Restarts the bot."
         }
-      ]
     },
-    "Restart": {
-      "helper": "Restarts the bot.",
-      "usage": "To use: {}restart",
-      "description": "Restarts the bot."
-    }
-  },
-  "Pipe": {
-    "helper": "Pipe is not really a command. For more information, visit the website.",
-    "usage": "Pipe is not really a command. For more information, visit the website.",
-    "description": "Pipe is not really a command. For more information, visit the website.",
-    "commands": [
-      {
-        "args": "{}example_command_1 <command options> | example_command_2"
-      },
-      {
-        "args": "{}example_command_1 <command options> | example_command_2 <command 2 options> {output from command 1} <remaining command 2 options>"
-      }
-    ],
-    "admonitions": [
-      {
-        "type": "warning",
-        "title": "Cooldown!",
-        "position": "top",
-        "message": "The cooldown for the pipe will be the same as the cooldown of the commands used."
-      },
-      {
-        "type": "info",
-        "title": "Pipe",
-        "position": "bottom",
-        "message": "The Pipe is represented by the character '|' (vertical bar), and it is used to forward the output of one command to another."
-      },
-      {
-        "type": "info",
-        "title": "How pipe works:",
-        "position": "bottom",
-        "message": "## The bot's step-by-step will be:  \\n- Execute `example_command_1` with `<command options>` if any.  \\n- Then it will execute `example_command_2` with the response from `example_command_1` added as an argument.  \\n  - If you use `{output}`, it will place the response from `example_command_1` in the specified position.\n"
-      }
-    ]
-  },
-  "Afk": {
-    "helper": "Command to set your status.",
-    "usage": "How to use: {}Afk (message)",
-    "description": "This command sets your status to AFK.",
-    "commands": [
-      {
-        "response": "you went AFK: 🏃 ⌨️"
-      },
-      {
-        "args": "Text you want to leave for when you return or that people will see when they use {prefix}isafk.",
-        "response": "you went AFK: 🏃 ⌨️ and left a note with: Text you want to leave for when you return or that people will see when they use {prefix}isafk."
-      }
-    ],
-    "admonitions": [
-      {
-        "admonition_type": "warning",
-        "title": "Maximum length!",
-        "message": "The message could not be longer than 450 characters, if it is longer, an error will be returned."
-      }
-    ]
-  },
-  "IsAfk": {
-    "helper": "Type the command and the user's name to see if they are AFK.",
-    "usage": "How to use: {}IsAfk (username)",
-    "description": "This command checks if a user is AFK or not.",
-    "commands": [
-      {
-        "args": "user2",
-        "response": "@user2 is not AFK."
-      },
-      {
-        "args": "user3",
-        "response": "@user3 is AFK."
-      },
-      {
-        "args": "user4",
-        "response": "@user4 is AFK and left a note: <message>"
-      }
-    ]
-  },
-  "RAfk": {
-    "helper": "Return to AFK status.",
-    "usage": "To use: {}rafk",
-    "description": "This command is used to return to AFK status.",
-    "commands": [
-      {
-        "response": "@user2 you remained AFK: 🏃 ⌨️"
-      },
-      {
-        "args": "(message)",
-        "response": "@user2 you remained AFK: 🏃 ⌨️ and left a note: (message)"
-      }
-    ],
-    "admonitions": [
-      {
-        "admonition_type": "warning",
-        "title": "Maximum Time!",
-        "message": "From the moment you send a message in the chat, you have 2 minutes to return to AFK status. "
-      }
-    ]
-  },
-  "Alias": {
-    "helper": "Command used to manage aliases.",
-    "usage": "To use: {}alias add|check|copy|describe|edit|link|remove|rename (options)",
-    "Add": {
-      "helper": "This subcommand is used to add an alias.",
-      "usage": "How to use: {}alias add (name) (command) (…arguments)",
-      "description": "This subcommand is used to add aliases.",
-      "extras": "",
-      "commands": [
-        {
-          "prefix": "## How to create an alias:\n\n- The following example uses [pipe](pipe.md) to pass the response of one command to another.",
-          "args": "add cool_name choice 1234 123456 | count",
-          "response": "your alias \"cool_name\" has been successfully created.",
-          "suffix": "In the example above, we created an alias named `cool_name`. The alias will invoke the `choice` command with the arguments \"1234\" and \"123456\", and the result from `choice` will be sent to the `count` command.,"
-        },
-        {
-          "prefix": "## How to use the alias:",
-          "args": "{prefix}{prefix}cool_name",
-          "response": "There are a total of 4 characters. Among them, 0 are punctuation marks, 0 are uppercase letters, and 0 are special characters.",
-          "suffix": "To use the alias, just use `{prefix}{prefix}` followed by the alias name (`{prefix}` is the default bot prefix; if the chat prefix is different, just repeat it twice and then the alias name)."
-        }
-      ],
-      "admonitions": [
-        {
-          "admonition_type": "warning",
-          "position": "top",
-          "title": "Restrictions for alias names!",
-          "message": "- Must be between 2 and 30 characters long.\n- Can contain letters, numbers, dashes (-), underscores (_), and a wide range of Unicode characters (©), including emojis (🔥).\n"
-        },
-        {
-          "admonition_type": "warning",
-          "position": "top",
-          "title": "Cooldown for created aliases!",
-          "message": "When creating an alias, the alias cooldown will be the cooldown of the commands used in the alias. Therefore, if one command can be used 1x every 5 seconds and another 3x every 10 seconds, the alias cooldown will be 1x every 5 seconds."
-        }
-      ]
+    "Pipe": {
+        "helper": "Pipe is not really a command. For more information, visit the website.",
+        "usage": "Pipe is not really a command. For more information, visit the website.",
+        "description": "Pipe is not really a command. For more information, visit the website.",
+        "commands": [
+            {
+                "args": "{}example_command_1 <command options> | example_command_2"
+            },
+            {
+                "args": "{}example_command_1 <command options> | example_command_2 <command 2 options> {output from command 1} <remaining command 2 options>"
+            }
+        ],
+        "admonitions": [
+            {
+                "type": "warning",
+                "title": "Cooldown!",
+                "position": "top",
+                "message": "The cooldown for the pipe will be the same as the cooldown of the commands used."
+            },
+            {
+                "type": "info",
+                "title": "Pipe",
+                "position": "bottom",
+                "message": "The Pipe is represented by the character '|' (vertical bar), and it is used to forward the output of one command to another."
+            },
+            {
+                "type": "info",
+                "title": "How pipe works:",
+                "position": "bottom",
+                "message": "## The bot's step-by-step will be:  \\n- Execute `example_command_1` with `<command options>` if any.  \\n- Then it will execute `example_command_2` with the response from `example_command_1` added as an argument.  \\n  - If you use `{output}`, it will place the response from `example_command_1` in the specified position.\n"
+            }
+        ]
     },
-    "Check": {
-      "helper": "This subcommand is used to check infos for an alias.",
-      "usage": "How to use: {}alias check cool_name",
-      "description": "This subcommand is used to check infos for an aliases.",
-      "extras": "",
-      "commands": [
-        {
-          "prefix": "## How to check an alias:",
-          "args": "check cool_name",
-          "response": "User, the alias \"cool_name\" has the arguments: choice 1234 123456 | count || Link: (URL)",
-          "suffix": ""
-        }
-      ],
-      "admonitions": []
+    "Afk": {
+        "helper": "Command to set your status.",
+        "usage": "How to use: {}Afk (message)",
+        "description": "This command sets your status to AFK.",
+        "commands": [
+            {
+                "response": "you went AFK: 🏃 ⌨️"
+            },
+            {
+                "args": "Text you want to leave for when you return or that people will see when they use {prefix}isafk.",
+                "response": "you went AFK: 🏃 ⌨️ and left a note with: Text you want to leave for when you return or that people will see when they use {prefix}isafk."
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "warning",
+                "title": "Maximum length!",
+                "message": "The message could not be longer than 450 characters, if it is longer, an error will be returned."
+            }
+        ]
     },
-    "Copy": {
-      "helper": "This subcommand is used to copy an alias.",
-      "usage": "How to use: {}alias copy (user) (alias) (…arguments)",
-      "description": "This subcommand is used to copy an alias.",
-      "extras": "",
-      "commands": [
-        {
-          "prefix": "## How to copy an alias:",
-          "args": "copy <username> cool_name",
-          "response": "User, alias \"cool_name\" copied successfully.",
-          "suffix": "To copy an alias, you only need the username and the alias name."
-        }
-      ],
-      "admonitions": []
+    "IsAfk": {
+        "helper": "Type the command and the user's name to see if they are AFK.",
+        "usage": "How to use: {}IsAfk (username)",
+        "description": "This command checks if a user is AFK or not.",
+        "commands": [
+            {
+                "args": "user2",
+                "response": "@user2 is not AFK."
+            },
+            {
+                "args": "user3",
+                "response": "@user3 is AFK."
+            },
+            {
+                "args": "user4",
+                "response": "@user4 is AFK and left a note: <message>"
+            }
+        ]
     },
-    "Describe": {
-      "helper": "This subcommand is used to check infos for an alias.",
-      "usage": "How to use: {}alias description cool_name (new description)",
-      "description": "This subcommand is used to check info for an aliases.",
-      "extras": "",
-      "commands": [
-        {
-          "prefix": "## How to add a description to an alias:",
-          "args": "description cool_name (new description)",
-          "response": "User, the description for alias \"cool_name\" has been successfully updated.",
-          "suffix": ""
-        }
-      ],
-      "admonitions": []
+    "RAfk": {
+        "helper": "Return to AFK status.",
+        "usage": "To use: {}rafk",
+        "description": "This command is used to return to AFK status.",
+        "commands": [
+            {
+                "response": "@user2 you remained AFK: 🏃 ⌨️"
+            },
+            {
+                "args": "(message)",
+                "response": "@user2 you remained AFK: 🏃 ⌨️ and left a note: (message)"
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "warning",
+                "title": "Maximum Time!",
+                "message": "From the moment you send a message in the chat, you have 2 minutes to return to AFK status. "
+            }
+        ]
     },
-    "Edit": {
-      "helper": "This subcommand is used to edit the command and arguments for an alias.",
-      "usage": "How to use: {}alias edit (alias) (command) (…arguments)",
-      "description": "This subcommand is used to edit the command and arguments for an alias.",
-      "extras": "",
-      "commands": [
-        {
-          "prefix": "## How to edit an alias:",
-          "args": "edit cool_name count blablablabla",
-          "response": "Your alias \"cool_name\" has been successfully edited.",
-          "suffix": ""
+    "Alias": {
+        "helper": "Command used to manage aliases.",
+        "usage": "To use: {}alias add|check|copy|describe|edit|link|remove|rename (options)",
+        "Add": {
+            "helper": "This subcommand is used to add an alias.",
+            "usage": "How to use: {}alias add (name) (command) (…arguments)",
+            "description": "This subcommand is used to add aliases.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "## How to create an alias:\n\n- The following example uses [pipe](pipe.md) to pass the response of one command to another.",
+                    "args": "add cool_name choice 1234 123456 | count",
+                    "response": "your alias \"cool_name\" has been successfully created.",
+                    "suffix": "In the example above, we created an alias named `cool_name`. The alias will invoke the `choice` command with the arguments \"1234\" and \"123456\", and the result from `choice` will be sent to the `count` command.,"
+                },
+                {
+                    "prefix": "## How to use the alias:",
+                    "args": "{prefix}{prefix}cool_name",
+                    "response": "There are a total of 4 characters. Among them, 0 are punctuation marks, 0 are uppercase letters, and 0 are special characters.",
+                    "suffix": "To use the alias, just use `{prefix}{prefix}` followed by the alias name (`{prefix}` is the default bot prefix; if the chat prefix is different, just repeat it twice and then the alias name)."
+                }
+            ],
+            "admonitions": [
+                {
+                    "admonition_type": "warning",
+                    "position": "top",
+                    "title": "Restrictions for alias names!",
+                    "message": "- Must be between 2 and 30 characters long.\n- Can contain letters, numbers, dashes (-), underscores (_), and a wide range of Unicode characters (©), including emojis (🔥).\n"
+                },
+                {
+                    "admonition_type": "warning",
+                    "position": "top",
+                    "title": "Cooldown for created aliases!",
+                    "message": "When creating an alias, the alias cooldown will be the cooldown of the commands used in the alias. Therefore, if one command can be used 1x every 5 seconds and another 3x every 10 seconds, the alias cooldown will be 1x every 5 seconds."
+                }
+            ]
+        },
+        "Check": {
+            "helper": "This subcommand is used to check infos for an alias.",
+            "usage": "How to use: {}alias check cool_name",
+            "description": "This subcommand is used to check infos for an aliases.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "## How to check an alias:",
+                    "args": "check cool_name",
+                    "response": "User, the alias \"cool_name\" has the arguments: choice 1234 123456 | count || Link: (URL)",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": []
+        },
+        "Copy": {
+            "helper": "This subcommand is used to copy an alias.",
+            "usage": "How to use: {}alias copy (user) (alias) (…arguments)",
+            "description": "This subcommand is used to copy an alias.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "## How to copy an alias:",
+                    "args": "copy <username> cool_name",
+                    "response": "User, alias \"cool_name\" copied successfully.",
+                    "suffix": "To copy an alias, you only need the username and the alias name."
+                }
+            ],
+            "admonitions": []
+        },
+        "Describe": {
+            "helper": "This subcommand is used to check infos for an alias.",
+            "usage": "How to use: {}alias description cool_name (new description)",
+            "description": "This subcommand is used to check info for an aliases.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "## How to add a description to an alias:",
+                    "args": "description cool_name (new description)",
+                    "response": "User, the description for alias \"cool_name\" has been successfully updated.",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": []
+        },
+        "Edit": {
+            "helper": "This subcommand is used to edit the command and arguments for an alias.",
+            "usage": "How to use: {}alias edit (alias) (command) (…arguments)",
+            "description": "This subcommand is used to edit the command and arguments for an alias.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "## How to edit an alias:",
+                    "args": "edit cool_name count blablablabla",
+                    "response": "Your alias \"cool_name\" has been successfully edited.",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": [
+                {
+                    "admonition_type": "warning",
+                    "position": "bottom",
+                    "title": "Linked alias.",
+                    "message": "- Because linked alias are only a pointer to other user alias, editing then is impossible."
+                }
+            ]
+        },
+        "Link": {
+            "helper": "This subcommand is used to create link for an alias.",
+            "usage": "How to use: {}alias link (user) cool_name",
+            "description": "This subcommand is used to create link for an alias.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "## How to link an alias:",
+                    "args": "link (user) cool_name",
+                    "response": "User, alias linked successfully. When the original changes, yours will also change.",
+                    "suffix": ""
+                },
+                {
+                    "prefix": "## It is also possible to create a link and change the alias name.",
+                    "args": "link (user) cool_name new_cool_name",
+                    "response": "User, alias linked successfully, with a custom name \"new_cool_name\". When the original changes, yours will also change.",
+                    "suffix": ""
+                },
+                {
+                    "prefix": "## And if it is a link to a link:",
+                    "args": "link (user) cool_name",
+                    "response": "User, you attempted to create a link from an already linked alias (alias cool_name by <user>), so I used the original as your model. When the original changes, yours will also change.",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": []
+        },
+        "Remove": {
+            "helper": "This subcommand is used to delete an alias.",
+            "usage": "How to use: {}alias remove (alias)",
+            "description": "This subcommand is used to delete an alias.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "## To remove an alias:",
+                    "args": "remove cool_name",
+                    "response": "User, your alias \"cool_name\" has been successfully removed.",
+                    "suffix": "When deleting an alias, the links to this alias will continue to exist and function."
+                }
+            ],
+            "admonitions": []
+        },
+        "Rename": {
+            "helper": "This subcommand is used to rename an alias.",
+            "usage": "How to use: {}alias rename cool_name new_cool_name",
+            "description": "This subcommand is used to rename an alias.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "## To rename an alias:",
+                    "args": "rename cool_name new_cool_name",
+                    "response": "User, your alias \"cool_name\" has been successfully renamed to \"new_cool_name\".",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": []
+        },
+        "Extras": {
+            "helper": "",
+            "usage": "",
+            "description": "This section is about advanced alias usage.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "## First, let's create an alias:",
+                    "args": "add advanced_usage choice 1234 123456 | count {0}",
+                    "response": "User, your alias \"advanced_usage\" has been successfully created.",
+                    "suffix": ""
+                },
+                {
+                    "prefix": "## How to use this type of alias:",
+                    "args": "{prefix}{prefix}advanced_usage text",
+                    "response": "There are a total of 10 characters. Among them, 0 are punctuation marks, 0 are uppercase letters, and 0 are special characters.",
+                    "suffix": "The normal response of the command would be: `There are a total of 4 characters. etc` or `There are a total of 6 characters. etc`, as `choice` would select between `1234` or `123456`, and then count would return the number of characters.\n\nBut, due to the addition of `{0}` after count, it will take the content of what was sent when invoking the alias and replace `{0}`.\n\nSo the command passed to count it would be something like: `text 1234`"
+                },
+                {
+                    "prefix": "## An example showing all would be:",
+                    "args": "add advanced_usage2 choice 1234 123456 | count {0} {channel} {output} {user} {1+}",
+                    "response": "User, your alias \"advanced_usage2\" has been successfully created.",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": [
+                {
+                    "admonition_type": "info",
+                    "position": "bottom",
+                    "title": "The bot's step-by-step process will be:",
+                    "message": " - Replace `{0}` with `something_here`.\n - Replace `{1+}` with `and in the end`.\n - Replace `{channel}` with the channel to which the message was sent, for example, `gorenmu`.\n - Replace `{user}` with your username, for example, `xXNickOriginalXx`.\n - The full command would be `choice 1234 123456 | count something_here gorenmu {output} xXNickOriginalXx` which would be processed by the pipe handler.\n"
+                },
+                {
+                    "admonition_type": "info",
+                    "position": "bottom",
+                    "title": "The pipe handle, will do:",
+                    "message": " - Process the first part: `choice 1234 123456` (as an example, let's say choice selected `1234`).\n - Process the second part: `count something_here gorenmu {output} xXNickOriginalXx and in the end`; when processing the second part, it will replace `{output}` with `1234`.\n - Then, the arguments that will be sent to count will be `something_here gorenmu 1234 xXNickOriginalXx and in the end.`\n - And the response will be `There are a total of 50 characters. Among them, 1 is punctuation, 4 are uppercase letters, and 0 are special characters.`\n"
+                },
+                {
+                    "admonition_type": "info",
+                    "position": "bottom",
+                    "title": "Other options when creating the alias are:",
+                    "message": " - `{output}`: it will place the output of the last command at the `{output}` position.\n - `{channel}`: it will replace with the name of the current channel.\n - `{user}`: it will replace with your Twitch username.\n - `{0}`, `{1}`, `{2}` etc., you can also use `{3+}`, which will take all text sent when invoking the alias and replace."
+                }
+            ]
         }
-      ],
-      "admonitions": [
-        {
-          "admonition_type": "warning",
-          "position": "bottom",
-          "title": "Linked alias.",
-          "message": "- Because linked alias are only a pointer to other user alias, editing then is impossible."
-        }
-      ]
     },
-    "Link": {
-      "helper": "This subcommand is used to create link for an alias.",
-      "usage": "How to use: {}alias link (user) cool_name",
-      "description": "This subcommand is used to create link for an alias.",
-      "extras": "",
-      "commands": [
-        {
-          "prefix": "## How to link an alias:",
-          "args": "link (user) cool_name",
-          "response": "User, alias linked successfully. When the original changes, yours will also change.",
-          "suffix": ""
-        },
-        {
-          "prefix": "## It is also possible to create a link and change the alias name.",
-          "args": "link (user) cool_name new_cool_name",
-          "response": "User, alias linked successfully, with a custom name \"new_cool_name\". When the original changes, yours will also change.",
-          "suffix": ""
-        },
-        {
-          "prefix": "## And if it is a link to a link:",
-          "args": "link (user) cool_name",
-          "response": "User, you attempted to create a link from an already linked alias (alias cool_name by <user>), so I used the original as your model. When the original changes, yours will also change.",
-          "suffix": ""
-        }
-      ],
-      "admonitions": []
+    "Chance": {
+        "helper": "Returns a random percentage.",
+        "usage": "To use: {}chance",
+        "description": "This command generates and returns a random percentage, representing a value between 0% and 100%.",
+        "commands": [
+            {
+                "response": "34%"
+            }
+        ]
     },
-    "Remove": {
-      "helper": "This subcommand is used to delete an alias.",
-      "usage": "How to use: {}alias remove (alias)",
-      "description": "This subcommand is used to delete an alias.",
-      "extras": "",
-      "commands": [
-        {
-          "prefix": "## To remove an alias:",
-          "args": "remove cool_name",
-          "response": "User, your alias \"cool_name\" has been successfully removed.",
-          "suffix": "When deleting an alias, the links to this alias will continue to exist and function."
-        }
-      ],
-      "admonitions": []
-    },
-    "Rename": {
-      "helper": "This subcommand is used to rename an alias.",
-      "usage": "How to use: {}alias rename cool_name new_cool_name",
-      "description": "This subcommand is used to rename an alias.",
-      "extras": "",
-      "commands": [
-        {
-          "prefix": "## To rename an alias:",
-          "args": "rename cool_name new_cool_name",
-          "response": "User, your alias \"cool_name\" has been successfully renamed to \"new_cool_name\".",
-          "suffix": ""
-        }
-      ],
-      "admonitions": []
-    },
-    "Extras": {
-      "helper": "",
-      "usage": "",
-      "description": "This section is about advanced alias usage.",
-      "extras": "",
-      "commands": [
-        {
-          "prefix": "## First, let's create an alias:",
-          "args": "add advanced_usage choice 1234 123456 | count {0}",
-          "response": "User, your alias \"advanced_usage\" has been successfully created.",
-          "suffix": ""
-        },
-        {
-          "prefix": "## How to use this type of alias:",
-          "args": "{prefix}{prefix}advanced_usage text",
-          "response": "There are a total of 10 characters. Among them, 0 are punctuation marks, 0 are uppercase letters, and 0 are special characters.",
-          "suffix": "The normal response of the command would be: `There are a total of 4 characters. etc` or `There are a total of 6 characters. etc`, as `choice` would select between `1234` or `123456`, and then count would return the number of characters.\n\nBut, due to the addition of `{0}` after count, it will take the content of what was sent when invoking the alias and replace `{0}`.\n\nSo the command passed to count it would be something like: `text 1234`"
-        },
-        {
-          "prefix": "## An example showing all would be:",
-          "args": "add advanced_usage2 choice 1234 123456 | count {0} {channel} {output} {user} {1+}",
-          "response": "User, your alias \"advanced_usage2\" has been successfully created.",
-          "suffix": ""
-        }
-      ],
-      "admonitions": [
-        {
-          "admonition_type": "info",
-          "position": "bottom",
-          "title": "The bot's step-by-step process will be:",
-          "message": " - Replace `{0}` with `something_here`.\n - Replace `{1+}` with `and in the end`.\n - Replace `{channel}` with the channel to which the message was sent, for example, `gorenmu`.\n - Replace `{user}` with your username, for example, `xXNickOriginalXx`.\n - The full command would be `choice 1234 123456 | count something_here gorenmu {output} xXNickOriginalXx` which would be processed by the pipe handler.\n"
-        },
-        {
-          "admonition_type": "info",
-          "position": "bottom",
-          "title": "The pipe handle, will do:",
-          "message": " - Process the first part: `choice 1234 123456` (as an example, let's say choice selected `1234`).\n - Process the second part: `count something_here gorenmu {output} xXNickOriginalXx and in the end`; when processing the second part, it will replace `{output}` with `1234`.\n - Then, the arguments that will be sent to count will be `something_here gorenmu 1234 xXNickOriginalXx and in the end.`\n - And the response will be `There are a total of 50 characters. Among them, 1 is punctuation, 4 are uppercase letters, and 0 are special characters.`\n"
-        },
-        {
-          "admonition_type": "info",
-          "position": "bottom",
-          "title": "Other options when creating the alias are:",
-          "message": " - `{output}`: it will place the output of the last command at the `{output}` position.\n - `{channel}`: it will replace with the name of the current channel.\n - `{user}`: it will replace with your Twitch username.\n - `{0}`, `{1}`, `{2}` etc., you can also use `{3+}`, which will take all text sent when invoking the alias and replace."
-        }
-      ]
-    }
-  },
-  "Chance": {
-    "helper": "Returns a random percentage.",
-    "usage": "To use: {}chance",
-    "description": "This command generates and returns a random percentage, representing a value between 0% and 100%.",
-    "commands": [
-      {
-        "response": "34%"
-      }
-    ]
-  },
-  "Choice": {
-    "helper": "Chooses an option from the options provided by the user.",
-    "usage": "To use: {}choice (option1) or (option2)",
-    "description": "Chooses an option from the options provided by the user.",
-    "commands": [
-      {
-        "args": "dice or house or coin",
-        "response": "house"
-      },
-      {
-        "args": "dice house coin",
-        "response": "dice"
-      },
-      {
-        "args": "dice, house, coin",
-        "response": "coin"
-      }
-    ]
-  },
-  "Count": {
-    "helper": "Counts the number of symbols in a text or a URL.",
-    "usage": "To use: {}count (text) or type:url (URL URL URL URL)",
-    "description": "This command can count the number of characters, uppercase letters, punctuation marks, and special characters in a text or the content of a URL. If you provide a link and the tag `type:url`, the command fetches the page's content and performs the count based on what it finds. And it will cache the page content for 30 minutes (thirty minutes).",
-    "commands": [
-      {
-        "args": "some nice text! with some 😄 caracteres, spacial!",
-        "response": "There is a total of 48 characters. Of these, 3 are punctuation marks, 0 are uppercase letters, and 1 are special characters."
-      },
-      {
-        "args": "https://example.org/",
-        "response": "There is a total of 20 characters. Of these, 5 are punctuation marks, 0 are uppercase letters, and 0 are special characters."
-      },
-      {
-        "args": " type:url https://example.com/",
-        "response": "There is a total of 1257 characters. Of these, 188 are punctuation marks, 21 are uppercase letters, and 0 are special characters."
-      },
-      {
-        "args": "type:url https://example.com/ https://example.org/",
-        "response": "User, There is a total of 2514 characters. Of these, 376 are punctuation marks, 42 are uppercase letters, and 0 are special characters."
-      }
-    ]
-  },
-  "RandomColor": {
-    "helper": "Sends a random color.",
-    "usage": "To use: {}random_color or add type:hex / type:rgb to specify the type.",
-    "description": "This command responds with the HEX code of a random color and a link to an image of the color.",
-    "commands": [
-      {
-        "response": "#<HEX> <Color Name> <Link to the color image>"
-      }
-    ]
-  },
-  "Reverse": {
-    "helper": "Reverses a text.",
-    "usage": "To use: {}reverse (text)",
-    "description": "This command reverses the sent text.",
-    "commands": [
-      {
-        "args": "the text sent.",
-        "response": ".tnes txet eht"
-      }
-    ]
-  },
-  "RandomLine": {
-    "helper": "Fetches a random message from the channel or from a user in the channel.",
-    "usage": "to use: `{0}rl channel:(channel_name)` or `{0}rl user:(user_name)` or `{0}rl` or `{0}rl channel:(channel_name) user:(user_name)`",
-    "description": "This command selects a random message depending on the options provided.",
-    "commands": [
-      {
-        "response": "(it will send a random message from the current channel)"
-      },
-      {
-        "args": "user:(user_name)",
-        "response": "(it will send a random message from the user on the current channel)"
-      },
-      {
-        "args": "channel:(channel_name)",
-        "response": "(it will send a random message from a specific channel)"
-      },
-      {
-        "args": "channel:(channel_name) user:(user_name)",
-        "response": "(it will send a random message from a user in a specific channel)"
-      },
-      {
-        "args": "channel:global user:(user_name)",
-        "response": "(it will send a random message from a user in all channels)"
-      },
-      {
-        "args": "channel:global",
-        "response": "(it will send a random message from in a all channel)"
-      }
-    ]
-  },
-  "UpSideDown": {
-    "helper": "Turns the text upside down.",
-    "usage": "To use: {}upsidedown (message)",
-    "description": "This command reverses and turns the provided text upside down.",
-    "commands": [
-      {
-        "args": "tests",
-        "response": "sʇsǝʇ"
-      }
-    ]
-  },
-  "Scp": {
-    "helper": "Sends a random SCP.",
-    "usage": "To use: {}scp",
-    "description": "This command uses the random from [SCP](https://scp-wiki.wikidot.com) to generate random SCP links.",
-    "commands": [
-      {
-        "response": "(random SCP link)"
-      }
-    ]
-  },
-  "Wikihow": {
-    "helper": "Sends a random wikihow.",
-    "usage": "To use: {}wikihow (amount)",
-    "description": "This command uses the random from [Wikihow](https://wikihow.com) to generate random links.",
-    "commands": [
-      {
-        "response": "(random wikihow link)"
-      }
-    ]
-  },
-  "Wikipedia": {
-    "helper": "Sends a random wikipedia.",
-    "usage": "To use: {}wikihow",
-    "description": "This command uses the random from [Wikipedia](https://wikipedia.com) to generate random links.",
-    "commands": [
-      {
-        "response": "(random wikipedia link)"
-      }
-    ]
-  },
-  "Annotations": {
-    "helper": "Creates permanent notes for the user.",
-    "usage": "To use: {}note add/check/delete",
-    "Add": {
-      "helper": "This subcommand is used to add an note.",
-      "usage": "How to use: {}note add (text)",
-      "description": "This command is used to add annotation.",
-      "extras": "",
-      "commands": [
-        {
-          "args": "add A note about something I want to be able to check forever.",
-          "response": "Note successfully created. 📝 (ID: (note ID))"
-        },
-        {
-          "args": "add title:\"title easier to remember\" A note about something I want to be able to check forever.",
-          "response": "Note successfully created. 📝 (ID: (note ID))"
-        }
-      ],
-      "admonitions": [
-        {
-          "admonition_type": "warning",
-          "position": "bottom",
-          "title": "Maximum Length for 'add'!",
-          "message": "The message cannot exceed 450 characters; if it does, an error will be returned."
-        },
-        {
-          "admonition_type": "warning",
-          "position": "bottom",
-          "title": "Maximum Length for 'add' Title!",
-          "message": "The title cannot exceed 32 characters; if it does, an error will be returned."
-        },
-        {
-          "admonition_type": "tip",
-          "position": "top",
-          "title": "Annotations and Aliases",
-          "message": "Use aliases and notes together to create custom commands. For example, with +alias add cakes note check (id), you can use ++cakes to have the bot automatically send the note content, without needing to use the full command note check (id)."
-        }
-      ]
-    },
-    "Check": {
-      "helper": "This subcommand is used to check infos for an note.",
-      "usage": "How to use: {}note check (id)",
-      "description": "This subcommand is used to check an annotation.",
-      "extras": "",
-      "commands": [
-        {
-          "args": "check",
-          "response": "Your notes are those with ID: (title if available [id])"
-        },
-        {
-          "args": "check (id)",
-          "response": "(Note content)"
-        }
-      ],
-      "admonitions": []
-    },
-    "Delete": {
-      "helper": "This subcommand is used to delete an note.",
-      "usage": "How to use: {}note delete cool_name",
-      "description": "This subcommand is used to delete an annotation.",
-      "extras": "",
-      "commands": [
-        {
-          "args": "delete (id)",
-          "response": "Your note with ID (id) was successfully deleted. 🗑"
-        }
-      ],
-      "admonitions": []
-    }
-  },
-  "HyperTranslate": {
-    "helper": "Translates a text into random languages depending on how many times the user requests.",
-    "usage": "To use: {}hypertranslate (number of times) text",
-    "description": "Command based on [ravbug](https://www.ravbug.com/hypertranslate/) that translates a text into random languages depending on how many times the user requests.",
-    "commands": [
-      {
-        "args": "10 test",
-        "response": "<some random text.>"
-      }
-    ]
-  },
-  "Cookies": {
-    "helper": "Command used to manage cookies.",
-    "usage": "To use: {}alias Eat|Count|Gift|Stock|Top|SlotMachine (options)",
-    "Eat": {
-      "helper": "Get your daily fortune.",
-      "usage": "To use: {}cookie eat",
-      "description": "This command is used to get a daily fortune.",
-      "commands": [
-        {
-          "args": "eat",
-          "response": "(random fortune from a list)"
-        }
-      ]
+    "Choice": {
+        "helper": "Chooses an option from the options provided by the user.",
+        "usage": "To use: {}choice (option1) or (option2)",
+        "description": "Chooses an option from the options provided by the user.",
+        "commands": [
+            {
+                "args": "dice or house or coin",
+                "response": "house"
+            },
+            {
+                "args": "dice house coin",
+                "response": "dice"
+            },
+            {
+                "args": "dice, house, coin",
+                "response": "coin"
+            }
+        ]
     },
     "Count": {
-      "helper": "Get status about cookies.",
-      "usage": "To use: {}cookie count (user_name)",
-      "description": "Get status about cookies.",
-      "commands": [
-        {
-          "args": "cc",
-          "response": "(status about your cookie account)"
-        },
-        {
-          "args": "cc other_user",
-          "response": "(status about other_user cookie account)"
-        }
-      ]
+        "helper": "Counts the number of symbols in a text or a URL.",
+        "usage": "To use: {}count (text) or type:url (URL URL URL URL)",
+        "description": "This command can count the number of characters, uppercase letters, punctuation marks, and special characters in a text or the content of a URL. If you provide a link and the tag `type:url`, the command fetches the page's content and performs the count based on what it finds. And it will cache the page content for 30 minutes (thirty minutes).",
+        "commands": [
+            {
+                "args": "some nice text! with some 😄 caracteres, spacial!",
+                "response": "There is a total of 48 characters. Of these, 3 are punctuation marks, 0 are uppercase letters, and 1 are special characters."
+            },
+            {
+                "args": "https://example.org/",
+                "response": "There is a total of 20 characters. Of these, 5 are punctuation marks, 0 are uppercase letters, and 0 are special characters."
+            },
+            {
+                "args": " type:url https://example.com/",
+                "response": "There is a total of 1257 characters. Of these, 188 are punctuation marks, 21 are uppercase letters, and 0 are special characters."
+            },
+            {
+                "args": "type:url https://example.com/ https://example.org/",
+                "response": "User, There is a total of 2514 characters. Of these, 376 are punctuation marks, 42 are uppercase letters, and 0 are special characters."
+            }
+        ]
     },
-    "Gift": {
-      "helper": "Gift someone your daily cookie.",
-      "usage": "To use: {}cookie gift (user_name) (amount|all)",
-      "description": "Gift someone your daily cookie.",
-      "commands": [
-        {
-          "args": "gift other_user",
-          "response": "you gifted @other_user with 1 cookie 🎁"
-        },
-        {
-          "args": "gift other_user 2",
-          "response": "you gifted @other_user with 2 cookie 🎁"
-        },
-        {
-          "args": "gift other_user all",
-          "response": "you gifted @other_user with (all the cookies in your account) cookie 🎁"
-        }
-      ],
-      "admonitions": [
-        {
-          "admonition_type": "warning",
-          "position": "top",
-          "title": "Careful With All",
-          "message": "Be careful with all, because you will transfer not only the unredeemed ones, but also the ones you have saved."
-        }
-      ]
+    "RandomColor": {
+        "helper": "Sends a random color.",
+        "usage": "To use: {}random_color or add type:hex / type:rgb to specify the type.",
+        "description": "This command responds with the HEX code of a random color and a link to an image of the color.",
+        "commands": [
+            {
+                "response": "#<HEX> <Color Name> <Link to the color image>"
+            }
+        ]
     },
-    "Stock": {
-      "helper": "Stock your daily cookie.",
-      "usage": "To use: {}cookie stock (all)",
-      "description": "Stock your daily cookie.",
-      "commands": [
-        {
-          "args": "stock",
-          "response": "you stocked 1 cookies 🍪, the next one comes out in 6h."
-        },
-        {
-          "args": "stock all",
-          "response": "you stocked (number of all available) cookies 🍪."
-        }
-      ]
+    "Reverse": {
+        "helper": "Reverses a text.",
+        "usage": "To use: {}reverse (text)",
+        "description": "This command reverses the sent text.",
+        "commands": [
+            {
+                "args": "the text sent.",
+                "response": ".tnes txet eht"
+            }
+        ]
     },
-    "Top": {
-      "helper": "See who are the top cookie eaters or donors.",
-      "usage": "To use: {}cookie top (or pass one of the options stocked|streak|consumed|donated|received|total)",
-      "description": "See who are the top cookie eaters or donors.",
-      "commands": [
-        {
-          "args": "top",
-          "response": "top 10 stocked: 🏆 @user_name: (10) 🥈 ..."
-        },
-        {
-          "args": "top donated",
-          "response": "top 10 givers: 🏆 @user_name: (10) 🥈 ..."
-        }
-      ]
+    "RandomLine": {
+        "helper": "Fetches a random message from the channel or from a user in the channel.",
+        "usage": "to use: `{0}rl channel:(channel_name)` or `{0}rl user:(user_name)` or `{0}rl` or `{0}rl channel:(channel_name) user:(user_name)`",
+        "description": "This command selects a random message depending on the options provided.",
+        "commands": [
+            {
+                "response": "(it will send a random message from the current channel)"
+            },
+            {
+                "args": "user:(user_name)",
+                "response": "(it will send a random message from the user on the current channel)"
+            },
+            {
+                "args": "channel:(channel_name)",
+                "response": "(it will send a random message from a specific channel)"
+            },
+            {
+                "args": "channel:(channel_name) user:(user_name)",
+                "response": "(it will send a random message from a user in a specific channel)"
+            },
+            {
+                "args": "channel:global user:(user_name)",
+                "response": "(it will send a random message from a user in all channels)"
+            },
+            {
+                "args": "channel:global",
+                "response": "(it will send a random message from in a all channel)"
+            }
+        ]
     },
-    "SlotMachine": {
-      "helper": "Bet your daily cookie for a chance to win more.",
-      "usage": "To use: {}cookie slotmachine (all can be used to bet all unclaimed cookies quickly)",
-      "description": "Bet your daily cookie for a chance to win others.",
-      "commands": [
-        {
-          "args": "slotmachine",
-          "response": "(the results of the slotmachine.)"
+    "UpSideDown": {
+        "helper": "Turns the text upside down.",
+        "usage": "To use: {}upsidedown (message)",
+        "description": "This command reverses and turns the provided text upside down.",
+        "commands": [
+            {
+                "args": "tests",
+                "response": "sʇsǝʇ"
+            }
+        ]
+    },
+    "Scp": {
+        "helper": "Sends a random SCP.",
+        "usage": "To use: {}scp",
+        "description": "This command uses the random from [SCP](https://scp-wiki.wikidot.com) to generate random SCP links.",
+        "commands": [
+            {
+                "response": "(random SCP link)"
+            }
+        ]
+    },
+    "Wikihow": {
+        "helper": "Sends a random wikihow.",
+        "usage": "To use: {}wikihow (amount)",
+        "description": "This command uses the random from [Wikihow](https://wikihow.com) to generate random links.",
+        "commands": [
+            {
+                "response": "(random wikihow link)"
+            }
+        ]
+    },
+    "Wikipedia": {
+        "helper": "Sends a random wikipedia.",
+        "usage": "To use: {}wikihow",
+        "description": "This command uses the random from [Wikipedia](https://wikipedia.com) to generate random links.",
+        "commands": [
+            {
+                "response": "(random wikipedia link)"
+            }
+        ]
+    },
+    "Annotations": {
+        "helper": "Creates permanent notes for the user.",
+        "usage": "To use: {}note add/check/delete",
+        "Add": {
+            "helper": "This subcommand is used to add an note.",
+            "usage": "How to use: {}note add (text)",
+            "description": "This command is used to add annotation.",
+            "extras": "",
+            "commands": [
+                {
+                    "args": "add A note about something I want to be able to check forever.",
+                    "response": "Note successfully created. 📝 (ID: (note ID))"
+                },
+                {
+                    "args": "add title:\"title easier to remember\" A note about something I want to be able to check forever.",
+                    "response": "Note successfully created. 📝 (ID: (note ID))"
+                }
+            ],
+            "admonitions": [
+                {
+                    "admonition_type": "warning",
+                    "position": "bottom",
+                    "title": "Maximum Length for 'add'!",
+                    "message": "The message cannot exceed 450 characters; if it does, an error will be returned."
+                },
+                {
+                    "admonition_type": "warning",
+                    "position": "bottom",
+                    "title": "Maximum Length for 'add' Title!",
+                    "message": "The title cannot exceed 32 characters; if it does, an error will be returned."
+                },
+                {
+                    "admonition_type": "tip",
+                    "position": "top",
+                    "title": "Annotations and Aliases",
+                    "message": "Use aliases and notes together to create custom commands. For example, with +alias add cakes note check (id), you can use ++cakes to have the bot automatically send the note content, without needing to use the full command note check (id)."
+                }
+            ]
         },
-        {
-          "args": "slotmachine all",
-          "response": "(the results of the slotmachine.)"
+        "Check": {
+            "helper": "This subcommand is used to check infos for an note.",
+            "usage": "How to use: {}note check (id)",
+            "description": "This subcommand is used to check an annotation.",
+            "extras": "",
+            "commands": [
+                {
+                    "args": "check",
+                    "response": "Your notes are those with ID: (title if available [id])"
+                },
+                {
+                    "args": "check (id)",
+                    "response": "(Note content)"
+                }
+            ],
+            "admonitions": []
+        },
+        "Delete": {
+            "helper": "This subcommand is used to delete an note.",
+            "usage": "How to use: {}note delete cool_name",
+            "description": "This subcommand is used to delete an annotation.",
+            "extras": "",
+            "commands": [
+                {
+                    "args": "delete (id)",
+                    "response": "Your note with ID (id) was successfully deleted. 🗑"
+                }
+            ],
+            "admonitions": []
         }
-      ]
+    },
+    "HyperTranslate": {
+        "helper": "Translates a text into random languages depending on how many times the user requests.",
+        "usage": "To use: {}hypertranslate (number of times) text",
+        "description": "Command based on [ravbug](https://www.ravbug.com/hypertranslate/) that translates a text into random languages depending on how many times the user requests.",
+        "commands": [
+            {
+                "args": "10 test",
+                "response": "<some random text.>"
+            }
+        ]
+    },
+    "Cookies": {
+        "helper": "Command used to manage cookies.",
+        "usage": "To use: {}alias Eat|Count|Gift|Stock|Top|SlotMachine (options)",
+        "Eat": {
+            "helper": "Get your daily fortune.",
+            "usage": "To use: {}cookie eat",
+            "description": "This command is used to get a daily fortune.",
+            "commands": [
+                {
+                    "args": "eat",
+                    "response": "(random fortune from a list)"
+                }
+            ]
+        },
+        "Count": {
+            "helper": "Get status about cookies.",
+            "usage": "To use: {}cookie count (user_name)",
+            "description": "Get status about cookies.",
+            "commands": [
+                {
+                    "args": "cc",
+                    "response": "(status about your cookie account)"
+                },
+                {
+                    "args": "cc other_user",
+                    "response": "(status about other_user cookie account)"
+                }
+            ]
+        },
+        "Gift": {
+            "helper": "Gift someone your daily cookie.",
+            "usage": "To use: {}cookie gift (user_name) (amount|all)",
+            "description": "Gift someone your daily cookie.",
+            "commands": [
+                {
+                    "args": "gift other_user",
+                    "response": "you gifted @other_user with 1 cookie 🎁"
+                },
+                {
+                    "args": "gift other_user 2",
+                    "response": "you gifted @other_user with 2 cookie 🎁"
+                },
+                {
+                    "args": "gift other_user all",
+                    "response": "you gifted @other_user with (all the cookies in your account) cookie 🎁"
+                }
+            ],
+            "admonitions": [
+                {
+                    "admonition_type": "warning",
+                    "position": "top",
+                    "title": "Careful With All",
+                    "message": "Be careful with all, because you will transfer not only the unredeemed ones, but also the ones you have saved."
+                }
+            ]
+        },
+        "Stock": {
+            "helper": "Stock your daily cookie.",
+            "usage": "To use: {}cookie stock (all)",
+            "description": "Stock your daily cookie.",
+            "commands": [
+                {
+                    "args": "stock",
+                    "response": "you stocked 1 cookies 🍪, the next one comes out in 6h."
+                },
+                {
+                    "args": "stock all",
+                    "response": "you stocked (number of all available) cookies 🍪."
+                }
+            ]
+        },
+        "Top": {
+            "helper": "See who are the top cookie eaters or donors.",
+            "usage": "To use: {}cookie top (or pass one of the options stocked|streak|consumed|donated|received|total)",
+            "description": "See who are the top cookie eaters or donors.",
+            "commands": [
+                {
+                    "args": "top",
+                    "response": "top 10 stocked: 🏆 @user_name: (10) 🥈 ..."
+                },
+                {
+                    "args": "top donated",
+                    "response": "top 10 givers: 🏆 @user_name: (10) 🥈 ..."
+                }
+            ]
+        },
+        "SlotMachine": {
+            "helper": "Bet your daily cookie for a chance to win more.",
+            "usage": "To use: {}cookie slotmachine (all can be used to bet all unclaimed cookies quickly)",
+            "description": "Bet your daily cookie for a chance to win others.",
+            "commands": [
+                {
+                    "args": "slotmachine",
+                    "response": "(the results of the slotmachine.)"
+                },
+                {
+                    "args": "slotmachine all",
+                    "response": "(the results of the slotmachine.)"
+                }
+            ]
+        }
+    },
+    "Safebooru": {
+        "helper": "Command used to generate random images from Safebooru.",
+        "usage": "To use: {}safebooru (tags)",
+        "description": "This command is used to generate random images from Safebooru and shorten them for convenience.",
+        "commands": [
+            {
+                "response": "Original: (URL) || Preview: (URL)"
+            },
+            {
+                "args": "some_tag",
+                "response": "Original: (URL) || Preview: (URL)"
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "warning",
+                "title": "Tags!",
+                "message": "For tags containing spaces, the space must be replaced with \"_\"."
+            }
+        ]
+    },
+    "PixelSorting": {
+        "helper": "Command used to make basic pixel sorting in images.",
+        "usage": "To use: {}pxs (url or shortened direct link) ",
+        "description": "This command processes an image using pixel sorting algorithms. You can specify the color mode, intensity, direction, crop tiles, randomization, and masking options.",
+        "extras": "",
+        "commands": [
+            {
+                "prefix": "An image URL with no default arguments.",
+                "args": "(image url)",
+                "response": "(link for the image.)",
+                "suffix": ""
+            },
+            {
+                "prefix": "An image URL with with arguments.",
+                "args": "type:red crop:100px:100px maskmode:internal dire:horizontal",
+                "response": "(link for the image.)",
+                "suffix": ""
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "info",
+                "position": "top",
+                "title": "Multiple Sorting Modes",
+                "message": "You can use modes like red, green, blue, sum, rgb, hue, saturation, value, luma, and more."
+            },
+            {
+                "admonition_type": "info",
+                "position": "middle",
+                "title": "Masking Options",
+                "message": "You can control which pixels are affected using [maskmode:internal|external] and [maskthreshold:128]."
+            },
+            {
+                "admonition_type": "info",
+                "position": "bottom",
+                "title": "Random Segments",
+                "message": "Set [rand:true] to introduce randomness into which segments are sorted."
+            },
+            {
+                "admonition_type": "warning",
+                "position": "top",
+                "title": "Max Resolution",
+                "message": "Images larger than 1920x1080 will be resized automatically."
+            }
+        ]
+    },
+    "Ping": {
+        "helper": "Command to check if the bot is alive.",
+        "usage": "How to use: {}ping or {}pong",
+        "description": "This command measures the bot's response time, shows memory usage, and how long the bot has been online.",
+        "commands": [
+            {
+                "args": "",
+                "response": "pong 🏓 || TMI: 123 ms || RAM: 123 MB || up for 1 hour"
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "info",
+                "position": "bottom",
+                "title": "TMI",
+                "message": "TMI stands for Internal Message Time — the time between the message being sent and the bot replying."
+            },
+            {
+                "admonition_type": "info",
+                "position": "bottom",
+                "title": "RAM",
+                "message": "Shows how much RAM memory the current bot process is using."
+            },
+            {
+                "admonition_type": "info",
+                "position": "bottom",
+                "title": "Uptime",
+                "message": "Shows how long the bot has been online since the last boot."
+            }
+        ]
+    },
+    "BotInfo": {
+        "helper": "Shows general bot statistics, uptime, and metadata like site and developer.",
+        "usage": "How to use: {}botinfo | {}site | {}uptime",
+        "description": "Displays information about the bot, such as number of channels, total commands, developer, uptime, and site.",
+        "extras": "",
+        "commands": [
+            {
+                "response": "I am connected to 10 channels, with 50 commands, made by @DevName in Python (Twitchio). Bot website: https://example.com"
+            }
+        ],
+        "admonitions": []
+    },
+    "Color": {
+        "helper": "Command to get Twitch or hex color info.",
+        "usage": "How to use: {}color (username | hex)",
+        "description": "This command returns information about a user's Twitch color, a saved color, or a given hex color. It includes name lookup and color preview links.",
+        "extras": "",
+        "commands": [
+            {
+                "prefix": "If a valid twitch user is passed.",
+                "args": "mr_chuw",
+                "response": "@mr_chuw color is: #00FFFF. Named: Cyan / Aqua."
+            },
+            {
+                "prefix": "If a valid hex code is passed.",
+                "args": "#FF4500",
+                "response": "#FF4500 is named: Vermilion."
+            },
+            {
+                "prefix": "If the user has a saved color in the database.",
+                "args": "mr_chuw",
+                "response": "@mr_chuw color is: #00FFFF. Named: Cyan / Aqua. And has the following saved color: #1E90FF. Named: Dodger Blue."
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "info",
+                "position": "top",
+                "title": "Username or HEX",
+                "message": "You can input a Twitch username or a 6-digit hexadecimal color code like #FF00FF."
+            }
+        ]
+    },
+    "Help": {
+        "helper": "Command to get information about other commands.",
+        "usage": "How to use: {}help (command name)",
+        "description": "This command returns detailed information about another command, including its usage, cooldown time, and aliases. If no input is given, it returns a general site link with command listings.",
+        "extras": "",
+        "commands": [
+            {
+                "prefix": "When the command exists and has info.",
+                "args": "ping",
+                "response": "{}ping: Command to check if the bot is alive. - Cooldown: 5s https://bot.mrchuw.com.br/commands/ping - Aliases: pong"
+            },
+            {
+                "prefix": "When the command doesn't exist but one is suggested.",
+                "args": "pign",
+                "response": "I dont have command with name \"pign\", maybe you meant \"ping\"."
+            },
+            {
+                "prefix": "When no argument is passed.",
+                "args": "",
+                "response": "Site in construction, here is the list of commands: https://bot.mrchuw.com.br"
+            }
+        ],
+        "admonitions": [
+            {
+                "admonition_type": "info",
+                "position": "bottom",
+                "title": "Command Suggestions",
+                "message": "If a command isn't found, the bot may suggest the closest match."
+            },
+            {
+                "admonition_type": "info",
+                "position": "bottom",
+                "title": "Aliases and Cooldowns",
+                "message": "The help command will also list any aliases and cooldowns associated with the command."
+            }
+        ]
+    },
+    "Set": {
+        "helper": "Main command to customize your user settings.",
+        "usage": "Usage: {}set (subcommand) [arguments]",
+        "Mention": {
+            "helper": "Enable or disable bot mentions.",
+            "usage": "Usage: {}set mention <on/off>",
+            "description": "Allows you to enable or disable whether the bot will directly mention you when replying.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "Enable mentions:",
+                    "args": "mention on",
+                    "response": "You will start receiving pings from the bot on commands again.",
+                    "suffix": ""
+                },
+                {
+                    "prefix": "Disable mentions:",
+                    "args": "mention off",
+                    "response": "Every time the bot says your nick it will place an invisible character to prevent ping.",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": []
+        },
+        "City": {
+            "helper": "Set or remove your saved city.",
+            "usage": "Usage: {}set city (name or remove) [hidden:true]",
+            "description": "Saves a city name to your profile, optionally hidden from public view.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "Set a city:",
+                    "args": "city Fortaleza, Ce",
+                    "response": "City added successfully.",
+                    "suffix": ""
+                },
+                {
+                    "prefix": "Set a city and hidden:",
+                    "args": "city Fortaleza, Ce hidden:true",
+                    "response": "City added successfully.",
+                    "suffix": ""
+                },
+                {
+                    "prefix": "Set a location with lat and long and hidden:",
+                    "args": "city -27.12 -109.35 hidden:true",
+                    "response": "City added successfully.",
+                    "suffix": ""
+                },
+                {
+                    "prefix": "Remove city:",
+                    "args": "city remove",
+                    "response": "City removed successfully",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": [
+                {
+                    "admonition_type": "warning",
+                    "position": "top",
+                    "title": "Hide it",
+                    "message": "Use the `hidden` flag to hide your city from messages."
+                }
+            ]
+        },
+        "Nick": {
+            "helper": "Set or remove a custom nickname.",
+            "usage": "Usage: {}set nick <nickname or remove>",
+            "description": "Lets you define a nickname that the bot will use when addressing you.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "Set nickname:",
+                    "args": "nick xXCoolNickNameXx",
+                    "response": "Nick changed successfully.",
+                    "suffix": ""
+                },
+                {
+                    "prefix": "Remove nickname:",
+                    "args": "nick remove",
+                    "response": "Nick removed successfully.",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": [
+                {
+                    "admonition_type": "warning",
+                    "position": "top",
+                    "title": "Keep it short!",
+                    "message": "Nick must be max 32 characters long."
+                }
+            ]
+        },
+        "Color": {
+            "helper": "Save or remove a custom color.",
+            "usage": "Usage: {}set color (#hex or remove)",
+            "description": "Sets a custom hex color that may be used in future visualizations.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "Set color:",
+                    "args": "color #000000",
+                    "response": "Saved color changed successfully.",
+                    "suffix": ""
+                },
+                {
+                    "prefix": "Remove color:",
+                    "args": "color remove",
+                    "response": "Saved color removed successfully.",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": []
+        },
+        "Reminder": {
+            "helper": "Enable or disable reminders.",
+            "usage": "Usage: {}set reminder (on/off)",
+            "description": "Toggles whether the system will send mark you in reminders form other people.",
+            "extras": "",
+            "commands": [
+                {
+                    "prefix": "Enable reminders:",
+                    "args": "reminder on",
+                    "response": "Reminder successfully turned on.",
+                    "suffix": ""
+                },
+                {
+                    "prefix": "Disable reminders:",
+                    "args": "reminder off",
+                    "response": "Reminder successfully turned off.",
+                    "suffix": ""
+                }
+            ],
+            "admonitions": []
+        }
     }
-  },
-  "Safebooru": {
-    "helper": "Command used to generate random images from Safebooru.",
-    "usage": "To use: {}safebooru (tags)",
-    "description": "This command is used to generate random images from Safebooru and shorten them for convenience.",
-    "commands": [
-      {
-        "response": "Original: (URL) || Preview: (URL)"
-      },
-      {
-        "args": "some_tag",
-        "response": "Original: (URL) || Preview: (URL)"
-      }
-    ],
-    "admonitions": [
-      {
-        "admonition_type": "warning",
-        "title": "Tags!",
-        "message": "For tags containing spaces, the space must be replaced with \"_\"."
-      }
-    ]
-  },
-  "PixelSorting": {
-    "helper": "Command used to make basic pixel sorting in images.",
-    "usage": "To use: {}pxs (url or shortened direct link) ",
-    "description": "This command processes an image using pixel sorting algorithms. You can specify the color mode, intensity, direction, crop tiles, randomization, and masking options.",
-    "extras": "",
-    "commands": [
-      {
-        "prefix": "An image URL with no default arguments.",
-        "args": "(image url)",
-        "response": "(link for the image.)",
-        "suffix": ""
-      },
-      {
-        "prefix": "An image URL with with arguments.",
-        "args": "type:red crop:100px:100px maskmode:internal dire:horizontal",
-        "response": "(link for the image.)",
-        "suffix": ""
-      }
-    ],
-    "admonitions": [
-      {
-        "admonition_type": "info",
-        "position": "top",
-        "title": "Multiple Sorting Modes",
-        "message": "You can use modes like red, green, blue, sum, rgb, hue, saturation, value, luma, and more."
-      },
-      {
-        "admonition_type": "info",
-        "position": "middle",
-        "title": "Masking Options",
-        "message": "You can control which pixels are affected using [maskmode:internal|external] and [maskthreshold:128]."
-      },
-      {
-        "admonition_type": "info",
-        "position": "bottom",
-        "title": "Random Segments",
-        "message": "Set [rand:true] to introduce randomness into which segments are sorted."
-      },
-      {
-        "admonition_type": "warning",
-        "position": "top",
-        "title": "Max Resolution",
-        "message": "Images larger than 1920x1080 will be resized automatically."
-      }
-    ]
-  },
-  "Ping": {
-    "helper": "Command to check if the bot is alive.",
-    "usage": "How to use: {}ping or {}pong",
-    "description": "This command measures the bot's response time, shows memory usage, and how long the bot has been online.",
-    "commands": [
-      {
-        "args": "",
-        "response": "pong 🏓 || TMI: 123 ms || RAM: 123 MB || up for 1 hour"
-      }
-    ],
-    "admonitions": [
-      {
-        "admonition_type": "info",
-        "position": "bottom",
-        "title": "TMI",
-        "message": "TMI stands for Internal Message Time — the time between the message being sent and the bot replying."
-      },
-      {
-        "admonition_type": "info",
-        "position": "bottom",
-        "title": "RAM",
-        "message": "Shows how much RAM memory the current bot process is using."
-      },
-      {
-        "admonition_type": "info",
-        "position": "bottom",
-        "title": "Uptime",
-        "message": "Shows how long the bot has been online since the last boot."
-      }
-    ]
-  },
-  "BotInfo": {
-    "helper": "Shows general bot statistics, uptime, and metadata like site and developer.",
-    "usage": "How to use: {}botinfo | {}site | {}uptime",
-    "description": "Displays information about the bot, such as number of channels, total commands, developer, uptime, and site.",
-    "extras": "",
-    "commands": [
-      {
-        "response": "I am connected to 10 channels, with 50 commands, made by @DevName in Python (Twitchio). Bot website: https://example.com"
-      }
-    ],
-    "admonitions": []
-  },
-  "Color": {
-    "helper": "Command to get Twitch or hex color info.",
-    "usage": "How to use: {}color (username | hex)",
-    "description": "This command returns information about a user's Twitch color, a saved color, or a given hex color. It includes name lookup and color preview links.",
-    "extras": "",
-    "commands": [
-      {
-        "prefix": "If a valid twitch user is passed.",
-        "args": "mr_chuw",
-        "response": "@mr_chuw color is: #00FFFF. Named: Cyan / Aqua."
-      },
-      {
-        "prefix": "If a valid hex code is passed.",
-        "args": "#FF4500",
-        "response": "#FF4500 is named: Vermilion."
-      },
-      {
-        "prefix": "If the user has a saved color in the database.",
-        "args": "mr_chuw",
-        "response": "@mr_chuw color is: #00FFFF. Named: Cyan / Aqua. And has the following saved color: #1E90FF. Named: Dodger Blue."
-      }
-    ],
-    "admonitions": [
-      {
-        "admonition_type": "info",
-        "position": "top",
-        "title": "Username or HEX",
-        "message": "You can input a Twitch username or a 6-digit hexadecimal color code like #FF00FF."
-      }
-    ]
-  }
 }

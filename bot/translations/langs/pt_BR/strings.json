@@ -169,8 +169,8 @@
         "pipe_response_str": "aqui está a resposta gerada pelo comando anterior: {}"
     },
     "Pipe": {
-            "response": "Pipe não é realmente um comando. Para mais informações, visite este link: {}"
-        },
+        "response": "Pipe não é realmente um comando. Para mais informações, visite este link: {}"
+    },
     "Afk": {
         "afk_response": "{} {}",
         "afk_content_response": "{} {} e deixou uma nota com: {}"
@@ -211,7 +211,6 @@
             "Nada"
         ],
         "alias_table_name_str": "{} aliases",
-
         "Add": {
             "no_command_to_add": "Você não enviou um comando! Use: {}alias add (nome) (comando) (…argumentos)",
             "alias_name_conflict": "Não é possível adicionar o alias \"{}\" - você já possui um! Você pode “editar” sua definição, “renomear” ou “removê-la”.",
@@ -416,5 +415,24 @@
         "user_color_str": "@{} a cor é: #{}. Nome: {}",
         "hex_color_str": "#{} Nome: {}",
         "saved_color_str": "E tem a seguinte cor salva: #{}. Nome: {}."
+    },
+    "Help": {
+        "help": "{}{}: {} - Cooldown: {} {} - Aliases: {}",
+        "command_site": "Site em construção, aqui está a lista de comandos: {}",
+        "suggested_command": "Não tenho um comando com o nome \"{}\", talvez você quis dizer \"{}\"."
+    },
+    "Set": {
+        "on_off_wrong_option": "{} não é uma opção válida, escolha entre \"on\" ou \"off\"",
+        "mention_on": "Você voltará a receber menções do bot nos comandos.",
+        "mention_off": "Sempre que o bot disser seu nick, ele colocará um caractere invisível para evitar o ping.",
+        "city_added": "Cidade adicionada com sucesso.",
+        "city_removed": "Cidade removida com sucesso.",
+        "nick_too_large": "O apelido deve ter no máximo 32 caracteres, e não {}.",
+        "nick_removed": "Apelido removido com sucesso.",
+        "nick_changed": "Apelido alterado com sucesso.",
+        "color_removed": "Cor salva removida com sucesso.",
+        "color_changed": "Cor salva alterada com sucesso.",
+        "reminder_on": "Lembrete ativado com sucesso.",
+        "reminder_off": "Lembrete desativado com sucesso."
     }
 }

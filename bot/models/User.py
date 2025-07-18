@@ -37,6 +37,7 @@ class User(Base, TimestampMixin, ContentMixin):
     channel = fields.CharField(max_length=64, null=True, description="Twitch channel")
     saved_color = fields.CharField(max_length=7, null=True, description="Twitch color")
     city = fields.CharField(max_length=100, null=True)
+    city_hidden = fields.BooleanField(default=True)
     ping = fields.BooleanField(default=True)
     mention = fields.BooleanField(default=True)
     block = fields.BooleanField(default=False)

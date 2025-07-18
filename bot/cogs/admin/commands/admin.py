@@ -46,6 +46,9 @@ class AdminSmallCmds(commands.CustomComponent):
         #                 print(e)
         #     decorator = ctx.bot.TranslationManager.get_decorator(command, ctx)
         #     print(decorator.usage)
+        "mr_c​huw"
+        args = "asdfasdf mr_️chuw VARIATION SELECTOR-16"
+        await ctx.send(args)
         return translations.nada.format_response(ctx, args, success=True, handle=None, response_list=[])
 
     @commands.base_decorator("Admin.Restart")

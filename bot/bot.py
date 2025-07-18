@@ -17,7 +17,7 @@ from twitchio.ext import commands
 from twitchio.ext.commands import CommandErrorPayload
 
 from bot.apis import Emotes
-from bot.ext import ChatMessage
+from bot.ext import ChatMessage, TypesBot
 from bot.handlers import (
     ChannelHandler, CommandHandler, ContextHandler, DatabaseHandler, LifecycleHandler, TokensHandler,
 )
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from bot.ext import Routine, Context
 
 
-class Gorenmu(commands.AutoBot):
+class Gorenmu(TypesBot):
     def __init__(self, configs: Config, case_insensitive: bool, log: logger, adapter) -> None:
         super().__init__(
             client_id=configs.ApisConfig.api_client_id,

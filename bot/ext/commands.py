@@ -55,7 +55,6 @@ minimum_delay_messages = 0.2
 
 class Command(TwitchioCommand):
     decorator_path: str
-    _cooldowns: Cooldown
     docs: Callable[[], dict[str, dict[str, str]]]
     template: bool
     pipeble: bool
@@ -84,6 +83,14 @@ class Command(TwitchioCommand):
     @property
     def buckets(self) -> list[Bucket]:
         return self._buckets
+
+    @property
+    def per(self):
+        return self._buckets[0]._cooldown._per  # NOQA
+
+    @property
+    def rate(self):
+        return self._buckets[0]._cooldown._rate  # NOQA
 
 
 class CustomComponent(Component):

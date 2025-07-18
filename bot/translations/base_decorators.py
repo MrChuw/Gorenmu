@@ -256,6 +256,25 @@ class BaseDecorators:
     class Color(BaseCommand):
         pass
 
+    class Help(BaseCommand):
+        pass
+
+    class Set(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_subclasses(base_cls=self)
+            self.helper = self.get_object("helper")
+            self.usage = self.get_object("usage")
+
+        class Mention(BaseCommand):
+            pass
+
+        class City(BaseCommand):
+            pass
+
+        class Nick(BaseCommand):
+            pass
+
 
 class Decorators(BaseFunctions, BaseDecorators):
     def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):
