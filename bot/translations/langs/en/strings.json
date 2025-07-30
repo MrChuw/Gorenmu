@@ -1,7 +1,7 @@
 {
     "Admin": {
         "Nada": {
-            "nada": "The command was executed successfully. {}",
+            "nada": "The command was executed successfully.{}",
             "vazio": ""
         },
         "Reload": {
@@ -421,7 +421,7 @@
         "mention_on": "You will start receiving pings from the bot on commands again.",
         "mention_off": "Every time the bot says your nick it will place an invisible character to prevent ping.",
         "city_added": "City added successfully.",
-        "city_removed": "City removed successfully",
+        "city_removed": "City removed successfully.",
         "nick_too_large": "Nick must be max 32 characters long not {}.",
         "nick_removed": "Nick removed successfully.",
         "nick_changed": "Nick changed successfully.",

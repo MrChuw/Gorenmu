@@ -924,7 +924,7 @@
                 {
                     "prefix": "Remove city:",
                     "args": "city remove",
-                    "response": "City removed successfully",
+                    "response": "City removed successfully.",
                     "suffix": ""
                 }
             ],

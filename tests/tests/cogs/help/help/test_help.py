@@ -1,0 +1,48 @@
+# -*- coding: utf-8 -*-
+
+import pytest
+import pytest_asyncio
+
+from bot.cogs.help.command.help import HelpCmd
+from tests.helpers.mock_classes import MockContext
+from tests.tests.cogs.help.help.test_params import Params
+
+
+@pytest_asyncio.fixture
+async def interact(mock_bot):
+    return HelpCmd(bot=mock_bot)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, helper, usage", Params.decorators)
+async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
+    await mock_context.prepare_context(lang)
+    decorator = mock_context.bot.TranslationManager.get_decorator(interact.help, mock_context)
+    mock_context.Asserter.assert_string(decorator.usage, usage)
+    mock_context.Asserter.assert_string(decorator.helper, helper)
+
+
+async def base_help(
+    interact, mock_context: MockContext, lang: str, content: str, expected: str = None, re_expected: str = None
+):
+    await mock_context.prepare_context(lang)
+    response: Response = await interact.help._callback(interact, mock_context, content=content)  # NOQA
+    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, expected", Params.no_content)
+async def test_no_content(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_help(interact, mock_context, lang=lang, content="", expected=expected)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, expected", Params.wrong_command)
+async def test_wrong_command(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_help(interact, mock_context, lang=lang, content="pign", expected=expected)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, expected", Params.right_command)
+async def test_right_command(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_help(interact, mock_context, lang=lang, content="ping", expected=expected)

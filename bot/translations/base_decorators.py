@@ -253,6 +253,9 @@ class BaseDecorators:
     class BotInfo(BaseCommand):
         pass
 
+    class Ping(BaseCommand):
+        pass
+
     class Color(BaseCommand):
         pass
 
@@ -273,6 +276,12 @@ class BaseDecorators:
             pass
 
         class Nick(BaseCommand):
+            pass
+
+        class Color(BaseCommand):
+            pass
+
+        class Reminder(BaseCommand):
             pass
 
 

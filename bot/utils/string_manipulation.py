@@ -180,7 +180,7 @@ class StringTools:
     def extract_and_remove_field(text: str, field: str, default: str | float = None) -> tuple[str, str | None]:
         pattern = rf'{field}:(?:"(.*?)"|(\S+))'
         if match := re.search(pattern, text):
-            value = match[1]
+            value = match[0]
             text = text.replace(value, "")
             return text, value
         return text, default
