@@ -284,6 +284,9 @@ class BaseDecorators:
         class Reminder(BaseCommand):
             pass
 
+    class AccountAge(BaseCommand):
+        pass
+
 
 class Decorators(BaseFunctions, BaseDecorators):
     def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):

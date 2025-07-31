@@ -434,5 +434,8 @@
         "color_changed": "Cor salva alterada com sucesso.",
         "reminder_on": "Lembrete ativado com sucesso.",
         "reminder_off": "Lembrete desativado com sucesso."
+    },
+    "AccountAge": {
+        "age": "{} criou a conta em {} (há {})"
     }
 }

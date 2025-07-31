@@ -442,15 +442,9 @@ def flatten_alias_names(aliases) -> List[str]:
     return [alias.name for alias in aliases]
 
 
-def build_mention(ctx_user: User, author_name: str, target_name: str):
-    if target_name == author_name:
-        return ctx_user.translations.SupportTools.LanguageContext.mention
-    return f"@{target_name}"
-
-
 async def handle_target_list(ctx: Context, target_user, translations: TAlias):
     target_aliases = await Alias.all_prefetch(ctx=ctx, user=target_user)
-    mention = build_mention(ctx.user, ctx.author.name, target_user.name)
+    mention = ctx.user.translations.SupportTools.LanguageContext.build_mention(ctx.author.name, target_user.name)
     url = await upload_alias(ctx, target_aliases, translations.alias_table_name.format(mention))
     return translations.Check.list_of_alias_of.format_response(ctx, mention, url)
 
@@ -466,7 +460,7 @@ async def handle_special_case(
 async def handle_alias_lookup(ctx: Context, user, alias_name: str, translations: TAlias):
     alias = await Alias.filter_cached(ctx=ctx, user=user, alias_name=alias_name).first().prefetch_related()
     if not alias:
-        mention = build_mention(ctx.user, ctx.author.name, user.name)
+        mention = ctx.user.translations.SupportTools.LanguageContext.build_mention(ctx.author.name, user.name)
         return translations.Check.alias_not_found.format_response(ctx, mention, alias_name, success=False)
 
     if not alias.command and not alias.parent:

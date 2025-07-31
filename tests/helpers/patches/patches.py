@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 import types
 from collections import defaultdict
 from contextlib import AsyncExitStack
@@ -50,13 +51,14 @@ class MockBuilder:
             self.builder = builder
             self.bot = builder.mock_context.bot if hasattr(builder.mock_context, "bot") else builder.mock_context
 
-        def fetch_user(self, name="mock_user", user_id=1234) -> "MockBuilder":
+        def fetch_user(self, name="mock_user", user_id=1234, created_at=None) -> "MockBuilder":
             if name is None:
                 mock_fetch = AsyncMock(return_value=None)
             else:
                 mock_user = MagicMock()
                 mock_user.name = name
                 mock_user.id = user_id
+                mock_user.created_at = created_at or datetime.datetime(2020, 1, 1, tzinfo=datetime.UTC)
                 mock_fetch = AsyncMock(return_value=mock_user)
             self.builder.patches["fetch_user"].append(patch.object(self.bot, "fetch_user", mock_fetch))
             return self.builder

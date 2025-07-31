@@ -75,6 +75,9 @@ class BaseTranslations:
 
             mention: str
 
+            def build_mention(self, author_name: str, target_name: str):
+                return self.mention if target_name == author_name else f"@{target_name}"
+
             class Verbs(BaseFunctions):
                 def __init__(self, translation: dict):
                     super().__init__(translation, None)
@@ -572,6 +575,13 @@ class BaseTranslations:
         color_changed: Response
         reminder_on: Response
         reminder_off: Response
+
+    class AccountAge(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+
+        age: Response
 
 
 class Translations(BaseFunctions, BaseTranslations):

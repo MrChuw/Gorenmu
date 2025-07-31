@@ -429,5 +429,8 @@
         "color_changed": "Saved color changed successfully.",
         "reminder_on": "Reminder successfully turned on.",
         "reminder_off": "Reminder successfully turned off."
+    },
+    "AccountAge": {
+        "age": "{} created the account on {} ({} ago)"
     }
 }
