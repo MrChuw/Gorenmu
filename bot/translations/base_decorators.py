@@ -287,6 +287,9 @@ class BaseDecorators:
     class AccountAge(BaseCommand):
         pass
 
+    class ProfilePicture(BaseCommand):
+        pass
+
 
 class Decorators(BaseFunctions, BaseDecorators):
     def __init__(self, translation: Dict[str, Any], lang: str, fallback: Dict[str, Any] = None):

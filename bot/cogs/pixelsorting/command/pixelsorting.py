@@ -77,7 +77,7 @@ class PixelSortCmd(commands.CustomComponent):
         upload = await ctx.bot.UploadThings.upload_file(
             manipulated.getvalue(), "image/png", session=session, filename="manipulated.png"
         )
-        shortened = await ctx.bot.UploadThings.shortener(url=upload, session=session, tags=["Gorenmu", "PixelSorting"])
+        shortened = await ctx.bot.UploadThings.shortener(url=upload, session=session, tags=["PixelSorting"])
         return translations.image.format_response(ctx, shortened)
 
 

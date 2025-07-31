@@ -51,6 +51,7 @@ class UploadThings:
     async def shortener(self, url: str | None, tags: list[str], session: CachedSession):
         if url is None:
             return None
+        tags += ["Gorenmu"]
         shlink_url = self.bot.config.ApisConfig.shlink_url
         payload = {"longUrl": url, "forwardQuery": "true", "findIfExists": "true", "tags": tags}
         headers = {
@@ -67,7 +68,7 @@ class UploadThings:
                 logger.error(f"Failed to parse shortener response: {e}")
         return None
 
-    async def upload_file(self, data: bytes, mime_type: str, filename: str, session: CachedSession) -> dict | None:
+    async def upload_file(self, data: bytes, mime_type: str, filename: str, session: CachedSession) -> str | None:
         boundary = "faa88938ece74999ac092a3e782951fb"
         url = self.bot.config.ApisConfig.file_upload_url
         headers = {

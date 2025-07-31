@@ -98,6 +98,22 @@ class MockBuilder:
             self.builder.patches["session_get"].append(patch.object(session, "get", mock_get))
             return self.builder
 
+        def post_json(self, session, return_value: Any = None, side_effect=None, status: int = 200) -> "MockBuilder":
+            mock_response = AsyncMock()
+            mock_response.json.return_value = return_value or {}
+            mock_response.status = status
+            mock_get = AsyncMock(return_value=mock_response, side_effect=side_effect)
+            self.builder.patches["session_get_json"].append(patch.object(session, "post", mock_get))
+            return self.builder
+
+        def post(self, session, return_value: str = None, side_effect=None, status: int = 200) -> "MockBuilder":
+            mock_response = AsyncMock()
+            mock_response.text = AsyncMock(return_value=return_value or "")
+            mock_response.status = status
+            mock_get = AsyncMock(return_value=mock_response, side_effect=side_effect)
+            self.builder.patches["session_get"].append(patch.object(session, "post", mock_get))
+            return self.builder
+
         def get_not_cached(
             self, target, return_value: str = None, side_effect=None, status: int = 200
         ) -> "MockBuilder":

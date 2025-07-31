@@ -1024,5 +1024,21 @@
             }
         ],
         "admonitions": []
+    },
+    "ProfilePicture": {
+        "helper": "Shows a user's Twitch profile image.",
+        "usage": "How to use: {}profilepicture (username)",
+        "description": "This command fetches the profile picture of the specified Twitch user in high resolution. If no username is given, it uses the command author. The image is uploaded and returned with a short link.",
+        "extras": "",
+        "commands": [
+            {
+                "response": "https://twitch-cdn.example.com/profile.png https://short.url/pic"
+            },
+            {
+                "args": "some_user",
+                "response": "https://twitch-cdn.example.com/profile.png https://short.url/pic"
+            }
+        ],
+        "admonitions": []
     }
 }

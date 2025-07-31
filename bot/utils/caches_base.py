@@ -93,6 +93,10 @@ class BaseCacheFunctions:
 class BaseCachedSession(ABC):
     def __init__(self, bot, cache_name: str, useragent: str):
         self.bot = bot
+        self.upload_url = self.bot.config.ApisConfig.file_upload_url / "*"
+        self.shortener_url = self.bot.config.ApisConfig.shlink_url / "*"
+        self.alias_url = self.bot.config.ApisConfig.alias_url / "*"
+
         self.timeout = aiohttp.ClientTimeout(total=240)
         self.headers = {
                 'User-Agent': useragent,
@@ -199,7 +203,6 @@ class ExpiryScheduler:
             while self._heap and self._heap[0][0] <= time.monotonic():
                 _, ns, k = heapq.heappop(self._heap)
                 self._on_expire(k, ns)
-
 
     async def close(self):
         self._task.cancel()

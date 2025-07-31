@@ -29,7 +29,7 @@ class AccountAgeCmd(commands.CustomComponent):
     @commands.command(name="accountage", aliases=["age"])
     async def accountage(self, ctx: Context, user_name: str = "") -> Response:
         translations = ctx.user.translations
-        user_name = ctx.bot.StringTools.str2name_or(user_name) or ctx.author.name.lower()
+        user_name = ctx.bot.StringTools.str2name_or(user_name or ctx.author.name)
         user_tmi = await ctx.bot.fetch_user(login=user_name)
         if not user_tmi:
             return translations.Exceptions.user_not_found_name.format_response(ctx, user_name, success=False)

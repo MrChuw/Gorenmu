@@ -37,7 +37,6 @@ class SessionsCaches:
         def get_expiry_times(self) -> dict:
             return {
                 "*.mrchuw.com.br/": timedelta(days=100),
-                "im.mrchuw.com.br/api/files/*": timedelta(days=100),
                 "static-cdn.jtvnw.net/previews-ttv/*": timedelta(days=1),
             }
 
@@ -72,38 +71,6 @@ class SessionsCaches:
 
     NSFWCachedSession: NSFWCachedSession
 
-    class RandomCachedSession(BaseCachedSession):
-        def __init__(self, bot: Gorenmu, useragent: str):
-            super().__init__(bot=bot, cache_name="Random_requests", useragent=useragent)
-
-        def get_expiry_times(self) -> dict:
-            return {
-                "*.imgur.com/*": timedelta(days=200),
-                "scp-wiki.wikidot.com": -1,
-                "https://pt.wikihow.com/Especial:Randomizer": 1,
-                "https://pt.wikipedia.org/wiki/Special:Random": 1,
-            }
-
-    RandomCachedSession: RandomCachedSession
-
-    class GeneralCachedSession(BaseCachedSession):
-        def __init__(self, bot: Gorenmu, useragent: str):
-            super().__init__(bot=bot, cache_name="General_requests", useragent=useragent)
-
-        def get_expiry_times(self) -> dict:
-            return {"*.dicio.com": timedelta(days=120)}
-
-    GeneralCachedSession: GeneralCachedSession
-
-    class InfoCachedSession(BaseCachedSession):
-        def __init__(self, bot: Gorenmu, useragent: str):
-            super().__init__(bot=bot, cache_name="Info_requests", useragent=useragent)
-
-        def get_expiry_times(self) -> dict:
-            return {"*.jtvnw.net/*": timedelta(minutes=30)}
-
-    InfoCachedSession: InfoCachedSession
-
     class ToolsCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             super().__init__(bot=bot, cache_name="Tools_requests", useragent=useragent)
@@ -136,7 +103,7 @@ class SessionsCaches:
             super().__init__(bot=bot, cache_name="Alias_requests", useragent=useragent)
 
         def get_expiry_times(self) -> dict:
-            return {self.bot.config.ApisConfig.alias_url.human_repr(): timedelta(days=100)}
+            return {self.alias_url: timedelta(days=100)}
 
     AliasCachedSession: AliasCachedSession
 
@@ -237,3 +204,17 @@ class SessionsCaches:
             return {"*/*": timedelta(hours=6)}
 
     PixelSortingCachedSession: PixelSortingCachedSession
+
+    class ProfilePictureCachedSession(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, cache_name="ProfilePicture_requests", useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {
+                "https://static-cdn.jtvnw.net/*": timedelta(hours=1),
+                self.upload_url: timedelta(hours=12),
+                self.shortener_url: timedelta(hours=12),
+            }
+
+    ProfilePictureCachedSession: ProfilePictureCachedSession
