@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from twitchio.ext.commands import (  # NOQA
+from twitchio.ext.commands import CommandExistsError  # NOQA
+from twitchio.ext.commands import (
     BadArgument,
-    CommandExistsError,
     CommandInvokeError,
     CommandNotFound,
     CommandOnCooldown,

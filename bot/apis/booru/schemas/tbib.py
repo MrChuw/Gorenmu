@@ -1,7 +1,6 @@
-from enum import Enum
 from dataclasses import dataclass
-from typing import Optional, Any, List, TypeVar, Type, Callable, cast
-
+from enum import Enum
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -79,7 +78,7 @@ class TbibElement:
     preview: str | None = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'TbibElement':
+    def from_dict(obj: Any) -> "TbibElement":
         assert isinstance(obj, dict)
         directory = from_union([from_int, from_none], obj.get("directory"))
         hash = from_union([from_str, from_none], obj.get("hash"))
@@ -99,9 +98,25 @@ class TbibElement:
         url = f"https://tbib.org/images/{directory}/{image}"
         preview = f"https://tbib.org/thumbnails/{directory}/thumbnail_{image}"
 
-        return TbibElement(directory, hash, height, id, image, change, owner,
-                           parent_id, rating, sample, sample_height,
-                           sample_width, score, tags, width, url, preview)
+        return TbibElement(
+            directory,
+            hash,
+            height,
+            id,
+            image,
+            change,
+            owner,
+            parent_id,
+            rating,
+            sample,
+            sample_height,
+            sample_width,
+            score,
+            tags,
+            width,
+            url,
+            preview,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}

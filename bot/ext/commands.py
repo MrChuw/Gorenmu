@@ -3,22 +3,17 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Callable, Coroutine, Iterable
-from typing import Any, Concatenate, ParamSpec, Self, Sequence, TYPE_CHECKING, TypeAlias, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, Self, Sequence, TypeAlias, TypeVar, Union
 
-from twitchio import ChatMessage, ChatMessage, User, User
-from twitchio.ext.commands import (
-    Bucket,
-    BucketType,
-    Command as TwitchioCommand,
-    CommandErrorPayload,
-    Component,
-    cooldown,
-    Cooldown,
-    Group as TwitchioGroup,
-)
+from twitchio import ChatMessage, User
+from twitchio.ext.commands import Bucket, BucketType
+from twitchio.ext.commands import Command as TwitchioCommand
+from twitchio.ext.commands import CommandErrorPayload, Component, Cooldown
+from twitchio.ext.commands import Group as TwitchioGroup
+from twitchio.ext.commands import cooldown
 from twitchio.ext.commands.exceptions import CommandError
 from twitchio.ext.commands.types_ import Component_T
-from twitchio.ext.routines import routine, routine
+from twitchio.ext.routines import routine
 
 from bot.translations import BaseCommand
 

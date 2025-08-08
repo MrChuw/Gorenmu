@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 import os
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 import psutil
 
-from bot.ext import commands, Context
+from bot.ext import Context, commands
 from bot.translations import Response
 
 if TYPE_CHECKING:

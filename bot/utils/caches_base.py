@@ -10,13 +10,14 @@ from datetime import timedelta
 from typing import Any, Callable, Iterable, Tuple
 
 import aiohttp
-from aiocache import Cache as aioCache, SimpleMemoryCache
+from aiocache import Cache as aioCache
+from aiocache import SimpleMemoryCache
 from aiohttp_client_cache import CacheBackend, CachedResponse, CachedSession, RedisBackend, SQLiteBackend
 
 from bot.utils.config import CacheType
 
 
-class BaseCacheFunctions:
+class MemoryCacheCore:
     def __init__(self, ttl: timedelta = timedelta(hours=12)):
         self.cache: SimpleMemoryCache = aioCache(aioCache.MEMORY)
         self.name_to_user_id: dict[str, int] = {}
@@ -53,6 +54,12 @@ class BaseCacheFunctions:
             self.key_index.setdefault(ns, set()).update(k for k, _ in items)
         for key, _ in items:
             self._scheduler.schedule(key, ns, lifespan)
+
+    async def _set_map(
+        self, key: str, value: Any, name: str, user_id: int, ttl: float = None, namespace: str | int = ""
+    ) -> None:
+        await self._set(key, value, ttl=ttl, namespace=namespace)
+        self._map_name(name=name, user_id=user_id)
 
     async def _get(self, key: str, namespace: str | int = ""):
         namespace = namespace if isinstance(namespace, str) else str(namespace)
@@ -91,6 +98,8 @@ class BaseCacheFunctions:
 
 
 class BaseCachedSession(ABC):
+    session = None
+
     def __init__(self, bot, cache_name: str, useragent: str):
         self.bot = bot
         self.upload_url = self.bot.config.ApisConfig.file_upload_url / "*"
@@ -99,33 +108,33 @@ class BaseCachedSession(ABC):
 
         self.timeout = aiohttp.ClientTimeout(total=240)
         self.headers = {
-                'User-Agent': useragent,
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
-                          'image/webp,image/png,image/svg+xml,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.5',
-                'DNT': '1',
-                'Sec-GPC': '1',
-                'Connection': 'keep-alive',
-                'Upgrade-Insecure-Requests': '1',
-                'Sec-Fetch-Dest': 'document',
-                'Sec-Fetch-Mode': 'navigate',
-                'Sec-Fetch-Site': 'same-site',
-                'Sec-Fetch-User': '?1',
-                'Priority': 'u=0, i',
-                'Pragma': 'no-cache',
-                'Cache-Control': 'no-cache',
+            "User-Agent": useragent,
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
+            "image/webp,image/png,image/svg+xml,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "DNT": "1",
+            "Sec-GPC": "1",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "same-site",
+            "Sec-Fetch-User": "?1",
+            "Priority": "u=0, i",
+            "Pragma": "no-cache",
+            "Cache-Control": "no-cache",
         }
         self.urls_expire_after = self.get_expiry_times()
-        if not hasattr(self, 'allowed_methods'):
+        if not hasattr(self, "allowed_methods"):
             self.allowed_methods = ("GET", "HEAD", "POST")
-        if not hasattr(self, 'allowed_codes'):
+        if not hasattr(self, "allowed_codes"):
             self.allowed_codes = (200, 301, 302)
         self.cache = self.create_cache_backend(cache_name)
-        if hasattr(self, 'extra_headers'):
-            extra_headers = getattr(self, 'extra_headers')
-            self.headers.update(extra_headers)
-        if hasattr(self, 'timeout'):
-            self.timeout = getattr(self, 'timeout')
+        if hasattr(self, "extra_headers"):
+            extra_headers = getattr(self, "extra_headers")
+            self.headers |= extra_headers
+        if hasattr(self, "timeout"):
+            self.timeout = getattr(self, "timeout")
 
         self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers, timeout=self.timeout)
 
@@ -135,30 +144,30 @@ class BaseCachedSession(ABC):
         pass
 
     def create_cache_backend(self, cache_name: str = "Default-Cache"):
-        """ Abstract method to create the cache backend. Can be overridden. """
+        """Abstract method to create the cache backend. Can be overridden."""
         if self.bot.config.DevelopmentConfig.test:
             return CacheBackend(
-                    cache_name=cache_name,
-                    urls_expire_after=self.get_expiry_times(),
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                    allowed_codes=self.allowed_codes
+                cache_name=cache_name,
+                urls_expire_after=self.get_expiry_times(),
+                allowed_methods=self.allowed_methods,
+                include_headers=True,
+                allowed_codes=self.allowed_codes,
             )
         if self.bot.config.CacheConfig.type in [CacheType.REDIS, CacheType.VALKEY]:
             return RedisBackend(
-                    cache_name=f"{self.bot.config.CacheConfig.namespace}-{cache_name}",
-                    urls_expire_after=self.get_expiry_times(),
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                    allowed_codes=self.allowed_codes
+                cache_name=f"{self.bot.config.CacheConfig.namespace}-{cache_name}",
+                urls_expire_after=self.get_expiry_times(),
+                allowed_methods=self.allowed_methods,
+                include_headers=True,
+                allowed_codes=self.allowed_codes,
             )
         else:
             return SQLiteBackend(
-                    cache_name=f".cache/aiohttp-{cache_name}.db",
-                    urls_expire_after=self.get_expiry_times(),
-                    allowed_methods=self.allowed_methods,
-                    include_headers=True,
-                    allowed_codes=self.allowed_codes
+                cache_name=f".cache/aiohttp-{cache_name}.db",
+                urls_expire_after=self.get_expiry_times(),
+                allowed_methods=self.allowed_methods,
+                include_headers=True,
+                allowed_codes=self.allowed_codes,
             )
 
     async def close(self):

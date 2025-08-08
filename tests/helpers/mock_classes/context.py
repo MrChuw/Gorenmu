@@ -8,10 +8,11 @@ from unittest.mock import AsyncMock, MagicMock
 from twitchio.models import ChatMessage
 
 from bot.models import Alias, Channel, Cookies, MessagesLog, User
+
+from ..patches.patches import MockBuilder
 from .Asserter import Asserter
 from .Channel import MockChannel
 from .User import MockUser
-from ..patches.patches import MockBuilder
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu

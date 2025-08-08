@@ -11,7 +11,7 @@ from tortoise.models import Model
 from bot.models.base import CharFieldStr
 
 if TYPE_CHECKING:
-    from bot.models import MessagesLog, MarkovUsers, MarkovChannels  # NOQA
+    from bot.models import MarkovChannels, MarkovUsers, MessagesLog  # NOQA
 
 
 class Base(Model):

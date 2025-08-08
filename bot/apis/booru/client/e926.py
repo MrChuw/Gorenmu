@@ -1,8 +1,10 @@
-from random import randint, shuffle, choice
+from random import choice, randint, shuffle
 
-from ..utils import SearchDictType, Api
-from ..schemas import e926_from_dict, E926 as E926Schema
 from yarl import URL
+
+from ..schemas import E926 as E926Schema
+from ..schemas import e926_from_dict
+from ..utils import Api, SearchDictType
 
 Booru = Api()
 
@@ -19,8 +21,16 @@ class E926(SearchDictType):
         Gets images, meant just image urls from e926.
 
     """
-    async def search(self, query: str, url: str = Booru.safebooru, block: str = "", limit: int = 100,
-                     page: int = randint(0, 100), gacha: bool = False) -> E926Schema | None:
+
+    async def search(
+        self,
+        query: str,
+        url: str = Booru.safebooru,
+        block: str = "",
+        limit: int = 100,
+        page: int = randint(0, 100),
+        gacha: bool = False,
+    ) -> E926Schema | None:
         """Search and gets images from e926.
 
         Parameters
@@ -60,13 +70,9 @@ class E926(SearchDictType):
         response = e926_from_dict(response)
         return response
 
-    async def random(self,
-                     query: str,
-                     block: str = "",
-                     limit: int = 100,
-                     page: int = randint(0, 100),
-                     gacha: bool = False
-                     ):
+    async def random(
+        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
+    ):
         results = await self.search(url=Booru.e926, query=query, block=block, limit=limit, page=page, gacha=gacha)
         if not results:
             return None, None

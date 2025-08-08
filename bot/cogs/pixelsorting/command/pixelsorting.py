@@ -6,13 +6,13 @@ import colorsys
 import itertools
 import random
 from io import BytesIO
-from typing import List, Optional, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional, Tuple
 
 from aiohttp_client_cache import CachedSession
 from PIL import Image, ImageFilter, ImageOps
 from PIL.ImageFile import ImageFile
 
-from bot.ext import commands, Context
+from bot.ext import Context, commands
 from bot.translations import Response
 
 if TYPE_CHECKING:

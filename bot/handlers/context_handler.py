@@ -4,7 +4,7 @@ from __future__ import annotations
 import asyncio
 import re
 from collections.abc import Callable, Coroutine, Iterable
-from typing import Any, ParamSpec, TYPE_CHECKING, TypeAlias, TypeVar
+from typing import TYPE_CHECKING, Any, ParamSpec, TypeAlias, TypeVar
 
 from twitchio.ext.commands.core import CommandErrorPayload
 from twitchio.ext.commands.exceptions import CommandError, CommandHookError, CommandNotFound

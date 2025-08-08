@@ -2,11 +2,10 @@
 from __future__ import annotations
 
 import datetime
-from typing import NamedTuple, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, NamedTuple, Optional
 
 if TYPE_CHECKING:
-    from bot.models import Alias
-    from bot.models import Status
+    from bot.models import Alias, Status
 
 
 class AliasCached(NamedTuple):

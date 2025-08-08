@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING
 import twitchio
 from twitchio import eventsub
 
-from bot.models import TwitchTokens, User as UserModel
+from bot.models import TwitchTokens
+from bot.models import User as UserModel
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu

@@ -1,11 +1,11 @@
 import time
-from random import randint, shuffle, choice
-from bs4 import BeautifulSoup
+from random import choice, randint, shuffle
 
 from aiohttp_client_cache import CachedSession
+from bs4 import BeautifulSoup
+from yarl import URL
 
 from ..utils.parser import Api
-from yarl import URL
 
 Booru = Api()
 
@@ -80,18 +80,17 @@ class Paheal(object):
             soup = BeautifulSoup(self.data, "html.parser")
             thumb_links = soup.find_all("div", class_="shm-thumb thumb")
             random_thumb_link = choice(thumb_links)
-            self.img = random_thumb_link.find("a", text="File Only")['href'] if random_thumb_link.find("a", text="File Only") else None
+            self.img = (
+                random_thumb_link.find("a", text="File Only")["href"]
+                if random_thumb_link.find("a", text="File Only")
+                else None
+            )
             self.preview = url + random_thumb_link.find("img")["src"]
         return True
 
-
-    async def random(self,
-                     query: str,
-                     block: str = "",
-                     limit: int = 100,
-                     page: int = randint(0, 300),
-                     gacha: bool = False
-                     ):
+    async def random(
+        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 300), gacha: bool = False
+    ):
         if self.amount > 1:
             images = []
             images_preview = []

@@ -50,4 +50,3 @@ port = "${REDIS_PORT}"
 password = "${REDIS_PASSWORD}"
 namespace = "${REDIS_NAMESPACE}"
 db = "${REDIS_DB}"
-

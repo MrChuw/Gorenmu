@@ -1,9 +1,9 @@
-from enum import Enum
 from dataclasses import dataclass
-from typing import Optional, Any, List, TypeVar, Type, Callable, cast
 from datetime import datetime
-import dateutil.parser
+from enum import Enum
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
+import dateutil.parser
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -85,7 +85,7 @@ class FlagDetail:
     flagged_by: Optional[FlaggedBy] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'FlagDetail':
+    def from_dict(obj: Any) -> "FlagDetail":
         assert isinstance(obj, dict)
         post_id = from_union([from_none, from_int], obj.get("post_id"))
         reason = from_union([Reason, from_none], obj.get("reason"))
@@ -170,7 +170,7 @@ class YandereElement:
     flag_detail: Optional[FlagDetail] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'YandereElement':
+    def from_dict(obj: Any) -> "YandereElement":
         assert isinstance(obj, dict)
         id = from_union([from_none, from_int], obj.get("id"))
         tags = from_union([from_str, from_none], obj.get("tags"))
@@ -217,7 +217,53 @@ class YandereElement:
         last_noted_at = from_union([from_none, from_int], obj.get("last_noted_at"))
         last_commented_at = from_union([from_none, from_int], obj.get("last_commented_at"))
         flag_detail = from_union([FlagDetail.from_dict, from_none], obj.get("flag_detail"))
-        return YandereElement(id, tags, created_at, updated_at, creator_id, approver_id, author, change, source, score, md5, file_size, file_ext, file_url, is_shown_in_index, preview_url, preview_width, preview_height, actual_preview_width, actual_preview_height, sample_url, sample_width, sample_height, sample_file_size, jpeg_url, jpeg_width, jpeg_height, jpeg_file_size, rating, is_rating_locked, has_children, parent_id, status, is_pending, width, height, is_held, frames_pending_string, frames_pending, frames_string, frames, is_note_locked, last_noted_at, last_commented_at, flag_detail)
+        return YandereElement(
+            id,
+            tags,
+            created_at,
+            updated_at,
+            creator_id,
+            approver_id,
+            author,
+            change,
+            source,
+            score,
+            md5,
+            file_size,
+            file_ext,
+            file_url,
+            is_shown_in_index,
+            preview_url,
+            preview_width,
+            preview_height,
+            actual_preview_width,
+            actual_preview_height,
+            sample_url,
+            sample_width,
+            sample_height,
+            sample_file_size,
+            jpeg_url,
+            jpeg_width,
+            jpeg_height,
+            jpeg_file_size,
+            rating,
+            is_rating_locked,
+            has_children,
+            parent_id,
+            status,
+            is_pending,
+            width,
+            height,
+            is_held,
+            frames_pending_string,
+            frames_pending,
+            frames_string,
+            frames,
+            is_note_locked,
+            last_noted_at,
+            last_commented_at,
+            flag_detail,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}

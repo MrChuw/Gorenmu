@@ -1,7 +1,6 @@
-from enum import Enum
 from dataclasses import dataclass
-from typing import Optional, List, Any, TypeVar, Callable, Type, cast
-
+from enum import Enum
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -101,7 +100,7 @@ class KonachanElement:
     frames: Optional[List[Any]] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'KonachanElement':
+    def from_dict(obj: Any) -> "KonachanElement":
         assert isinstance(obj, dict)
         id = from_union([from_int, from_none], obj.get("id"))
         tags = from_union([from_str, from_none], obj.get("tags"))
@@ -139,7 +138,44 @@ class KonachanElement:
         frames_pending = from_union([lambda x: from_list(lambda x: x, x), from_none], obj.get("frames_pending"))
         frames_string = from_union([from_str, from_none], obj.get("frames_string"))
         frames = from_union([lambda x: from_list(lambda x: x, x), from_none], obj.get("frames"))
-        return KonachanElement(id, tags, created_at, creator_id, author, change, source, score, md5, file_size, file_url, is_shown_in_index, preview_url, preview_width, preview_height, actual_preview_width, actual_preview_height, sample_url, sample_width, sample_height, sample_file_size, jpeg_url, jpeg_width, jpeg_height, jpeg_file_size, rating, has_children, parent_id, status, width, height, is_held, frames_pending_string, frames_pending, frames_string, frames)
+        return KonachanElement(
+            id,
+            tags,
+            created_at,
+            creator_id,
+            author,
+            change,
+            source,
+            score,
+            md5,
+            file_size,
+            file_url,
+            is_shown_in_index,
+            preview_url,
+            preview_width,
+            preview_height,
+            actual_preview_width,
+            actual_preview_height,
+            sample_url,
+            sample_width,
+            sample_height,
+            sample_file_size,
+            jpeg_url,
+            jpeg_width,
+            jpeg_height,
+            jpeg_file_size,
+            rating,
+            has_children,
+            parent_id,
+            status,
+            width,
+            height,
+            is_held,
+            frames_pending_string,
+            frames_pending,
+            frames_string,
+            frames,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}

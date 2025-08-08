@@ -1040,5 +1040,24 @@
             }
         ],
         "admonitions": []
+    },
+    "Live": {
+        "helper": "Shows information about a channel's current or last broadcast.",
+        "usage": "How to use: {}live (channel or id)",
+        "description": "Displays details about the current stream or the last broadcast of the specified Twitch channel. Includes title, time since started, viewers, game, and VOD link if available. If no channel is specified, uses the current one.",
+        "extras": "",
+        "commands": [
+            {
+                "prefix": "Live channel:",
+                "args": "xXCoolNickXx",
+                "response": "Title: Cool Stream Title. || Stream started: a month ago (1 month, 1 day, 1 hour). ||  Views: 42069. || Playing: Coolest Game. || https://www.twitch.tv/xXCoolNickXx https://www.twitch.tv/videos/1324"
+            },
+            {
+                "prefix": "Offline channel with recent VOD:",
+                "args": "xXCoolNickXx",
+                "response": "Title: Cool Stream Title. || Last stream: a month ago (1 month, 1 day, 1 hour). || https://www.twitch.tv/xXCoolNickXx https://www.twitch.tv/videos/1324"
+            }
+        ],
+        "admonitions": []
     }
 }

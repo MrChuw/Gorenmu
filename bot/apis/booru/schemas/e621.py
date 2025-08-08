@@ -1,9 +1,9 @@
-from enum import Enum
 from dataclasses import dataclass
-from typing import Optional, Any, List, TypeVar, Type, Callable, cast
 from datetime import datetime
-import dateutil.parser
+from enum import Enum
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
+import dateutil.parser
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -84,7 +84,7 @@ class File:
     url: Optional[str] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'File':
+    def from_dict(obj: Any) -> "File":
         assert isinstance(obj, dict)
         width = from_union([from_int, from_none], obj.get("width"))
         height = from_union([from_int, from_none], obj.get("height"))
@@ -121,7 +121,7 @@ class Flags:
     deleted: Optional[bool] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Flags':
+    def from_dict(obj: Any) -> "Flags":
         assert isinstance(obj, dict)
         pending = from_union([from_bool, from_none], obj.get("pending"))
         flagged = from_union([from_bool, from_none], obj.get("flagged"))
@@ -159,7 +159,7 @@ class Preview:
     url: Optional[str] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Preview':
+    def from_dict(obj: Any) -> "Preview":
         assert isinstance(obj, dict)
         width = from_union([from_int, from_none], obj.get("width"))
         height = from_union([from_int, from_none], obj.get("height"))
@@ -191,7 +191,7 @@ class Relationships:
     children: Optional[List[int]] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Relationships':
+    def from_dict(obj: Any) -> "Relationships":
         assert isinstance(obj, dict)
         parent_id = from_union([from_int, from_none], obj.get("parent_id"))
         has_children = from_union([from_bool, from_none], obj.get("has_children"))
@@ -224,12 +224,14 @@ class Original:
     urls: Optional[List[Optional[str]]] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Original':
+    def from_dict(obj: Any) -> "Original":
         assert isinstance(obj, dict)
         type = from_union([TypeEnum, from_none], obj.get("type"))
         height = from_union([from_int, from_none], obj.get("height"))
         width = from_union([from_int, from_none], obj.get("width"))
-        urls = from_union([lambda x: from_list(lambda x: from_union([from_none, from_str], x), x), from_none], obj.get("urls"))
+        urls = from_union(
+            [lambda x: from_list(lambda x: from_union([from_none, from_str], x), x), from_none], obj.get("urls")
+        )
         return Original(type, height, width, urls)
 
     def to_dict(self) -> dict:
@@ -241,7 +243,9 @@ class Original:
         if self.width is not None:
             result["width"] = from_union([from_int, from_none], self.width)
         if self.urls is not None:
-            result["urls"] = from_union([lambda x: from_list(lambda x: from_union([from_none, from_str], x), x), from_none], self.urls)
+            result["urls"] = from_union(
+                [lambda x: from_list(lambda x: from_union([from_none, from_str], x), x), from_none], self.urls
+            )
         return result
 
 
@@ -253,7 +257,7 @@ class The0_P:
     urls: Optional[List[str]] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'The0_P':
+    def from_dict(obj: Any) -> "The0_P":
         assert isinstance(obj, dict)
         type = from_union([TypeEnum, from_none], obj.get("type"))
         height = from_union([from_int, from_none], obj.get("height"))
@@ -281,7 +285,7 @@ class Alternates:
     the_720_p: Optional[The0_P] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Alternates':
+    def from_dict(obj: Any) -> "Alternates":
         assert isinstance(obj, dict)
         the_480_p = from_union([The0_P.from_dict, from_none], obj.get("480p"))
         original = from_union([Original.from_dict, from_none], obj.get("original"))
@@ -308,7 +312,7 @@ class Sample:
     alternates: Optional[Alternates] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Sample':
+    def from_dict(obj: Any) -> "Sample":
         assert isinstance(obj, dict)
         has = from_union([from_bool, from_none], obj.get("has"))
         height = from_union([from_int, from_none], obj.get("height"))
@@ -339,7 +343,7 @@ class Score:
     total: Optional[int] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Score':
+    def from_dict(obj: Any) -> "Score":
         assert isinstance(obj, dict)
         up = from_union([from_int, from_none], obj.get("up"))
         down = from_union([from_int, from_none], obj.get("down"))
@@ -369,7 +373,7 @@ class Tags:
     lore: Optional[List[str]] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Tags':
+    def from_dict(obj: Any) -> "Tags":
         assert isinstance(obj, dict)
         general = from_union([lambda x: from_list(from_str, x), from_none], obj.get("general"))
         artist = from_union([lambda x: from_list(from_str, x), from_none], obj.get("artist"))
@@ -429,7 +433,7 @@ class Post:
     duration: Optional[float] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Post':
+    def from_dict(obj: Any) -> "Post":
         assert isinstance(obj, dict)
         id = from_union([from_int, from_none], obj.get("id"))
         created_at = from_union([from_datetime, from_none], obj.get("created_at"))
@@ -454,7 +458,31 @@ class Post:
         is_favorited = from_union([from_bool, from_none], obj.get("is_favorited"))
         has_notes = from_union([from_bool, from_none], obj.get("has_notes"))
         duration = from_union([from_none, from_float], obj.get("duration"))
-        return Post(id, created_at, updated_at, file, preview, sample, score, tags, locked_tags, change_seq, flags, rating, fav_count, sources, pools, relationships, approver_id, uploader_id, description, comment_count, is_favorited, has_notes, duration)
+        return Post(
+            id,
+            created_at,
+            updated_at,
+            file,
+            preview,
+            sample,
+            score,
+            tags,
+            locked_tags,
+            change_seq,
+            flags,
+            rating,
+            fav_count,
+            sources,
+            pools,
+            relationships,
+            approver_id,
+            uploader_id,
+            description,
+            comment_count,
+            is_favorited,
+            has_notes,
+            duration,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}
@@ -475,7 +503,9 @@ class Post:
         if self.tags is not None:
             result["tags"] = from_union([lambda x: to_class(Tags, x), from_none], self.tags)
         if self.locked_tags is not None:
-            result["locked_tags"] = from_union([lambda x: from_list(lambda x: to_enum(LockedTag, x), x), from_none], self.locked_tags)
+            result["locked_tags"] = from_union(
+                [lambda x: from_list(lambda x: to_enum(LockedTag, x), x), from_none], self.locked_tags
+            )
         if self.change_seq is not None:
             result["change_seq"] = from_union([from_int, from_none], self.change_seq)
         if self.flags is not None:
@@ -512,7 +542,7 @@ class E621:
     posts: Optional[List[Post]] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'E621':
+    def from_dict(obj: Any) -> "E621":
         assert isinstance(obj, dict)
         posts = from_union([lambda x: from_list(Post.from_dict, x), from_none], obj.get("posts"))
         return E621(posts)

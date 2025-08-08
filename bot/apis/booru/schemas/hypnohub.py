@@ -1,7 +1,6 @@
-from enum import Enum
 from dataclasses import dataclass
-from typing import Optional, Any, List, TypeVar, Type, Callable, cast
-
+from enum import Enum
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -74,7 +73,7 @@ class HypnohubElement:
     width: Optional[int] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'HypnohubElement':
+    def from_dict(obj: Any) -> "HypnohubElement":
         assert isinstance(obj, dict)
         preview_url = from_union([from_str, from_none], obj.get("preview_url"))
         sample_url = from_union([from_str, from_none], obj.get("sample_url"))
@@ -94,7 +93,26 @@ class HypnohubElement:
         score = from_union([from_int, from_none], obj.get("score"))
         tags = from_union([from_str, from_none], obj.get("tags"))
         width = from_union([from_int, from_none], obj.get("width"))
-        return HypnohubElement(preview_url, sample_url, file_url, directory, hash, height, id, image, change, owner, parent_id, rating, sample, sample_height, sample_width, score, tags, width)
+        return HypnohubElement(
+            preview_url,
+            sample_url,
+            file_url,
+            directory,
+            hash,
+            height,
+            id,
+            image,
+            change,
+            owner,
+            parent_id,
+            rating,
+            sample,
+            sample_height,
+            sample_width,
+            score,
+            tags,
+            width,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}

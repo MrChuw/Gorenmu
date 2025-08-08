@@ -5,7 +5,7 @@ from datetime import timedelta
 import pytest
 
 from bot.utils.caches import MemCache
-from bot.utils.caches_base import BaseCacheFunctions, ExpiryScheduler
+from bot.utils.caches_base import ExpiryScheduler, MemoryCacheCore
 
 
 @pytest.fixture
@@ -15,7 +15,7 @@ async def memcache():
     await cache.close_all_caches()
 
 
-class DummyCache(BaseCacheFunctions):
+class DummyCache(MemoryCacheCore):
     def __init__(self, ttl=timedelta(seconds=1)):
         super().__init__(ttl=ttl)
 
@@ -54,7 +54,7 @@ async def test_base_expiry():
 @pytest.mark.asyncio
 async def test_memcache_alias(memcache):
     alias = memcache.Alias
-    await alias.set(name="nick", user_id=1, cached=object())  # NOQA
+    await alias.set(name="nick", user_id=1, to_cache=object())  # NOQA
     keys = await alias.list_keys(user_id=1)
     assert "nick" in keys
 

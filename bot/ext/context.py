@@ -7,6 +7,7 @@ from twitchio.ext.commands import Context as TwitchioContext
 
 if TYPE_CHECKING:
     from twitchio import ChatMessage, ChatMessageReply
+
     from bot.bot import Gorenmu
     from bot.ext import Command
     from bot.models import User as UserModel

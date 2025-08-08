@@ -5,9 +5,9 @@ import datetime
 import random
 from collections import Counter
 from itertools import chain, groupby, repeat
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
-from bot.ext import commands, Context
+from bot.ext import Context, commands
 from bot.models import Cookies, User
 from bot.translations import Response
 from bot.utils import Check

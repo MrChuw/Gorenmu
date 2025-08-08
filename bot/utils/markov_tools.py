@@ -10,7 +10,8 @@ from urlextract import URLExtract
 
 from bot.ext import Context
 from bot.ext.commands import User
-from bot.models import Channel as ChannelModel, MarkovChannels, MarkovUserChannel, MarkovUsers
+from bot.models import Channel as ChannelModel
+from bot.models import MarkovChannels, MarkovUserChannel, MarkovUsers
 
 
 class MarkovProcessor:

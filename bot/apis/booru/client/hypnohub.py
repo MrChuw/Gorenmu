@@ -1,9 +1,9 @@
-from random import randint, shuffle, choice
-
+from random import choice, randint, shuffle
 
 from yarl import URL
-from ..schemas import hypnohub_from_dict, HypnohubElement
-from ..utils import SearchListType, Api
+
+from ..schemas import HypnohubElement, hypnohub_from_dict
+from ..utils import Api, SearchListType
 
 Booru = Api()
 
@@ -17,8 +17,16 @@ class Hypnohub(SearchListType):
         Search and gets images from hypnohub.
 
     """
-    async def search(self, query: str, url: str = Booru.hypnohub, block: str = "", limit: int = 100,
-                     page: int = randint(0, 100), gacha: bool = False) -> list[HypnohubElement] | None:
+
+    async def search(
+        self,
+        query: str,
+        url: str = Booru.hypnohub,
+        block: str = "",
+        limit: int = 100,
+        page: int = randint(0, 100),
+        gacha: bool = False,
+    ) -> list[HypnohubElement] | None:
         """Search and gets images from hypnohub.
 
         Parameters
@@ -59,16 +67,9 @@ class Hypnohub(SearchListType):
         response = hypnohub_from_dict(response)
         return response
 
-
-
-
-    async def random(self,
-                     query: str,
-                     block: str = "",
-                     limit: int = 100,
-                     page: int = randint(0, 100),
-                     gacha: bool = False
-                     ):
+    async def random(
+        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
+    ):
         results = await self.search(url=Booru.hypnohub, query=query, block=block, limit=limit, page=page, gacha=gacha)
         if not results:
             return None, None

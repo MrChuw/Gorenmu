@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import pathlib
-from typing import Any, Awaitable, Callable, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Union
 
 from bot.translations.base_decorators import BaseCommand, BaseDecorators, Decorators
 from bot.translations.base_responses import BaseTranslations, Translations

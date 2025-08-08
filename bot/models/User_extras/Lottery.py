@@ -7,8 +7,7 @@ from tortoise import fields
 from bot.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
-    from bot.models import User
-    from bot.models import LotteryBank
+    from bot.models import LotteryBank, User
 
 
 class Lottery(Base, TimestampMixin):

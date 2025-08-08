@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import random
-from typing import Optional, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, Tuple
 
 if TYPE_CHECKING:
     from bot.models import Player

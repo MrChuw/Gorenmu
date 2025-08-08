@@ -34,5 +34,3 @@ markers = ["network: tests that make real requests", "disabled: Tests that have 
 #addopts = "-n auto -m 'not disabled'"
 addopts = "-m 'not network and not disabled'"
 #addopts = "-n auto -m 'not network and not disabled'"
-
-

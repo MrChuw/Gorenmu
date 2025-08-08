@@ -13,8 +13,3 @@ app.get('/ping', (c) => c.text('pong'));
 app.route('/mathjs', mathRouter);
 
 export default app;
-
-
-
-
-

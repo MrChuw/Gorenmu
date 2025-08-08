@@ -11,8 +11,13 @@ from bs4 import BeautifulSoup
 
 from .constants import BASE_URLS, GOOGLE_LANGUAGES_TO_CODES
 from .exceptions import (
-    InvalidSourceOrTargetLanguage, LanguageNotSupportedException, NotValidLength, NotValidPayload, RequestError,
-    TooManyRequests, TranslationNotFound,
+    InvalidSourceOrTargetLanguage,
+    LanguageNotSupportedException,
+    NotValidLength,
+    NotValidPayload,
+    RequestError,
+    TooManyRequests,
+    TranslationNotFound,
 )
 
 

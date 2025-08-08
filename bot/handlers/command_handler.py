@@ -5,7 +5,7 @@ import os
 import pathlib
 import types
 from importlib import import_module
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from loguru import logger
 from twitchio.ext.commands import Command, CommandErrorPayload

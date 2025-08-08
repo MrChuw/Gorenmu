@@ -1,9 +1,9 @@
-from enum import Enum
 from dataclasses import dataclass
-from typing import Optional, Any, List, TypeVar, Callable, Type, cast
 from datetime import datetime
-import dateutil.parser
+from enum import Enum
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
+import dateutil.parser
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -81,7 +81,7 @@ class Intensities:
     se: Optional[float] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Intensities':
+    def from_dict(obj: Any) -> "Intensities":
         assert isinstance(obj, dict)
         nw = from_union([from_float, from_none], obj.get("nw"))
         ne = from_union([from_float, from_none], obj.get("ne"))
@@ -122,7 +122,7 @@ class Representations:
     webm: Optional[str] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Representations':
+    def from_dict(obj: Any) -> "Representations":
         assert isinstance(obj, dict)
         full = from_union([from_str, from_none], obj.get("full"))
         small = from_union([from_str, from_none], obj.get("small"))
@@ -204,7 +204,7 @@ class Image:
     uploader_id: Optional[int] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Image':
+    def from_dict(obj: Any) -> "Image":
         assert isinstance(obj, dict)
         view_url = from_union([from_str, from_none], obj.get("view_url"))
         sha512_hash = from_union([from_str, from_none], obj.get("sha512_hash"))
@@ -245,7 +245,47 @@ class Image:
         updated_at = from_union([from_datetime, from_none], obj.get("updated_at"))
         tag_count = from_union([from_int, from_none], obj.get("tag_count"))
         uploader_id = from_union([from_int, from_none], obj.get("uploader_id"))
-        return Image(view_url, sha512_hash, width, description, height, orig_sha512_hash, processed, format, comment_count, faves, representations, size, mime_type, source_url, source_urls, upvotes, uploader, duration, intensities, wilson_score, tags, tag_ids, score, first_seen_at, animated, aspect_ratio, id, name, duplicate_of, orig_size, hidden_from_users, spoilered, thumbnails_generated, created_at, deletion_reason, downvotes, updated_at, tag_count, uploader_id)
+        return Image(
+            view_url,
+            sha512_hash,
+            width,
+            description,
+            height,
+            orig_sha512_hash,
+            processed,
+            format,
+            comment_count,
+            faves,
+            representations,
+            size,
+            mime_type,
+            source_url,
+            source_urls,
+            upvotes,
+            uploader,
+            duration,
+            intensities,
+            wilson_score,
+            tags,
+            tag_ids,
+            score,
+            first_seen_at,
+            animated,
+            aspect_ratio,
+            id,
+            name,
+            duplicate_of,
+            orig_size,
+            hidden_from_users,
+            spoilered,
+            thumbnails_generated,
+            created_at,
+            deletion_reason,
+            downvotes,
+            updated_at,
+            tag_count,
+            uploader_id,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}
@@ -270,7 +310,9 @@ class Image:
         if self.faves is not None:
             result["faves"] = from_union([from_int, from_none], self.faves)
         if self.representations is not None:
-            result["representations"] = from_union([lambda x: to_class(Representations, x), from_none], self.representations)
+            result["representations"] = from_union(
+                [lambda x: to_class(Representations, x), from_none], self.representations
+            )
         if self.size is not None:
             result["size"] = from_union([from_int, from_none], self.size)
         if self.mime_type is not None:
@@ -337,7 +379,7 @@ class Furbooru:
     interactions: Optional[List[Any]] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Furbooru':
+    def from_dict(obj: Any) -> "Furbooru":
         assert isinstance(obj, dict)
         total = from_union([from_int, from_none], obj.get("total"))
         images = from_union([lambda x: from_list(Image.from_dict, x), from_none], obj.get("images"))
@@ -349,7 +391,9 @@ class Furbooru:
         if self.total is not None:
             result["total"] = from_union([from_int, from_none], self.total)
         if self.images is not None:
-            result["images"] = from_union([lambda x: from_list(lambda x: to_class(Image, x), x), from_none], self.images)
+            result["images"] = from_union(
+                [lambda x: from_list(lambda x: to_class(Image, x), x), from_none], self.images
+            )
         if self.interactions is not None:
             result["interactions"] = from_union([lambda x: from_list(lambda x: x, x), from_none], self.interactions)
         return result

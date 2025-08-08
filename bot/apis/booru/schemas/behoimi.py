@@ -1,7 +1,6 @@
-from enum import Enum
 from dataclasses import dataclass
-from typing import Optional, Any, List, TypeVar, Type, cast, Callable
-
+from enum import Enum
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -69,7 +68,7 @@ class CreatedAt:
     s: Optional[int] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'CreatedAt':
+    def from_dict(obj: Any) -> "CreatedAt":
         assert isinstance(obj, dict)
         json_class = from_union([JSONClass, from_none], obj.get("json_class"))
         n = from_union([from_int, from_none], obj.get("n"))
@@ -127,7 +126,7 @@ class BehoimiElement:
     created_at: Optional[CreatedAt] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'BehoimiElement':
+    def from_dict(obj: Any) -> "BehoimiElement":
         assert isinstance(obj, dict)
         status = from_union([Status, from_none], obj.get("status"))
         creator_id = from_union([from_int, from_none], obj.get("creator_id"))
@@ -142,7 +141,7 @@ class BehoimiElement:
         has_children = from_union([from_bool, from_none], obj.get("has_children"))
         sample_url = from_union([from_str, from_none], obj.get("sample_url"))
         file_url = from_union([from_str, from_none], obj.get("file_url"))
-        parent_id = from_union([from_int, from_str, from_none],obj.get("parent_id"))
+        parent_id = from_union([from_int, from_str, from_none], obj.get("parent_id"))
         sample_height = from_union([from_int, from_none], obj.get("sample_height"))
         md5 = from_union([from_str, from_none], obj.get("md5"))
         tags = from_union([from_str, from_none], obj.get("tags"))
@@ -154,7 +153,33 @@ class BehoimiElement:
         preview_url = from_union([from_str, from_none], obj.get("preview_url"))
         file_size = from_union([from_int, from_none], obj.get("file_size"))
         created_at = from_union([CreatedAt.from_dict, from_none], obj.get("created_at"))
-        return BehoimiElement(status, creator_id, preview_width, source, author, width, score, preview_height, has_comments, sample_width, has_children, sample_url, file_url, parent_id, sample_height, md5, tags, change, has_notes, rating, id, height, preview_url, file_size, created_at)
+        return BehoimiElement(
+            status,
+            creator_id,
+            preview_width,
+            source,
+            author,
+            width,
+            score,
+            preview_height,
+            has_comments,
+            sample_width,
+            has_children,
+            sample_url,
+            file_url,
+            parent_id,
+            sample_height,
+            md5,
+            tags,
+            change,
+            has_notes,
+            rating,
+            id,
+            height,
+            preview_url,
+            file_size,
+            created_at,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}

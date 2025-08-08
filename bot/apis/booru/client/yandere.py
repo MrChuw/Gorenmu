@@ -1,8 +1,9 @@
-from random import randint, shuffle, choice
+from random import choice, randint, shuffle
 
-from ..utils import SearchListType, Api
-from ..schemas import yandere_from_dict, YandereElement
 from yarl import URL
+
+from ..schemas import YandereElement, yandere_from_dict
+from ..utils import Api, SearchListType
 
 Booru = Api()
 
@@ -19,8 +20,16 @@ class Yandere(SearchListType):
         Gets images, image urls only from yandere.
 
     """
-    async def search(self, query: str, url: str = Booru.safebooru, block: str = "", limit: int = 100,
-                     page: int = randint(0, 100), gacha: bool = False) -> list[YandereElement] | None:
+
+    async def search(
+        self,
+        query: str,
+        url: str = Booru.safebooru,
+        block: str = "",
+        limit: int = 100,
+        page: int = randint(0, 100),
+        gacha: bool = False,
+    ) -> list[YandereElement] | None:
         """Search and gets images from yandere.
 
         Parameters
@@ -57,13 +66,9 @@ class Yandere(SearchListType):
         response = yandere_from_dict(response)
         return response
 
-    async def random(self,
-                     query: str,
-                     block: str = "",
-                     limit: int = 100,
-                     page: int = randint(0, 100),
-                     gacha: bool = False
-                     ):
+    async def random(
+        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
+    ):
         results = await self.search(url=Booru.yandere, query=query, block=block, limit=limit, page=page, gacha=gacha)
         if not results:
             return None, None

@@ -12,9 +12,9 @@ from bot.models.base import TimestampMixin
 SET_NULL = fields.SET_NULL
 
 if TYPE_CHECKING:
-    from bot.models.User import User
-    from bot.models.Channel import Channel
     from bot.ext import Context
+    from bot.models.Channel import Channel
+    from bot.models.User import User
 
 
 class Alias(Model, TimestampMixin):
@@ -51,7 +51,7 @@ class Alias(Model, TimestampMixin):
         )
         await alias.save()
         cached = AliasCached(alias=alias, invocation=invocation, arguments=rest or [""])
-        await ctx.bot.memcache.Alias.set(name=name, user_id=ctx.user.id, cached=cached)
+        await ctx.bot.memcache.Alias.set(name=name, user_id=ctx.user.id, to_cache=cached)
         return alias
 
     @staticmethod
@@ -60,7 +60,7 @@ class Alias(Model, TimestampMixin):
         alias = Alias(user=user, name=name, description=parent.description, parent=parent)
         await alias.save()
         cached = AliasCached(alias=alias, invocation=parent.invocation, arguments=parent.arguments, parent=parent)
-        await ctx.bot.memcache.Alias.set(name=name, user_id=ctx.user.id, cached=cached)
+        await ctx.bot.memcache.Alias.set(name=name, user_id=ctx.user.id, to_cache=cached)
         return alias
 
     @staticmethod
@@ -103,7 +103,7 @@ class Alias(Model, TimestampMixin):
         await alias.save()
         cached = AliasCached(alias=alias, invocation=invocation, arguments=arguments)
 
-        await ctx.bot.memcache.Alias.set(name=name, user_id=ctx.user.id, cached=cached)
+        await ctx.bot.memcache.Alias.set(name=name, user_id=ctx.user.id, to_cache=cached)
 
         return alias
 
@@ -196,7 +196,7 @@ class CachedAliasQuerySet:  # TODO: The same thing with other caches...
                 if self._prefetch:
                     await result.fetch_related(*self._prefetch)
                 alias_tuple = AliasCached(alias=result, invocation=result.invocation, arguments=result.arguments)
-                await memcache.set(name=result.name, user_id=self.user.id, cached=alias_tuple)
+                await memcache.set(name=result.name, user_id=self.user.id, to_cache=alias_tuple)
                 return result if result and not result.deleted else None
 
         if self._method == "all":

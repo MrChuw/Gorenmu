@@ -44,7 +44,3 @@ services:
       - "12843:3000"
     command: >
       sh /code/start.sh
-
-
-
-

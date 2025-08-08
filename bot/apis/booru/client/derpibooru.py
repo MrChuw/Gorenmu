@@ -1,9 +1,10 @@
 import pickle
-from random import randint, shuffle, choice
+from random import choice, randint, shuffle
 
-from ..utils import SearchDictType2, Api
-from ..schemas import derpibooru_from_dict, Derpibooru
 from yarl import URL
+
+from ..schemas import Derpibooru, derpibooru_from_dict
+from ..utils import Api, SearchDictType2
 
 Booru = Api()
 
@@ -20,8 +21,16 @@ class Derpibooru(SearchDictType2):
         Gets images, image urls only from derpibooru.
 
     """
-    async def search(self, query: str, url: str = Booru.safebooru, block: str = "", limit: int = 100,
-                     page: int = randint(0, 100), gacha: bool = False) -> Derpibooru | None:
+
+    async def search(
+        self,
+        query: str,
+        url: str = Booru.safebooru,
+        block: str = "",
+        limit: int = 100,
+        page: int = randint(0, 100),
+        gacha: bool = False,
+    ) -> Derpibooru | None:
         """Search and gets images from derpibooru.
 
         Parameters
@@ -55,21 +64,16 @@ class Derpibooru(SearchDictType2):
         """
         with open("./bot/apis/booru/utils/derpibooru_tags.pickle", "rb") as fp:
             tags = pickle.load(fp)
-        query = query or choice(tags)['name']
+        query = query or choice(tags)["name"]
         response = await self._search(url=url, query=query, block=block, limit=limit, page=page, gacha=gacha)
         if not response:
             return None
         response = derpibooru_from_dict(response)
         return response
 
-
-    async def random(self,
-                     query: str,
-                     block: str = "",
-                     limit: int = 100,
-                     page: int = randint(0, 100),
-                     gacha: bool = False
-                     ):
+    async def random(
+        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
+    ):
         results = await self.search(url=Booru.derpibooru, query=query, block=block, limit=limit, page=page, gacha=gacha)
         if not results:
             return None, None

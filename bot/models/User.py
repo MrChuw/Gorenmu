@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from zoneinfo import ZoneInfo
 
 from tortoise import fields
@@ -10,7 +10,6 @@ from bot.models.User_extras import MessagesLog, NickHistory
 
 if TYPE_CHECKING:
     from bot.ext import Context
-    from bot.translations import Translations, Response
     from bot.models.User_extras import (
         Annotation,
         Bug,
@@ -28,6 +27,7 @@ if TYPE_CHECKING:
         Status,
         Suggest,
     )
+    from bot.translations import Response, Translations
 
     GetReturnT = "User" | Response | None
 

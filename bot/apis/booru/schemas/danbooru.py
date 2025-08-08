@@ -1,9 +1,9 @@
-from enum import Enum
 from dataclasses import dataclass
-from typing import Optional, Any, List, TypeVar, Type, Callable, cast
 from datetime import datetime
-import dateutil.parser
+from enum import Enum
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
+import dateutil.parser
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -96,7 +96,7 @@ class Variant:
     file_ext: Optional[FileEXT] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Variant':
+    def from_dict(obj: Any) -> "Variant":
         assert isinstance(obj, dict)
         type = from_union([TypeEnum, from_none], obj.get("type"))
         url = from_union([from_str, from_none], obj.get("url"))
@@ -138,7 +138,7 @@ class MediaAsset:
     variants: Optional[List[Variant]] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'MediaAsset':
+    def from_dict(obj: Any) -> "MediaAsset":
         assert isinstance(obj, dict)
         id = from_union([from_int, from_none], obj.get("id"))
         created_at = from_union([from_datetime, from_none], obj.get("created_at"))
@@ -154,7 +154,22 @@ class MediaAsset:
         is_public = from_union([from_bool, from_none], obj.get("is_public"))
         pixel_hash = from_union([from_str, from_none], obj.get("pixel_hash"))
         variants = from_union([lambda x: from_list(Variant.from_dict, x), from_none], obj.get("variants"))
-        return MediaAsset(id, created_at, updated_at, md5, file_ext, file_size, image_width, image_height, duration, status, file_key, is_public, pixel_hash, variants)
+        return MediaAsset(
+            id,
+            created_at,
+            updated_at,
+            md5,
+            file_ext,
+            file_size,
+            image_width,
+            image_height,
+            duration,
+            status,
+            file_key,
+            is_public,
+            pixel_hash,
+            variants,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}
@@ -185,7 +200,9 @@ class MediaAsset:
         if self.pixel_hash is not None:
             result["pixel_hash"] = from_union([from_str, from_none], self.pixel_hash)
         if self.variants is not None:
-            result["variants"] = from_union([lambda x: from_list(lambda x: to_class(Variant, x), x), from_none], self.variants)
+            result["variants"] = from_union(
+                [lambda x: from_list(lambda x: to_class(Variant, x), x), from_none], self.variants
+            )
         return result
 
 
@@ -246,7 +263,7 @@ class DanbooruElement:
     preview_file_url: Optional[str] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'DanbooruElement':
+    def from_dict(obj: Any) -> "DanbooruElement":
         assert isinstance(obj, dict)
         id = from_union([from_int, from_none], obj.get("id"))
         created_at = from_union([from_datetime, from_none], obj.get("created_at"))
@@ -294,7 +311,54 @@ class DanbooruElement:
         file_url = from_union([from_str, from_none], obj.get("file_url"))
         large_file_url = from_union([from_str, from_none], obj.get("large_file_url"))
         preview_file_url = from_union([from_str, from_none], obj.get("preview_file_url"))
-        return DanbooruElement(id, created_at, uploader_id, score, source, md5, last_comment_bumped_at, rating, image_width, image_height, tag_string, fav_count, file_ext, last_noted_at, parent_id, has_children, approver_id, tag_count_general, tag_count_artist, tag_count_character, tag_count_copyright, file_size, up_score, down_score, is_pending, is_flagged, is_deleted, tag_count, updated_at, is_banned, pixiv_id, last_commented_at, has_active_children, bit_flags, tag_count_meta, has_large, has_visible_children, media_asset, tag_string_general, tag_string_character, tag_string_copyright, tag_string_artist, tag_string_meta, file_url, large_file_url, preview_file_url)
+        return DanbooruElement(
+            id,
+            created_at,
+            uploader_id,
+            score,
+            source,
+            md5,
+            last_comment_bumped_at,
+            rating,
+            image_width,
+            image_height,
+            tag_string,
+            fav_count,
+            file_ext,
+            last_noted_at,
+            parent_id,
+            has_children,
+            approver_id,
+            tag_count_general,
+            tag_count_artist,
+            tag_count_character,
+            tag_count_copyright,
+            file_size,
+            up_score,
+            down_score,
+            is_pending,
+            is_flagged,
+            is_deleted,
+            tag_count,
+            updated_at,
+            is_banned,
+            pixiv_id,
+            last_commented_at,
+            has_active_children,
+            bit_flags,
+            tag_count_meta,
+            has_large,
+            has_visible_children,
+            media_asset,
+            tag_string_general,
+            tag_string_character,
+            tag_string_copyright,
+            tag_string_artist,
+            tag_string_meta,
+            file_url,
+            large_file_url,
+            preview_file_url,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}
@@ -311,7 +375,9 @@ class DanbooruElement:
         if self.md5 is not None:
             result["md5"] = from_union([from_str, from_none], self.md5)
         if self.last_comment_bumped_at is not None:
-            result["last_comment_bumped_at"] = from_union([lambda x: x.isoformat(), from_none], self.last_comment_bumped_at)
+            result["last_comment_bumped_at"] = from_union(
+                [lambda x: x.isoformat(), from_none], self.last_comment_bumped_at
+            )
         if self.rating is not None:
             result["rating"] = from_union([lambda x: to_enum(Rating, x), from_none], self.rating)
         if self.image_width is not None:

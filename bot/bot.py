@@ -6,7 +6,7 @@ import datetime
 from asyncio import Task
 from collections import defaultdict
 from logging import Logger
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 import twitchio
 from aiocache.backends.memcached import MemcachedCache
@@ -19,17 +19,30 @@ from twitchio.ext.commands import CommandErrorPayload
 from bot.apis import Emotes
 from bot.ext import ChatMessage, TypesBot
 from bot.handlers import (
-    ChannelHandler, CommandHandler, ContextHandler, DatabaseHandler, LifecycleHandler, TokensHandler,
+    ChannelHandler,
+    CommandHandler,
+    ContextHandler,
+    DatabaseHandler,
+    LifecycleHandler,
+    TokensHandler,
 )
 from bot.translations import TranslationManager
 from bot.utils import (
-    Cache, Config, DynamicDescriptions, MarkovProcessor, MemCache, SessionsCaches, StringTools, TimeTools, UploadThings,
+    Cache,
+    Config,
+    DynamicDescriptions,
+    MarkovProcessor,
+    MemCache,
+    SessionsCaches,
+    StringTools,
+    TimeTools,
+    UploadThings,
 )
 
 if TYPE_CHECKING:
     # from bot.api import api, api_start
+    from bot.ext import Context, Routine
     from bot.models import Channel as ChannelModel
-    from bot.ext import Routine, Context
 
 
 class Gorenmu(TypesBot):

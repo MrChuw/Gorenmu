@@ -12,7 +12,13 @@ from yarl import URL
 
 from .exceptions import OpenMeteoConnectionError, OpenMeteoError
 from .models import (
-    DailyParameters, Forecast, Geocoding, HourlyParameters, PrecipitationUnit, TemperatureUnit, TimeFormat,
+    DailyParameters,
+    Forecast,
+    Geocoding,
+    HourlyParameters,
+    PrecipitationUnit,
+    TemperatureUnit,
+    TimeFormat,
     WindSpeedUnit,
 )
 

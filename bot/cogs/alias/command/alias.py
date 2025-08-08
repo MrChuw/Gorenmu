@@ -4,11 +4,11 @@ from __future__ import annotations
 import asyncio
 import re
 from itertools import chain, repeat
-from typing import List, NamedTuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, NamedTuple
 
 from twitchio.ext.commands import GuardFailure
 
-from bot.ext import Command, commands, Context
+from bot.ext import Command, Context, commands
 from bot.models import Alias, User
 from bot.translations import BaseTranslations, Response
 

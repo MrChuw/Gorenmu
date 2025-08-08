@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from aiohttp_client_cache import CachedSession, response
 from bs4 import BeautifulSoup
 
-from bot.ext import commands, Context
+from bot.ext import Context, commands
 from bot.translations import Response
 
 if TYPE_CHECKING:

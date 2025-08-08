@@ -1,8 +1,9 @@
 from random import choice, randint, shuffle
+
 from yarl import URL
 
-from ..utils import SearchListType, Api
-from ..schemas import rule34_from_dict, Rule34Element
+from ..schemas import Rule34Element, rule34_from_dict
+from ..utils import Api, SearchListType
 
 Booru = Api()
 
@@ -20,8 +21,15 @@ class Rule34(SearchListType):
 
     """
 
-    async def search(self, query: str, url: str = Booru.safebooru, block: str = "", limit: int = 100,
-                     page: int = randint(0, 100), gacha: bool = False) -> list[Rule34Element] | None:
+    async def search(
+        self,
+        query: str,
+        url: str = Booru.safebooru,
+        block: str = "",
+        limit: int = 100,
+        page: int = randint(0, 100),
+        gacha: bool = False,
+    ) -> list[Rule34Element] | None:
         """Search and gets images from rule34.
 
         Parameters
@@ -59,10 +67,9 @@ class Rule34(SearchListType):
         response = rule34_from_dict(response)
         return response
 
-
-    async def random(self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100),
-                     gacha: bool = False
-                     ):
+    async def random(
+        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
+    ):
         results = await self.search(url=Booru.rule34, query=query, block=block, limit=limit, page=page, gacha=gacha)
         if not results:
             return None, None

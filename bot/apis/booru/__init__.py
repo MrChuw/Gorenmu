@@ -7,8 +7,25 @@ from aiohttp_client_cache import CachedSession
 
 from .classes import parser
 from .classes.parser import (
-    Atfbooru, Behoimi, Danbooru, Derpibooru, E621, E926, Furbooru, Gelbooru, Hypnohub, Konachan, Konachan_Net,
-    Lolibooru, Paheal, Realbooru, Rule34, Safebooru, Tbib, Xbooru, Yandere,
+    E621,
+    E926,
+    Atfbooru,
+    Behoimi,
+    Danbooru,
+    Derpibooru,
+    Furbooru,
+    Gelbooru,
+    Hypnohub,
+    Konachan,
+    Konachan_Net,
+    Lolibooru,
+    Paheal,
+    Realbooru,
+    Rule34,
+    Safebooru,
+    Tbib,
+    Xbooru,
+    Yandere,
 )
 from .client.atfbooru import Atfbooru as AtfbooruClient
 from .client.behoimi import Behoimi as BehoimiClient
@@ -31,7 +48,6 @@ from .client.xbooru import Xbooru as XbooruClient
 from .client.yandere import Yandere as YandereClient
 from .utils.parser import resolve
 
-
 # GelbooruClient = importlib.reload(GelbooruClient)
 
 # TODO: Refazer isso, organizar melhor.
@@ -40,47 +56,51 @@ from .utils.parser import resolve
 class Booru:
     def __init__(self):
         self.boorus = {
-                "glbo": Booru.Gelbooru, "gelbooru": Booru.Gelbooru,  # NOQA
-                "dnbo": Booru.Danbooru, "danbooru": Booru.Danbooru,  # NOQA
-                "rule34": Booru.Rule34,  # NOQA
-                "rlbo": Booru.Realbooru, "realbooru": Booru.Realbooru,  # NOQA
-                "tbibo": Booru.Tbib, "tbib": Booru.Tbib,  # NOQA
-                "xbbo": Booru.Xbooru, "xbooru": Booru.Xbooru,  # NOQA
-                "sfbo": Booru.Safebooru, "safebooru": Booru.Safebooru,  # NOQA
-                "ynbo": Booru.Yandere, "yandere": Booru.Yandere,  # NOQA
-                "Knbo": Booru.Konachan, "konachan": Booru.Konachan,  # NOQA
-                "hybo": Booru.Hypnohub, "hypnohub": Booru.Hypnohub,  # NOQA
-                "e621bo": Booru.E621, "e621": Booru.E621,  # NOQA
-                "e926bo": Booru.E926, "e926": Booru.E926,  # NOQA
-                "dpbo": Booru.Derpibooru, "derpibooru": Booru.Derpibooru,  # NOQA
-                "fubo": Booru.Furbooru, "furbooru": Booru.Furbooru,  # NOQA
-                "bhbo": Booru.Behoimi, "behoimi": Booru.Behoimi,  # NOQA
-                "phbo": Booru.Paheal, "paheal": Booru.Paheal,  # NOQA
-                "knnbo": Booru.KonachanNet, "konachan_net": Booru.KonachanNet,  # NOQA
+            "glbo": Booru.Gelbooru,
+            "gelbooru": Booru.Gelbooru,  # NOQA
+            "dnbo": Booru.Danbooru,
+            "danbooru": Booru.Danbooru,  # NOQA
+            "rule34": Booru.Rule34,  # NOQA
+            "rlbo": Booru.Realbooru,
+            "realbooru": Booru.Realbooru,  # NOQA
+            "tbibo": Booru.Tbib,
+            "tbib": Booru.Tbib,  # NOQA
+            "xbbo": Booru.Xbooru,
+            "xbooru": Booru.Xbooru,  # NOQA
+            "sfbo": Booru.Safebooru,
+            "safebooru": Booru.Safebooru,  # NOQA
+            "ynbo": Booru.Yandere,
+            "yandere": Booru.Yandere,  # NOQA
+            "Knbo": Booru.Konachan,
+            "konachan": Booru.Konachan,  # NOQA
+            "hybo": Booru.Hypnohub,
+            "hypnohub": Booru.Hypnohub,  # NOQA
+            "e621bo": Booru.E621,
+            "e621": Booru.E621,  # NOQA
+            "e926bo": Booru.E926,
+            "e926": Booru.E926,  # NOQA
+            "dpbo": Booru.Derpibooru,
+            "derpibooru": Booru.Derpibooru,  # NOQA
+            "fubo": Booru.Furbooru,
+            "furbooru": Booru.Furbooru,  # NOQA
+            "bhbo": Booru.Behoimi,
+            "behoimi": Booru.Behoimi,  # NOQA
+            "phbo": Booru.Paheal,
+            "paheal": Booru.Paheal,  # NOQA
+            "knnbo": Booru.KonachanNet,
+            "konachan_net": Booru.KonachanNet,  # NOQA
         }
 
     @classmethod
     async def search(
-        cls,
-        provider,
-        query: str,
-        block: str = "",
-        limit: int = 100,
-        page: int = randint(0, 100),
-        gacha: bool = False,
+        cls, provider, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
     ):
-        result = await provider.search(query, block, limit, page, gacha, )
+        result = await provider.search(query, block, limit, page, gacha)
         return result or None
 
     @classmethod
     async def random(
-        cls,
-        provider,
-        query: str,
-        block: str = "",
-        limit: int = 100,
-        page: int = randint(0, 300),
-        gacha: bool = False,
+        cls, provider, query: str, block: str = "", limit: int = 100, page: int = randint(0, 300), gacha: bool = False
     ):
         image, preview = await provider.random(query, block, limit, page, gacha)
         return (None, None) if not image and not preview else (image, preview)

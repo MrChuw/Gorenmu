@@ -3,12 +3,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import commands, Context
+from bot.ext import Context, commands
 from bot.models import User
 from bot.translations import Response
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+
 from bot.models import Status
 
 

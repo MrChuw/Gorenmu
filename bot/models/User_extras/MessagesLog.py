@@ -11,8 +11,8 @@ from tortoise import fields
 from bot.models.base import Base
 
 if TYPE_CHECKING:
-    from bot.models.User import User
     from bot.models.Channel import Channel
+    from bot.models.User import User
 
 
 class MessagesLog(Base):

@@ -12,7 +12,6 @@ from .suggest import migrate_suggest
 from .user import migrate_user
 from .wedding import migrate_wedding
 
-
 # TODO: To finish
 
 
@@ -30,12 +29,3 @@ async def migrations():
     await migrate_suggest()
     await migrate_user()
     await migrate_wedding()
-
-
-
-
-
-
-
-
-

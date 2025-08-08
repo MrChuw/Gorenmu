@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from typing import Any, Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict
 
 from twitchio.ext.commands import BucketType
 
@@ -288,6 +288,9 @@ class BaseDecorators:
         pass
 
     class ProfilePicture(BaseCommand):
+        pass
+
+    class Live(BaseCommand):
         pass
 
 

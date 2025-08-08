@@ -1,9 +1,11 @@
-import aiohttp
 import json
 import re
-from ..utils.parser import Api, better_object, parse_image, get_hostname, deserialize
-from random import shuffle, randint
 import time
+from random import randint, shuffle
+
+import aiohttp
+
+from ..utils.parser import Api, better_object, deserialize, get_hostname, parse_image
 
 Booru = Api()
 
@@ -37,9 +39,7 @@ class Atfbooru(object):
         """
         for i in range(len(raw_object)):
             if "id" in raw_object[i]:
-                raw_object[i][
-                    "post_url"
-                ] = f"{get_hostname(Booru.atfbooru)}/posts/{raw_object[i]['id']}"
+                raw_object[i]["post_url"] = f"{get_hostname(Booru.atfbooru)}/posts/{raw_object[i]['id']}"
 
         return raw_object
 
@@ -131,9 +131,7 @@ class Atfbooru(object):
                 return 1
             timeout = aiohttp.ClientTimeout(total=240)
             async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(
-                    Booru.atfbooru, params=self.specs, allow_redirects=True
-                ) as resp:
+                async with session.get(Booru.atfbooru, params=self.specs, allow_redirects=True) as resp:
                     self.data = await resp.text()
             self.final = self.final = deserialize(json.loads(self.data))
 
@@ -160,9 +158,7 @@ class Atfbooru(object):
         except Exception as e:
             raise ValueError(f"Failed to get data: {e}")
 
-    async def get_image(
-        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100)
-    ):
+    async def get_image(self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100)):
         """Gets images, meant just image urls from atfbooru.
 
         Parameters
@@ -207,9 +203,7 @@ class Atfbooru(object):
         try:
             timeout = aiohttp.ClientTimeout(total=240)
             async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(
-                    Booru.atfbooru, params=self.specs, allow_redirects=True
-                ) as resp:
+                async with session.get(Booru.atfbooru, params=self.specs, allow_redirects=True) as resp:
                     self.data = await resp.text()
             self.final = self.final = deserialize(json.loads(self.data))
 

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Optional, Any, List, TypeVar, Type, Callable, cast
 from enum import Enum
-
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -66,7 +65,7 @@ class Attributes:
     count: Optional[int] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Attributes':
+    def from_dict(obj: Any) -> "Attributes":
         assert isinstance(obj, dict)
         limit = from_union([from_int, from_none], obj.get("limit"))
         offset = from_union([from_int, from_none], obj.get("offset"))
@@ -128,7 +127,7 @@ class Post:
     has_children: Optional[bool] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Post':
+    def from_dict(obj: Any) -> "Post":
         assert isinstance(obj, dict)
         id = from_union([from_int, from_none], obj.get("id"))
         created_at = from_union([from_str, from_none], obj.get("created_at"))
@@ -159,7 +158,37 @@ class Post:
         status = from_union([Status, from_none], obj.get("status"))
         post_locked = from_union([from_int, from_none], obj.get("post_locked"))
         has_children = from_union([from_none, lambda x: from_stringified_bool(from_str(x))], obj.get("has_children"))
-        return Post(id, created_at, score, width, height, md5, directory, image, rating, source, change, owner, creator_id, parent_id, sample, preview_height, preview_width, tags, title, has_notes, has_comments, file_url, preview_url, sample_url, sample_height, sample_width, status, post_locked, has_children)
+        return Post(
+            id,
+            created_at,
+            score,
+            width,
+            height,
+            md5,
+            directory,
+            image,
+            rating,
+            source,
+            change,
+            owner,
+            creator_id,
+            parent_id,
+            sample,
+            preview_height,
+            preview_width,
+            tags,
+            title,
+            has_notes,
+            has_comments,
+            file_url,
+            preview_url,
+            sample_url,
+            sample_height,
+            sample_width,
+            status,
+            post_locked,
+            has_children,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}
@@ -202,9 +231,21 @@ class Post:
         if self.title is not None:
             result["title"] = from_union([from_str, from_none], self.title)
         if self.has_notes is not None:
-            result["has_notes"] = from_union([lambda x: from_none((lambda x: is_type(type(None), x))(x)), lambda x: from_str((lambda x: str((lambda x: is_type(bool, x))(x)).lower())(x))], self.has_notes)
+            result["has_notes"] = from_union(
+                [
+                    lambda x: from_none((lambda x: is_type(type(None), x))(x)),
+                    lambda x: from_str((lambda x: str((lambda x: is_type(bool, x))(x)).lower())(x)),
+                ],
+                self.has_notes,
+            )
         if self.has_comments is not None:
-            result["has_comments"] = from_union([lambda x: from_none((lambda x: is_type(type(None), x))(x)), lambda x: from_str((lambda x: str((lambda x: is_type(bool, x))(x)).lower())(x))], self.has_comments)
+            result["has_comments"] = from_union(
+                [
+                    lambda x: from_none((lambda x: is_type(type(None), x))(x)),
+                    lambda x: from_str((lambda x: str((lambda x: is_type(bool, x))(x)).lower())(x)),
+                ],
+                self.has_comments,
+            )
         if self.file_url is not None:
             result["file_url"] = from_union([from_str, from_none], self.file_url)
         if self.preview_url is not None:
@@ -220,7 +261,13 @@ class Post:
         if self.post_locked is not None:
             result["post_locked"] = from_union([from_int, from_none], self.post_locked)
         if self.has_children is not None:
-            result["has_children"] = from_union([lambda x: from_none((lambda x: is_type(type(None), x))(x)), lambda x: from_str((lambda x: str((lambda x: is_type(bool, x))(x)).lower())(x))], self.has_children)
+            result["has_children"] = from_union(
+                [
+                    lambda x: from_none((lambda x: is_type(type(None), x))(x)),
+                    lambda x: from_str((lambda x: str((lambda x: is_type(bool, x))(x)).lower())(x)),
+                ],
+                self.has_children,
+            )
         return result
 
 
@@ -230,7 +277,7 @@ class Gelbooru:
     post: Optional[List[Post]] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Gelbooru':
+    def from_dict(obj: Any) -> "Gelbooru":
         assert isinstance(obj, dict)
         attributes = from_union([Attributes.from_dict, from_none], obj.get("@attributes"))
         post = from_union([lambda x: from_list(Post.from_dict, x), from_none], obj.get("post"))

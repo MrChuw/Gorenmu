@@ -5,7 +5,7 @@ import os
 import sys
 from typing import TYPE_CHECKING
 
-from bot.ext import commands, Context
+from bot.ext import Context, commands
 from bot.translations import Response, Translations
 from bot.utils import Role
 
@@ -46,9 +46,9 @@ class AdminSmallCmds(commands.CustomComponent):
         #                 print(e)
         #     decorator = ctx.bot.TranslationManager.get_decorator(command, ctx)
         #     print(decorator.usage)
-        "mr_c​huw"
-        args = "asdfasdf mr_️chuw VARIATION SELECTOR-16"
-        await ctx.send(args)
+        # "mr_c​huw"
+        # args = "asdfasdf mr_️chuw VARIATION SELECTOR-16"
+        # await ctx.send(args)
         return translations.nada.format_response(ctx, args, success=True, handle=None, response_list=[])
 
     @commands.base_decorator("Admin.Restart")

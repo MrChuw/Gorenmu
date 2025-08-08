@@ -432,5 +432,13 @@
     },
     "AccountAge": {
         "age": "{} created the account on {} ({} ago)"
+    },
+    "Live": {
+        "response": "{}",
+        "title_str": "Title: {}.",
+        "last_stream_str": "Last stream: {} ({}).",
+        "stream_started_str": "Stream started: {} ({}).",
+        "views_str": "Views: {}.",
+        "playing_str": "Playing: {}."
     }
 }

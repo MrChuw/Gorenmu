@@ -28,13 +28,7 @@ class SearchListType(object):
         self.final: list[object] | None = None
 
     async def _search(
-        self,
-        url: str,
-        query: str,
-        block: str = "",
-        limit: int = 100,
-        page: int = randint(0, 100),
-        gacha: bool = False,
+        self, url: str, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
     ) -> list[object] | None:
         if gacha:
             limit = 100
@@ -105,13 +99,7 @@ class SearchListType2(object):
         self.final: list[object] | None = None
 
     async def _search(
-        self,
-        url: str,
-        query: str,
-        block: str = "",
-        limit: int = 100,
-        page: int = randint(0, 100),
-        gacha: bool = False,
+        self, url: str, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
     ) -> list[object] | None:
         if gacha:
             limit = 100
@@ -168,13 +156,7 @@ class SearchDictType(object):
         self.query: str | None = None
 
     async def _search(
-        self,
-        url: str,
-        query: str,
-        block: str = "",
-        limit: int = 100,
-        page: int = randint(0, 100),
-        gacha: bool = False,
+        self, url: str, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
     ) -> dict | None:
         if gacha:
             limit = 100
@@ -234,13 +216,7 @@ class SearchDictType2(object):
         self.query: str | None = None
 
     async def _search(
-        self,
-        url: str,
-        query: str,
-        block: str = "",
-        limit: int = 100,
-        page: int = randint(0, 100),
-        gacha: bool = False,
+        self, url: str, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
     ) -> dict | None:
         if gacha:
             limit = 100
@@ -268,7 +244,7 @@ class SearchDictType2(object):
                 self.final = json.loads(self.data)
             except Exception as e:
                 return None
-            if self.final["total"] == 0 or len(self.final['images']) == 0:
+            if self.final["total"] == 0 or len(self.final["images"]) == 0:
                 self.final = {"teste": 1}
             self.specs["page"] = randint(0, 5)
 

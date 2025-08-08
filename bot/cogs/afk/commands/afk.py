@@ -3,9 +3,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import commands, Context
+from bot.ext import Context, commands
 from bot.models import Status
-from bot.translations import afks, Response
+from bot.translations import Response, afks
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu

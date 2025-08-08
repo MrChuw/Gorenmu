@@ -35,10 +35,7 @@ class SessionsCaches:
             super().__init__(bot=bot, cache_name="Admin_requests", useragent=useragent)
 
         def get_expiry_times(self) -> dict:
-            return {
-                "*.mrchuw.com.br/": timedelta(days=100),
-                "static-cdn.jtvnw.net/previews-ttv/*": timedelta(days=1),
-            }
+            return {"*.mrchuw.com.br/": timedelta(days=100), "static-cdn.jtvnw.net/previews-ttv/*": timedelta(days=1)}
 
     AdminCachedSession: AdminCachedSession
 
@@ -218,3 +215,13 @@ class SessionsCaches:
             }
 
     ProfilePictureCachedSession: ProfilePictureCachedSession
+
+    class IvrFi(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, cache_name="IvrFi_requests", useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {"https://*.ivr.fi/*": timedelta(minutes=10)}
+
+    IvrFi: IvrFi

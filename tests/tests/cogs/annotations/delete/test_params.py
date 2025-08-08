@@ -28,5 +28,5 @@ class Params:
 
     delete_id = [
         pytest.param("en", "Your annotation with ID 1 was successfully deleted. 🗑", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "Sua anotação com ID 1 foi excluída com sucesso. 🗑", marks=pytest.mark.pt_BR, id="pt_BR")
+        pytest.param("pt_BR", "Sua anotação com ID 1 foi excluída com sucesso. 🗑", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]

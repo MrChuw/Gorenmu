@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 import pytest
 import pytest_asyncio

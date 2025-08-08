@@ -5,7 +5,7 @@ import re
 import string
 from typing import TYPE_CHECKING
 
-from bot.ext import commands, Context
+from bot.ext import Context, commands
 from bot.translations import Response
 
 if TYPE_CHECKING:

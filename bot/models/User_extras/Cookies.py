@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
+from math import ceil
 from typing import TYPE_CHECKING
 
-from math import ceil
 from tortoise import fields
 
 from bot.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
-    from bot.models.User import User
     from bot.ext import Context
+    from bot.models.User import User
     from bot.translations import Response
 
 

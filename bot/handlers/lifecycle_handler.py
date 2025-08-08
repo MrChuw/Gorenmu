@@ -15,8 +15,8 @@ from bot.utils import Check, MarkovProcessor
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.utils import Config
     from bot.translations import Response
+    from bot.utils import Config
 
 
 class LifecycleHandler:

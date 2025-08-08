@@ -1,10 +1,12 @@
 ## Here will only be the endpoints of things for the site to use.
 from __future__ import annotations
+
+from logging import StreamHandler, getLogger
 from typing import TYPE_CHECKING
+
+import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-import uvicorn
-from logging import getLogger, StreamHandler
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -14,9 +16,7 @@ class FastAPIWithBot(FastAPI):
     bot: Gorenmu
 
 
-
 app = FastAPIWithBot()
-
 
 
 @app.get("/api")
@@ -33,9 +33,6 @@ async def get_languages(request: Request):
 @app.get("/api/translation/{language}")
 async def get_translation(request: Request, language: str):
     return {"data": app.bot.TranslationManager.get_translation(language, request.query_params.get("key"))}
-
-
-
 
 
 async def start(bot: Gorenmu):
@@ -61,10 +58,8 @@ async def start(bot: Gorenmu):
     await server.serve()
 
 
-
-
 # if __name__ == "__main__":
 
 
-    # uvicorn.run("bot.site.teste:app", host="0.0.0.0", port=8900, log_level="info", reload=True)
-    # uvicorn.run("main:app", host="0.0.0.0", port=5000, log_level="info", reload=True)
+# uvicorn.run("bot.site.teste:app", host="0.0.0.0", port=8900, log_level="info", reload=True)
+# uvicorn.run("main:app", host="0.0.0.0", port=5000, log_level="info", reload=True)

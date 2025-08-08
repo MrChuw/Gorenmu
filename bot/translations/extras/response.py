@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, List, Optional
 
 if TYPE_CHECKING:
     from bot.ext import Context
@@ -60,7 +60,7 @@ class Admonitions:
 
 
 class AdmonitionItem:
-    def __init__(self, admonition_type, title, message, position='bottom'):
+    def __init__(self, admonition_type, title, message, position="bottom"):
         if position not in {"top", "middle", "bottom"}:
             position = "bottom"
         self.type = admonition_type
@@ -74,9 +74,9 @@ class BaseFunctionsMeta(type):
         instance = super().__call__(*args, **kwargs)
         if cls is not BaseFunctions:
             # Only delete attributes if it's a subclass
-            if hasattr(instance, 'fallback'):
+            if hasattr(instance, "fallback"):
                 del instance.fallback
-            if hasattr(instance, 'obj'):
+            if hasattr(instance, "obj"):
                 del instance.obj
 
         return instance
@@ -139,11 +139,11 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
             setattr(self, name, Response(response=base, **args))
 
     def populate_subclasses(
-            self,
-            extras: BaseFunctions = None,
-            extras_fields: Optional[set[str]] = None,
-            base_cls: Optional[object] = None,
-            add_to_self: Optional[bool] = False
+        self,
+        extras: BaseFunctions = None,
+        extras_fields: Optional[set[str]] = None,
+        base_cls: Optional[object] = None,
+        add_to_self: Optional[bool] = False,
     ):
         if extras_fields is None:
             extras_fields = set()
@@ -152,7 +152,7 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
 
         for name, cls in vars(base_cls.__class__).items():
             if isinstance(cls, type) and issubclass(cls, BaseFunctions):
-                if name in ['TypeChecking']:
+                if name in ["TypeChecking"]:
                     continue
                 params = (self.get_base(name), extras) if name in extras_fields else (self.get_base(name),)
                 if add_to_self:
@@ -160,9 +160,7 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
                 else:
                     setattr(base_cls, name, cls(*params))
 
-    def populate_responses(
-            self
-    ):
+    def populate_responses(self):
         for name in self:
             name: str
             base = self.get_object(name)

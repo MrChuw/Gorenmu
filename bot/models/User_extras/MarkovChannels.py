@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tortoise import fields, Model
+from tortoise import Model, fields
 
 from bot.models.base import TimestampMixin
 

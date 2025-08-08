@@ -2,7 +2,8 @@ import asyncio
 import datetime
 from typing import Callable, Optional
 
-from twitchio.ext.routines import compute_timedelta, Routine as BaseRoutine
+from twitchio.ext.routines import Routine as BaseRoutine
+from twitchio.ext.routines import compute_timedelta
 
 __all__ = "Routine"
 

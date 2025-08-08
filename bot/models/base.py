@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Union
 
 import pytz
-from tortoise import fields, Model
+from tortoise import Model, fields
 
 CharFieldStr = Union[str, fields.CharField]
 IntFieldInt = Union[int, fields.IntField]

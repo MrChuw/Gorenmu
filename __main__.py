@@ -19,6 +19,7 @@ if os.getenv("NO_LOG") == "1":
     twitchio.utils.setup_logging(level=logging.INFO)
 else:
     from loguru import logger as log
+
     from bot.logger import InterceptHandler
 
     twitchio.utils.setup_logging(handler=InterceptHandler(), level=logging.INFO)

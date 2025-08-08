@@ -1,8 +1,10 @@
-from random import randint, shuffle, choice
+from random import choice, randint, shuffle
 
-from ..utils import SearchDictType, Api
-from ..schemas import e621_from_dict, E621 as E621Schema
 from yarl import URL
+
+from ..schemas import E621 as E621Schema
+from ..schemas import e621_from_dict
+from ..utils import Api, SearchDictType
 
 Booru = Api()
 
@@ -19,8 +21,16 @@ class E621(SearchDictType):
         Gets images, meant just image urls from e621.
 
     """
-    async def search(self, query: str, url: str = Booru.safebooru, block: str = "", limit: int = 100,
-                     page: int = randint(0, 100), gacha: bool = False) -> E621Schema | None:
+
+    async def search(
+        self,
+        query: str,
+        url: str = Booru.safebooru,
+        block: str = "",
+        limit: int = 100,
+        page: int = randint(0, 100),
+        gacha: bool = False,
+    ) -> E621Schema | None:
         """Search and gets images from e621.
 
         Parameters
@@ -60,14 +70,9 @@ class E621(SearchDictType):
         response = e621_from_dict(response)
         return response
 
-
-    async def random(self,
-                     query: str,
-                     block: str = "",
-                     limit: int = 100,
-                     page: int = randint(0, 100),
-                     gacha: bool = False
-                     ):
+    async def random(
+        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
+    ):
         results = await self.search(url=Booru.e621, query=query, block=block, limit=limit, page=page, gacha=gacha)
         if not results:
             return None, None

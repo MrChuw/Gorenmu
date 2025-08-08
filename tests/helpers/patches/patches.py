@@ -10,13 +10,14 @@ from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import bot.cogs.randomscp.command.randomscp as randomscp
+from bot.apis.ivrfi.parsers.user import UserElement
 
 
 class MockBuilder:
     def __init__(self, mock_context):
         self.patches = defaultdict(list)
         self.mock_context = mock_context
-        self._stack = AsyncExitStack()  # NOQA
+        self._stack: AsyncExitStack | None = None
         self.patched = types.SimpleNamespace()
         self.Color: "MockBuilder._Color" = self._Color(self)
         self.Bot: "MockBuilder._Bot" = self._Bot(self)
@@ -25,6 +26,7 @@ class MockBuilder:
         self.Errors: "MockBuilder._Errors" = self._Errors(self)
         self.Commands: "MockBuilder._Commands" = self._Commands(self)
         self.Asyncio: "MockBuilder._Asyncio" = self._Asyncio(self)
+        self.ApiIvrFi: "MockBuilder._ApiIvrFi" = self._ApiIvrFi(self)
 
     class _Errors:
         def __init__(self, builder):
@@ -76,6 +78,13 @@ class MockBuilder:
 
         def silence_errors(self):
             self.builder.patches["silence_errors"].append(patch.object(self.bot.log, "error"))
+            return self.builder
+
+        def fetch_videos(self) -> "MockBuilder":
+            return_value = MagicMock()
+            return_value.id = "12345"
+            mock_fetch = AsyncMock(return_value=[return_value])
+            self.builder.patches["fetch_videos"].append(patch.object(self.bot, "fetch_videos", mock_fetch))
             return self.builder
 
     class _Session:
@@ -191,7 +200,26 @@ class MockBuilder:
             self.builder.patches["get_event_loop"].append(patch("asyncio.get_event_loop", return_value=mock_loop))
             return self.builder
 
+    class _ApiIvrFi:
+        def __init__(self, builder):
+            self.builder = builder
+            self.User: "MockBuilder._ApiIvrFi._User" = self._User(builder)
+
+        class _User:
+            def __init__(self, builder):
+                self.builder = builder
+
+            def fetch_user(self, dict_to_parse: dict = None) -> "MockBuilder":
+                self.builder.patches["ivrfi_user_fetch_user"].append(
+                    patch(
+                        "bot.apis.ivrfi.api.ApiIvrFi.User.fetch_user",
+                        AsyncMock(return_value=UserElement.from_dict(dict_to_parse[0]) if dict_to_parse else None),
+                    )
+                )
+                return self.builder
+
     async def __aenter__(self):
+        self._stack = AsyncExitStack()  # NOQA
         for name, patch_list in self.patches.items():
             mocks = []
             for patcher in patch_list:
@@ -201,4 +229,5 @@ class MockBuilder:
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self._stack.aclose()
+        if self._stack:
+            await self._stack.aclose()

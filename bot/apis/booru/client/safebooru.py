@@ -3,7 +3,7 @@ from random import choice, randint, shuffle
 from aiohttp import ClientResponse
 from yarl import URL
 
-from ..schemas import safebooru_from_dict, SafebooruElement
+from ..schemas import SafebooruElement, safebooru_from_dict
 from ..utils import Api, SearchListType
 
 Booru = Api()

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import Any, Iterable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Iterable
 
 import redis
 from aiocache import Cache as aioCache
@@ -10,15 +10,20 @@ from aiocache.backends.memcached import MemcachedCache
 from aiocache.backends.memory import SimpleMemoryCache
 from aiocache.backends.redis import RedisCache
 from aiocache.serializers import PickleSerializer
+from twitchio import ChannelInfo as ChannelTmi
+from twitchio import User as UserTmi
 
 from bot.ext.named_tuples import AliasCached, RAfkNamedTuple
-from bot.models import Cookies as CookiesDB, Status, User as UserDB
+from bot.models import Cookies as CookiesDB
+from bot.models import Status
+from bot.models import User as UserDB
 from bot.models.Others.Alias import Alias
-from bot.utils.caches_base import BaseCacheFunctions
+from bot.utils.caches_base import MemoryCacheCore
 from bot.utils.config import CacheType
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+    from bot.ext import Context
 
 CODE_LIST = (200, 201, 202, 204, 301, 302, 304, 400, 401, 403, 404, 405, 408, 409, 410, 500, 501, 502, 503, 504)
 
@@ -59,20 +64,20 @@ class Cache:
 class MemCache:
     def __init__(self):
         for name, cls in vars(self.__class__).items():
-            if isinstance(cls, type) and issubclass(cls, BaseCacheFunctions):
+            if isinstance(cls, type) and issubclass(cls, MemoryCacheCore):
                 setattr(self, name, cls())
 
     async def close_all_caches(self):
         for session in vars(self).values():
-            if isinstance(session, BaseCacheFunctions):
+            if isinstance(session, MemoryCacheCore):
                 await session.close()
 
-    class Alias(BaseCacheFunctions):
+    class Alias(MemoryCacheCore):
         def __init__(self) -> None:
             super().__init__(ttl=timedelta(hours=12))
 
-        async def set(self, name: str, user_id: int, cached: AliasCached) -> None:
-            await self._set(key=name, value=cached, namespace=user_id)
+        async def set(self, name: str, user_id: int, to_cache: AliasCached) -> None:
+            await self._set(key=name, value=to_cache, namespace=user_id)
 
         async def get(self, key: str, user_id: int) -> AliasCached:
             return await self._get(key=key, namespace=user_id)
@@ -89,13 +94,12 @@ class MemCache:
 
     Alias: Alias
 
-    class User(BaseCacheFunctions):
+    class User(MemoryCacheCore):
         def __init__(self) -> None:
             super().__init__(ttl=timedelta(hours=6))
 
         async def set(self, user: UserDB, ttl: float = None) -> None:
-            await self._set(str(user.id), user, ttl)
-            self._map_name(user.name, user.id)
+            await self._set_map(key=str(user.id), value=user, ttl=ttl, name=user.name, user_id=user.id)
 
         async def get(self, user_id: int) -> UserDB | None:
             return await self._get(str(user_id))
@@ -108,14 +112,13 @@ class MemCache:
 
     User: User
 
-    class Cookie(BaseCacheFunctions):
+    class Cookie(MemoryCacheCore):
         def __init__(self) -> None:
             super().__init__(ttl=timedelta(hours=16))
 
         async def set(self, user: UserDB | list, cookie: CookiesDB, ttl: float = None) -> None:
             user_id, user_name = (user[0], user[1]) if isinstance(user, list) else (user.id, user.name)
-            await self._set(key=str(user_id), value=cookie, ttl=ttl)
-            self._map_name(user_name, user_id)
+            await self._set_map(key=str(user_id), value=cookie, ttl=ttl, name=user_name, user_id=user_id)
 
         async def get(self, user_id: int) -> CookiesDB | None:
             return await self._get(key=str(user_id))
@@ -131,13 +134,12 @@ class MemCache:
 
     Cookie: Cookie
 
-    class Afk(BaseCacheFunctions):
+    class Afk(MemoryCacheCore):
         def __init__(self):
             super().__init__(ttl=timedelta(hours=12))
 
         async def set(self, user: UserDB, value: Status, ttl: float = None) -> None:
-            await self._set(key=str(user.id), value=value, ttl=ttl)
-            self._map_name(user.name, user.id)
+            await self._set_map(key=str(user.id), value=value, ttl=ttl, name=user.name, user_id=user.id)
 
         async def get(self, user_id: int) -> Status | None:
             return await self._get(key=str(user_id))
@@ -154,14 +156,13 @@ class MemCache:
 
     Afk: Afk
 
-    class RAfk(BaseCacheFunctions):
+    class RAfk(MemoryCacheCore):
         def __init__(self):
             super().__init__(ttl=timedelta(minutes=4))
 
         async def set(self, user: UserDB | list, value: RAfkNamedTuple, ttl: float = None) -> None:
             user_id, user_name = (user[0], user[1]) if isinstance(user, list) else (user.id, user.name)
-            await self._set(key=str(user_id), value=value, ttl=ttl)
-            self._map_name(user_name, user_id)
+            await self._set_map(key=str(user_id), value=value, ttl=ttl, name=user_name, user_id=user_id)
 
         async def get(self, user_id: int) -> RAfkNamedTuple | None:
             return await self._get(key=str(user_id))
@@ -177,3 +178,47 @@ class MemCache:
             self.name_to_user_id.pop(str(user_id), None)
 
     RAfk: RAfk
+
+    class UserTmi(MemoryCacheCore):
+        def __init__(self):
+            super().__init__(ttl=timedelta(minutes=5))
+
+        async def set(self, name: str, to_cache: UserTmi) -> None:
+            await self._set(key=name, value=to_cache)
+
+        async def get(self, key: str) -> UserTmi:
+            return await self._get(key=key)
+
+        async def cached_or_get(self, ctx: Context, name: str = None, user_id: str | int = None):
+            cached = await self.get(key=name)
+            if cached:
+                return cached
+            user_tmi: UserTmi = await ctx.bot.fetch_user(login=name) if name else await ctx.bot.fetch_user(id=user_id)
+            if not user_tmi:
+                return None
+            await self.set(name=name, to_cache=user_tmi)
+            return user_tmi
+
+    UserTmi: UserTmi
+
+    class ChannelTmi(MemoryCacheCore):
+        def __init__(self):
+            super().__init__(ttl=timedelta(minutes=5))
+
+        async def set(self, user_id: str | int, to_cache: ChannelTmi) -> None:
+            await self._set(key=user_id, value=to_cache)
+
+        async def get(self, user_id: str | int) -> ChannelTmi:
+            return await self._get(key=user_id)
+
+        async def cached_or_get(self, ctx: Context, user_id: str | int):
+            cached = await self.get(user_id=user_id)
+            if cached:
+                return cached
+            channel_tmi = await ctx.bot.fetch_channel(broadcaster_id=user_id)
+            if not channel_tmi:
+                return None
+            await self.set(user_id=user_id, to_cache=channel_tmi)
+            return channel_tmi
+
+    ChannelTmi: ChannelTmi

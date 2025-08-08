@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING
 from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist
 
-from bot.models import Channel as ChannelModel, User as UserModel
+from bot.models import Channel as ChannelModel
+from bot.models import User as UserModel
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu

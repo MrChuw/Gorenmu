@@ -5,7 +5,7 @@ import re
 from typing import TYPE_CHECKING
 
 from bot.apis import Color
-from bot.ext import commands, Context
+from bot.ext import Context, commands
 from bot.models import User
 from bot.translations import Response
 

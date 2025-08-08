@@ -1,8 +1,9 @@
-from random import randint, shuffle, choice
+from random import choice, randint, shuffle
 
-from ..utils import SearchListType2, Api
-from ..schemas import behoimi_from_dict, BehoimiElement
 from yarl import URL
+
+from ..schemas import BehoimiElement, behoimi_from_dict
+from ..utils import Api, SearchListType2
 
 Booru = Api()
 
@@ -23,8 +24,16 @@ class Behoimi(SearchListType2):
         Gets images, image urls only from behoimi.
 
     """
-    async def search(self, query: str, url: str = Booru.safebooru, block: str = "", limit: int = 100,
-                     page: int = randint(0, 100), gacha: bool = False) -> list[BehoimiElement] | None:
+
+    async def search(
+        self,
+        query: str,
+        url: str = Booru.safebooru,
+        block: str = "",
+        limit: int = 100,
+        page: int = randint(0, 100),
+        gacha: bool = False,
+    ) -> list[BehoimiElement] | None:
         """Search and gets images from behoimi.
 
         Parameters
@@ -55,14 +64,9 @@ class Behoimi(SearchListType2):
         response = behoimi_from_dict(response)
         return response
 
-
-    async def random(self,
-                     query: str,
-                     block: str = "",
-                     limit: int = 100,
-                     page: int = randint(0, 100),
-                     gacha: bool = False
-                     ):
+    async def random(
+        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 100), gacha: bool = False
+    ):
         results = await self.search(url=Booru.behoimi, query=query, block=block, limit=limit, page=page, gacha=gacha)
         if not results:
             return None, None

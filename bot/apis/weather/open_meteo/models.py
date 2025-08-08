@@ -258,9 +258,7 @@ class DailyForecast(BaseModel):
     temperature_2m_min: Optional[List[float]]
     time: List[date]
     weathercode: Optional[List[int]]
-    wind_direction_10m_dominant: Optional[List[int]] = Field(
-        None, alias="winddirection_10m_dominant"
-    )
+    wind_direction_10m_dominant: Optional[List[int]] = Field(None, alias="winddirection_10m_dominant")
     wind_gusts_10m_max: Optional[List[float]] = Field(None, alias="windgusts_10m_max")
     wind_speed_10m_max: Optional[List[float]] = Field(None, alias="windspeed_10m_max")
 
@@ -405,9 +403,7 @@ class GeocodingResult(BaseModel):
             return self.__dict__.get("display_name", "")
 
         if len(parts) <= 2 and len(parts[1]) < 25:
-            return self.__dict__.get(
-                "display_name", ""
-            )  # Return the full display_name if there's no second comma
+            return self.__dict__.get("display_name", "")  # Return the full display_name if there's no second comma
 
         # Get the first two parts
         first_part = parts[0].strip()

@@ -1,9 +1,4 @@
-from tortoise import Tortoise, BaseDBAsyncClient
-
-
-
-
-
+from tortoise import BaseDBAsyncClient, Tortoise
 
 
 class HelpMigration:
@@ -17,10 +12,3 @@ class HelpMigration:
     async def get_existing_columns(self, column: str):
         result = await self.conn.execute_query_dict(f"SHOW COLUMNS FROM {column};")
         return {row["Field"] for row in result}
-
-
-
-
-
-
-

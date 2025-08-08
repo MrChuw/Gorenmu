@@ -1,7 +1,6 @@
-from enum import Enum
 from dataclasses import dataclass
-from typing import Optional, Any, List, TypeVar, Type, Callable, cast
-
+from enum import Enum
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
 T = TypeVar("T")
 EnumT = TypeVar("EnumT", bound=Enum)
@@ -89,7 +88,7 @@ class XbooruElement:
     comment_count: Optional[int] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'XbooruElement':
+    def from_dict(obj: Any) -> "XbooruElement":
         assert isinstance(obj, dict)
         preview_url = from_union([from_str, from_none], obj.get("preview_url"))
         sample_url = from_union([from_str, from_none], obj.get("sample_url"))
@@ -113,7 +112,30 @@ class XbooruElement:
         status = from_union([Status, from_none], obj.get("status"))
         has_notes = from_union([from_bool, from_none], obj.get("has_notes"))
         comment_count = from_union([from_int, from_none], obj.get("comment_count"))
-        return XbooruElement(preview_url, sample_url, file_url, directory, hash, width, height, id, image, change, owner, parent_id, rating, sample, sample_height, sample_width, score, tags, source, status, has_notes, comment_count)
+        return XbooruElement(
+            preview_url,
+            sample_url,
+            file_url,
+            directory,
+            hash,
+            width,
+            height,
+            id,
+            image,
+            change,
+            owner,
+            parent_id,
+            rating,
+            sample,
+            sample_height,
+            sample_width,
+            score,
+            tags,
+            source,
+            status,
+            has_notes,
+            comment_count,
+        )
 
     def to_dict(self) -> dict:
         result: dict = {}

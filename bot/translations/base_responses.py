@@ -4,9 +4,10 @@ import json
 import pathlib
 import random
 import re
-from typing import Any, Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict
 
-from .extras import Activity as ActivityExtras, BaseFunctions, EmoteEmotions, Humanize, Response
+from .extras import Activity as ActivityExtras
+from .extras import BaseFunctions, EmoteEmotions, Humanize, Response
 
 if TYPE_CHECKING:
     from bot.ext import Context
@@ -582,6 +583,18 @@ class BaseTranslations:
             self.populate_responses()
 
         age: Response
+
+    class Live(BaseFunctions):
+        def __init__(self, translation: dict):
+            super().__init__(translation, None)
+            self.populate_responses()
+
+        response: Response
+        title: str
+        last_stream: str
+        stream_started: str
+        views: str
+        playing: str
 
 
 class Translations(BaseFunctions, BaseTranslations):
