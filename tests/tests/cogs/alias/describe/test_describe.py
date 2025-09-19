@@ -3,7 +3,7 @@
 
 import pytest
 
-from bot.translations import Response
+from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params

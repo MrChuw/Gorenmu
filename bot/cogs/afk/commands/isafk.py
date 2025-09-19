@@ -3,9 +3,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Context, commands
+from bot.ext import Context, Response, commands
 from bot.models import User
-from bot.translations import Response
 from bot.utils import StringTools
 
 if TYPE_CHECKING:

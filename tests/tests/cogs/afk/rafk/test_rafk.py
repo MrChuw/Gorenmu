@@ -5,9 +5,9 @@ import pytest
 import pytest_asyncio
 
 from bot.cogs.afk.commands.rafk import RAfkCmd
+from bot.ext import Response
 from bot.ext.named_tuples import RAfkNamedTuple
 from bot.models import Status
-from bot.translations import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.afk.rafk.test_params import Params
 

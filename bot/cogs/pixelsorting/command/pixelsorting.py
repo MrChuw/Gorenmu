@@ -12,8 +12,7 @@ from aiohttp_client_cache import CachedSession
 from PIL import Image, ImageFilter, ImageOps
 from PIL.ImageFile import ImageFile
 
-from bot.ext import Context, commands
-from bot.translations import Response
+from bot.ext import Context, Response, commands
 from bot.utils import SessionsCaches, StringTools, TimeTools, UploadThings
 
 from .translations import Translations

@@ -4,7 +4,7 @@ import pytest
 import pytest_asyncio
 
 from bot.cogs.choice.command.choice import ChoiceCmd
-from bot.translations import Response
+from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.choice.choice.test_params import Params
 

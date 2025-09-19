@@ -9,9 +9,8 @@ from tortoise import fields
 from bot.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
-    from bot.ext import Context, TranslationBase
+    from bot.ext import Context, Response, TranslationBase
     from bot.models.User import User
-    from bot.translations import Response
 
 
 class Cookies(Base, TimestampMixin):

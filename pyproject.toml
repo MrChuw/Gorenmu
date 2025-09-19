@@ -35,14 +35,14 @@ dependencies = [
     "unidecode==1.4.0",
     "urlextract==1.9.0",
     "uvicorn==0.35.0",
-    "watchdog>=6.0.0",
+    "watchdog==6.0.0",
     "yarl==1.20.1",
 ]
 
 [dependency-groups]
 dev = [
-    "black>=25.1.0",
-    "isort>=6.0.1",
+    "black==25.1.0",
+    "isort==6.0.1",
     "pre-commit>=4.3.0",
 ]
 

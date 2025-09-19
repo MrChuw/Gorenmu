@@ -6,8 +6,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING
 
 from bot.apis import Color
-from bot.ext import Context, commands
-from bot.translations import Response
+from bot.ext import Context, Response, commands
 from bot.utils import SessionsCaches, StringTools, TimeTools, UploadThings
 
 from .translations import Translations

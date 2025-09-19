@@ -8,17 +8,14 @@ from typing import TYPE_CHECKING, List, NamedTuple
 
 from twitchio.ext.commands import GuardFailure
 
-from bot.ext import Command, Context, commands
+from bot.ext import Command, Context, Response, commands
 from bot.models import Alias, User
-from bot.translations import BaseTranslations, Response
 from bot.utils import SessionsCaches, UploadThings
 
 from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
-    TAlias = BaseTranslations.Alias()  # NOQA
 
 
 class ParsedCommand(NamedTuple):

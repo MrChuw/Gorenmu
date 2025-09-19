@@ -7,7 +7,7 @@ import pytest
 import pytest_asyncio
 
 from bot.cogs.count.command.count import CountCmd
-from bot.translations import Response
+from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.count.count.test_params import Params
 

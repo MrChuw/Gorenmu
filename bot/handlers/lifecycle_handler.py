@@ -15,7 +15,7 @@ from bot.utils import Check, MarkovProcessor, SessionsCaches
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.translations import Response
+    from bot.ext import Response
     from bot.utils import Config
 
 

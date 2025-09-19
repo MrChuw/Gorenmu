@@ -2,22 +2,9 @@
 from __future__ import annotations
 
 import asyncio
-from abc import ABC
 from collections.abc import Callable, Coroutine, Iterable
 from functools import partial
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Concatenate,
-    Generic,
-    Optional,
-    ParamSpec,
-    Self,
-    Sequence,
-    TypeAlias,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Concatenate, Optional, ParamSpec, Self, Sequence, TypeAlias, TypeVar, Union
 
 from twitchio import ChatMessage, User
 from twitchio.ext.commands import AutoBot, Bucket, BucketType
@@ -28,8 +15,6 @@ from twitchio.ext.commands import cooldown
 from twitchio.ext.commands.exceptions import CommandError
 from twitchio.ext.commands.types_ import Component_T
 from twitchio.ext.routines import routine
-
-from bot.translations import BaseCommand
 
 T = TypeVar("T")
 Coro: TypeAlias = Coroutine[Any, Any, None]
@@ -73,7 +58,6 @@ class Command(TwitchioCommand):
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.decorators: dict[str, BaseCommand] = {}
 
     def command(
         self,

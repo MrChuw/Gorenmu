@@ -9,10 +9,9 @@ if TYPE_CHECKING:
     from twitchio import ChatMessage, ChatMessageReply
 
     from bot.bot import Gorenmu
-    from bot.ext import Command
+    from bot.ext import Command, Response
     from bot.ext.commands import CustomComponent
     from bot.models import User as UserModel
-    from bot.translations import Response
 
 
 class Context(TwitchioContext):

@@ -5,8 +5,8 @@ import datetime
 import pytest
 
 from bot.cogs.cookies.command.cookies import CookieCmd
+from bot.ext import Response
 from bot.models import Cookies, User
-from bot.translations import Response
 from bot.utils import Check
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.cookies.gift.test_params import Params

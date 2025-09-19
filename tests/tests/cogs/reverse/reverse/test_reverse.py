@@ -3,7 +3,8 @@
 import pytest
 import pytest_asyncio
 
-from bot.cogs.reverse.command.reverse import Response, ReverseCmd
+from bot.cogs.reverse.command.reverse import ReverseCmd
+from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.reverse.reverse.test_params import Params
 

@@ -4,7 +4,7 @@ import pytest
 import pytest_asyncio
 
 from bot.cogs.randomline.command.randomline import RandomLineCmd
-from bot.translations import Response
+from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.randomline.randomline.test_params import Params
 

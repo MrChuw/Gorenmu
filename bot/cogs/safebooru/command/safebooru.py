@@ -8,8 +8,7 @@ from typing import TYPE_CHECKING
 from yarl import URL
 
 from bot.apis import booru
-from bot.ext import Context, commands
-from bot.translations import Response
+from bot.ext import Context, Response, commands
 from bot.utils import SessionsCaches, TimeTools, UploadThings
 
 from .translations import Translations

@@ -5,12 +5,11 @@ import asyncio
 from typing import TYPE_CHECKING
 
 from aiohttp import ClientResponse
-from aiohttp_client_cache import CachedSession, response
+from aiohttp_client_cache import CachedSession
 from bs4 import BeautifulSoup
 
-from bot.ext import Context, commands
-from bot.translations import Response
-from bot.utils import SessionsCaches, StringTools, TimeTools, UploadThings
+from bot.ext import Context, Response, commands
+from bot.utils import SessionsCaches
 
 from .translations import Translations
 

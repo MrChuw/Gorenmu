@@ -1,6 +1,6 @@
 import pytest
 
-from bot.translations import Response
+from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.alias.rename.test_params import Params
 

@@ -32,10 +32,10 @@ repos:
     rev: 0.8.9
     hooks:
       - id: pip-compile
-        name: pip-compile requirements.in
-        args: [requirements.txt, -o, requirements.txt]
+        name: pip-compile requirements.txt
+        args: [pyproject.toml, -o, requirements.txt]
       - id: pip-compile
-        name: pip-compile requirements-dev.in
-        args: [requirements-dev.txt, -o, requirements-dev.txt]
+        name: pip-compile requirements-dev.txt
+        args: [--group, dev, -o, requirements-dev.txt]
         files: ^requirements-dev\.(in|txt)$
       - id: uv-lock

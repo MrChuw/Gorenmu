@@ -10,7 +10,7 @@ from bot.models.User_extras import MessagesLog, NickHistory
 from bot.utils.string_manipulation import StringTools
 
 if TYPE_CHECKING:
-    from bot.ext import Context, TranslationBase
+    from bot.ext import Context, Response, TranslationBase
     from bot.models.User_extras import (
         Annotation,
         Bug,
@@ -28,7 +28,6 @@ if TYPE_CHECKING:
         Status,
         Suggest,
     )
-    from bot.translations import Response
 
     GetReturnT = "User" | Response | None
 

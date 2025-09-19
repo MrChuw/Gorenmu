@@ -22,7 +22,6 @@ from bot.exceptions import (
 from bot.ext import Context
 from bot.models import Cookies, LotteryBank
 from bot.models import User as UserModel
-from bot.translations import Response
 from bot.utils.string_manipulation import StringTools
 
 

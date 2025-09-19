@@ -4,17 +4,31 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from bot.ext import Context, commands
+from bot.ext import Context, Response, commands
 from bot.ext.named_tuples import RAfkNamedTuple
 from bot.models import Status
-from bot.translations import Response, afks
 
 from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
-afk_alias = [s for s in afks.afks if s != "afk"]
+afk_alias = [
+    "read",
+    "brb",
+    "eat",
+    "food",
+    "play",
+    "game",
+    "sleep",
+    "night",
+    "study",
+    "art",
+    "watch",
+    "shower",
+    "code",
+    "work",
+]
 
 
 class AFKCmd(commands.CustomComponent):

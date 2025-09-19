@@ -2,8 +2,8 @@
 
 import pytest
 
+from bot.ext import Response
 from bot.models import Alias
-from bot.translations import Response
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params

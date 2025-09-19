@@ -19,8 +19,7 @@ CoroC: TypeAlias = Coroutine[Any, Any, bool]
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context
-    from bot.translations import Response
+    from bot.ext import Context, Response
 
     PrefixT: TypeAlias = (
         str | Iterable[str] | Callable[[Gorenmu, ChatMessage], Coroutine[Any, Any, str | Iterable[str]]]

@@ -5,9 +5,8 @@ import re
 from typing import TYPE_CHECKING, Callable
 
 from bot.apis import Color
-from bot.ext import Context, commands
+from bot.ext import Context, Response, commands
 from bot.models import User
-from bot.translations import Response
 from bot.utils import SessionsCaches, StringTools
 
 from .translations import Translations

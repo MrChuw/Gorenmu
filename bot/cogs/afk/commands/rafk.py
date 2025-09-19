@@ -3,16 +3,33 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Context, commands
+from bot.ext import Context, Response, commands
 from bot.models import Status
-from bot.translations import Response, afks
 
 from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
-rafk_alias = [f"r{s}" for s in afks.afks if s != "afk"]
+rafk_alias = [
+    f"r{s}"
+    for s in [
+        "read",
+        "brb",
+        "eat",
+        "food",
+        "play",
+        "game",
+        "sleep",
+        "night",
+        "study",
+        "art",
+        "watch",
+        "shower",
+        "code",
+        "work",
+    ]
+]
 
 
 class RAfkCmd(commands.CustomComponent):

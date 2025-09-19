@@ -2,8 +2,8 @@
 
 import pytest
 
+from bot.ext import Response
 from bot.models import User
-from bot.translations import Response
 from bot.utils import Check
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.cookies.top.test_params import Params

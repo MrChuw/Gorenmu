@@ -4,7 +4,7 @@ import datetime
 
 import pytest
 
-from bot.translations import Response
+from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.cookies.slotmachine.test_slotmachine import mock_external_apis, prepare_cookie_context
 

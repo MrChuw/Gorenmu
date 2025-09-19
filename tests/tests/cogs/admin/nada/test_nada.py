@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from bot.translations import Response
+from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.admin.nada.test_params import Params
 

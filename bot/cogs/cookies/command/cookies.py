@@ -8,9 +8,8 @@ from itertools import chain, groupby, repeat
 from typing import TYPE_CHECKING, List
 
 from bot.apis import Emotes
-from bot.ext import Context, commands
+from bot.ext import Context, Response, commands
 from bot.models import Cookies, User
-from bot.translations import Response
 from bot.utils import Check, SessionsCaches, StringTools
 
 from .translations import Translations

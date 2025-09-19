@@ -5,8 +5,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from bot.ext import Response
 from bot.models import Cookies
-from bot.translations import Response
 from bot.utils import Check
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.cookies.slotmachine.test_params import Params

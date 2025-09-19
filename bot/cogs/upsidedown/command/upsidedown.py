@@ -3,8 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Context, commands
-from bot.translations import Response
+from bot.ext import Context, Response, commands
 
 from .extras import transform
 from .translations import Translations

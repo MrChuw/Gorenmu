@@ -4,10 +4,8 @@ from __future__ import annotations
 from datetime import date
 from typing import TYPE_CHECKING
 
-from bot.translations import Translations
-
 if TYPE_CHECKING:
-    from bot.bot import Gorenmu
+    ...
 
 
 class MockUser:
@@ -48,7 +46,3 @@ class MockUser:
         self.created_at: date = created_at
         self.updated_at: date = updated_at
         self.profile_image: str = ""
-        self.translations: Translations | None = None
-
-    # def get_translation(self, bot: Gorenmu, lang: str = "en"):
-    #     self.translations = bot.TranslationManager.get_translations(language=lang)

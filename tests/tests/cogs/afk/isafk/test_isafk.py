@@ -3,7 +3,7 @@ import pytest
 import pytest_asyncio
 
 from bot.cogs.afk.commands.isafk import IsAfkCmd
-from bot.translations import Response
+from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.afk.isafk.test_params import Params
 

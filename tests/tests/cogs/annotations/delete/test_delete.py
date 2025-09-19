@@ -5,8 +5,8 @@ import pytest
 import pytest_asyncio
 
 from bot.cogs.annotations.command.annotations import AnnotationsCmd
+from bot.ext import Response
 from bot.models import Annotation
-from bot.translations import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.annotations.delete.test_params import Params
 
