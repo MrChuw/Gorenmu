@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "This subcommand is used to check infos for an note.",
-            "How to use: {}note check (id)",
+            "How to use: +note check (id)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Este subcomando é usado para verificar uma anotação.",
-            "Como usar: {}note check (id)",
+            "Como usar: +note check (id)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

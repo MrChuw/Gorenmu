@@ -17,35 +17,41 @@ async def interact(mock_bot):
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.bot_info, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    mock_context.Asserter.assert_string(interact.translations.BotInfo.deco_usage(mock_context, "+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.BotInfo.deco_helper(mock_context, "+"), helper)
 
 
 async def base_botinfo(
-    interact, mock_context: MockContext, lang: str, content: str, expected: str = None, re_expected: str = None
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    content: str,
+    expected: str = None,
+    re_expected: str = None,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     response: Response = await interact.bot_info._callback(interact, mock_context)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    mock_context.Asserter.assert_boolean(response.success, success)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_bot_info(interact, mock_context: MockContext, lang: str, expected: str):
     mock_context.invoked_with = "botinfo"
-    await base_botinfo(interact, mock_context, lang=lang, content="", re_expected=expected)
+    await base_botinfo(interact, mock_context, lang=lang, content="", re_expected=expected, success=True)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.site)
 async def test_site(interact, mock_context: MockContext, lang: str, expected: str):
     mock_context.invoked_with = "site"
-    await base_botinfo(interact, mock_context, lang=lang, content="", expected=expected)
+    await base_botinfo(interact, mock_context, lang=lang, content="", expected=expected, success=True)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.uptime)
 async def test_uptime(interact, mock_context: MockContext, lang: str, expected: str):
     mock_context.invoked_with = "uptime"
-    await base_botinfo(interact, mock_context, lang=lang, content="", re_expected=expected)
+    await base_botinfo(interact, mock_context, lang=lang, content="", re_expected=expected, success=True)

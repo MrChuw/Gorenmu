@@ -11,7 +11,7 @@ from bot.exceptions import InvalidArgument
 from bot.ext import ChatMessage, Context
 from bot.models import User as UserModel
 from bot.models.User_extras import BotsIgnore
-from bot.utils import Check, MarkovProcessor
+from bot.utils import Check, MarkovProcessor, SessionsCaches
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -23,6 +23,7 @@ class LifecycleHandler:
     def __init__(self, bot: Gorenmu):
         self.bot = bot
         self.config: Config = bot.config
+        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
     async def setup(self):
         bot_list = await BotsIgnore.filter(active=True).all()
@@ -36,7 +37,7 @@ class LifecycleHandler:
 
     async def close(self):
         await self.bot.DatabaseHandler.close_db()
-        await self.bot.SessionsCaches.close_all_sessions()
+        await self.SessionsCaches.close_all_sessions()
         await self.bot.memcache.close_all_caches()
         self.bot.CommandHandler.stop_routines()
         self.bot.MarkovTask.cancel()
@@ -98,8 +99,10 @@ class LifecycleHandler:
                 decorator = ctx.command.decorators[ctx.user.language]
                 return await ctx.reply(decorator.usage)
 
-            error_not_registered = ctx.user.translations.Exceptions.error_not_registered
-            return await ctx.simple_response(ctx, error_not_registered.format(self.config.BotConfig.dev_name))
+            error_not_registered = ctx.command.component.translations.Exceptions.error_not_registered(
+                ctx, self.config.BotConfig.dev_name
+            )
+            return await ctx.simple_response(ctx, error_not_registered.response_string)
         except Exception as error:
             self.bot.log.error(error)
             return False
@@ -107,12 +110,39 @@ class LifecycleHandler:
     async def event_message_whisper(self, payload: twitchio.Whisper):  # TODO: TODO
         ...
 
+    async def _handle_events(self, event_name: str, ctx: Context):
+        for category in self.bot.manual_events:
+            events = self.bot.manual_events[category]
+            if event_name not in events:
+                return
+            for name, func in events[event_name].items():
+                try:
+                    response = await func(ctx)
+                    if not response:
+                        continue
+                    elif isinstance(response, Response):
+                        await self.bot.ContextHandler.response(response)
+                    elif isinstance(response, str):
+                        await self.bot.ContextHandler.simple_response(ctx, response)
+                except Exception as e:
+                    self.bot.log.error(f"Error handling event {event_name} func name {name}: {e}")
+
     async def manual_event_message(self, ctx: Context):
         if not ctx.user:
             ctx.user = await UserModel.create_or_update(ctx)
-        for listener in self.bot.manual_event_message:
-            if response := await listener(ctx):
-                await self.bot.ContextHandler.response(response)
+        await self._handle_events("event_message", ctx)
+
+    async def event_command_invoked(self, ctx: Context):
+        await self._handle_events("command_invoked", ctx)
+
+    async def event_command_completed(self, ctx: Context):
+        await self._handle_events("command_completed", ctx)
+
+    async def before_invoke(self, ctx: Context):
+        await self._handle_events("before_invoke", ctx)
+
+    async def after_invoke(self, ctx: Context):
+        await self._handle_events("after_invoke", ctx)
 
     @staticmethod
     async def global_guard(ctx: Context) -> bool:

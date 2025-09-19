@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Chooses an option from the options provided by the user.",
-            "To use: {}choice (option1) or (option2)",
+            "To use: +choice (option1) or (option2)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Escolhe uma opção das opções fornecidas pelo usuário.",
-            "Para usar: {}choice (opção1) ou (opção2)",
+            "Para usar: +choice (opção1) ou (opção2)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

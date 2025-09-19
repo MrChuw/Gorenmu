@@ -164,6 +164,15 @@ class CacheConfig:
         self.namespace: str = data.get("namespace", "gorenmu")
 
 
+class DiscordConfig:
+    def __init__(self, data: Dict[str, dict]) -> None:
+        self.webhook_avatar = data.get("webhook_avatar", None)
+        self.to_mark = data.get("users_to_mark", None)
+        self.bug_webhook = data.get("bug_webhook", None)
+        self.suggest_webhook = data.get("suggest_webhook", None)
+        self.log_webhook = data.get("log_webhook", None)
+
+
 class Config:
     def __init__(self, config, mock: bool = False) -> None:
         config = load_config(config)
@@ -173,6 +182,7 @@ class Config:
         self.DatabaseConfig = DatabaseConfig(config["database"], mock)
         self.ApisConfig = ApisConfig(config["apis"])
         self.CacheConfig = CacheConfig(config["cache"])
+        self.Discord = DiscordConfig(config["discord"])
         self.DevelopmentConfig = DevelopmentConfig(config["development"])
         self.mock = mock
         self.default_lang = "en"

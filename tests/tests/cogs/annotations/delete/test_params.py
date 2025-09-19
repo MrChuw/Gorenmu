@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "This subcommand is used to delete an note.",
-            "How to use: {}note delete cool_name",
+            "How to use: +note delete cool_name",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Este subcomando é usado para deletar uma anotação.",
-            "Como usar: {}note delete (id)",
+            "Como usar: +note delete (id)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

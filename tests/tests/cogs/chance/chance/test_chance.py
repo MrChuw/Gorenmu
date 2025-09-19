@@ -18,9 +18,8 @@ async def interact(mock_bot):
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.chance, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    mock_context.Asserter.assert_string(interact.translations.Chance.deco_usage(mock_context, "+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Chance.deco_helper(mock_context, "+"), helper)
 
 
 @pytest.mark.asyncio
@@ -29,3 +28,4 @@ async def test_chance(interact, mock_context: MockContext, lang: str, expected: 
     await mock_context.prepare_context(lang)
     response: Response = await interact.chance._callback(self=interact, ctx=mock_context)
     mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_boolean(response.success, True)

@@ -10,9 +10,8 @@ from tests.tests.cogs.set.set.test_params import Params
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.set, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    mock_context.Asserter.assert_string(interact.translations.Set.deco_usage(mock_context, "+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Set.deco_helper(mock_context, "+"), helper)
 
 
 @pytest.mark.asyncio
@@ -21,3 +20,4 @@ async def test_set(interact, mock_context: MockContext, lang: str, args: str, ex
     await mock_context.prepare_context(lang)
     response = await interact.set._callback(self=interact, ctx=mock_context, args=args)
     mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_boolean(response.success, True)

@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING
 from bot.ext import Context, commands
 from bot.translations import Response
 
+from .translations import Translations
+
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
@@ -15,6 +17,7 @@ if TYPE_CHECKING:
 class ChoiceCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -26,12 +29,11 @@ class ChoiceCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("Choice")
     @commands.command(name="choice", aliases=["pick"])
     async def choice(self, ctx: Context, *, content: str) -> Response:
-        pattern = ctx.user.translations.Choice.pattern
+        pattern = self.translations.Choice.pattern(ctx)
         choice = random.choice([arg for arg in re.split(pattern, content) if arg])
-        return ctx.user.translations.Choice.chosen_option.format_response(ctx, choice)
+        return self.translations.Choice.response(ctx, choice)
 
 
 async def setup(bot: Gorenmu) -> None:

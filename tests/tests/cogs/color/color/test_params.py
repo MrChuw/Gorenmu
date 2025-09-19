@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Command to get Twitch or hex color info.",
-            "How to use: {}color (username | hex)",
+            "How to use: +color (username | hex)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Comando para obter informações de cor do Twitch ou hexadecimal.",
-            "Como usar: {}color (usuário | hex)",
+            "Como usar: +color (usuário | hex)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

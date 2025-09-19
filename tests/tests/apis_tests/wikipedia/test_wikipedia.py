@@ -7,8 +7,15 @@ if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 import pytest
+import pytest_asyncio
 
+from bot.utils import SessionsCaches
 from tests.helpers.mock_classes import MockContext
+
+
+@pytest_asyncio.fixture
+async def sessions(mock_bot):
+    return SessionsCaches(mock_bot)
 
 
 @pytest.mark.network
@@ -16,9 +23,9 @@ from tests.helpers.mock_classes import MockContext
 @pytest.mark.parametrize(
     "lang", [pytest.param("en", marks=pytest.mark.en, id="en"), pytest.param("pt", marks=pytest.mark.pt_BR, id="pt_BR")]
 )
-async def test_wikipedia_real_session(mock_bot: Gorenmu, mock_context: MockContext, lang: str):
-    session = mock_bot.SessionsCaches.WikipediaCachedSession.session
+async def test_wikipedia_real_session(sessions, mock_bot: Gorenmu, mock_context: MockContext, lang: str):
+    session = sessions.WikipediaCachedSession.session
     await mock_context.prepare_context(lang)
     main_url: str = mock_context.user.translations.Wikipedia.url
-    wiki = await mock_bot.SessionsCaches.WikipediaCachedSession.get_not_cached(session, main_url)
+    wiki = await sessions.WikipediaCachedSession.get_not_cached(session, main_url)
     assert wiki.status == 200, f"Expected {repr(200)}, got: {wiki.status!r}"

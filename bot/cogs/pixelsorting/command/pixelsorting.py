@@ -14,6 +14,9 @@ from PIL.ImageFile import ImageFile
 
 from bot.ext import Context, commands
 from bot.translations import Response
+from bot.utils import SessionsCaches, StringTools, TimeTools, UploadThings
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -22,6 +25,11 @@ if TYPE_CHECKING:
 class PixelSortCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
+        self.StringTools: StringTools = StringTools()
+        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
+        self.UploadThings: UploadThings = UploadThings(bot)
+        self.TimeTools: TimeTools = TimeTools()
 
     cooldown_rate = 1
     cooldown_per = 10
@@ -33,11 +41,10 @@ class PixelSortCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("PixelSorting")
     @commands.command(name="pixelsorting", aliases=["pxs"])
     async def pixel_sorting(self, ctx: Context, *, args) -> Response:
-        translations = ctx.user.translations.PixelSorting
-        extract = ctx.bot.StringTools.extract_and_remove_all_fields
+        translations = self.translations.PixelSorting
+        extract = self.StringTools.extract_and_remove_all_fields
         rest, tipos = extract(args, "type", ["sum"])
         rest, crop = extract(rest, "crop")
         rest, is_random = extract(rest, "rand", ["false"])
@@ -46,17 +53,17 @@ class PixelSortCmd(commands.CustomComponent):
         rest, mask_mode = extract(rest, "maskmode", ["none"])  # NOQA
         rest, mask_image = extract(rest, "maskimage", ["none"])  # NOQA
         rest, mask_threshold = extract(rest, "maskthreshold", ["128"])  # NOQA
-        urls = ctx.bot.StringTools.urls_extract(rest)
+        urls = self.StringTools.urls_extract(rest)
         if not urls:
-            return translations.no_url.format_response(ctx, sucess=False)
-        session = ctx.bot.SessionsCaches.PixelSortingCachedSession.session
+            return translations.no_url(ctx)
+        session = self.SessionsCaches.PixelSortingCachedSession.session
         images = await request_images(urls=urls, session=session)
         if type(images) is str:
-            return translations.invalid_content_type.format_response(ctx, sucess=False)
+            return translations.invalid_content_type(ctx)
         if mask_image != "none":
-            url = ctx.bot.StringTools.urls_extract(mask_image[0])
+            url = self.StringTools.urls_extract(mask_image[0])
             mask_image = await request_images(urls=url, session=session) if url else images
-        timeout = ctx.bot.TimeTools.Timeout(300)
+        timeout = self.TimeTools.Timeout(300)
         try:
             async with timeout:
                 manipulated = await manipulate(
@@ -71,14 +78,14 @@ class PixelSortCmd(commands.CustomComponent):
                     mask_threshold=int(mask_threshold[0]),
                 )
         except timeout.error:
-            return translations.took_too_long.format_response(ctx, timeout.timeout, sucess=False)
+            return translations.took_too_long(ctx, timeout.timeout)
         if isinstance(manipulated, Response):
             return manipulated
-        upload = await ctx.bot.UploadThings.upload_file(
+        upload = await self.UploadThings.upload_file(
             manipulated.getvalue(), "image/png", session=session, filename="manipulated.png"
         )
-        shortened = await ctx.bot.UploadThings.shortener(url=upload, session=session, tags=["PixelSorting"])
-        return translations.image.format_response(ctx, shortened)
+        shortened = await self.UploadThings.shortener(url=upload, session=session, tags=["PixelSorting"])
+        return translations.image(ctx, shortened)
 
 
 async def setup(bot: Gorenmu) -> None:

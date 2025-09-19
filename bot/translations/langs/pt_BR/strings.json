@@ -211,6 +211,7 @@
             "Nada"
         ],
         "alias_table_name_str": "{} aliases",
+
         "Add": {
             "no_command_to_add": "Você não enviou um comando! Use: {}alias add (nome) (comando) (…argumentos)",
             "alias_name_conflict": "Não é possível adicionar o alias \"{}\" - você já possui um! Você pode “editar” sua definição, “renomear” ou “removê-la”.",
@@ -223,10 +224,10 @@
             "list_of_alias_of": "Lista de aliases de {}: {}",
             "list_of_special_case": "Caso especial!\nSeu alias \"{0}\": {1}\nLista dos aliases de {0}: {2}",
             "alias_not_found": "{} não tem o alias \"{}\"!",
-            "appendix_str": "Este alias é um link para \"{}\" feito por {}.",
             "alias_deleted": "{} alias é um link para um alias diferente, mas o original foi excluído.",
-            "message_str": "{} alias \"{}\" tem os argumentos: {} {}",
-            "normal_message": "{} || Invoca: {} || Link: {}"
+            "normal_message": "{} || Invoca: {} || Link: {}",
+            "appendix_str": "Este alias é um link para \"{}\" feito por {}.",
+            "message_str": "{} alias \"{}\" tem os argumentos: {} {}"
         },
         "Copy": {
             "user_not_provided": "Nenhum usuário alvo fornecido!",

@@ -6,6 +6,9 @@ from typing import TYPE_CHECKING
 
 from bot.ext import Context, commands
 from bot.translations import Response
+from bot.utils import SessionsCaches
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -14,6 +17,8 @@ if TYPE_CHECKING:
 class WikiHowCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
+        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -25,25 +30,24 @@ class WikiHowCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("Wikihow")
     @commands.command(name="wikihow", aliases=[])
     async def wikihow(self, ctx: Context) -> Response:
-        translations = ctx.user.translations.Wikihow
-        session = ctx.bot.SessionsCaches.WikihowCachedSession.session
+        url = self.translations.Wikihow.url(ctx)
+        session = self.SessionsCaches.WikihowCachedSession.session
         start_time = asyncio.get_event_loop().time()
         try:
             while True:
-                wiki = await ctx.bot.SessionsCaches.WikihowCachedSession.get_not_cached(session, translations.url)
+                wiki = await self.SessionsCaches.WikihowCachedSession.get_not_cached(session, url)
                 if wiki.status in [200, 304]:
                     break
                 if asyncio.get_event_loop().time() - start_time >= 30:
-                    return ctx.user.translations.Exceptions.timeout.format_response(ctx)
+                    return self.translations.Exceptions.timeout(ctx)
                 await asyncio.sleep(1)
 
-            return ctx.user.translations.Exceptions.link.format_response(ctx, wiki.url.human_repr())
+            return self.translations.Exceptions.echo(ctx, wiki.url.human_repr())
         except Exception as e:
             ctx.bot.log.error(e, exc_info=e)
-            return ctx.user.translations.Exceptions.unexpected_error.format_response(ctx, success=False)
+            return self.translations.Exceptions.unexpected_error(ctx, e)
 
 
 async def setup(bot: Gorenmu) -> None:

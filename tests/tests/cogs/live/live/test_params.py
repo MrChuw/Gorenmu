@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Shows information about a channel's current or last broadcast.",
-            "How to use: {}live (channel or id)",
+            "How to use: +live (channel or id)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Mostra informações sobre a live atual ou a última de um canal.",
-            "Como usar: {}live (canal ou id)",
+            "Como usar: +live (canal ou id)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -24,18 +24,17 @@ class Params:
     live_on = [
         pytest.param(
             "en",
-            r"Title: .*? \|\| Stream started: \d+ hour+s ago \(\d+ hour+s, \d+ minute+s and \d+\.\d+ second+s\)\. "
-            r"\|\| Views: \d+\. \|\| Playing: .*?\. \|\| https://www\.twitch\.tv/xXCoolNickXx "
-            r"https://www\.twitch\.tv/videos/\d+\?t=\d+s",
+            r"^\('Title: .*? \|\| Stream started: .*? ago \((?:\d+ month[s]?, )?(?:\d+ day[s]?, )?\d+ hour[s]?, "
+            r"\d+ minute[s]? and \d+\.\d+ second[s]?\)\. \|\| Views: \d+\. \|\| Playing: .*?\. \|\| "
+            r"https://www\.twitch\.tv/xXCoolNickXx https://www\.twitch\.tv/videos/\d+\?t=\d+s',\)$",
             marks=pytest.mark.en,
             id="live-on-en",
         ),
         pytest.param(
             "pt_BR",
-            r"Título: .*?\. \|\| Transmissão iniciada: há (há )?\d+ (hora|horas|minuto|minutos)"
-            r" \(\d+ (hora|horas), \d+ (minuto|minutos) e \d+\.\d+ (segundo|segundos)\)\. "
-            r"\|\| Visualizações: \d+\. \|\| Jogando: .*?\. \|\| "
-            r"https://www\.twitch\.tv/[\w]+ https://www\.twitch\.tv/videos/\d+\?t=\d+s",
+            r"^\('Título: .*?\. \|\| Transmissão iniciada: há .*? \((?:\d+ mês(?:es)?, )?(?:\d+ dia[s]?, )?\d+ "
+            r"(?:hora|horas), \d+ (?:minuto|minutos) e \d+\.\d+ (?:segundo|segundos)\)\. \|\| Visualizações: \d+\. "
+            r"\|\| Jogando: .*?\. \|\| https://www\.twitch\.tv/\w+ https://www\.twitch\.tv/videos/\d+\?t=\d+s',\)$",
             marks=pytest.mark.pt_BR,
             id="live-on-pt",
         ),
@@ -44,13 +43,17 @@ class Params:
     live_off = [
         pytest.param(
             "en",
-            r"Title: .*? \|\| Last stream: .*? ago \(\d+ day[s]?, \d+ hour[s]?, \d+ minute[s]? and \d+\.\d+ second[s]?\)\. \|\| https://www\.twitch\.tv/xXCoolNickXx https://www\.twitch\.tv/videos/\d+",
+            r"Title: .*? \|\| Last stream: .*? ago \((?:\d+ month[s]?, )?(?:\d+ day[s]?, )?(?:\d+ hour[s]?, )?("
+            r"?:\d+ minute[s]? and )?\d+\.\d+ second[s]?\)\. \|\| https://www\.twitch\.tv/xXCoolNickXx "
+            r"https://www\.twitch\.tv/videos/\d+",
             marks=pytest.mark.en,
             id="last-stream-en",
         ),
         pytest.param(
             "pt_BR",
-            r"Título: .*? \|\| Última transmissão: há .*? dia[s]? \(\d+ dia[s]?, \d+ hora[s]?, \d+ minuto[s]? e \d+\.\d+ segundo[s]?\)\. \|\| https://www\.twitch\.tv/xXCoolNickXx https://www\.twitch\.tv/videos/\d+",
+            r"^\('Título: .*? \|\| Última transmissão: há .*? \((?:\d+ mês(?:es)?, )?(?:\d+ dia[s]?, )?(?:\d+ "
+            r"hora[s]?, )?(?:\d+ minuto[s]? e )?\d+\.\d+ segundo[s]?\)\. \|\| https://www\.twitch\.tv/xXCoolNickXx "
+            r"https://www\.twitch\.tv/videos/\d+',\)$",
             marks=pytest.mark.pt_BR,
             id="last-stream-pt",
         ),

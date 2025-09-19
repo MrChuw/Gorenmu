@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "This subcommand is used to edit the command and arguments for an alias.",
-            "How to use: {}alias edit (alias) (command) (…arguments)",
+            "How to use: +alias edit (alias) (command) (…arguments)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Este subcomando é usado para editar o comando e os argumentos de um alias.",
-            "Como usar: {}alias edit (alias) (comando) (…argumentos)",
+            "Como usar: +alias edit (alias) (comando) (…argumentos)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

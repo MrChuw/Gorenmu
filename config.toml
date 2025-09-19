@@ -13,7 +13,7 @@ default_prefix = "+"
 allowed_prefix_list = false
 allowed_prefix_size = 10
 site_url = "https://gorenmu.vercel.app/"
-imgur_authorized_ids = [184900613, 411010313]
+imgur_authorized_ids = [411010313]
 
 [apis]
 color_site_url = "https://color.mrchuw.com.br/"
@@ -29,9 +29,15 @@ access_token = "${ACCESS_TOKEN}"
 access_oauth_token = "${ACCESS_OAUTH_TOKEN}"
 refresh_token = "${REFRESH_TOKEN}"
 client_id = "${CLIENT_ID}"
-
 api_client_id = "${API_CLIENT_ID}"
 api_client_secret = "${API_CLIENT_SECRET}"
+
+[discord]
+webhook_avatar="https://cdn.7tv.app/emote/01HMFCPNNR00070FCM1Q64QFRS/4x.webp"
+users_to_mark=[158431995834138624]
+bug_webhook="${DISCORD_BUG_WEBHOOK}"
+suggest_webhook="${DISCORD_SUGGEST_WEBHOOK}"
+log_webhook="${DISCORD_LOG_WEBHOOK}"
 
 enable_site_endpoints = false
 

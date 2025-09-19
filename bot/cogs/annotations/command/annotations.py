@@ -6,6 +6,9 @@ from typing import TYPE_CHECKING
 from bot.ext import Context, commands
 from bot.models import Annotation
 from bot.translations import Response
+from bot.utils import StringTools
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -17,6 +20,8 @@ if TYPE_CHECKING:
 class AnnotationsCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.StringTools: StringTools = StringTools()
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -28,55 +33,51 @@ class AnnotationsCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("Annotations")
     @commands.group(name="annotations", aliases=["note", "annotation"])
     async def annotations(self, ctx: Context) -> Response:  # NOQA
         await ctx.simple_response(ctx, "Shush")
-        return ctx.user.translations.Admin.Nada.vazio.format_response(ctx, success=False)
+        return self.translations.Exceptions.empty(ctx)
 
-    @commands.base_decorator("Annotations.Add")
     @annotations.command(name="add", aliases=[])
     async def add(self, ctx: Context, *, content: str = ""):
-        translations = ctx.user.translations.Annotations
+        translations = self.translations.Annotations
         if not content:
-            return ctx.user.translations.Exceptions.no_content_provided.format_response(ctx, success=False)
-        content, title = ctx.bot.StringTools.extract_and_remove_field(content, "title")
+            return self.translations.Exceptions.no_content_provided(ctx)
+        content, title = self.StringTools.extract_and_remove_field(content, "title")
         if title and len(title) > 32:
-            return translations.title_too_long.format_response(ctx, success=False)
+            return translations.title_too_long(ctx)
         if len(content) > 450:
-            return ctx.user.translations.Exceptions.too_much_characters.format_response(ctx, success=False)
+            return self.translations.Exceptions.too_much_characters(ctx)
         annotation = await Annotation.create(content=content, user=ctx.user, title=title)
-        return translations.annotation_created.format_response(ctx, annotation.id)
+        return translations.annotation_created(ctx, annotation.id)
 
-    @commands.base_decorator("Annotations.Check")
     @annotations.command(name="check", aliases=[])
     async def check(self, ctx: Context, *, content: str = ""):
-        translations = ctx.user.translations.Annotations
+        translations = self.translations.Annotations
         if content and not content.isdigit():
-            return ctx.user.translations.Exceptions.id_not_valid.format_response(ctx, content, success=False)
+            return self.translations.Exceptions.id_not_valid(ctx, content)
         if not content:
-            annotation = await Annotation.filter(user=ctx.user, deleted=False)
+            annotation = await Annotation.filter(user=ctx.user)
             if not annotation:
-                return translations.no_annotation_present.format_response(ctx, success=False)
+                return translations.no_annotation_present(ctx)
             annotations_ = ", ".join([f'{note.title or ""} [{note.id}]' for note in annotation])
-            return translations.all_annotations.format_response(ctx, annotations_)
+            return translations.all_annotations(ctx, annotations_)
         annotation = await Annotation.get_or_none(id=int(content), user=ctx.user, deleted=False)
         if not annotation:
-            return translations.no_annotations_with_id.format_response(ctx, int(content), success=False)
-        return translations.annotation_content.format_response(ctx, annotation.content)
+            return translations.no_annotations_with_id(ctx, int(content))
+        return translations.annotation_content(ctx, annotation.content)
 
-    @commands.base_decorator("Annotations.Delete")
     @annotations.command(name="delete", aliases=[], pipeble=False)
     async def delete(self, ctx: Context, *, content: str = ""):
         if content.isdigit():
             annotation = await Annotation.get_or_none(id=int(content), user=ctx.user)
-            translations = ctx.user.translations.Annotations
+            translations = self.translations.Annotations
             if not annotation:
-                return translations.no_annotations_with_id.format_response(ctx, int(content), success=False)
+                return translations.no_annotations_with_id(ctx, int(content))
             annotation.deleted = True
             await annotation.save()
-            return translations.deleted.format_response(ctx, annotation.id)
-        return ctx.user.translations.Exceptions.no_id_provided.format_response(ctx, content)
+            return translations.deleted(ctx, annotation.id)
+        return self.translations.Exceptions.no_id_provided(ctx)
 
 
 async def setup(bot: Gorenmu) -> None:

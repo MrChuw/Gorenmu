@@ -7,6 +7,8 @@ from bot.ext import Context, commands
 from bot.models import Status
 from bot.translations import Response, afks
 
+from .translations import Translations
+
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
@@ -16,6 +18,7 @@ rafk_alias = [f"r{s}" for s in afks.afks if s != "afk"]
 class RAfkCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -27,24 +30,20 @@ class RAfkCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("RAfk")
     @commands.command(name="rafk", aliases=rafk_alias, pipeble=False)
     async def rafk(self, ctx: Context, *, content: str = "") -> Response:
-        translations = ctx.user.translations
         rafk = await self.bot.memcache.RAfk.get(user_id=ctx.author.id)
         if rafk is None:
-            return translations.Exceptions.time_expired.format_response(
-                ctx, ctx.user.translations.RAfk.return_expired, success=False
-            )
+            return self.translations.Exceptions.time_expired(ctx, self.translations.RAFK.return_expired(ctx))
 
-        status = ctx.user.translations.Afk.afks[rafk.alias]
+        status = self.translations.AFK.afks(ctx)[rafk.alias]
         if content:
             rafk.content = content
         await Status.go_rafk(ctx, rafk)
         if rafk.content == "":
-            return translations.RAfk.is_afk.format_response(ctx, status.leave_again, status.emoji)
+            return self.translations.AFK.afk(ctx, status.leave_again, status.emoji)
         else:
-            return translations.RAfk.is_afk_content.format_response(ctx, status.leave_again, status.emoji, rafk.content)
+            return self.translations.RAFK.content(ctx, status.leave_again, status.emoji, rafk.content)
 
 
 async def setup(bot: Gorenmu) -> None:

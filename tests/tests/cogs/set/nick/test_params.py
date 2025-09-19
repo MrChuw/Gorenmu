@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Set or remove a custom nickname.",
-            "Usage: {}set nick <nickname or remove>",
+            "Usage: +set nick <nickname or remove>",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Definir ou remover um apelido personalizado.",
-            "Uso: {}set nick <apelido ou remove>",
+            "Uso: +set nick <apelido ou remove>",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

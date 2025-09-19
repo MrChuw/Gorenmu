@@ -6,11 +6,13 @@ from typing import TYPE_CHECKING
 from aiohttp_client_cache import CachedSession
 from loguru import logger
 
+from bot.utils.singleton import Singleton
+
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 
-class UploadThings:
+class UploadThings(metaclass=Singleton):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
 

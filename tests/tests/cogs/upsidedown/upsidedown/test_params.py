@@ -6,12 +6,12 @@ import pytest
 class Params:
     decorators = [
         pytest.param(
-            "en", "Turns the text upside down.", "To use: {}upsidedown (message)", marks=pytest.mark.en, id="en"
+            "en", "Turns the text upside down.", "To use: +upsidedown (message)", marks=pytest.mark.en, id="en"
         ),
         pytest.param(
             "pt_BR",
             "Vira o texto de cabeça para baixo.",
-            "Para usar: {}upsidedown <texto>",
+            "Para usar: +upsidedown <texto>",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

@@ -7,9 +7,10 @@ from tortoise import fields
 
 from bot.models.base import Base, ContentMixin, TimestampMixin
 from bot.models.User_extras import MessagesLog, NickHistory
+from bot.utils.string_manipulation import StringTools
 
 if TYPE_CHECKING:
-    from bot.ext import Context
+    from bot.ext import Context, TranslationBase
     from bot.models.User_extras import (
         Annotation,
         Bug,
@@ -27,13 +28,13 @@ if TYPE_CHECKING:
         Status,
         Suggest,
     )
-    from bot.translations import Response, Translations
+    from bot.translations import Response
 
     GetReturnT = "User" | Response | None
 
 
 class User(Base, TimestampMixin, ContentMixin):
-    name = fields.CharField(unique=True, db_index=True, max_length=64, description="Twitch username")
+    name: str = fields.CharField(unique=True, db_index=True, max_length=64, description="Twitch username")
     channel = fields.CharField(max_length=64, null=True, description="Twitch channel")
     saved_color = fields.CharField(max_length=7, null=True, description="Twitch color")
     city = fields.CharField(max_length=100, null=True)
@@ -68,7 +69,7 @@ class User(Base, TimestampMixin, ContentMixin):
     markov: fields.ReverseRelation["MarkovUsers"]
     markov_channels: fields.ReverseRelation["MarkovUserChannel"]
 
-    translations: Translations = None
+    # translations: Translations = None
     user_id: int
 
     class Meta:
@@ -92,8 +93,7 @@ class User(Base, TimestampMixin, ContentMixin):
             await ctx.bot.memcache.User.set(user=user)
         else:
             await User.update_user(user, ctx)
-
-        return await User._set_translation(user, ctx)
+        return user
 
     @staticmethod
     async def update_user(instance: User, ctx: Context) -> User:
@@ -138,7 +138,7 @@ class User(Base, TimestampMixin, ContentMixin):
 
     @staticmethod
     async def log_message(user: User, ctx: Context):
-        message_type = "message_link" if ctx.bot.StringTools.urls_extract(ctx.message.text) else "message"
+        message_type = "message_link" if StringTools.urls_extract(ctx.message.text) else "message"
         await MessagesLog.create(
             user=user, content=ctx.message.text[:500], type=message_type, channel=ctx.bot.channels[ctx.channel.name]
         )
@@ -154,49 +154,47 @@ class User(Base, TimestampMixin, ContentMixin):
             return None
 
     @staticmethod
-    async def _set_translation(user: User, ctx: Context):
-        if not user.translations or user.translations.lang != user.language:
-            channel = ctx.channel.name
-            channel = ctx.bot.channels[channel]
-            user.translations = ctx.bot.TranslationManager.get_translations(user.language or channel.language or "en")
-        return user
-
-    @staticmethod
-    async def find_by_name(name: str, ctx: Context, is_none: bool = False) -> GetReturnT:
+    async def find_by_name(name: str, ctx: Context, translations: TranslationBase, is_none: bool = False) -> GetReturnT:
         user = await ctx.bot.memcache.User.get_by_name(name=name)
         if not user:
             user = await User.get_or_none(name=name)
             if is_none and not user:
                 return None
             if not user:
-                return ctx.user.translations.Exceptions.user_not_found_name.format_response(ctx, name)
+                return translations.Exceptions.user_not_found_name(ctx, name)
             await ctx.bot.memcache.User.set(user=user)
-        return await User._set_translation(user, ctx)
+        return user
 
     @staticmethod
-    async def find_by_id(user_id: int, ctx: Context, is_none: bool = False) -> GetReturnT:
+    async def find_by_id(
+        user_id: int, ctx: Context, translations: TranslationBase, is_none: bool = False
+    ) -> GetReturnT:
         user = await ctx.bot.memcache.User.get(user_id=user_id)
         if not user:
             user = await User.get_or_none(id=user_id)
             if is_none and not user:
                 return None
             if not user:
-                return ctx.user.translations.Exceptions.user_not_found_id.format_response(ctx, user_id)
+                return translations.Exceptions.user_not_found_id(ctx, user_id)
             await ctx.bot.memcache.User.set(user=user)
-        return await User._set_translation(user, ctx)
+        return user
 
     @staticmethod
-    async def get_user(ctx: Context, name: str = None, user_id: int = None, is_none: bool = False) -> GetReturnT:
+    async def get_user(
+        ctx: Context, translations: TranslationBase, name: str = None, user_id: int = None, is_none: bool = False
+    ) -> GetReturnT:
         if name:
-            return await User.find_by_name(name=name, ctx=ctx, is_none=is_none)
+            return await User.find_by_name(name=name, ctx=ctx, is_none=is_none, translations=translations)
         elif user_id:
-            return await User.find_by_id(user_id=user_id, ctx=ctx, is_none=is_none)
+            return await User.find_by_id(user_id=user_id, ctx=ctx, is_none=is_none, translations=translations)
         else:
-            return await User.find_by_id(user_id=ctx.user.id, ctx=ctx, is_none=is_none)
+            return await User.find_by_id(user_id=ctx.user.id, ctx=ctx, is_none=is_none, translations=translations)
 
     @staticmethod
-    async def get_user_or_none(ctx: Context, name: str = None, user_id: int = None) -> GetReturnT:
-        return await User.get_user(ctx, name, user_id, is_none=True)
+    async def get_user_or_none(
+        ctx: Context, translations: TranslationBase, name: str = None, user_id: int = None
+    ) -> GetReturnT:
+        return await User.get_user(ctx, translations, name, user_id, is_none=True)
 
 
 class TwitchTokens(Base, TimestampMixin):

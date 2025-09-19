@@ -6,12 +6,12 @@ import pytest
 class Params:
     decorators = [
         pytest.param(
-            "en", "Get status about cookies.", "To use: {}cookie count (user_name)", marks=pytest.mark.en, id="en"
+            "en", "Get status about cookies.", "To use: +cookie count (user_name)", marks=pytest.mark.en, id="en"
         ),
         pytest.param(
             "pt_BR",
             "Veja o status dos cookies.",
-            "Para usar: {}cookie count (nome_do_usuário)",
+            "Para usar: +cookie count (nome_do_usuário)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -26,8 +26,8 @@ class Params:
         ),
         pytest.param(
             "pt_BR",
-            "você já comeu já comeu 54 biscoitos 🥠, tem 8534 em estoque, "
-            "foi apresentado com 25, presenteou 93, e tem um total de 2 não resgatados.",
+            "você já comeu já comeu 54 biscoitos 🥠. Tem 8534 em estoque. "
+            "Foi apresentado com 25. Presenteou 93. E tem um total de 2 não resgatados.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -45,15 +45,15 @@ class Params:
     other_user = [
         pytest.param(
             "en",
-            "@channelname has already eaten 54 cookies 🥠. Has 8534 in stock. "
+            "@channelname have already eaten 54 cookies 🥠. Has 8534 in stock. "
             "Was presented with 25. Gifted 93. And has a total of 2 unredeemed.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            "@channelname já comeu já comeu 54 biscoitos 🥠, tem 8534 em estoque, "
-            "foi apresentado com 25, presenteou 93, e tem um total de 2 não resgatados.",
+            "@channelname já comeu já comeu 54 biscoitos 🥠. Tem 8534 em estoque. "
+            "Foi apresentado com 25. Presenteou 93. E tem um total de 2 não resgatados.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -70,9 +70,9 @@ class Params:
         ),
         pytest.param(
             "pt_BR",
-            "você já comeu já comeu 54 biscoitos 🥠, "
-            "tem 8534 em estoque, foi apresentado com 25, "
-            "presenteou 93, e tem um total de 2 não resgatados.",
+            "você já comeu já comeu 54 biscoitos 🥠. "
+            "Tem 8534 em estoque. Foi apresentado com 25. "
+            "Presenteou 93. E tem um total de 2 não resgatados.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

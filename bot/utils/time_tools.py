@@ -2,8 +2,10 @@ import asyncio
 import re
 from datetime import datetime, timedelta
 
+from bot.utils.singleton import Singleton
 
-class TimeTools:
+
+class TimeTools(metaclass=Singleton):
     def __init__(self): ...
 
     @staticmethod

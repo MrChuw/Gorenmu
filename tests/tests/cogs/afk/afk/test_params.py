@@ -4,11 +4,11 @@ import pytest
 
 class Params:
     decorators = [
-        pytest.param("en", "Command to set your status.", "How to use: {}Afk (message)", marks=pytest.mark.en, id="en"),
+        pytest.param("en", "Command to set your status.", "How to use: +Afk (message)", marks=pytest.mark.en, id="en"),
         pytest.param(
             "pt_BR",
             "Comando para definir seu status.",
-            "Como usar: {}Afk (mensagem)",
+            "Como usar: +Afk (mensagem)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

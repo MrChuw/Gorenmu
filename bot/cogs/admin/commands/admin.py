@@ -1,23 +1,28 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import asyncio
+import importlib.util
 import os
 import sys
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from bot.ext import Context, commands
-from bot.translations import Response, Translations
-from bot.utils import Role
+from bot.translations import Response
+from bot.utils import Role, SessionsCaches
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
-    translations_t = Translations.Admin.Reload
 
 
 class AdminSmallCmds(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
+        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
     name = "Admin Commands"
     cooldown_rate = 3
@@ -30,31 +35,24 @@ class AdminSmallCmds(commands.CustomComponent):
     def is_dev(self, ctx: Context) -> bool:
         return Role.dev(ctx)
 
-    @commands.base_decorator("Admin.Nada")
-    @commands.command(name="nada", aliases=[])
-    async def nada(self, ctx: Context, *, args) -> Response:
-        translations = ctx.user.translations.Admin.Nada
-        # for command_name in self.bot.commands:
-        #     command = self.bot.commands[command_name]
-        #     if hasattr(command, "commands"):
-        #         for subcommand_name in command.commands:
-        #             try:
-        #                 subcommand = command.commands[subcommand_name]
-        #                 decorator = ctx.bot.TranslationManager.get_decorator(subcommand, ctx)
-        #                 print(decorator.usage)
-        #             except Exception as e:
-        #                 print(e)
-        #     decorator = ctx.bot.TranslationManager.get_decorator(command, ctx)
-        #     print(decorator.usage)
-        # "mr_c​huw"
-        # args = "asdfasdf mr_️chuw VARIATION SELECTOR-16"
-        # await ctx.send(args)
-        return translations.nada.format_response(ctx, args, success=True, handle=None, response_list=[])
+    @commands.command(name="nada", aliases=["bonjour", "hello"])
+    async def nada(self, ctx: Context, *, args: str) -> Response:
+        if " " in args:
+            command, subcommand = args.split()
+            command = ctx.bot.get_command(command)
+            try:
+                command = command.get_command(subcommand)
+            except Exception as e:
+                print(e)
 
-    @commands.base_decorator("Admin.Restart")
+            teste = command.component.translations.get_decorator(ctx=command)
+            teste2 = teste.deco_usage(ctx, prefix=ctx.prefix)
+            await ctx.reply(teste2)
+        return self.translations.Nada.nada(ctx, args)
+        # return self.translations.Exceptions.empty(ctx, args)
+
     @commands.command(name="restart", aliases=[])
     async def restart(self, ctx: Context) -> Response:
-        translations = ctx.user.translations.Admin.Restart
         if venv_python := os.getenv("VIRTUAL_ENV"):
             python_executable = os.path.join(venv_python, "bin", "python")
         else:
@@ -63,21 +61,14 @@ class AdminSmallCmds(commands.CustomComponent):
             os.execv(python_executable, [python_executable] + sys.argv)
         except Exception as e:
             self.bot.log.error(e)
-            return translations.unexpected_error.format_response(ctx, e, success=False)
+            return self.translations.Restart.unexpected_error(ctx, e)
 
-    @commands.base_decorator("Admin.Reload")
     @commands.command(name="reload", aliases=[])
-    async def reload(self, ctx: Context, command: str) -> Response:
-        translations = ctx.user.translations.Admin.Reload
+    async def reload(self, ctx: Context, command: str, *, extras=False) -> Response:
+        translations = self.translations.Reload
 
         reloader_map = {
-            "translations": {
-                "attr": "TranslationManager",
-                "module": "bot.translations",
-                "class": "TranslationManager",
-                "args": [],
-            },
-            "emotes": {"attr": "Emotes", "module": "bot.apis.emotes", "class": "Emotes", "args": [self.bot]},
+            # "emotes": {"attr": "Emotes", "module": "bot.apis.emotes", "class": "Emotes", "args": [self.bot, self.SessionsCaches.EmotesCachedSession.session]},
             "tokens_handler": {
                 "attr": "TokensHandler",
                 "module": "bot.handlers.tokens_handler",
@@ -118,40 +109,55 @@ class AdminSmallCmds(commands.CustomComponent):
 
         if command == "commands":
             await ctx.bot.CommandHandler.reload_cogs()
-            return translations.commands_reloaded.format_response(ctx)
+            return translations.commands_reloaded(ctx)
 
         if command == "all":
             results = []
-            for key in ["commands", *reloader_map]:
+            for key in ["translations", "commands", *reloader_map]:
                 fake_ctx = await self.reload._callback(self, ctx, command=key)  # NOQA
                 results.append(fake_ctx.response_string)
-            return translations.all.format_response(ctx, " ".join(results))
+            return self.translations.Exceptions.echo(ctx, " ".join(results))
 
         if command in reloader_map:
             config = reloader_map[command]
             try:
-                await ctx.bot.reload_component(
+                await reload_component(
+                    self.bot,
                     attr_name=config["attr"],
                     module_name=config["module"],
                     class_name=config["class"],
                     args=config.get("args", []),
                 )
-                return translations.module_reloaded.format_response(ctx, config["attr"])
+                return translations.module_reloaded(ctx, config["attr"])
             except Exception as e:
                 ctx.bot.log.error(e)
-                return translations.module_reloaded_error.format_response(ctx, config["attr"], e, success=False)
+                return translations.module_reloaded_error(ctx, config["attr"], e)
 
+        if command == "translations":
+            from bot.utils.reload_util import reload_all_translations, reload_and_get_authorized
+
+            force = bool(extras)
+            try:
+                new_base = await reload_and_get_authorized("bot.ext.translations", "TranslationBase", force)
+                new_cls = await reload_all_translations("Translations", force)
+                for cls in new_cls:
+                    cls.__bases__ = (new_base,)
+                await ctx.bot.CommandHandler.reload_cogs()
+                return translations.module_reloaded(ctx, "Translations")
+            except Exception as e:
+                ctx.bot.log.error(e)
+                return translations.module_reloaded_error(ctx, "Translations", e)
         command_to_reload = ctx.bot.get_command(command)
         if not command_to_reload:
-            return translations.command_not_found.format_response(ctx, command, success=False)
+            return translations.command_not_found(ctx, command)
 
-        module = command_to_reload.module
         try:
-            await ctx.bot.reload_module(module)
-            return translations.command_reloaded.format_response(ctx, command)
+            spec = importlib.util.find_spec(command_to_reload.module)
+            await ctx.bot.CommandHandler.load_command_module(Path(spec.origin).parent)
+            return translations.command_reloaded(ctx, command)
         except Exception as e:
             ctx.bot.log.error(e)
-            return translations.command_reloaded_error.format_response(ctx, command, e, success=False)
+            return translations.command_reloaded_error(ctx, command, e)
 
 
 async def setup(bot: Gorenmu) -> None:
@@ -159,3 +165,23 @@ async def setup(bot: Gorenmu) -> None:
 
 
 async def teardown(bot: Gorenmu) -> None: ...  # NOQA
+
+
+async def reload_component(bot_obj, attr_name: str, module_name: str, class_name: str, args: list = None):
+    from bot.utils.reload_util import reload_and_get_authorized
+
+    try:
+        new_class = await reload_and_get_authorized(module_name, class_name)
+        instance = new_class(*args) if args else new_class()
+        old_instance = getattr(bot_obj, attr_name)
+        if close_attr := getattr(old_instance, "close", None):
+            if asyncio.iscoroutinefunction(close_attr):
+                if old_instance.__class__.__name__ != "LifecycleHandler":
+                    await close_attr()
+            else:
+                close_attr()
+        setattr(bot_obj, attr_name, instance)
+        bot_obj.log.info(f"Reloaded {attr_name} from {module_name}.{class_name}")
+    except Exception as e:
+        bot_obj.log.error(f"Error reloading {attr_name}: {e}")
+        raise

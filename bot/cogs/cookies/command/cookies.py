@@ -7,10 +7,13 @@ from collections import Counter
 from itertools import chain, groupby, repeat
 from typing import TYPE_CHECKING, List
 
+from bot.apis import Emotes
 from bot.ext import Context, commands
 from bot.models import Cookies, User
 from bot.translations import Response
-from bot.utils import Check
+from bot.utils import Check, SessionsCaches, StringTools
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -20,6 +23,10 @@ class CookieCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
         self.multiplicador = 1
+        self.translations: Translations = Translations(bot)
+        self.StringTools: StringTools = StringTools()
+        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
+        self.emotes: Emotes = Emotes(bot, self.SessionsCaches.EmotesCachedSession.session)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -29,160 +36,155 @@ class CookieCmd(commands.CustomComponent):
 
     @commands.Component.guard()
     async def guards_component(self, ctx: Context) -> bool:
-        return await Check.cookie_check(ctx)
+        return await Check.cookie_check(ctx, self.translations)
 
-    @commands.base_decorator("Cookies")
     @commands.group(name="cookies", aliases=["cookie"], invoke_fallback=True)
     async def cookies(self, ctx: Context) -> Response:
-        return ctx.user.translations.Cookies.invalid_option.format_response(ctx, success=False)
+        return self.translations.Cookies.invalid_option(ctx)
 
-    @commands.base_decorator("Cookies.Eat")
     @cookies.command(name="eat")
     async def eat(self, ctx: Context, *args):
-        translations = ctx.user.translations.Cookies
+        translations = self.translations.Eat
         amount, *rest = chain(args, repeat(None, 1))
-        cookie = await Cookies.get_cookie(ctx)
+        cookie = await Cookies.get_cookie(ctx, self.translations)
         amount_available = cookie.not_redeemed()
-        amount = self.bot.StringTools.to_amount(amount, 1)
+        amount = self.StringTools.to_amount(amount, 1)
         cookie_cooldown = await calculate_cooldown(cookie)
         if amount == 0:
-            return translations.not_eat.format_response(ctx, success=False)
+            return translations.not_eat(ctx)
         elif amount < 0:
-            return translations.negative_eat.format_response(ctx, amount, success=False)
+            return translations.negative_eat(ctx, amount)
         elif 1 < amount <= amount_available:
             await cookie.daily_update(amount)
-            return translations.multiple_eat.format_response(ctx, amount)
+            return translations.multiple_eat(ctx, amount)
         elif datetime.datetime.now(datetime.UTC) > cookie.cooldown:
             await cookie.daily_update(1)
-            choice = ctx.user.translations.Cookies.random_line()  # NOQA
-            return translations.eat.format_response(ctx, choice["text"])
+            return translations.eat(ctx, self.translations.Eat.random_line(ctx))
         else:
-            time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cookie_cooldown)
-            return translations.daily_limit_reached.format_response(ctx, time, success=False)
+            time = self.translations.SupportTools.TimeTools.Humanize(ctx).precisedelta(cookie_cooldown)
+            return self.translations.Cookies.daily_limit_reached(ctx, time)
 
-    @commands.base_decorator("Cookies.Count")
     @cookies.command(name="count", aliases=["cc"])
     async def count(self, ctx: Context, *args):
-        translations = ctx.user.translations.Cookies
+        translations = self.translations
         name, *rest = chain(args, repeat(None, 1))
-        name = ctx.bot.StringTools.str2name(name) or ctx.author.name
+        name = self.StringTools.str2name(name) or ctx.author.name
+        if name == ctx.bot.bot_nick:
+            return translations.Count.cc_bot_nick(ctx)
 
-        support_tools = ctx.user.translations.SupportTools
+        support_tools = self.translations.SupportTools
 
-        mention_str = support_tools.LanguageContext.mention
+        mention_str = support_tools.LanguageContext.mention(ctx, ctx.user.name, name)
         mention = mention_str if name == ctx.author.name else f"@{name}"
 
         if mention == mention_str:
-            verb = support_tools.LanguageContext.Verbs.second_person
+            verb = support_tools.LanguageContext.Verbs.cookies_second_person(ctx)
         else:
-            verb = support_tools.LanguageContext.Verbs.third_person
+            verb = support_tools.LanguageContext.Verbs.cookies_third_person(ctx)
 
-        if name == ctx.bot.bot_nick:
-            return translations.cc_bot_nick.format_response(ctx, success=False)
-        elif name == ctx.author.name:
+        if name == ctx.author.name:
             cookie = await Cookies.get_or_none(user=ctx.user)
-            return translations.format_cookie_count(ctx, mention=mention, cookie=cookie, verb=verb)  # NOQA
+            return translations.Count.format_cookie_count(ctx, mention=mention, cookie=cookie, verb=verb)
 
         elif not (user := await User.get_or_none(name=name)):
-            return translations.user_not_found.format_response(ctx, name, success=False)
+            return translations.Cookies.user_not_found(ctx, name)
         cookie = await Cookies.get_or_none(user=user)
-        return translations.format_cookie_count(ctx, mention=mention, cookie=cookie, verb=verb)  # NOQA
+        return translations.Count.format_cookie_count(ctx, mention=mention, cookie=cookie, verb=verb)
 
-    @commands.base_decorator("Cookies.Gift")
     @cookies.command(name="gift")
     async def gift(self, ctx: Context, *args):
-        translations = ctx.user.translations.Cookies
-        all_options = [translations.all_string, ctx.bot.TranslationManager.en.strings.Cookies.all_string]
+        translations = self.translations.Gift
+        all_options = self.translations.Cookies.all_string(ctx)
         name, amount, *rest = chain(args, repeat(None, 2))
-        name = ctx.bot.StringTools.str2name(name) or ctx.author.name
+        name = self.StringTools.str2name(name) or ctx.author.name
         if name == ctx.bot.bot_nick:
-            return translations.gift_bot_nick.format_response(ctx, success=False)
+            return translations.gift_bot_nick(ctx)
         elif name == ctx.author.name:
-            return translations.gift_user_himself.format_response(ctx, success=False)
+            return translations.gift_user_himself(ctx)
 
         cookie_from = await Cookies.get(user=ctx.user)
         user_to = await User.get_or_none(name=name)
         cookie_to = await Cookies.get_or_none(user=user_to)
         if not user_to:
-            return translations.user_not_found.format_response(ctx, name, success=False)
+            return self.translations.Cookies.user_not_found(ctx, name)
         if not cookie_to:
-            return translations.cookie_not_found.format_response(ctx, name, success=False)
+            return self.translations.Cookies.cookie_not_found(ctx, name)
         on_cooldown = datetime.datetime.now(datetime.UTC) < cookie_from.cooldown
         amount_available = cookie_from.stocked + cookie_from.not_redeemed()
-        amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, all_options, default=1)
+        amount, is_all = self.StringTools.to_all(amount, amount_available, all_options, default=1)
         if amount <= 0:
             if amount == 0:
-                return translations.not_gifted.format_response(ctx, success=False)
-            return translations.negative_gift.format_response(ctx, success=False)
+                return translations.not_gifted(ctx)
+            return translations.negative_gift(ctx)
         if on_cooldown and not int(cookie_from.stocked):
             cookie_cooldown = await calculate_cooldown(cookie_from)
-            time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cookie_cooldown)
-            return translations.gift_on_cooldown_no_stock.format_response(ctx, time, success=False)
+            time = self.translations.SupportTools.TimeTools.Humanize(ctx).precisedelta(cookie_cooldown)
+            return translations.gift_on_cooldown_no_stock(ctx, time)
         if is_all:
             await cookie_from.gift_all(cookie_from.stocked, amount_available)
             await cookie_to.receive_update(amount_available)
-            return translations.multiple_gift.format_response(ctx, name, amount_available)
+            return translations.multiple_gift(ctx, name, amount_available)
         if amount <= cookie_from.stocked:
             await cookie_from.gift(amount, cooldown=on_cooldown)
             await cookie_to.receive_update(amount)
             if amount == 1:
-                return translations.gift.format_response(ctx, name, amount)
-            return translations.multiple_gift.format_response(ctx, name, amount)
+                return translations.gift(ctx, name)
+            return translations.multiple_gift(ctx, name, amount)
         elif amount >= cookie_from.stocked and amount_available > 0:
-            return translations.gift_no_stock_but_cooldown.format_response(ctx, amount_available, success=False)
+            return translations.gift_no_stock_but_cooldown(ctx, amount_available)
         elif amount >= cookie_from.stocked and not amount_available:
-            time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(
+            time = self.translations.SupportTools.TimeTools.Humanize(ctx).precisedelta(
                 cookie_from.datetime_to(amount - amount_available)
             )
-            return translations.gift_on_cooldown_no_stock.format_response(ctx, time, success=False)
+            return translations.gift_on_cooldown_no_stock(ctx, time)
         else:
             ctx.bot.log.error("Unexpected status: Unable to process cookie donation.")
-            return ctx.user.translations.Exceptions.unexpected_error.format_response(ctx)
+            return self.translations.Exceptions.unexpected_error(
+                ctx, "Unexpected status: Unable to process cookie donation."
+            )
 
-    @commands.base_decorator("Cookies.Stock")
     @cookies.command(name="stock")
     async def stock(self, ctx: Context, *args):
-        translations = ctx.user.translations.Cookies
-        all_options = [translations.all_string, ctx.bot.TranslationManager.en.strings.Cookies.all_string]
+        translations = self.translations.Stock
+        all_options = self.translations.Cookies.all_string(ctx)
         amount, *rest = chain(args, repeat(None, 1))
 
         cookie = await Cookies.get(user=ctx.user)
         cookie_cooldown = await calculate_cooldown(cookie)
         on_cooldown = datetime.datetime.now(datetime.UTC) < cookie.cooldown
         amount_available = cookie.not_redeemed()
-        amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, all_options, default=1)
+        amount, is_all = self.StringTools.to_all(amount, amount_available, all_options, default=1)
 
         if on_cooldown:
-            time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cookie_cooldown)
-            return translations.daily_limit_reached.format_response(ctx, time, success=False)
+            time = self.translations.SupportTools.TimeTools.Humanize(ctx).precisedelta(cookie_cooldown)
+            return self.translations.Cookies.daily_limit_reached(ctx, time)
 
         if is_all:
             await cookie.stock_all(amount_available)
-            return translations.stock.format_response(ctx, amount_available)
+            return translations.stock(ctx, amount_available)
         if amount <= amount_available:
             await cookie.stock(amount)
             if amount == amount_available:
-                return translations.stock.format_response(ctx, amount)
-            return translations.stock_not_daily.format_response(ctx, amount)
+                return translations.stock(ctx, amount)
+            return translations.stock_not_daily(ctx, amount)
         elif amount >= amount_available:
-            return translations.stock_not_enough_cookies.format_response(ctx, amount_available)
+            return translations.stock_not_enough_cookies(ctx, amount_available)
         else:
-            ctx.bot.log.error("Unexpected status: Unable to process cookie donation.")
-            return ctx.user.translations.Exceptions.unexpected_error.format_response(ctx)
+            ctx.bot.log.error("Unexpected status: Unable to process cookie stock.")
+            return self.translations.Exceptions.unexpected_error(
+                ctx, "Unexpected status: Unable to process cookie stock."
+            )
 
-    @commands.base_decorator("Cookies.Top")
     @cookies.command(name="top")
     async def top(self, ctx: Context, *args):
-        translations = ctx.user.translations.Cookies
+        translations = self.translations.Top
         order_by, *rest = chain(args, repeat(None, 1))
-        if order_by not in translations.order_dict and order_by is not None:
-            return translations.ranks.format_response(
-                ctx, ", ".join(list(translations.order_dict.keys())), success=False
-            )
+        if order_by not in translations.rank_dict(ctx) and order_by is not None:
+            return translations.ranks(ctx, ", ".join(list(translations.rank_dict(ctx).keys())))
         elif order_by is None:
             order_by = "stocked"
 
-        order_by, title = translations.order_dict[order_by]
+        order_by, title = translations.rank_dict(ctx)[order_by]
 
         cookies = await Cookies.all().order_by(f"-{order_by}").prefetch_related("user").limit(10)
         emojis = "🏆🥈🥉🏅🏅"
@@ -193,56 +195,53 @@ class CookieCmd(commands.CustomComponent):
         cookie_user = await Cookies.get(user=ctx.user)
         user_index = await Cookies.filter(**{f"{order_by}__gt": getattr(cookie_user, order_by)}).count() + 1
 
-        return translations.top10_ish.format_response(
-            ctx, len(top_10ish), title, tops, user_index, getattr(cookie_user, order_by)
-        )
+        return translations.top10_ish(ctx, len(top_10ish), title, tops, user_index, getattr(cookie_user, order_by))
 
-    @commands.base_decorator("Cookies.SlotMachine")
     @cookies.command(name="sm", aliases=["slotmachine"])
     async def slotmachine(self, ctx: Context, amount: str = "1"):
         user = ctx.user
-        translations = user.translations.Cookies
-        all_options = [translations.all_string, ctx.bot.TranslationManager.en.strings.Cookies.all_string]
+        translations = self.translations.SlotMachine
+        all_options = self.translations.Cookies.all_string(ctx)
 
         await user.fetch_related("cookies")
-        cookie = await Cookies.get_cookie(ctx)
+        cookie = await Cookies.get_cookie(ctx, self.translations)
 
         if await _is_on_cooldown(cookie):
-            return await _cooldown_response(ctx, cookie)
+            return await _cooldown_response(ctx, cookie, self.translations)
 
         amount_available = cookie.not_redeemed()
-        parsed_amount, is_all = ctx.bot.StringTools.to_all(amount, amount_available, all_options, default=1)
+        parsed_amount, is_all = self.StringTools.to_all(amount, amount_available, all_options, default=1)
 
         if parsed_amount is None:
-            return translations.invalid_amount.format_response(ctx, amount, amount_available)
+            return translations.invalid_amount(ctx, amount, amount_available)
 
         fruits = _get_fruit_emojis()
-        emotes = await _get_emotes(ctx, fruits)
+        emotes = await _get_emotes(ctx, fruits, self.emotes)
 
         rewards = await get_rewards(ctx, emotes)
-        time_suffix = await parse_time(amount_available, ctx, is_all, translations)
-        amount_label = f"{translations.all_string} {parsed_amount}" if is_all else parsed_amount
+        time_suffix = await parse_time(amount_available, ctx, is_all, self.translations)
+        amount_label = f"{amount} {parsed_amount}" if is_all else parsed_amount
 
         total_reward, reward_counts, sequences = await all_slotmachine(
             fruits=emotes, rewards=rewards, quantidade=parsed_amount
         )
 
         reward_counts = sorted(reward_counts.items())  # NOQA
-        # TODO Future: show reward breakdown.
+        # TODO Future: show reward breakdown. Maybe a nice custom site with spins and the results
         # breakdown = ", ".join([f"{count} of {value}" for value, count in reward counts])
 
         is_all_mode = not parsed_amount.is_integer() and is_all
         stock_method = cookie.stock_all if is_all_mode else cookie.stock
 
         if total_reward:
-            emote = (await self.bot.Emotes.get_pog(channel_id=ctx.channel.id, user=user))[0]
+            emote = (await self.emotes.get_pog(channel_id=ctx.channel.id, ctx=ctx, translations=self.translations))[0]
             total = total_reward * self.multiplicador
             await stock_method(amount_available)  # NOQA
-            suffix = translations.cookie_win_suffix.format(total, time_suffix)
+            suffix = translations.cookie_win_suffix(ctx, total, time_suffix)
         else:
-            emote = (await self.bot.Emotes.get_sad(channel_id=ctx.channel.id, user=user))[0]
+            emote = (await self.emotes.get_sad(channel_id=ctx.channel.id, ctx=ctx, translations=self.translations))[0]
             await stock_method(0)  # NOQA
-            suffix = translations.cookie_loss_suffix.format(time_suffix)
+            suffix = translations.cookie_loss_suffix(ctx, time_suffix)
 
         if parsed_amount == 1 and total_reward and len(sequences) == 1:
             prefix = f'[ {" | ".join(sequences[0])} ]'
@@ -250,15 +249,15 @@ class CookieCmd(commands.CustomComponent):
             prefix = ""
 
         if is_all_mode or amount_available != 1:
-            return translations.accumulated_message.format_response(ctx, prefix, amount_label, suffix, emote)
+            return translations.accumulated_message(ctx, prefix, amount_label, suffix, emote)
         else:
-            return translations.last_cookie_message.format_response(ctx, prefix, suffix, emote)
+            return translations.last_cookie_message(ctx, prefix, suffix, emote)
 
 
-async def parse_time(amount_available, ctx, is_all, translations):
+async def parse_time(amount_available, ctx, is_all, translations: Translations):
     if is_all or amount_available == 1:
-        time = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(datetime.timedelta(hours=6))
-        time_suffix = translations.time_suffix.format(time)
+        time = translations.SupportTools.TimeTools.Humanize(ctx).precisedelta(datetime.timedelta(hours=6))
+        time_suffix = translations.SlotMachine.time_suffix(ctx, time)
     else:
         time_suffix = ""
     return time_suffix
@@ -308,24 +307,22 @@ async def _is_on_cooldown(cookie) -> bool:
     return now < cookie.cooldown
 
 
-async def _cooldown_response(ctx: Context, cookie) -> Response:
+async def _cooldown_response(ctx: Context, cookie, translations: Translations) -> Response:
     cooldown_duration = await calculate_cooldown(cookie)
-    time_str = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(cooldown_duration)
-    return ctx.user.translations.Cookies.daily_limit_reached.format_response(ctx, time_str, success=False)
+    time_str = translations.SupportTools.TimeTools.Humanize(ctx).precisedelta(cooldown_duration)
+    return translations.Cookies.daily_limit_reached(ctx, time_str)
 
 
 def _get_fruit_emojis() -> list[str]:
     return ["🍇", "🍊", "🍋", "🍒", "🍉", "🍓", "🍌", "🍍", "🥕", "🍆", "🌽", "🥔", "🌶️", "🫑", "🥑"]
 
 
-async def _get_emotes(ctx: Context, fallback_fruits: list[str]) -> list[str]:
-    emotes = await ctx.bot.Emotes.get_random_by_amount(channel_id=ctx.channel.id, amount=len(fallback_fruits))
-
+async def _get_emotes(ctx: Context, fallback_fruits: list[str], emotes: Emotes) -> list[str]:
+    emotes = await emotes.get_random_by_amount(channel_id=ctx.channel.id, amount=len(fallback_fruits))
     if len(emotes) < len(fallback_fruits):
         missing = len(fallback_fruits) - len(emotes)
         fallback = random.sample(fallback_fruits, k=missing)
         emotes += fallback
-
     return emotes
 
 

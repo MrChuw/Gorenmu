@@ -5,12 +5,12 @@ import pytest
 class Params:
     decorators = [
         pytest.param(
-            "en", "Enable or disable bot mentions.", "Usage: {}set mention <on/off>", marks=pytest.mark.en, id="en"
+            "en", "Enable or disable bot mentions.", "Usage: +set mention <on/off>", marks=pytest.mark.en, id="en"
         ),
         pytest.param(
             "pt_BR",
             "Ativar ou desativar menções do bot.",
-            "Uso: {}set mention <on/off>",
+            "Uso: +set mention <on/off>",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

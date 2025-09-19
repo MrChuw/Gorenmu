@@ -8,12 +8,13 @@ from typing import TYPE_CHECKING
 import aiohttp
 
 from bot.utils.caches_base import BaseCachedSession
+from bot.utils.singleton import Singleton
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 
-class SessionsCaches:
+class SessionsCaches(metaclass=Singleton):
     def __init__(self, bot: Gorenmu):
         self.UserAgent: str = "Mozilla/5.0 (compatible; Gorenmu/2.0; +https://github.com/MrChuw/Gorenmu)"
         for name, cls in vars(self.__class__).items():
@@ -93,6 +94,7 @@ class SessionsCaches:
     ImgurCachedSession: ImgurCachedSession
 
     # New
+    # region Hide.
 
     class AliasCachedSession(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -225,3 +227,15 @@ class SessionsCaches:
             return {"https://*.ivr.fi/*": timedelta(minutes=10)}
 
     IvrFi: IvrFi
+
+    # endregion
+
+    class Bug(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, cache_name="Bug_requests", useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {}
+
+    Bug: Bug

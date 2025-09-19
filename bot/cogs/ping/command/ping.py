@@ -10,6 +10,8 @@ import psutil
 from bot.ext import Context, commands
 from bot.translations import Response
 
+from .translations import Translations
+
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
@@ -17,6 +19,7 @@ if TYPE_CHECKING:
 class PingCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -28,19 +31,15 @@ class PingCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("Ping")
     @commands.command(name="ping", aliases=["pong"])
     async def ping(self, ctx: Context) -> Response:
-        translations = ctx.user.translations.Ping
-        humanize = ctx.user.translations.SupportTools.TimeTools.Humanize
-        invoke_by = ctx.invoke_by
+        translations = self.translations.Ping
+        humanize = self.translations.SupportTools.TimeTools.Humanize(ctx)
         delta = datetime.now(UTC) - ctx.message.timestamp
         tmi = f"{humanize.precisedelta(delta, suppress=['seconds'], minimum_unit='milliseconds').split(' ')[0]} ms"
         mem = humanize.naturalsize(psutil.Process(os.getpid()).memory_info()[0])
         started = humanize.precisedelta(ctx.bot.boot - datetime.now(UTC))
-        return translations.ping.format_response(
-            ctx, "ping 🏓" if invoke_by == "pong" else "pong 🏓", tmi, mem, started
-        )
+        return translations.ping(ctx, "ping 🏓" if ctx.invoke_by == "pong" else "pong 🏓", tmi, mem, started)
 
 
 async def setup(bot: Gorenmu) -> None:

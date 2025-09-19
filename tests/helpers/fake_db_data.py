@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING
 
+from bot.cogs.afk.commands.translations import Translations
 from bot.models import Channel, Cookies, Status, User
 from tests.helpers.mock_classes import MockContext
 
@@ -29,29 +31,28 @@ async def create_fake_db(bot: Gorenmu):
         ctx.bot.channels[user.name] = channel
 
     ctx = MockContext("status_user_50", 12344321, "channelname", 123456, bot)  # NOQA
-    ctx.user.get_translation(bot, "en")
+    # ctx.user.get_translation(bot, "en")
     user = await User.create_or_update(ctx)
-    afk = ctx.user.translations.Afk.afks.get("afk")  # NOQA
+    translations = Translations(None)  # NOQA
+    with contextlib.suppress():
+        translations.AFK.afks(None)
+    afks = translations.AFK._get_afks()  # NOQA
     ctx.user = user
-    await Status.go_afk(ctx=ctx, status=afk, content="")
+    await Status.go_afk(ctx=ctx, status=afks.get("afk"), content="")
 
     ctx = MockContext("status_user_51", 123443210, "channelname", 123456, bot)  # NOQA
-    ctx.user.get_translation(bot, "en")  # NOQA
     user = await User.create_or_update(ctx)
-    afk = ctx.user.translations.Afk.afks.get("afk")  # NOQA
     ctx.user = user
-    await Status.go_afk(ctx=ctx, status=afk, content="content")
+    await Status.go_afk(ctx=ctx, status=afks.get("afk"), content="content")
 
-    for num, item in enumerate(ctx.user.translations.Afk.afks):
+    for num, item in enumerate(afks):
         ctx = MockContext(f"status_user_{(num + 1) * 64}", (num + 1) * 64, "channelname", 123456, bot)  # NOQA
-        ctx.user.get_translation(bot, "en")  # NOQA
         user = await User.create_or_update(ctx)
-        afk = ctx.user.translations.Afk.afks.get(item)  # NOQA
+        afk = afks.get(item)
         ctx.user = user
         await Status.go_afk(ctx=ctx, status=afk, content="")
 
         ctx = MockContext(f"status_user_{(num + 1) * 46}", (num + 1) * 46, "channelname", 123456, bot)  # NOQA
-        ctx.user.get_translation(bot, "en")  # NOQA
         user = await User.create_or_update(ctx)
         ctx.user = user
         await Status.go_afk(ctx=ctx, status=afk, content="content")
@@ -65,3 +66,4 @@ async def create_fake_db(bot: Gorenmu):
         cookie.stocked = 93 * num
         await cookie.save()
         await cookie.new_cooldown()
+    ...

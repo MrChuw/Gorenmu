@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import datetime
 import random
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock
@@ -31,7 +32,7 @@ class MockAuthor:
 class MockMessage(MagicMock):
     def __init__(self, broadcaster: MockChannel, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.timestamp = 11111111
+        self.timestamp = datetime.datetime.now(datetime.UTC) - datetime.timedelta(milliseconds=1)
         self.text = "Some Text"
         self.subscription_type = "chat.message"
         self.broadcaster = broadcaster
@@ -58,7 +59,7 @@ class MockContext(AsyncMock):
     async def prepare_context(self, translation: str = "en", seed: int = 0):
         random.seed(seed)
         self.user = await User.create_or_update(self)
-        self.user.translations = self.bot.TranslationManager.get_translations(language=translation)
+        # self.user.translations = self.bot.TranslationManager.get_translations(language=translation)
         self.user.language = translation
 
     async def prepare_alias(self, special_user):

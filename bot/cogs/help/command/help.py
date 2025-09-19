@@ -4,8 +4,12 @@ from __future__ import annotations
 import difflib
 from typing import TYPE_CHECKING
 
+from twitchio.ext import commands as twitchio_commands
+
 from bot.ext import Context, commands
 from bot.translations import Response
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -14,6 +18,7 @@ if TYPE_CHECKING:
 class HelpCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -25,29 +30,32 @@ class HelpCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("Help")
     @commands.command(name="help", aliases=[])
     async def help(self, ctx: Context, *, content: str = "") -> Response:
-        translations = ctx.user.translations.Help
+        translations = self.translations.Help
         site_url = ctx.bot.config.BotConfig.site_url
+        parts = content.split(" ")
         if not content:
             # TODO: upload to bin.mrchuw
-            return translations.command_site.format_response(ctx, site_url, success=False)
-        command = ctx.bot.get_command(content)
+            return translations.command_site(ctx, site_url)
+        command = ctx.bot.get_command(parts[0])
+
+        if len(parts) != 1 and isinstance(command, twitchio_commands.Group):
+            command = command.get_command(parts[1])
 
         if not command:
             commands_list = ctx.bot.commands.keys()
             suggested_command = difflib.get_close_matches(content, commands_list, n=1, cutoff=0.6)
-            return translations.suggested_command.format_response(ctx, content, suggested_command[0], success=False)
+            return translations.suggested_command(ctx, content, suggested_command[0])
 
         aliases = ", ".join(command.aliases) if command.aliases else ""
-        decorator = ctx.bot.TranslationManager.get_decorator(command, ctx)
+        decorator = command.component.translations.get_decorator(command)
         url = site_url / "commands" / command.qualified_name  # TODO: Change.
-        cooldown = ctx.user.translations.SupportTools.TimeTools.Humanize.naturaldelta(command.per / command.rate)
-
-        return translations.help.format_response(
-            ctx, ctx.prefix, command.name, decorator.helper, cooldown, url, aliases
-        )
+        if hasattr(command, "per"):
+            cooldown = self.translations.SupportTools.TimeTools.Humanize(ctx).naturaldelta(command.per / command.rate)
+        else:
+            cooldown = "None"
+        return translations.help(ctx, ctx.prefix, command.name, decorator.deco_helper(ctx), cooldown, url, aliases)
 
 
 async def setup(bot: Gorenmu) -> None:

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
     from bot.bot import Gorenmu
     from bot.ext import Command
+    from bot.ext.commands import CustomComponent
     from bot.models import User as UserModel
     from bot.translations import Response
 
@@ -18,6 +19,7 @@ class Context(TwitchioContext):
     user: UserModel
     bot: Gorenmu
     command: Command
+    component: CustomComponent
     _command: Command
     invoke_by: str | None = None
     reply_to: ChatMessageReply | None = None
@@ -35,7 +37,7 @@ class Context(TwitchioContext):
     def get_command(self):
         self._get_command()
 
-    async def simple_response(self, ctx: Context, response: str, handle: str = None) -> None | bool:  # NOQA
+    async def simple_response(self, ctx: Context, response: str, handle: str = None) -> None | bool:
         if ctx.bot.channels[ctx.channel.name].online is False:
             return False
         response_str = response

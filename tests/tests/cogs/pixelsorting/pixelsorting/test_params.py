@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Command used to make basic pixel sorting in images.",
-            "To use: {}pxs (url or shortened direct link) ",
+            "To use: +pxs (url or shortened direct link) ",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Comando usado para aplicar pixel sorting básico em imagens.",
-            "Como usar: {}pxs (url ou link direto encurtado)",
+            "Como usar: +pxs (url ou link direto encurtado)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

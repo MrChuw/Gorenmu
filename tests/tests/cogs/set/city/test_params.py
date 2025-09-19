@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Set or remove your saved city.",
-            "Usage: {}set city (name or remove) [hidden:true]",
+            "Usage: +set city (name or remove) [hidden:true]",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Definir ou remover sua cidade salva.",
-            "Uso: {}set city (nome ou remove) [hidden:true]",
+            "Uso: +set city (nome ou remove) [hidden:true]",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

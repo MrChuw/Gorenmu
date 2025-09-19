@@ -16,6 +16,13 @@ allowed_prefix_size = 10
 site_url = "https://gorenmu.vercel.app/"
 imgur_authorized_ids = [184900613, 411010313]
 
+[discord]
+webhook_avatar="https://cdn.7tv.app/emote/01HMFCPNNR00070FCM1Q64QFRS/4x.webp"
+users_to_mark=[158431995834138624]
+bug_webhook="${DISCORD_BUG_WEBHOOK}"
+suggest_webhook="${DISCORD_SUGGEST_WEBHOOK}"
+log_webhook="${DISCORD_LOG_WEBHOOK}"
+
 [apis]
 color_site_url = "https://color.mrchuw.com.br/"
 pastbin_url = "https://bin.mrchuw.com.br/documents"

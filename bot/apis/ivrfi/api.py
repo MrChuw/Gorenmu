@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from aiohttp_client_cache import CachedSession
 from yarl import URL
 
-from bot.utils import Singleton
+from bot.utils.singleton import Singleton
 
 from .parsers.user import UserElement
 
@@ -22,9 +22,9 @@ class Base:
 
 
 class ApiIvrFi(metaclass=Singleton):
-    def __init__(self, bot: Gorenmu):
+    def __init__(self, bot: Gorenmu, session: CachedSession):
         self.bot = bot
-        self.session: CachedSession = bot.SessionsCaches.IvrFi.session
+        self.session: CachedSession = session
 
         for name, cls in vars(self.__class__).items():
             if isinstance(cls, type) and issubclass(cls, Base):

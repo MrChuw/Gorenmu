@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Gift someone your daily cookie.",
-            "To use: {}cookie gift (user_name) (amount|all)",
+            "To use: +cookie gift (user_name) (amount|all)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Presenteie alguém com seus cookies.",
-            "Para usar: {}cookie gift (nome_do_usuário) (quantidade|all)",
+            "Para usar: +cookie gift (nome_do_usuário) (quantidade|all)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

@@ -10,13 +10,14 @@ from aiohttp_client_cache import CachedSession
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+    from bot.ext import TranslationBase
     from bot.models import User
 
 
 class Emotes:
-    def __init__(self, bot: Gorenmu):
+    def __init__(self, bot: Gorenmu, session: CachedSession):
         self.bot = bot
-        self.session: CachedSession = bot.SessionsCaches.EmotesCachedSession.session
+        self.session: CachedSession = session
         self.cached_emotes = {}
         self.sad_emotes = ["sadge", "sadgecry", "sadcat", "sadchamp"]  # NOQA
         self.happy_emotes = ["peepoglad", "gladge", "peepohappy", "peepohappyu", "happycat"]  # NOQA
@@ -81,8 +82,8 @@ class Emotes:
             channel_id=channel_id
         )
 
-    async def get_happy(self, channel_id: int, user: User, amount: int = 1) -> list[str]:
-        emotes_ = self.happy_emotes + user.translations.SupportTools.Emotes.emotions.pog
+    async def get_happy(self, channel_id: int, ctx, translations: TranslationBase, amount: int = 1) -> list[str]:
+        emotes_ = self.happy_emotes + translations.SupportTools.Emotes.happy(ctx)
         emotes_set = {emote.lower() for emote in emotes_}
         emotes = await self.get_emotes(channel_id=channel_id)
         if matching_emotes := [emote for emote in emotes if emote.lower() in emotes_set]:
@@ -90,8 +91,8 @@ class Emotes:
         else:
             return ["peepoHappy"]
 
-    async def get_pog(self, channel_id: int, user: User, amount: int = 1) -> list[str]:
-        emotes_ = self.pog_emotes + user.translations.SupportTools.Emotes.emotions.pog
+    async def get_pog(self, channel_id: int, ctx, translations: TranslationBase, amount: int = 1) -> list[str]:
+        emotes_ = self.pog_emotes + translations.SupportTools.Emotes.pog(ctx)
         emotes_set = {emote.lower() for emote in emotes_}
         emotes = await self.get_emotes(channel_id=channel_id)
         if matching_emotes := [emote for emote in emotes if emote.lower() in emotes_set]:
@@ -99,8 +100,8 @@ class Emotes:
         else:
             return ["PogChamp"]
 
-    async def get_sad(self, channel_id: int, user: User, amount: int = 1) -> list[str]:
-        emotes_ = self.sad_emotes + user.translations.SupportTools.Emotes.emotions.sad
+    async def get_sad(self, channel_id: int, ctx, translations: TranslationBase, amount: int = 1) -> list[str]:
+        emotes_ = self.sad_emotes + translations.SupportTools.Emotes.sad(ctx)
         emotes_set = {emote.lower() for emote in emotes_}
         emotes = await self.get_emotes(channel_id=channel_id)
         if matching_emotes := [emote for emote in emotes if emote.lower() in emotes_set]:

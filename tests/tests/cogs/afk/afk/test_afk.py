@@ -17,9 +17,9 @@ async def interact(mock_bot):
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.afk, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    decorator = interact.translations.AFK
+    mock_context.Asserter.assert_string(decorator.deco_usage(mock_context, "+"), usage, strict=True)
+    mock_context.Asserter.assert_string(decorator.deco_helper(mock_context, "+"), helper, strict=True)
 
 
 @pytest.mark.asyncio
@@ -29,6 +29,7 @@ async def test_no_content(interact, mock_context: MockContext, lang: str, expect
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context)
     mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_boolean(response.success, True)
 
 
 @pytest.mark.asyncio
@@ -38,6 +39,7 @@ async def test_afk_content(interact, mock_context: MockContext, lang: str, expec
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context, content="Just a test")
     mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_boolean(response.success, True)
 
 
 @pytest.mark.asyncio
@@ -47,3 +49,4 @@ async def test_afk_too_much_content(interact, mock_context: MockContext, lang: s
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context, content="a" * 500)
     mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_boolean(response.success, False)

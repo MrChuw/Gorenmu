@@ -2,11 +2,25 @@
 from __future__ import annotations
 
 import asyncio
+from abc import ABC
 from collections.abc import Callable, Coroutine, Iterable
-from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, Self, Sequence, TypeAlias, TypeVar, Union
+from functools import partial
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Concatenate,
+    Generic,
+    Optional,
+    ParamSpec,
+    Self,
+    Sequence,
+    TypeAlias,
+    TypeVar,
+    Union,
+)
 
 from twitchio import ChatMessage, User
-from twitchio.ext.commands import Bucket, BucketType
+from twitchio.ext.commands import AutoBot, Bucket, BucketType
 from twitchio.ext.commands import Command as TwitchioCommand
 from twitchio.ext.commands import CommandErrorPayload, Component, Cooldown
 from twitchio.ext.commands import Group as TwitchioGroup
@@ -22,7 +36,7 @@ Coro: TypeAlias = Coroutine[Any, Any, None]
 CoroC: TypeAlias = Coroutine[Any, Any, bool]
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context
+    from bot.ext import Context, TranslationBase
 
     PrefixT: TypeAlias = (
         str | Iterable[str] | Callable[[Gorenmu, ChatMessage], Coroutine[Any, Any, str | Iterable[str]]]
@@ -42,6 +56,8 @@ __all__ = (
     "BucketType",
     "guard",
     "CommandErrorPayload",
+    "CustomComponent",
+    "AutoBot",
 )
 
 max_message_len = 450
@@ -53,6 +69,7 @@ class Command(TwitchioCommand):
     docs: Callable[[], dict[str, dict[str, str]]]
     template: bool
     pipeble: bool
+    component: CustomComponent
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
@@ -89,6 +106,8 @@ class Command(TwitchioCommand):
 
 
 class CustomComponent(Component):
+    translations: TranslationBase = None
+
     def __new__(cls, *args, **kwargs) -> Self:
         self: Self = super().__new__(cls, *args, **kwargs)
         bot: Gorenmu = args[0] if args else kwargs.get("bot")
@@ -98,14 +117,13 @@ class CustomComponent(Component):
         bucket_: Bucket[Context] = Bucket.from_cooldown(base=Cooldown, key=key, **{"per": per, "rate": rate})
         category_name: str = getattr(self, "name", self.__class__.__name__)
         category_name = category_name.removesuffix("Cmd").removesuffix("Cmds")
-
+        self.inject_events(bot, cls, self, category_name)
         for command_name in self.__all_commands__:
             command_: Command = self.__all_commands__[command_name]
             if hasattr(command_, "commands"):
                 for name in command_.commands:
                     self._extras(command_.commands[name], bucket_, bot)
                     bot.docs[category_name][command_.commands[name].name] = command_.commands[name].docs
-
             self._extras(command_, bucket_, bot)
             bot.docs[category_name][command_.name] = command_.docs
         return self
@@ -122,6 +140,17 @@ class CustomComponent(Component):
                 return bot.docs_handler.normal_description(new_command)
 
         new_command.docs = docs
+
+    @staticmethod
+    def inject_events(bot, cls, self, category_name):
+        if category_name in bot.manual_events:
+            bot.manual_events[category_name].clear()
+        for name, member in cls.__dict__.items():
+            event_name = getattr(member, "_event_info", None)
+            if not event_name:
+                continue
+            injected = partial(member, self)
+            bot.manual_events[category_name][event_name][name] = injected
 
 
 def base_decorator(base: str, template=False) -> Callable[[Command], Command]:
@@ -142,7 +171,7 @@ def command(
 ) -> Any:
     def wrapper(
         func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
-    ) -> Command[Any, ...]:
+    ) -> Command:
         if isinstance(func, Command):
             raise ValueError(f'Callback "{func._callback}" is already a Command.')  # NOQA
 
@@ -176,6 +205,8 @@ def guard(predicates: Union[Callable[..., bool], Callable[..., CoroC], Sequence[
 
 
 class Group(TwitchioGroup):
+    component: CustomComponent
+
     def command(
         self,
         name: str | None = None,
@@ -186,7 +217,7 @@ class Group(TwitchioGroup):
     ) -> Any:
         def wrapper(
             func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
-        ) -> Command[Any, ...]:
+        ) -> Command:
             new = command(name=name, aliases=aliases, extras=extras, parent=self, pipeble=pipeble, **kwargs)(func)
 
             self.add_command(new)
@@ -194,13 +225,16 @@ class Group(TwitchioGroup):
 
         return wrapper
 
+    def get_command(self, name: str, /) -> Optional[Command | Group]:
+        return super().get_command(name)
+
 
 def group(
     name: str | None = None, aliases: list[str] | None = None, extras: dict[Any, Any] | None = None, **kwargs: Any
-) -> Any:
+) -> Callable[[Command], Command]:
     def wrapper(
         func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
-    ) -> Group[Any, ...]:
+    ) -> Group:
         if isinstance(func, Command):
             raise ValueError(f'Callback "{func._callback.__name__}" is already a Command.')  # NOQA
 
@@ -213,3 +247,20 @@ def group(
         return Group(name=name_, callback=func, aliases=aliases or [], extras=extras or {}, **kwargs)
 
     return wrapper
+
+
+def event_handler(event_name: str):
+    def decorator(func: Callable):
+        func._event_info = event_name  # type: ignore
+        return func
+
+    return decorator
+
+
+# def event_handler(event_name: str):
+#     def decorator(func: Callable):
+#         async def wrapper(self, *args, **kwargs):
+#             return await func(self, *args, **kwargs)
+#         wrapper._event_info = event_name
+#         return wrapper
+#     return decorator

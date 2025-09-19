@@ -17,44 +17,44 @@ async def interact(mock_bot):
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.wikihow, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    mock_context.Asserter.assert_string(interact.translations.Wikihow.deco_usage(mock_context, "+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Wikihow.deco_helper(mock_context, "+"), helper)
 
 
-async def base_wikihow(interact, mock_context: MockContext, expected):
+async def base_wikihow(interact, mock_context: MockContext, expected, success: bool = False):
     response = await interact.wikihow._callback(interact, mock_context)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=None)
+    mock_context.Asserter.assert_boolean(response.success, success)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.two_hundred)
 async def test_two_hundred(interact, mock_context: MockContext, lang: str, expected: str):
-    session = mock_context.bot.SessionsCaches.WikihowCachedSession
+    session = interact.SessionsCaches.WikihowCachedSession
     await mock_context.prepare_context(lang)
     async with mock_context.MockBuilder.Session.get_not_cached(session, "www.some_url.com"):
-        await base_wikihow(interact, mock_context, expected=expected)
+        await base_wikihow(interact, mock_context, expected=expected, success=True)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.timeout)
 async def test_timeout(interact, mock_context: MockContext, lang: str, expected: str):
-    session = mock_context.bot.SessionsCaches.WikihowCachedSession
+    session = interact.SessionsCaches.WikihowCachedSession
     await mock_context.prepare_context(lang)
     async with (
         mock_context.MockBuilder.Session.get_not_cached(session, status=404)
         .Asyncio.sleep()
         .Asyncio.get_event_loop_time([0] + list(range(1, 35)))
     ):
-        await base_wikihow(interact, mock_context, expected=expected)
+        await base_wikihow(interact, mock_context, expected=expected, success=False)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.exception)
 async def test_unexpected_exception(interact, mock_context: MockContext, lang: str, expected: str):
-    session = mock_context.bot.SessionsCaches.WikihowCachedSession
+    session = interact.SessionsCaches.WikihowCachedSession
     await mock_context.prepare_context(lang)
     async with mock_context.MockBuilder.Session.get_not_cached(
         session, side_effect=Exception("fail")
     ).Bot.silence_errors():
-        await base_wikihow(interact, mock_context, expected=expected)
+        await base_wikihow(interact, mock_context, expected=expected, success=False)

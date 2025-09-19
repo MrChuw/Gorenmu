@@ -6,12 +6,12 @@ import pytest
 class Params:
     decorators = [
         pytest.param(
-            "en", "Save or remove a custom color.", "Usage: {}set color (#hex or remove)", marks=pytest.mark.en, id="en"
+            "en", "Save or remove a custom color.", "Usage: +set color (#hex or remove)", marks=pytest.mark.en, id="en"
         ),
         pytest.param(
             "pt_BR",
             "Salvar ou remover uma cor personalizada.",
-            "Uso: {}set color (#hex ou remove)",
+            "Uso: +set color (#hex ou remove)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

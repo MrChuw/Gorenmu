@@ -1,6 +1,21 @@
 services:
+  Gorenmu_bot:
+    image: python:3.12.6
+    container_name: Gorenmu
+    working_dir: /app
+    network_mode: host
+    command: >
+      /bin/bash -c "pip install -q -r requirements.txt && python __main__.py"
+    volumes:
+      - .:/app
+    depends_on:
+      - Gorenmu_db
+      - Gorenmu_cache
+    restart: always
+
   Gorenmu_db:
     image: mariadb
+    container_name: Mariadb
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -14,6 +29,7 @@ services:
 
   Gorenmu_cache:
     image: valkey/valkey:unstable
+    container_name: Valkey
     volumes:
       - ./.redis_data:/data
     ports:
@@ -21,18 +37,20 @@ services:
     command: "valkey-server --save 60 1 --loglevel warning"
     restart: always
 
-  Gorenmu_bot:
-    image: python:3.12.6
-    working_dir: /app
-    network_mode: host
-    command: >
-      /bin/bash -c "pip install -q -r requirements.txt && python __main__.py"
+  Gorenmu_cache2:
+    container_name: Pogocache
+    build:
+      context: .redis_data
+      dockerfile: Dockerfile
+    image: pogocache/pogocache
     volumes:
-      - .:/app
-    depends_on:
-      - Gorenmu_db
-      - Gorenmu_cache
+      - ./.redis_data:/data
+    ports:
+      - "9401:9401"
+#    entrypoint: bash -c "sleep 100000"
+#    command: "-h 0.0.0.0 --persist=/data/data.db --evict=no"
     restart: always
+
 
 
   js-apis:

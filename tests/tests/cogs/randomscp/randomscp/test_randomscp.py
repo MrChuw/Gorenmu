@@ -18,14 +18,14 @@ async def interact(mock_bot):
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.randomscp, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    mock_context.Asserter.assert_string(interact.translations.RandomScp.deco_usage(mock_context, "+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.RandomScp.deco_helper(mock_context, "+"), helper)
 
 
-async def base_randomscp(interact, mock_context: MockContext, lang: str, expected):
+async def base_randomscp(interact, mock_context: MockContext, expected, success: bool = False):
     response = await interact.randomscp._callback(interact, mock_context)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=None)
+    mock_context.Asserter.assert_boolean(response.success, success)
 
 
 @pytest.mark.asyncio
@@ -33,7 +33,7 @@ async def base_randomscp(interact, mock_context: MockContext, lang: str, expecte
 async def test_two_hundred(interact, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang)
     async with mock_context.MockBuilder.Commands.get_scp("www.some_url.com"):
-        await base_randomscp(interact, mock_context, lang=lang, expected=expected)
+        await base_randomscp(interact, mock_context, expected=expected, success=True)
 
 
 @pytest.mark.asyncio
@@ -45,7 +45,7 @@ async def test_timeout(interact, mock_context: MockContext, lang: str, expected:
         .Asyncio.sleep()
         .Asyncio.get_event_loop_time([0] + list(range(1, 35)))
     ):
-        await base_randomscp(interact, mock_context, lang=lang, expected=expected)
+        await base_randomscp(interact, mock_context, expected=expected, success=False)
 
 
 @pytest.mark.asyncio
@@ -53,4 +53,4 @@ async def test_timeout(interact, mock_context: MockContext, lang: str, expected:
 async def test_unexpected_exception(interact, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang)
     async with mock_context.MockBuilder.Commands.get_scp(side_effect=Exception("fail")).Bot.silence_errors():
-        await base_randomscp(interact, mock_context, lang=lang, expected=expected)
+        await base_randomscp(interact, mock_context, expected=expected, success=False)

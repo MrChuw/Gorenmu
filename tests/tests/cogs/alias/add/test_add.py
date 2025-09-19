@@ -5,30 +5,33 @@ import pytest
 from bot.models import Alias
 from bot.translations import Response
 from tests.helpers.mock_classes import MockContext
-from tests.tests.cogs.alias.add.test_params import Params
+
+from .test_params import Params
 
 
-async def alias_add(interact, mock_context: MockContext, lang: str, content: list[str], expected: str):
+async def alias_add(
+    interact, mock_context: MockContext, lang: str, content: list[str], expected: str, success: bool = False
+):
     await mock_context.prepare_context(lang)
     command_ = mock_context.bot.get_command("chance")
     await Alias.save_alias(mock_context, "The_Tests_alias", command_, "chance", None)
     response: Response = await interact.add_command._callback(interact, mock_context, *content)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_boolean(response.success, success)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.add_command, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    mock_context.Asserter.assert_string(interact.translations.Add.deco_helper(mock_context, "+"), helper)
+    mock_context.Asserter.assert_string(interact.translations.Add.deco_usage(mock_context, "+"), usage)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_alias_add_no_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await alias_add(interact, mock_context, lang=lang, content=[""], expected=expected)
+    await alias_add(interact, mock_context, lang=lang, content=[""], expected=expected, success=False)
 
 
 @pytest.mark.asyncio
@@ -53,7 +56,11 @@ async def test_alias_add_invalid_name(interact, mock_context: MockContext, lang:
 
     for name in rejected:
         await alias_add(
-            interact, mock_context, lang=lang, content=[name, "chance"], expected=expected.format(name=name)
+            interact,
+            mock_context,
+            lang=lang,
+            content=[name, "chance"],
+            expected=expected.format(name=name, success=False),
         )
 
 
@@ -75,29 +82,40 @@ async def test_alias_add_valid_name(interact, mock_context: MockContext, lang: s
 
     for name in accepted:
         await alias_add(
-            interact, mock_context, lang=lang, content=[name, "chance"], expected=expected.format(name=name)
+            interact,
+            mock_context,
+            lang=lang,
+            content=[name, "chance"],
+            expected=expected.format(name=name, success=True),
+            success=True,
         )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.conflict)
 async def test_alias_add_conflict(interact, mock_context: MockContext, lang: str, expected: str):
-    await alias_add(interact, mock_context, lang=lang, content=["The_Tests_alias", "chance"], expected=expected)
+    await alias_add(
+        interact, mock_context, lang=lang, content=["The_Tests_alias", "chance"], expected=expected, success=False
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.guard_caught)
 async def test_alias_add_guard_caught(interact, mock_context: MockContext, lang: str, expected: str):
-    await alias_add(interact, mock_context, lang=lang, content=["The_Tests", "restart"], expected=expected)
+    await alias_add(
+        interact, mock_context, lang=lang, content=["The_Tests", "restart"], expected=expected, success=False
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.success)
 async def test_alias_add_success(interact, mock_context: MockContext, lang: str, expected: str):
-    await alias_add(interact, mock_context, lang=lang, content=["The_Tests", "choice"], expected=expected)
+    await alias_add(interact, mock_context, lang=lang, content=["The_Tests", "choice"], expected=expected, success=True)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.pipe_guard_caught)
 async def test_alias_add_pipe_guard_caught(interact, mock_context: MockContext, lang: str, expected: str):
-    await alias_add(interact, mock_context, lang=lang, content=["The_Tests", "choice | restart"], expected=expected)
+    await alias_add(
+        interact, mock_context, lang=lang, content=["The_Tests", "choice | restart"], expected=expected, success=False
+    )

@@ -9,6 +9,9 @@ from urlextract import URLExtract
 
 from bot.ext import Context, commands
 from bot.translations import Response
+from bot.utils import SessionsCaches
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -17,6 +20,8 @@ if TYPE_CHECKING:
 class CountCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
+        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -28,19 +33,18 @@ class CountCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("Count")
     @commands.command(name="count", aliases=[])
     async def count(self, ctx: Context, *, content: str) -> Response:
         if (urls := URLExtract().find_urls(text=content)) and "type:url" in content:
             content = ""
-            cache_session = ctx.bot.SessionsCaches.CountCachedSession
+            cache_session = self.SessionsCaches.CountCachedSession
             for url in urls:
                 response = await cache_session.session.get(url)
                 content += f"{await response.text()} "
         uppercase_count = len(re.findall(r"[A-Z]", content))
         punctuations_count = len(re.findall(f"[{re.escape(string.punctuation)}]", content))
         special_chars_count = len([char for char in re.findall(r"[^\w\s]", content) if char not in string.punctuation])
-        return ctx.user.translations.Count.character_count.format_response(
+        return self.translations.Count.character_count(
             ctx, len(content), punctuations_count, uppercase_count, special_chars_count
         )
 

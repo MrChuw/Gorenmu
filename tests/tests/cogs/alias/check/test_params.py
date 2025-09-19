@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "This subcommand is used to check infos for an alias.",
-            "How to use: {}alias check cool_name",
+            "How to use: +alias check cool_name",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Este subcomando é usado para verificar informações de um alias.",
-            "Como usar: {}alias check cool_name",
+            "Como usar: +alias check cool_name",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

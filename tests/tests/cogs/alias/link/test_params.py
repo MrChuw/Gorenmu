@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "This subcommand is used to create link for an alias.",
-            "How to use: {}alias link (user) cool_name",
+            "How to use: +alias link (user) cool_name",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Este subcomando é usado para criar um link para um alias.",
-            "Como usar: {}alias link (usuário) cool_name",
+            "Como usar: +alias link (usuário) cool_name",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -54,11 +54,14 @@ class Params:
 
     name_conflict = [
         pytest.param(
-            "en", "Cannot link a new alias - you already have an alias with that name!", marks=pytest.mark.en, id="en"
+            "en",
+            "Cannot link a new alias - you already have an alias named: The_Tests_alias!",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
-            "Não é possível vincular um novo alias - você já possui um alias com esse nome!",
+            "Não é possível vincular um novo alias - você já possui um alias nomeado: The_Tests_alias!",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

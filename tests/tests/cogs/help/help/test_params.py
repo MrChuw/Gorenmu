@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Command to get information about other commands.",
-            "How to use: {}help (command name)",
+            "How to use: +help (command name)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Comando para obter informações sobre outros comandos.",
-            "Como usar: {}help (nome do comando)",
+            "Como usar: +help (nome do comando)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

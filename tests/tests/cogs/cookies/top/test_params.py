@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "See who are the top cookie eaters or donors.",
-            "To use: {}cookie top (or pass one of the options stocked|streak|consumed|donated|received|total)",
+            "To use: +cookie top (or pass one of the options stocked | streak | consumed | donated | received | total)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Veja quem são os melhores comedores, doadores ou acumuladores de cookies.",
-            "Para usar: {}cookie top "
+            "Para usar: +cookie top "
             "(ou passe uma das opções stocked | streak | consumed | donated | received | total)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",

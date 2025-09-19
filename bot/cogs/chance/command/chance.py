@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 from bot.ext import Context, commands
 from bot.translations import Response
 
+from .translations import Translations
+
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
@@ -14,6 +16,7 @@ if TYPE_CHECKING:
 class ChanceCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -25,11 +28,10 @@ class ChanceCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("Chance")
     @commands.command(name="chance", aliases=["%"])
     async def chance(self, ctx: Context) -> Response:
         chance = f'{("{:.2f}%".format(random.random() * 100))}'
-        return ctx.user.translations.Chance.random_percentage.format_response(ctx, chance)
+        return self.translations.Chance.response(ctx, chance)
 
 
 async def setup(bot: Gorenmu) -> None:

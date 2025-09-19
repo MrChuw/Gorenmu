@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Translates a text into random languages depending on how many times the user requests.",
-            "To use: {}hypertranslate (number of times) text",
+            "To use: +hypertranslate (number of times) text",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Traduzir um texto em idiomas aleatórios dependendo de quantas vezes o usuário solicita.",
-            "Para usar: {}hypertranslate (número de vezes) texto",
+            "Para usar: +hypertranslate (número de vezes) texto",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

@@ -123,6 +123,7 @@
     "IsAfk": {
         "helper": "Digite o comando e o nome do usuário para ver se eles são AFK.",
         "usage": "Como usar: {}IsAfk (nome de usuário)",
+        "description": "Este comando verifica se um usuário é AFK ou não.",
         "commands": [
             {
                 "response": "@usuário2 não está AFK.",
@@ -136,8 +137,7 @@
                 "args": "usuário4",
                 "response": "@usuário4 está AFK e deixou uma nota: <message>"
             }
-        ],
-        "description": "Este comando verifica se um usuário é AFK ou não."
+        ]
     },
     "RAfk": {
         "helper": "Retornar ao status AFK.",

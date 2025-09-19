@@ -5,6 +5,9 @@ from typing import TYPE_CHECKING
 
 from bot.ext import Context, commands
 from bot.translations import Response
+from bot.utils import SessionsCaches, StringTools, TimeTools, UploadThings
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -13,6 +16,7 @@ if TYPE_CHECKING:
 class ReverseCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -24,10 +28,9 @@ class ReverseCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("Reverse")
     @commands.command(name="reverse", aliases=["invert"])
     async def reverse(self, ctx: Context, *, content) -> Response:
-        return ctx.user.translations.Reverse.reversed_string.format_response(ctx, content[::-1])
+        return self.translations.Exceptions.echo(ctx, content[::-1])
 
 
 async def setup(bot: Gorenmu) -> None:

@@ -12,9 +12,8 @@ from tests.tests.cogs.admin.restart.test_params import Params
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.restart, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    mock_context.Asserter.assert_string(interact.translations.Restart.deco_usage(mock_context, "+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Restart.deco_helper(mock_context, "+"), helper)
 
 
 @pytest.mark.asyncio
@@ -34,6 +33,7 @@ async def test_success(interact, mock_context: MockContext, lang: str, expected:
     if response is not None:
         mock_context.Asserter.assert_instance(response, Response)
         mock_context.Asserter.assert_string(response.response_string, expected="", strict=True)
+        mock_context.Asserter.assert_boolean(response.success, True)
 
 
 @pytest.mark.asyncio
@@ -43,3 +43,4 @@ async def test_failure(interact, mock_context: MockContext, lang: str, expected:
     async with mock_context.MockBuilder.Errors.os_execv(OSError("exec failed")):
         response: Response = await interact.restart._callback(self=interact, ctx=mock_context)
     mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_boolean(response.success, False)

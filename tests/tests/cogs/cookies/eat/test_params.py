@@ -5,11 +5,11 @@ import pytest
 
 class Params:
     decorators = [
-        pytest.param("en", "Get your daily fortune.", "To use: {}cookie eat", marks=pytest.mark.en, id="en"),
+        pytest.param("en", "Get your daily fortune.", "To use: +cookie eat", marks=pytest.mark.en, id="en"),
         pytest.param(
             "pt_BR",
             "Pegue seu biscoito da sorte diário.",
-            "Para usar: {}cookie eat",
+            "Para usar: +cookie eat",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -22,12 +22,7 @@ class Params:
             marks=pytest.mark.en,
             id="en",
         ),
-        pytest.param(
-            "pt_BR",
-            ["The person born with a talent they are meant to use will find their greatest happiness in using it."],
-            marks=pytest.mark.pt_BR,
-            id="pt_BR",
-        ),
+        pytest.param("pt_BR", ["Porque ser contra o que é felicidade é loucura."], marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
     amount_zero = [
@@ -67,9 +62,8 @@ class Params:
         pytest.param(
             "pt_BR",
             [
-                "The person born with a talent they are meant to use will find their greatest happiness in using it.",
-                "The trouble with most people is that they think with "
-                "their hopes or fears or wishes rather than with their minds.",
+                "Porque ser contra o que é felicidade é loucura.",
+                "Se a vida te afastar, lute por cada centímetro.",
                 "Você ainda está em cooldown, espere 5 horas, 59 minutos e",
             ],
             marks=pytest.mark.pt_BR,

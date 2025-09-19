@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Shows a user's Twitch profile image.",
-            "How to use: {}profilepicture (username)",
+            "How to use: +profilepicture (username)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Mostra a imagem de perfil de um usuário da Twitch.",
-            "Como usar: {}profilepicture (nome_de_usuário)",
+            "Como usar: +profilepicture (nome_de_usuário)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

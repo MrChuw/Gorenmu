@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "This subcommand is used to add an note.",
-            "How to use: {}note add (text)",
+            "How to use: +note add (text)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Este subcomando é usado para adicionar uma anotação.",
-            "Como usar: {}note add (texto)",
+            "Como usar: +note add (texto)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

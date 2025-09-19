@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Sends a random color.",
-            "To use: {}random_color or add type:hex / type:rgb to specify the type.",
+            "To use: +random_color or add type:hex / type:rgb to specify the type.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Envia uma cor aleatória.",
-            "Para usar: {}random_color ou adicione type:hex / type:rgb para especificar o tipo.",
+            "Para usar: +random_color ou adicione type:hex / type:rgb para especificar o tipo.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

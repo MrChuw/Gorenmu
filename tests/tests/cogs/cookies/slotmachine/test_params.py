@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Bet your daily cookie for a chance to win more.",
-            "To use: {}cookie slotmachine (all can be used to bet all unclaimed cookies quickly)",
+            "To use: +cookie slotmachine (all can be used to bet all unclaimed cookies quickly)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Aposte seus cookies para tentar ganhar mais.",
-            "Para usar: {}cookie slotmachine "
+            "Para usar: +cookie slotmachine "
             "(all pode ser usado para apostar todos os cookies não coletados rapidamente)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
@@ -74,7 +74,7 @@ class Params:
         ),
         pytest.param(
             "pt_BR",
-            " Você usou todos 5 cookie(s) não resgatado(s) e perdeu tudo. "
+            " Você usou all 5 cookie(s) não resgatado(s) e perdeu tudo. "
             "O próximo está disponível em 6 horas. PoroSad",
             marks=pytest.mark.pt_BR,
             id="pt_BR",

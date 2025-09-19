@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Command used to generate random images from Safebooru.",
-            "To use: {}safebooru (tags)",
+            "To use: +safebooru (tags)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Comando usado para gerar imagens aleatórias de Safebooru.",
-            "Para usar: {}safebooru (tags)",
+            "Para usar: +safebooru (tags)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

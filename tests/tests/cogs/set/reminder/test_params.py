@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Enable or disable reminders.",
-            "Usage: {}set reminder (on/off)",
+            "Usage: +set reminder (on/off)",
             marks=pytest.mark.en,
             id="decorator-en",
         ),
         pytest.param(
             "pt_BR",
             "Ativar ou desativar lembretes.",
-            "Uso: {}set reminder (on/off)",
+            "Uso: +set reminder (on/off)",
             marks=pytest.mark.pt_BR,
             id="decorator-pt",
         ),

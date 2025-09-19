@@ -20,13 +20,12 @@ async def interact(mock_bot):
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.check, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    mock_context.Asserter.assert_string(interact.translations.Check.deco_usage(mock_context, "+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Check.deco_helper(mock_context, "+"), helper)
 
 
 async def base_annotations_check(
-    interact, mock_context: MockContext, lang: str, content: str, expected: str, amount: int = 0
+    interact, mock_context: MockContext, lang: str, content: str, expected: str, amount: int = 0, success: bool = False
 ):
     await mock_context.prepare_context(lang)
     for value in range(amount):
@@ -35,45 +34,56 @@ async def base_annotations_check(
         await Annotation.create(content=content_note, user=mock_context.user, title=title)
     response: Response = await interact.check._callback(self=interact, ctx=mock_context, content=content)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_boolean(response.success, success)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.check_wrong_id)
-async def check_wrong_id(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_annotations_check(interact, mock_context, lang=lang, content="", expected=expected)
+async def test_check_wrong_id(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_annotations_check(interact, mock_context, lang=lang, content="title", expected=expected, success=False)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.check_no_content_no_annotations)
-async def check_no_content_no_annotations(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_annotations_check(interact, mock_context, lang=lang, content="", expected=expected)
+async def test_check_no_content_no_annotations(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_annotations_check(interact, mock_context, lang=lang, content="", expected=expected, success=False)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.check_one_annotation)
-async def check_one_annotation(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_annotations_check(interact, mock_context, lang=lang, content="", expected=expected, amount=1)
+async def test_check_one_annotation(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_annotations_check(
+        interact, mock_context, lang=lang, content="", expected=expected, amount=1, success=True
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.check_two_annotation)
-async def check_two_annotation(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_annotations_check(interact, mock_context, lang=lang, content="", expected=expected, amount=2)
+async def test_check_two_annotation(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_annotations_check(
+        interact, mock_context, lang=lang, content="", expected=expected, amount=2, success=True
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.check_annotation_id_one)
-async def check_annotation_id_one(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_annotations_check(interact, mock_context, lang=lang, content="1", expected=expected, amount=2)
+async def test_check_annotation_id_one(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_annotations_check(
+        interact, mock_context, lang=lang, content="1", expected=expected, amount=2, success=True
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.check_annotation_id_two)
-async def check_annotation_id_two(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_annotations_check(interact, mock_context, lang=lang, content="2", expected=expected, amount=2)
+async def test_check_annotation_id_two(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_annotations_check(
+        interact, mock_context, lang=lang, content="2", expected=expected, amount=2, success=True
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.check_annotation_wrong_id)
-async def check_annotation_wrong_id(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_annotations_check(interact, mock_context, lang=lang, content="3", expected=expected, amount=2)
+async def test_check_annotation_wrong_id(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_annotations_check(
+        interact, mock_context, lang=lang, content="3", expected=expected, amount=2, success=False
+    )

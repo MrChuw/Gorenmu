@@ -6,6 +6,9 @@ from typing import TYPE_CHECKING
 
 from bot.ext import Context, commands
 from bot.translations import Response
+from bot.utils import StringTools
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -14,6 +17,8 @@ if TYPE_CHECKING:
 class AccountAgeCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.StringTools = StringTools()
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -25,21 +30,18 @@ class AccountAgeCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("AccountAge")
     @commands.command(name="accountage", aliases=["age"])
     async def accountage(self, ctx: Context, user_name: str = "") -> Response:
-        translations = ctx.user.translations
-        user_name = ctx.bot.StringTools.str2name_or(user_name or ctx.author.name)
-        user_tmi = await ctx.bot.fetch_user(login=user_name)
-        if not user_tmi:
-            return translations.Exceptions.user_not_found_name.format_response(ctx, user_name, success=False)
-
-        mention = translations.SupportTools.LanguageContext.build_mention(ctx.author.name, user_name)
+        user_name = self.StringTools.str2name_or(user_name or ctx.author.name)
+        if not (user_tmi := await ctx.bot.fetch_user(login=user_name)):
+            return self.translations.Exceptions.user_not_found_name(ctx, user_name)
+        timetools = self.translations.SupportTools.TimeTools
+        mention = self.translations.SupportTools.LanguageContext.mention(ctx, ctx.author.name, user_name)
         now = datetime.datetime.now(tz=datetime.UTC)
-        delta = translations.SupportTools.TimeTools.Humanize.precisedelta(user_tmi.created_at - now)
-        date = user_tmi.created_at.strftime("%d/%m/%Y %H:%M:%S")
+        delta = timetools.Humanize(ctx).precisedelta(user_tmi.created_at - now)
+        date = user_tmi.created_at.strftime(timetools.strftime(ctx))
 
-        return translations.AccountAge.age.format_response(ctx, mention, date, delta)
+        return self.translations.AccountAge.accountage(ctx, mention, date, delta)
 
 
 async def setup(bot: Gorenmu) -> None:

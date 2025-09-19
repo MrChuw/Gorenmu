@@ -5,9 +5,9 @@ import pytest
 
 class Params:
     decorators = [
-        pytest.param("en", "Returns a random percentage.", "To use: {}chance", marks=pytest.mark.en, id="en"),
+        pytest.param("en", "Returns a random percentage.", "To use: +chance", marks=pytest.mark.en, id="en"),
         pytest.param(
-            "pt_BR", "Retorna uma porcentagem aleatória.", "Para usar: {}chance", marks=pytest.mark.pt_BR, id="pt_BR"
+            "pt_BR", "Retorna uma porcentagem aleatória.", "Para usar: +chance", marks=pytest.mark.pt_BR, id="pt_BR"
         ),
     ]
     chance = [

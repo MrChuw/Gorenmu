@@ -6,6 +6,9 @@ from typing import TYPE_CHECKING
 from bot.ext import Context, commands
 from bot.models import MessagesLog, User
 from bot.translations import Response
+from bot.utils import SessionsCaches, StringTools, TimeTools, UploadThings
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -14,6 +17,8 @@ if TYPE_CHECKING:
 class RandomLineCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
+        self.StringTools: StringTools = StringTools()
 
     cooldown_rate = 1
     cooldown_per = 5
@@ -25,27 +30,26 @@ class RandomLineCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("RandomLine")
     @commands.command(name="randomline", aliases=["rl"])
     async def randomline(self, ctx: Context, *, options: str = "") -> Response:
-        translations = ctx.user.translations
-        humanize = ctx.user.translations.SupportTools.TimeTools.Humanize
+        translations = self.translations
+        humanize = self.translations.SupportTools.TimeTools.Humanize(ctx)
         options_split = options.split(" ")
-        channel_original = self.bot.StringTools.find_prefixed_option(options_split, "channel:")
-        user_original = self.bot.StringTools.find_prefixed_option(options_split, "user:")
+        channel_original = self.StringTools.find_prefixed_option(options_split, "channel:")
+        user_original = self.StringTools.find_prefixed_option(options_split, "user:")
         user, channel = None, None
         if user_original:
             if user_original.lower() != ctx.author.name.lower():
-                user = await User.get_user(ctx, user_original)
+                user = await User.get_user(ctx, name=user_original, translations=self.translations)
             else:
                 user = ctx.user
-            if isinstance(user, Response):
+            if hasattr(user, "response_string"):
                 return user
 
         if channel_original and channel_original != "global":
             channel = ctx.bot.channels.get(channel_original)
             if not channel:
-                return translations.Exceptions.channel_not_found.format_response(ctx, channel_original)
+                return translations.Exceptions.channel_not_found(ctx, channel_original)
 
         if channel is None and channel_original != "global":
             channel = ctx.bot.channels.get(ctx.channel.name)
@@ -54,20 +58,16 @@ class RandomLineCmd(commands.CustomComponent):
         message: MessagesLog
         if count == 0:
             if not channel and user:
-                return translations.RandomLine.no_user_message.format_response(ctx, user_original)
+                return translations.RandomLine.no_user_message(ctx, user_original)
             elif channel and not user:
-                return translations.RandomLine.no_channel_message.format_response(
-                    ctx, channel_original or ctx.channel.name
-                )
+                return translations.RandomLine.no_channel_message(ctx, channel_original or ctx.channel.name)
 
-            return translations.RandomLine.no_user_on_channel.format_response(
-                ctx, user_original, channel_original or ctx.channel.name
-            )
+            return translations.RandomLine.no_user_on_channel(ctx, user_original, channel_original or ctx.channel.name)
         if not count:
-            return translations.RandomLine.search_timeout.format_response(
+            return translations.RandomLine.search_timeout(
                 ctx, user_original or "", channel_original or ctx.channel.name
             )
-        return translations.RandomLine.random_line.format_response(
+        return translations.RandomLine.random_line(
             ctx,
             message.content,
             humanize.created_a_time(created_at=message.created_at, timezone=ctx.user.timezone_),

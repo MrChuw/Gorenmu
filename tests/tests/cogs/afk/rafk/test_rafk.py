@@ -21,12 +21,13 @@ async def interact(mock_bot):
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.rafk, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    mock_context.Asserter.assert_string(interact.translations.RAFK.deco_usage(mock_context, "+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.RAFK.deco_helper(mock_context, "+"), helper)
 
 
-async def base_rafk(interact, mock_context: MockContext, lang: str, content: str, expected: str, time=True):
+async def base_rafk(
+    interact, mock_context: MockContext, lang: str, content: str, expected: str, time=True, success: bool = False
+):
     await mock_context.prepare_context(lang)
     if time:
         afk = (await Status.get_or_create(user=mock_context.user))[0]
@@ -36,21 +37,22 @@ async def base_rafk(interact, mock_context: MockContext, lang: str, content: str
         await interact.bot.memcache.RAfk.set([int(mock_context.author.id), "username"], afk_str)
     response: Response = await interact.rafk._callback(self=interact, ctx=mock_context)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_boolean(response.success, success)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.not_in_time)
 async def test_rafk_not_in_time(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_rafk(interact, mock_context, lang=lang, content="content", expected=expected, time=False)
+    await base_rafk(interact, mock_context, lang=lang, content="content", expected=expected, time=False, success=False)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.with_content)
 async def test_rafk_with_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_rafk(interact, mock_context, lang=lang, content="content", expected=expected)
+    await base_rafk(interact, mock_context, lang=lang, content="content", expected=expected, success=True)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_rafk_no_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_rafk(interact, mock_context, lang=lang, content="", expected=expected)
+    await base_rafk(interact, mock_context, lang=lang, content="", expected=expected, success=True)

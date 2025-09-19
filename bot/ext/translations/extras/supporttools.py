@@ -1,0 +1,122 @@
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from bot.ext.translations.extras import Humanize as ExtrasHumanize
+
+from . import ClassBase, TBase
+
+if TYPE_CHECKING:
+    from bot.ext import Context
+
+
+class OtherTools(ClassBase):
+    class SupportTools(ClassBase, TBase):
+        def __init__(self):
+            super().__init__()
+            self.populate_subclasses()
+
+        class LanguageContext(ClassBase, TBase):
+            def __init__(self):
+                super().__init__()
+                self.populate_subclasses()
+
+            def mention(self, ctx: Context, author_name: str, target_name: str) -> str:
+                with self.lang_dict.once("mention"):
+                    self.lang_dict.add_with("en", "you")
+                    self.lang_dict.add_with(["pt_br", "pt"], "você")
+                mention = self._untangle_str(ctx, "mention")
+                return mention if target_name == author_name else f"@{target_name}"
+
+            class Verbs(TBase):
+                def cookies_second_person(self, ctx: Context) -> str:
+                    with self.lang_dict.once("second_person"):
+                        self.lang_dict.add_with("en", "have")
+                        self.lang_dict.add_with(["pt_br", "pt"], "já comeu")
+                    return self._untangle_str(ctx, "second_person")
+
+                def cookies_third_person(self, ctx: Context) -> str:
+                    with self.lang_dict.once("third_person"):
+                        self.lang_dict.add_with("en", "has")
+                        self.lang_dict.add_with(["pt_br", "pt"], "já comeu")
+                    return self._untangle_str(ctx, "third_person")
+
+            Verbs: Verbs
+
+        LanguageContext: LanguageContext
+
+        class TimeTools(TBase):
+            def strftime(self, ctx: Context) -> str:
+                with self.lang_dict.once("strftime"):
+                    self.lang_dict.add_with("en", "%m/%d/%Y at %I:%M %p")
+                    self.lang_dict.add_with(["pt_br", "pt"], "%d/%m/%Y às %H:%M:%S")
+                return self._untangle_str(ctx, "strftime")
+
+            strftime: str = strftime
+
+            def Humanize(self, ctx: Context) -> ExtrasHumanize:  # NOQA
+                with self.lang_dict.once("humanize"):
+                    self.lang_dict.add_with(
+                        "en",
+                        ExtrasHumanize(
+                            {
+                                "years": ["years", "year", "y"],
+                                "months": ["months", "month", "mo"],
+                                "weeks": ["weeks", "week", "w"],
+                                "days": ["days", "day", "d"],
+                                "hours": ["hours", "hour", "h"],
+                                "minutes": ["minutes", "minute", "min", "m"],
+                                "seconds": ["seconds", "second", "secs", "sec", "s"],
+                                "milliseconds": ["milliseconds", "millisecond", "millisecs", "millisec", "milli"],
+                                "microseconds": ["microseconds", "microsecond", "micro", "us"],
+                                "time": ["time", "t"],
+                            },
+                            "en",
+                        ),
+                    )
+                    self.lang_dict.add_with(
+                        ["pt_br", "pt"],
+                        ExtrasHumanize(
+                            {
+                                "years": ["anos", "ano", "a"],
+                                "months": ["meses", "mês", "mo"],
+                                "weeks": ["semanas", "semana", "w"],
+                                "days": ["dias", "dia", "d"],
+                                "hours": ["horas", "hora", "h"],
+                                "minutes": ["minutos", "minuto", "min", "m"],
+                                "seconds": ["segundos", "segundo", "segs", "seg", "s"],
+                                "milliseconds": ["milissegundos", "milissegundo", "milisecs", "milisec", "mili"],
+                                "microseconds": ["microssegundos", "microssegundo", "micro", "us"],
+                                "time": ["tempo", "t"],
+                            },
+                            "pt_BR",
+                            self.lang_dict.get_lang("en", "humanize").pattern,  # NOQA
+                        ),
+                    )
+
+                return self._untangle_any(ctx, "humanize")
+
+            Humanize: ExtrasHumanize = Humanize
+
+        TimeTools: TimeTools
+
+        class Emotes(TBase):
+            def happy(self, ctx: Context) -> list[str]:
+                with self.lang_dict.once("strftime"):
+                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["happy"])
+                return self._untangle_any(ctx, "strftime")
+
+            def pog(self, ctx: Context) -> list[str]:
+                with self.lang_dict.once("strftime"):
+                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["pog"])
+                return self._untangle_any(ctx, "strftime")
+
+            def sad(self, ctx: Context) -> list[str]:
+                with self.lang_dict.once("strftime"):
+                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["sad"])
+                return self._untangle_any(ctx, "strftime")
+
+        Emotes: Emotes
+
+    SupportTools: SupportTools

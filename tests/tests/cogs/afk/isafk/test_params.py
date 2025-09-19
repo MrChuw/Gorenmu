@@ -7,14 +7,14 @@ class Params:
         pytest.param(
             "en",
             "Type the command and the user's name to see if they are AFK.",
-            "How to use: {}IsAfk (username)",
+            "How to use: +IsAfk (username)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Digite o comando e o nome do usuário para ver se eles são AFK.",
-            "Como usar: {}IsAfk (nome de usuário)",
+            "Como usar: +IsAfk (nome de usuário)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

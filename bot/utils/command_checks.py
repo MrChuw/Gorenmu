@@ -106,7 +106,7 @@ class Check:
             await Cookies.create(user=user, id=int(ctx.author.id))
         except MultipleObjectsReturned as e:
             logging.error(e)
-            await ctx.reply(ctx.user.translations.Exceptions.lottery_seed.format(ctx.bot.dev_name))
+            await ctx.reply(ctx.component.translations.Exceptions.lottery_seed(ctx, ctx.bot.dev_name).response_string)
             raise UnknownError from e
         if not await LotteryBank.get_or_none(closed=False, accumulated=True):
             await LotteryBank.create()
@@ -115,12 +115,12 @@ class Check:
 
     # COOKIE
     @staticmethod
-    async def cookie_check(ctx: Context) -> bool:
+    async def cookie_check(ctx: Context, translations) -> bool:
         try:
-            cookie = await Cookies.get_cookie(ctx=ctx, user=ctx.user)
+            cookie = await Cookies.get_cookie(ctx=ctx, user=ctx.user, translations=translations)
         except DoesNotExist:
             cookie = await Cookies.create(user=ctx.user, id=int(ctx.author.id))
-        if isinstance(cookie, Response):
+        if hasattr(cookie, "response_string"):
             cookie = await Cookies.create(user=ctx.user, id=int(ctx.author.id))
         if not cookie.cooldown:
             await cookie.new_cooldown()

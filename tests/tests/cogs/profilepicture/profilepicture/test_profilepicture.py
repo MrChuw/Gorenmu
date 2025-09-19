@@ -17,16 +17,15 @@ async def interact(mock_bot):
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
-    decorator = mock_context.bot.TranslationManager.get_decorator(interact.profilepicture, mock_context)
-    mock_context.Asserter.assert_string(decorator.usage, usage)
-    mock_context.Asserter.assert_string(decorator.helper, helper)
+    mock_context.Asserter.assert_string(interact.translations.ProfilePicture.deco_usage(mock_context, "+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.ProfilePicture.deco_helper(mock_context, "+"), helper)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.success)
 async def test_success(interact, mock_context: MockContext, lang, expected):
     await mock_context.prepare_context(lang)
-    session = mock_context.bot.SessionsCaches.ProfilePictureCachedSession.session
+    session = interact.SessionsCaches.ProfilePictureCachedSession.session
     async with (
         mock_context.MockBuilder.Bot.fetch_user(name="@mr_chuw")
         .Session.get(session=session, return_value=expected)
@@ -34,6 +33,7 @@ async def test_success(interact, mock_context: MockContext, lang, expected):
     ):
         response = await interact.profilepicture._callback(self=interact, ctx=mock_context, name="")
         mock_context.Asserter.assert_string(response.response_string.strip(), expected, strict=True)
+    mock_context.Asserter.assert_boolean(response.success, True)
 
 
 @pytest.mark.asyncio
@@ -43,3 +43,4 @@ async def test_not_found(interact, mock_context: MockContext, lang, expected):
     async with mock_context.MockBuilder.Bot.fetch_user(name=None):
         response = await interact.profilepicture._callback(self=interact, ctx=mock_context, name="unknown_user")
         mock_context.Asserter.assert_string(response.response_string, expected, strict=True)
+    mock_context.Asserter.assert_boolean(response.success, False)

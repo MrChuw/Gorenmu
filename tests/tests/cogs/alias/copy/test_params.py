@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "This subcommand is used to copy an alias.",
-            "How to use: {}alias copy (user) (alias) (…arguments)",
+            "How to use: +alias copy (user) (alias) (…arguments)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Este subcomando é usado para copiar um alias.",
-            "Como usar: {}alias copy (usuário) (alias) (…argumentos)",
+            "Como usar: +alias copy (usuário) (alias) (…argumentos)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

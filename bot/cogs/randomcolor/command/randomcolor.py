@@ -8,6 +8,9 @@ from typing import TYPE_CHECKING
 from bot.apis import Color
 from bot.ext import Context, commands
 from bot.translations import Response
+from bot.utils import SessionsCaches, StringTools, TimeTools, UploadThings
+
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -16,6 +19,8 @@ if TYPE_CHECKING:
 class RandomColorCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
+        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -27,11 +32,10 @@ class RandomColorCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("RandomColor")
     @commands.command(name="randomcolor", aliases=["rc"])
     async def randomcolor(self, ctx: Context, tipo: str = None) -> Response:
-        translations = ctx.user.translations.RandomColor
-        session = ctx.bot.SessionsCaches.ColorCachedSession.session
+        translations = self.translations.RandomColor
+        session = self.SessionsCaches.ColorCachedSession.session
         url = ctx.bot.config.ApisConfig.color_site_url
         params = defaultdict()
         hex_code = None
@@ -45,8 +49,8 @@ class RandomColorCmd(commands.CustomComponent):
             params["rgb"] = str(rgb)
             url = url.with_path("/rgb/{},{},{}".format(*rgb))
             hex_code = "#{:02X}{:02X}{:02X}".format(*rgb)
-        name = await Color.name(params, session, self.bot.log) or translations.api_down
-        return translations.response_url.format_response(ctx, hex_code, name, url)
+        name = await Color.name(params, session, self.bot.log) or translations.api_down(ctx)
+        return translations.response_url(ctx, hex_code, name, url)
 
 
 async def setup(bot: Gorenmu) -> None:

@@ -5,10 +5,8 @@ import pytest
 
 class Params:
     decorators = [
-        pytest.param("en", "Sends a random SCP.", "To use: {}scp", marks=pytest.mark.en, id="en"),
-        pytest.param(
-            "pt_BR", "Envia um SCP aleatório.", "Para usar: {}scp <quantidade>", marks=pytest.mark.pt_BR, id="pt_BR"
-        ),
+        pytest.param("en", "Sends a random SCP.", "To use: +scp", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", "Envia um SCP aleatório.", "Para usar: +scp", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
     two_hundred = [
@@ -27,6 +25,6 @@ class Params:
     ]
 
     exception = [
-        pytest.param("en", "An error occurred, please try again.", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "Ocorreu um erro. Tente novamente.", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param("en", "An error occurred, please try again: fail", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", "Ocorreu um erro. Tente novamente: fail", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]

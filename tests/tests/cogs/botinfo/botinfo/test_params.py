@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Shows general bot statistics, uptime, and metadata like site and developer.",
-            "How to use: {}botinfo | {}site | {}uptime",
+            "How to use: +botinfo | +site | +uptime",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Exibe estatísticas gerais do bot, tempo de atividade e metadados como site e desenvolvedor.",
-            "Como usar: {}botinfo | {}site | {}uptime",
+            "Como usar: +botinfo | +site | +uptime",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

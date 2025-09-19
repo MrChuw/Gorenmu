@@ -7,23 +7,21 @@ class Params:
         pytest.param(
             "en",
             "Reloads the commands using all or command name.",
-            "How to use: {}reload (all) or (command_name)",
+            "How to use: +reload (all) or (command_name)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Recarregar os comandos usando all ou nome do comando.",
-            "Como usar: {}reload (all) ou (command_name)",
+            "Como usar: +reload (all) ou (command_name)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
     ]
     translations = [
-        pytest.param("en", "TranslationManager were successfully reloaded.", marks=pytest.mark.en, id="en"),
-        pytest.param(
-            "pt_BR", "TranslationManager foram recarregadas com sucesso.", marks=pytest.mark.pt_BR, id="pt_BR"
-        ),
+        pytest.param("en", "Translations were successfully reloaded.", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", "Translations foram recarregadas com sucesso.", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
     emotes = [
@@ -42,10 +40,8 @@ class Params:
     ]
 
     error_translations = [
-        pytest.param("en", "TranslationManager had an error while reloading: Error", marks=pytest.mark.en, id="en"),
-        pytest.param(
-            "pt_BR", "TranslationManager tiveram um erro ao recarregar: Error", marks=pytest.mark.pt_BR, id="pt_BR"
-        ),
+        pytest.param("en", "Translations had an error while reloading: Error", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", "Translations tiveram um erro ao recarregar: Error", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
     error_emotes = [

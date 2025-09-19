@@ -28,3 +28,14 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.8.9
+    hooks:
+      - id: pip-compile
+        name: pip-compile requirements.in
+        args: [requirements.txt, -o, requirements.txt]
+      - id: pip-compile
+        name: pip-compile requirements-dev.in
+        args: [requirements-dev.txt, -o, requirements-dev.txt]
+        files: ^requirements-dev\.(in|txt)$
+      - id: uv-lock

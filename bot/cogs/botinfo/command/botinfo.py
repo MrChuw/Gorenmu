@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 from bot.ext import Context, commands
 from bot.translations import Response
 
+from .translations import Translations
+
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
@@ -14,6 +16,7 @@ if TYPE_CHECKING:
 class BotInfoCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -25,19 +28,18 @@ class BotInfoCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("BotInfo")
     @commands.command(name="botinfo", aliases=["info", "uptime", "site"])
     async def bot_info(self, ctx: Context) -> Response:
-        translations = ctx.user.translations.BotInfo
+        translations = self.translations.BotInfo
         if ctx.invoked_with == "site":
-            return translations.site.format_response(ctx, ctx.bot.config.BotConfig.site_url)
+            return translations.site(ctx, ctx.bot.config.BotConfig.site_url)
         if ctx.invoked_with == "uptime":
-            timesince = ctx.user.translations.SupportTools.TimeTools.Humanize.precisedelta(
+            timesince = self.translations.SupportTools.TimeTools.Humanize(ctx).precisedelta(
                 datetime.now(UTC) - ctx.bot.boot
             )
-            return translations.uptime.format_response(ctx, timesince)
+            return translations.uptime(ctx, timesince)
 
-        return translations.info.format_response(
+        return translations.info(
             ctx,
             len(ctx.bot.channels),
             len(ctx.bot.commands),

@@ -50,5 +50,5 @@ class MockUser:
         self.profile_image: str = ""
         self.translations: Translations | None = None
 
-    def get_translation(self, bot: Gorenmu, lang: str = "en"):
-        self.translations = bot.TranslationManager.get_translations(language=lang)
+    # def get_translation(self, bot: Gorenmu, lang: str = "en"):
+    #     self.translations = bot.TranslationManager.get_translations(language=lang)

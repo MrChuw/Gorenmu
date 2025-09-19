@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "This subcommand is used to rename an alias.",
-            "How to use: {}alias rename cool_name new_cool_name",
+            "How to use: +alias rename cool_name new_cool_name",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Este subcomando é usado para renomear um alias.",
-            "Como usar: {}alias rename cool_name new_cool_name",
+            "Como usar: +alias rename cool_name new_cool_name",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

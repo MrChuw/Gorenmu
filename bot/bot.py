@@ -12,11 +12,9 @@ import twitchio
 from aiocache.backends.memcached import MemcachedCache
 from aiocache.backends.memory import SimpleMemoryCache
 from aiocache.backends.redis import RedisCache
-from loguru import logger
 from twitchio.ext import commands
 from twitchio.ext.commands import CommandErrorPayload
 
-from bot.apis import Emotes
 from bot.ext import ChatMessage, TypesBot
 from bot.handlers import (
     ChannelHandler,
@@ -26,18 +24,7 @@ from bot.handlers import (
     LifecycleHandler,
     TokensHandler,
 )
-from bot.translations import TranslationManager
-from bot.utils import (
-    Cache,
-    Config,
-    DynamicDescriptions,
-    MarkovProcessor,
-    MemCache,
-    SessionsCaches,
-    StringTools,
-    TimeTools,
-    UploadThings,
-)
+from bot.utils import Cache, Config, MarkovProcessor, MemCache, TimeTools
 
 if TYPE_CHECKING:
     # from bot.api import api, api_start
@@ -46,7 +33,7 @@ if TYPE_CHECKING:
 
 
 class Gorenmu(TypesBot):
-    def __init__(self, configs: Config, case_insensitive: bool, log: logger, adapter) -> None:
+    def __init__(self, configs: Config, case_insensitive: bool, log: Logger, adapter) -> None:
         super().__init__(
             client_id=configs.ApisConfig.api_client_id,
             client_secret=configs.ApisConfig.api_client_secret,
@@ -60,7 +47,7 @@ class Gorenmu(TypesBot):
         self.channels: dict[str, ChannelModel] = {}
         self.routines: list[Routine] = []
         self.bots_ids: list[int] = []
-        self.manual_event_message: list[Callable] = []
+        self.manual_events: defaultdict[str, dict[str, dict[str, Callable]]] = defaultdict(lambda: defaultdict(dict))
         # self.api: api | None = None
         # self.api_start: api_start = None
         self.MarkovProcessor: MarkovProcessor | None = None
@@ -70,15 +57,15 @@ class Gorenmu(TypesBot):
         self.log: Logger = log
         self.config: Config = configs
         self.memcache: MemCache = MemCache()
-        self.StringTools: StringTools = StringTools()
+        # self.StringTools: StringTools = StringTools()
         self.cache: RedisCache | MemcachedCache | SimpleMemoryCache = Cache.cache_load(bot=self)
-        self.docs_handler: DynamicDescriptions = DynamicDescriptions(self)
-        self.UploadThings: UploadThings = UploadThings(self)
+        # self.docs_handler: DynamicDescriptions = DynamicDescriptions(self)
+        # self.UploadThings: UploadThings = UploadThings(self)
         self.docs: defaultdict = defaultdict(dict)
 
-        self.SessionsCaches: SessionsCaches = SessionsCaches(self)
-        self.TranslationManager: TranslationManager = TranslationManager()
-        self.Emotes: Emotes = Emotes(bot=self)
+        # self.SessionsCaches: SessionsCaches = SessionsCaches(self)
+        # self.TranslationManager: TranslationManager = TranslationManager()
+        # self.Emotes: Emotes = Emotes(bot=self)
         self.TokensHandler: TokensHandler = TokensHandler(bot=self)
         self.DatabaseHandler: DatabaseHandler = DatabaseHandler(bot=self)
         self.ChannelHandler: ChannelHandler = ChannelHandler(bot=self)
@@ -97,32 +84,11 @@ class Gorenmu(TypesBot):
     async def event_oauth_authorized(self, payload: twitchio.authentication.UserTokenPayload) -> None:
         await self.TokensHandler.event_oauth_authorized(payload)
 
-    async def reload_component(self, attr_name: str, module_name: str, class_name: str, args: list = None):
-        from bot.utils.reload_util import reload_and_get
-
-        try:
-            new_class = reload_and_get(module_name, class_name)
-            instance = new_class(*args) if args else new_class()
-            old_instance = getattr(self, attr_name)
-            if getattr(old_instance, "close", None):
-                old_instance.close()
-            setattr(self, attr_name, instance)
-            self.log.info(f"Reloaded {attr_name} from {module_name}.{class_name}")
-        except Exception as e:
-            self.log.error(f"Error reloading {attr_name}: {e}")
-            raise
-
     async def close(self) -> None:
         await self.LifecycleHandler.close()
 
     async def event_ready(self) -> None:
         await self.LifecycleHandler.event_ready()
-
-    async def event_command_error(self, payload: CommandErrorPayload) -> None:
-        return await self.CommandHandler.event_command_error(payload)
-
-    async def event_message(self, payload: ChatMessage):
-        return await self.LifecycleHandler.event_message(payload)
 
     @commands.Component.listener("Whisper")
     async def event_message_whisper(self, payload: twitchio.Whisper):
@@ -133,3 +99,21 @@ class Gorenmu(TypesBot):
 
     async def get_context(self: Gorenmu, payload: ChatMessage | twitchio.Whisper, *, cls: Context = None) -> Context:
         return await self.LifecycleHandler.get_context(payload)
+
+    async def before_invoke(self, ctx: Context) -> None:
+        await self.LifecycleHandler.before_invoke(ctx)
+
+    async def after_invoke(self, ctx: Context) -> None:
+        await self.LifecycleHandler.after_invoke(ctx)
+
+    async def event_command_invoked(self, ctx: Context) -> None:
+        await self.LifecycleHandler.event_command_invoked(ctx)
+
+    async def event_command_completed(self, ctx: Context) -> None:
+        await self.LifecycleHandler.event_command_completed(ctx)
+
+    async def event_command_error(self, payload: CommandErrorPayload) -> None:
+        return await self.CommandHandler.event_command_error(payload)
+
+    async def event_message(self, payload: ChatMessage):
+        return await self.LifecycleHandler.event_message(payload)

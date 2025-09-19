@@ -132,7 +132,7 @@ class ContextHandler:
 
     async def pipe_handler(self, external_ctx: Context, message: ChatMessage):
         response_str = ""
-        translation = external_ctx.user.translations.Exceptions
+        translation = external_ctx.component.translations.Exceptions
         message.text = message.text.replace(" | ", f" | {external_ctx.prefix}")
         original_message = message
         response: Response | None = None
@@ -145,20 +145,19 @@ class ContextHandler:
             ctx = await self.bot.get_context(message)
             ctx.get_command()
             ctx.user = external_ctx.user
-            ctx.bot.CommandHandler.load_language(ctx)
             if not ctx.command.pipeble:
-                await self.simple_response(ctx, translation.command_not_pipeble.format(ctx.command.name))
+                await self.simple_response(ctx, translation.command_not_pipeble(ctx, ctx.command.name).response_string)
                 if response_str:
-                    await self.simple_response(ctx, translation.pipe_response.format(response_str))
+                    await self.simple_response(ctx, translation.pipe_response(ctx, response_str).response_string)
                 break
 
             response: Response = await ctx.invoke()
             if not response and response_str:
                 return await self.simple_response(ctx, response_str)
             if not response.success:
-                await self.simple_response(ctx, translation.pipe_response_error.format(ctx.command.name))
+                await self.simple_response(ctx, translation.pipe_response_error(ctx, ctx.command.name).response_string)
                 if response_str:
-                    await self.simple_response(ctx, translation.pipe_response.format(response_str))
+                    await self.simple_response(ctx, translation.pipe_response(ctx, response_str).response_string)
                 if response:
                     response.response_string = f"{translation.pipe_response} {response.response_string}"
                 break
@@ -188,7 +187,6 @@ class ContextHandler:
 
         ctx = await self.bot.get_context(message)
         ctx.user = external_ctx.user
-        ctx.bot.CommandHandler.load_language(ctx)
         return await ctx.invoke()
 
     async def invoke(self, ctx: Context) -> Response | bool:

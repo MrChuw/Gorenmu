@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "This subcommand is used to add an alias.",
-            "How to use: {}alias add (name) (command) (…arguments)",
+            "How to use: +alias add (name) (command) (…arguments)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Este subcomando é usado para adicionar um alias.",
-            "Como usar: {}alias add (nome) (comando) (…argumentos)",
+            "Como usar: +alias add (nome) (comando) (…argumentos)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

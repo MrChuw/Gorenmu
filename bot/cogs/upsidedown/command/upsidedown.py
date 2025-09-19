@@ -3,9 +3,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.apis.upsidedown import transform
 from bot.ext import Context, commands
 from bot.translations import Response
+
+from .extras import transform
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -14,6 +16,7 @@ if TYPE_CHECKING:
 class UpSideDownCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -25,10 +28,9 @@ class UpSideDownCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("UpSideDown")
     @commands.command(name="upsidedown", aliases=["updown"])
     async def upsidedown(self, ctx: Context, *, content) -> Response:
-        return ctx.user.translations.UpSideDown.upsidedown.format_response(ctx, transform(content))
+        return self.translations.UpSideDown.upsidedown(ctx, transform(content))
 
 
 async def setup(bot: Gorenmu) -> None:

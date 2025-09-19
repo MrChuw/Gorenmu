@@ -175,4 +175,3 @@ class BaseFunctions(metaclass=BaseFunctionsMeta):
                 setattr(self, name, Response({}))
             else:
                 setattr(self, name, base)
-            ...

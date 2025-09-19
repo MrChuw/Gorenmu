@@ -1,3 +1,50 @@
+[project]
+name = "gorenmu"
+version = "2.0.0"
+description = "Twitch bot build on top of twitchio."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiocache[memcached,redis]==0.12.3",
+    "aiohttp==3.12.15",
+    "aiohttp-client-cache==0.13.0",
+    "aiomcache==0.8.2",
+    "aioresponses==0.7.8",
+    "aiosqlite==0.21.0",
+    "beautifulsoup4==4.13.4",
+    "emoji==2.14.1",
+    "fastapi==0.116.1",
+    "humanize==4.12.3",
+    "janus==2.0.0",
+    "loguru==0.7.3",
+    "nltk==3.9.1",
+    "pandas==2.3.1",
+    "pillow==11.3.0",
+    "psutil==7.0.0",
+    "pydantic==2.11.7",
+    "pytest==8.4.1",
+    "pytest-asyncio==1.1.0",
+    "pytest-xdist==3.8.0",
+    "python-dateutil==2.9.0.post0",
+    "python-dotenv==1.1.1",
+    "pytz==2025.2",
+    "redis==6.4.0",
+    "toml==0.10.2",
+    "tortoise-orm[asyncmy,asyncpg]==0.25.1",
+    "twitchio[starlette]==3.1.0",
+    "unidecode==1.4.0",
+    "urlextract==1.9.0",
+    "uvicorn==0.35.0",
+    "watchdog>=6.0.0",
+    "yarl==1.20.1",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "isort>=6.0.1",
+    "pre-commit>=4.3.0",
+]
 
 [tool.black]
 line-length = 120
@@ -32,5 +79,5 @@ markers = ["network: tests that make real requests", "disabled: Tests that have 
     "pt_BR: Test for Portuguse language.", "en: Test for English language."]
 #addopts = "-m 'not disabled'"
 #addopts = "-n auto -m 'not disabled'"
-addopts = "-m 'not network and not disabled'"
-#addopts = "-n auto -m 'not network and not disabled'"
+#addopts = "-m 'not network and not disabled'"
+addopts = "-n auto -m 'not network and not disabled'"

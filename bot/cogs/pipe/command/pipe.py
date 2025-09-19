@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING
 from bot.ext import Context, commands
 from bot.translations import Response
 
+from .translations import Translations
+
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
@@ -13,6 +15,7 @@ if TYPE_CHECKING:
 class PipeCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.translations: Translations = Translations(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -24,17 +27,13 @@ class PipeCmd(commands.CustomComponent):
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
-    @commands.base_decorator("Pipe")  # TODO: change when site is ready
-    @commands.command(name="pipe", aliases=[])
+    @commands.command(name="pipe", aliases=[])  # TODO: change when site is ready
     async def pipe(self, ctx: Context) -> Response:
-        if ctx.user.language == ctx.bot.TranslationManager.languages[0]:
-            url = f"{ctx.bot.config.BotConfig.site_url}{ctx.bot.TranslationManager.languages[0]}/commands/pipe.html"
-        elif ctx.user.language == ctx.bot.TranslationManager.languages[1]:
-            url = f"{ctx.bot.config.BotConfig.site_url}{ctx.bot.TranslationManager.languages[1]}/comandos/pipe.html"
-
+        if ctx.user.language:
+            url = f"{ctx.bot.config.BotConfig.site_url}/{ctx.user.language.lower()}/commands/pipe.html"
         else:
-            url = f"{ctx.bot.config.BotConfig.site_url}{ctx.bot.TranslationManager.languages[0]}/commands/pipe.html"
-        return ctx.user.translations.Pipe.response.format_response(ctx, url)
+            url = f"{ctx.bot.config.BotConfig.site_url}/en/commands/pipe.html"
+        return self.translations.Pipe.pipe(ctx, url)
 
 
 async def setup(bot: Gorenmu) -> None:

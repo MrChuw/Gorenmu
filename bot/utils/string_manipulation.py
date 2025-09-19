@@ -14,12 +14,13 @@ from unidecode import unidecode
 from urlextract import URLExtract
 
 from bot.exceptions import InvalidUsername
+from bot.utils.singleton import Singleton
 
 letters_and_digits = ascii_letters + digits
 url_extractor = URLExtract()
 
 
-class StringTools:
+class StringTools(metaclass=Singleton):
     @staticmethod
     def datetime2str(target: datetime) -> str:
         return target.isoformat()
