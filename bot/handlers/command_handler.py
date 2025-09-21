@@ -3,9 +3,10 @@ from __future__ import annotations
 
 import os
 import pathlib
+import traceback
 import types
 from importlib import import_module
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from loguru import logger
 from twitchio.ext.commands import CommandErrorPayload
@@ -15,6 +16,7 @@ from bot.ext import Routine
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+    from bot.cogs.bug.command.bug import BugCmd
     from bot.ext import Context
 
 
@@ -103,6 +105,29 @@ class CommandHandler:
         module: types.ModuleType = import_module(name, package=package)
         return module, name
 
+    async def send_bug(self, ctx: Context, error: Exception):
+        command = self.bot.get_command("bug")
+        url = self.bot.config.Discord.log_webhook
+        component: BugCmd = command.component  # NOQA
+        session = component.SessionsCaches.Bug.session
+        discord_webhook = component.DiscordWebHook
+        tb_str = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+        user_url = f"[@{ctx.author.name}](<https://twitch.tv/{ctx.author.name}>)"
+        channel_url = f"[#{ctx.channel.name}](<https://twitch.tv/{ctx.channel.name}>)"
+        await discord_webhook.send_discord_webhook(
+            session,
+            url,
+            ctx,
+            f"**Args used in the command:** **```{ctx.message.text}```**\n```py\n{tb_str}\n```",
+            f"Error occurred while user {user_url} "
+            f"was running the command: {ctx.command.name} "
+            f"in {channel_url} channel.",
+            f"https://twitch.tv/{ctx.author.name}",
+            title2=f"Error occurred while user @{ctx.author.name} "
+            f"was running the command: {ctx.command.name} "
+            f"in #{ctx.channel.name} channel.",
+        )
+
     async def event_command_error(self, payload: CommandErrorPayload) -> None:
         command = payload.context.command
         if command and command.has_error and payload.context.error_dispatched:
@@ -115,6 +140,10 @@ class CommandHandler:
         if ctx.prefix != self.bot.channels[ctx.channel.name].prefix:
             return None
         translations = ctx.command.component.translations
+
+        if not isinstance(error, InvalidArgument):
+            await self.send_bug(ctx, error)
+
         if isinstance(error, CommandNotFound):
             return None
         if isinstance(error, DevRequired):

@@ -98,7 +98,7 @@ class CustomComponent(Component):
         rate = getattr(self, "cooldown_rate", 10)
         per = getattr(self, "cooldown_per", 3)
         key = getattr(self, "cooldown_key", BucketType.user)
-        bucket_: Bucket[Context] = Bucket.from_cooldown(base=Cooldown, key=key, **{"per": per, "rate": rate})
+        bucket_: Bucket[Context] = Bucket.from_cooldown(base=Cooldown, key=key, **{"per": per, "rate": rate})  # NOQA
         category_name: str = getattr(self, "name", self.__class__.__name__)
         category_name = category_name.removesuffix("Cmd").removesuffix("Cmds")
         self.inject_events(bot, cls, self, category_name)
@@ -106,24 +106,11 @@ class CustomComponent(Component):
             command_: Command = self.__all_commands__[command_name]
             if hasattr(command_, "commands"):
                 for name in command_.commands:
-                    self._extras(command_.commands[name], bucket_, bot)
-                    bot.docs[category_name][command_.commands[name].name] = command_.commands[name].docs
-            self._extras(command_, bucket_, bot)
-            bot.docs[category_name][command_.name] = command_.docs
+                    if len(command_.commands[name]._buckets) == 0:  # NOQA
+                        command_.commands[name]._buckets.append(bucket_)  # NOQA
+            if len(command_._buckets) == 0:  # NOQA
+                command_._buckets.append(bucket_)  # NOQA
         return self
-
-    @staticmethod
-    def _extras(new_command: Command, bucket_, bot: Gorenmu):
-        if len(new_command._buckets) == 0:  # NOQA
-            new_command._buckets.append(bucket_)  # NOQA
-
-        def docs():
-            if new_command.template:
-                return bot.docs_handler.template_description(new_command)
-            else:
-                return bot.docs_handler.normal_description(new_command)
-
-        new_command.docs = docs
 
     @staticmethod
     def inject_events(bot, cls, self, category_name):
@@ -135,15 +122,6 @@ class CustomComponent(Component):
                 continue
             injected = partial(member, self)
             bot.manual_events[category_name][event_name][name] = injected
-
-
-def base_decorator(base: str, template=False) -> Callable[[Command], Command]:
-    def decorator(command: Command) -> Command:  # NOQA
-        command.decorator_path = base
-        command.template = template
-        return command
-
-    return decorator
 
 
 def command(
@@ -239,12 +217,3 @@ def event_handler(event_name: str):
         return func
 
     return decorator
-
-
-# def event_handler(event_name: str):
-#     def decorator(func: Callable):
-#         async def wrapper(self, *args, **kwargs):
-#             return await func(self, *args, **kwargs)
-#         wrapper._event_info = event_name
-#         return wrapper
-#     return decorator

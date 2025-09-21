@@ -23,6 +23,7 @@ class DiscordWebHook:
         title: str,
         author_url: str,
         embeds: list[DiscordEmbed] = None,
+        title2: str = None,
     ) -> aiohttp.ClientResponse:
         to_mark = ctx.bot.config.Discord.to_mark
         avatar_webhook = ctx.bot.config.Discord.webhook_avatar
@@ -40,7 +41,7 @@ class DiscordWebHook:
         )
         embed = DiscordEmbed()
         embed.set_author(name=display_name, url=author_url, icon_url=profile_image)
-        embed.set_title(title)
+        embed.set_title(title2 or title)
         embed.set_description(f"{content}\n\n{log_url1}\n{log_url2}\n{log_url3}")
         embed.set_timestamp(ctx.message.timestamp)
         embed.set_color(ctx.author.color.hex or "03b2f8")

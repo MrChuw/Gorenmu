@@ -53,6 +53,8 @@ class Translations(TranslationBase):
         def deco_admonitions(self, ctx: Context, *args, **kwargs) -> Admonitions:  # NOQA
             return Admonitions([])
 
+    Nada: Nada
+
     class Restart(TBase):
         def __init__(self):
             super().__init__()
@@ -95,6 +97,8 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with("en", Admonitions([]))
                 self.lang_dict.add_with(["pt_br", "pt"], Admonitions([]))
             return self._untangle_admonitions(ctx, "admonitions")
+
+    Restart: Restart
 
     class Reload(TBase):
         def __init__(self):
@@ -220,3 +224,5 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with("en", Admonitions([]))
                 self.lang_dict.add_with(["pt_br", "pt"], Admonitions([]))
             return self._untangle_admonitions(ctx, "admonitions")
+
+    Reload: Reload

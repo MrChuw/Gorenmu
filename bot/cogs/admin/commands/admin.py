@@ -92,18 +92,6 @@ class AdminSmallCmds(commands.CustomComponent):
                 "class": "CommandHandler",
                 "args": [self.bot],
             },
-            "session_caches": {
-                "attr": "SessionsCaches",
-                "module": "bot.utils.cache_sessions",
-                "class": "SessionsCaches",
-                "args": [self.bot],
-            },
-            "string_mani": {
-                "attr": "StringTools",
-                "module": "bot.utils.string_manipulation",
-                "class": "StringTools",
-                "args": [],
-            },
         }
 
         if command == "commands":

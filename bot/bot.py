@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import asyncio
 import datetime
-from asyncio import Task
 from collections import defaultdict
 from logging import Logger
 from typing import TYPE_CHECKING, Callable
@@ -24,12 +22,11 @@ from bot.handlers import (
     LifecycleHandler,
     TokensHandler,
 )
-from bot.utils import Cache, Config, MarkovProcessor, MemCache, TimeTools
+from bot.utils import Cache, Config, MemCache, TimeTools
 
 if TYPE_CHECKING:
     # from bot.api import api, api_start
-    from bot.ext import Context, Routine
-    from bot.models import Channel as ChannelModel
+    from bot.ext import Context
 
 
 class Gorenmu(TypesBot):
@@ -43,29 +40,13 @@ class Gorenmu(TypesBot):
             adapter=adapter,
         )
         self.boot: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
-        self.lottery_lock: asyncio.Lock = asyncio.Lock()
-        self.channels: dict[str, ChannelModel] = {}
-        self.routines: list[Routine] = []
-        self.bots_ids: list[int] = []
         self.manual_events: defaultdict[str, dict[str, dict[str, Callable]]] = defaultdict(lambda: defaultdict(dict))
         # self.api: api | None = None
         # self.api_start: api_start = None
-        self.MarkovProcessor: MarkovProcessor | None = None
-        self.MarkovTask: Task[None] | None = None
-        self.dev_name: str | None = None
-        self.bot_nick: str | None = None
         self.log: Logger = log
         self.config: Config = configs
         self.memcache: MemCache = MemCache()
-        # self.StringTools: StringTools = StringTools()
         self.cache: RedisCache | MemcachedCache | SimpleMemoryCache = Cache.cache_load(bot=self)
-        # self.docs_handler: DynamicDescriptions = DynamicDescriptions(self)
-        # self.UploadThings: UploadThings = UploadThings(self)
-        self.docs: defaultdict = defaultdict(dict)
-
-        # self.SessionsCaches: SessionsCaches = SessionsCaches(self)
-        # self.TranslationManager: TranslationManager = TranslationManager()
-        # self.Emotes: Emotes = Emotes(bot=self)
         self.TokensHandler: TokensHandler = TokensHandler(bot=self)
         self.DatabaseHandler: DatabaseHandler = DatabaseHandler(bot=self)
         self.ChannelHandler: ChannelHandler = ChannelHandler(bot=self)
@@ -73,7 +54,6 @@ class Gorenmu(TypesBot):
         self.LifecycleHandler: LifecycleHandler = LifecycleHandler(bot=self)
         self.ContextHandler: ContextHandler = ContextHandler(bot=self)
         self.TimeTools: TimeTools = TimeTools()
-        self.mock: bool = False
 
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
         return await self.TokensHandler.add_token(token, refresh)
