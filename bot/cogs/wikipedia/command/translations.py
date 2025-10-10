@@ -19,11 +19,11 @@ class Translations(TranslationBase):
         def __init__(self):
             super().__init__()
 
-        def url(self, ctx: Context) -> str:
+        def url(self, lang: str) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "https://wikipedia.org/wiki/Special:Random")
                 self.lang_dict.add_with(["pt_br", "pt"], "https://pt.wikipedia.org/wiki/Special:Random")
-            return self._untangle_str(ctx, self._cname)
+            return self.lang_dict.get_lang(lang, self._cname, "en")
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):

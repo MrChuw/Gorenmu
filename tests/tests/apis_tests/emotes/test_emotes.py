@@ -38,12 +38,12 @@ async def sessions(mock_bot):
 
 @pytest_asyncio.fixture
 async def interact(mock_bot, sessions: SessionsCaches):
-    return Emotes(bot=mock_bot, session=sessions.EmotesCachedSession.session)
+    return Emotes(bot=mock_bot, session=sessions.Emotes.session)
 
 
 @pytest.mark.asyncio
 async def test_7tv_success(interact, sessions):
-    session = sessions.EmotesCachedSession.session
+    session = sessions.Emotes.session
     async with MockBuilder(interact.bot).Session.get_json(session, ttv_payload):
         response = await interact.get_7tv(411010313)
         assert response == ["GIGACHAD", "NOOOO", "ppPoof", "modCheck", "catJAM"]
@@ -51,7 +51,7 @@ async def test_7tv_success(interact, sessions):
 
 @pytest.mark.asyncio
 async def test_7tv_404(interact, sessions):
-    session = sessions.EmotesCachedSession.session
+    session = sessions.Emotes.session
     async with MockBuilder(interact.bot).Session.get_json(session, ttv_payload, status=404):
         response = await interact.get_7tv(411010313)
         assert response == []
@@ -59,7 +59,7 @@ async def test_7tv_404(interact, sessions):
 
 @pytest.mark.asyncio
 async def test_bttv_success(interact, sessions):
-    session = sessions.EmotesCachedSession.session
+    session = sessions.Emotes.session
     async with MockBuilder(interact.bot).Session.get_json(session, bttv_payload):
         response = await interact.get_bttv(411010313)
         assert response == ["Sadge", "Despair", "chuw", "AYAYA"]
@@ -67,7 +67,7 @@ async def test_bttv_success(interact, sessions):
 
 @pytest.mark.asyncio
 async def test_bttv_404(interact, sessions):
-    session = sessions.EmotesCachedSession.session
+    session = sessions.Emotes.session
     async with MockBuilder(interact.bot).Session.get_json(session, bttv_payload, status=404):
         response = await interact.get_bttv(411010313)
         assert response == []
@@ -75,7 +75,7 @@ async def test_bttv_404(interact, sessions):
 
 @pytest.mark.asyncio
 async def test_ffz_success(interact, sessions):
-    session = sessions.EmotesCachedSession.session
+    session = sessions.Emotes.session
     async with MockBuilder(interact.bot).Session.get_json(session, ffz_payload):
         response = await interact.get_ffz(411010313)
         assert response == ["ppL", "Clueless", "COPIUM", "papaoRun"]
@@ -83,7 +83,7 @@ async def test_ffz_success(interact, sessions):
 
 @pytest.mark.asyncio
 async def test_ffz_404(interact, sessions):
-    session = sessions.EmotesCachedSession.session
+    session = sessions.Emotes.session
     async with MockBuilder(interact.bot).Session.get_json(session, ffz_payload, status=404):
         response = await interact.get_ffz(411010313)
         assert response == []

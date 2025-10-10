@@ -64,12 +64,12 @@ class ContextHandler:
     @staticmethod
     async def handle_echo(ctx: Context, response_str: str):
         if len(response_str) < max_message_len:
-            return await ctx.reply(f"{response_str}")
+            return await ctx.send(f"{response_str}")
         part1 = response_str[:max_message_len]
         part2 = response_str[max_message_len:]
-        await ctx.reply(f"{part1}")
+        await ctx.send(f"{part1}")
         await asyncio.sleep(0.5)
-        await ctx.reply(f"{part2}")
+        await ctx.send(f"{part2}")
         return None
 
     @staticmethod
@@ -111,7 +111,7 @@ class ContextHandler:
 
         if handle == "echo" and not response_list:
             await self.handle_echo(ctx=ctx, response_str=response_str)
-        if response_str:
+        if response_str and handle != "echo":
             await self.send_response(ctx, user_handler, response_str)
         if response_list:
             await self.handle_response_list(ctx, response_list, handle)

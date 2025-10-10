@@ -14,7 +14,7 @@ from bot.cogs.randomscp.command.randomscp import get_scp
 @pytest.mark.network
 @pytest.mark.asyncio
 async def test_scp_real_session(mock_bot: Gorenmu):
-    session = mock_bot.SessionsCaches.ScpCachedSession.session
+    session = mock_bot.SessionsCaches.Scp.session
     scp = await get_scp(session)
 
     assert scp.status == 200, f"Expected {repr(200)}, got: {scp.status!r}"

@@ -19,7 +19,7 @@ class Translations(TranslationBase):
         def __init__(self):
             super().__init__()
 
-        def response(self, ctx: Context, *args) -> Response:
+        def response(self, ctx: Context, args) -> Response:
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(["pt_br", "pt", "en"], "{}")
@@ -40,7 +40,7 @@ class Translations(TranslationBase):
         def stream_started(self, ctx: Context, time_natural, time_precise) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Stream started: {} ({}).")
-                self.lang_dict.add_with(["pt_br", "pt"], "Transmissão iniciada: há {} ({}).")
+                self.lang_dict.add_with(["pt_br", "pt"], "Transmissão iniciada: {} ({}).")
             return self._untangle_str(ctx, self._cname).format(time_natural, time_precise)
 
         def views(self, ctx: Context, views) -> str:

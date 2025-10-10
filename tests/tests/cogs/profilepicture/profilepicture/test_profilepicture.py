@@ -25,7 +25,7 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 @pytest.mark.parametrize("lang, expected", Params.success)
 async def test_success(interact, mock_context: MockContext, lang, expected):
     await mock_context.prepare_context(lang)
-    session = interact.SessionsCaches.ProfilePictureCachedSession.session
+    session = interact.SessionsCaches.ProfilePicture.session
     async with (
         mock_context.MockBuilder.Bot.fetch_user(name="@mr_chuw")
         .Session.get(session=session, return_value=expected)

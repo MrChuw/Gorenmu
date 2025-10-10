@@ -37,7 +37,7 @@ class HyperTranslateCmd(commands.CustomComponent):
     @commands.command(name="hypertranslate", aliases=["ht"])  # TODO: add reply_to
     async def hypertranslate(self, ctx: Context, quantity: str, *, text: str = "") -> Response:
         translations = self.translations.HyperTranslate
-        session = self.SessionsCaches.TranslateCachedSession.session
+        session = self.SessionsCaches.Translate.session
         if not quantity.isdigit():
             text = f"{quantity} {text}".replace("  ", " ")
             quantity = 10

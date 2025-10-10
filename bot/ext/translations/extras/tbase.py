@@ -117,7 +117,7 @@ class LangDict:
         if isinstance(lang, str):
             lang = [lang]
         for k in lang:
-            self._namespaces[namespace][k] = value
+            self._namespaces[namespace.lower()][k.lower()] = value
 
     def add_with(self, lang: str | list[str], value: Any):
         if not self._current_namespace:
@@ -130,7 +130,7 @@ class LangDict:
         if namespace is None and namespace_or_lang in self._namespaces:
             return dict(self._namespaces[namespace_or_lang])
         if namespace is not None:
-            return self._namespaces.get(namespace, {}).get(namespace_or_lang)
+            return self._namespaces.get(namespace.lower(), {}).get(namespace_or_lang.lower())
         return None
 
     def get_namespace(self, namespace: str) -> Dict[str, str]:
@@ -138,6 +138,9 @@ class LangDict:
 
     def get_lang(self, lang: str, namespace: str, fallback: str = "en") -> str | CommandExemples | Admonitions | None:
         return self._namespaces.get(namespace, {}).get(lang) or self._namespaces.get(namespace, {}).get(fallback)
+
+    def get_lang_or_none(self, lang: str, namespace: str) -> str | CommandExemples | Admonitions | None:
+        return self._namespaces.get(namespace, {}).get(lang) or None
 
     def __getitem__(self, item):
         raise KeyError("Direct access disabled — use get(lang, namespace) or get(namespace)")

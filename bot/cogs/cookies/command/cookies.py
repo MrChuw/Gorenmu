@@ -25,7 +25,7 @@ class CookieCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot)
         self.StringTools: StringTools = StringTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
-        self.emotes: Emotes = Emotes(bot, self.SessionsCaches.EmotesCachedSession.session)
+        self.emotes: Emotes = Emotes(bot, self.SessionsCaches.Emotes.session)
 
     cooldown_rate = 3
     cooldown_per = 10

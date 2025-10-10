@@ -38,7 +38,7 @@ class ProfilePictureCmd(commands.CustomComponent):
         if not user_tmi:
             return translations.Exceptions.user_not_found_name(ctx, name)
         profile_url = user_tmi.profile_image.url.replace("300x300", "600x600")
-        session = self.SessionsCaches.ProfilePictureCachedSession.session
+        session = self.SessionsCaches.ProfilePicture.session
         image_tmi = await session.get(profile_url)
         imagem = await image_tmi.read()
 

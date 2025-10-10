@@ -100,7 +100,7 @@ class MemoryCacheCore:
 class BaseCachedSession(ABC):
     session = None
 
-    def __init__(self, bot, cache_name: str, useragent: str):
+    def __init__(self, bot, useragent: str, cache_name: str = None):
         self.bot = bot
         self.upload_url = self.bot.config.ApisConfig.file_upload_url / "*"
         self.shortener_url = self.bot.config.ApisConfig.shlink_url / "*"
@@ -129,7 +129,7 @@ class BaseCachedSession(ABC):
             self.allowed_methods = ("GET", "HEAD", "POST")
         if not hasattr(self, "allowed_codes"):
             self.allowed_codes = (200, 301, 302)
-        self.cache = self.create_cache_backend(cache_name)
+        self.cache = self.create_cache_backend(cache_name or f"{self.__class__.__name__}_requests")
         if hasattr(self, "extra_headers"):
             extra_headers = getattr(self, "extra_headers")
             self.headers |= extra_headers

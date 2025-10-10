@@ -31,7 +31,7 @@ async def base_count(
     await mock_context.prepare_context(lang)
     random.seed(2)
     text = "".join(random.choices(f"{string.printable}©®€¥µ±§¶†‡∞∑∆∏ΩæÆßøØ¿¡†•√π÷×≠≈😊", k=size))
-    session = interact.SessionsCaches.CountCachedSession.session
+    session = interact.SessionsCaches.Count.session
     async with mock_context.MockBuilder.Session.get(session, text):
         response: Response = await interact.count._callback(interact, mock_context, content=content)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected)

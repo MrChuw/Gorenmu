@@ -5,6 +5,7 @@ import json
 import logging
 import random
 import re
+import string
 from datetime import datetime
 from string import ascii_letters, digits
 from typing import List, Optional, Tuple, Union
@@ -21,6 +22,16 @@ url_extractor = URLExtract()
 
 
 class StringTools(metaclass=Singleton):
+    @staticmethod
+    def inv_char():
+        return chr(int("FE0F", 16))
+
+    @staticmethod
+    def start_remove_punctuation(content):
+        if content[0] in string.punctuation:
+            return StringTools.inv_char() + content
+        return content
+
     @staticmethod
     def datetime2str(target: datetime) -> str:
         return target.isoformat()
@@ -181,8 +192,8 @@ class StringTools(metaclass=Singleton):
     def extract_and_remove_field(text: str, field: str, default: str | float = None) -> tuple[str, str | None]:
         pattern = rf'{field}:(?:"(.*?)"|(\S+))'
         if match := re.search(pattern, text):
-            value = match[0]
-            text = text.replace(value, "")
+            value = match[1] or match[2]
+            text = text.replace(match[0], "")
             return text, value
         return text, default
 

@@ -96,62 +96,62 @@ class SessionsCaches(metaclass=Singleton):
     # New
     # region Hide.
 
-    class AliasCachedSession(BaseCachedSession):
+    class Alias(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Alias_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {self.alias_url: timedelta(days=100)}
 
-    AliasCachedSession: AliasCachedSession
+    Alias: Alias
 
-    class ColorCachedSession(BaseCachedSession):
+    class Color(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Color_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {"thecolorapi.com/*": timedelta(days=30)}
 
-    ColorCachedSession: ColorCachedSession
+    Color: Color
 
-    class ScpCachedSession(BaseCachedSession):
+    class Scp(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Scp_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {"scp-wiki.wikidot.com/*": timedelta(weeks=4)}
 
-    ScpCachedSession: ScpCachedSession
+    Scp: Scp
 
-    class WikihowCachedSession(BaseCachedSession):
+    class Wikihow(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Wikihow_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {"*.wikihow.com/*": timedelta(weeks=4)}
 
-    WikihowCachedSession: WikihowCachedSession
+    Wikihow: Wikihow
 
-    class WikipediaCachedSession(BaseCachedSession):
+    class Wikipedia(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Wikipedia_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {"*.wikipedia.com/*": timedelta(weeks=4)}
 
-    WikipediaCachedSession: WikipediaCachedSession
+    Wikipedia: Wikipedia
 
-    class SafebooruCachedSession(BaseCachedSession):
+    class Safebooru(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
             self.extra_headers = {"Alt-Used": "danbooru.donmai.us", "TE": "trailers"}
             self.timeout = aiohttp.ClientTimeout(total=240)
-            super().__init__(bot=bot, cache_name="Booru_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {
@@ -159,11 +159,11 @@ class SessionsCaches(metaclass=Singleton):
                 "https://safebooru.org/": timedelta(hours=1),
             }
 
-    SafebooruCachedSession: SafebooruCachedSession
+    Safebooru: Safebooru
 
-    class EmotesCachedSession(BaseCachedSession):
+    class Emotes(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
-            super().__init__(bot=bot, cache_name="Emotes_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {
@@ -172,42 +172,42 @@ class SessionsCaches(metaclass=Singleton):
                 "*api.frankerfacez.com/v1/*": timedelta(minutes=15),
             }
 
-    EmotesCachedSession: EmotesCachedSession
+    Emotes: Emotes
 
-    class TranslateCachedSession(BaseCachedSession):
+    class Translate(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Translate_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {"https://translate.google.com/*": timedelta(weeks=4 * 6)}
 
-    TranslateCachedSession: TranslateCachedSession
+    Translate: Translate
 
-    class CountCachedSession(BaseCachedSession):
+    class Count(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Count_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {"*/*": timedelta(minutes=30)}
 
-    CountCachedSession: CountCachedSession
+    Count: Count
 
-    class PixelSortingCachedSession(BaseCachedSession):
+    class PixelSorting(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="PixelSorting_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {"*/*": timedelta(hours=6)}
 
-    PixelSortingCachedSession: PixelSortingCachedSession
+    PixelSorting: PixelSorting
 
-    class ProfilePictureCachedSession(BaseCachedSession):
+    class ProfilePicture(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="ProfilePicture_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {
@@ -216,26 +216,46 @@ class SessionsCaches(metaclass=Singleton):
                 self.shortener_url: timedelta(hours=12),
             }
 
-    ProfilePictureCachedSession: ProfilePictureCachedSession
+    ProfilePicture: ProfilePicture
 
     class IvrFi(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="IvrFi_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {"https://*.ivr.fi/*": timedelta(minutes=10)}
 
     IvrFi: IvrFi
 
-    # endregion
-
     class Bug(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Bug_requests", useragent=useragent)
+            super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
             return {}
 
     Bug: Bug
+
+    # endregion
+
+    class Suggest(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {}
+
+    Suggest: Suggest
+
+    class Dicio(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {"dicio.mrchuw.com.br/*": timedelta(hours=12)}
+
+    Dicio: Dicio

@@ -55,7 +55,7 @@ class PixelSortCmd(commands.CustomComponent):
         urls = self.StringTools.urls_extract(rest)
         if not urls:
             return translations.no_url(ctx)
-        session = self.SessionsCaches.PixelSortingCachedSession.session
+        session = self.SessionsCaches.PixelSorting.session
         images = await request_images(urls=urls, session=session)
         if type(images) is str:
             return translations.invalid_content_type(ctx)

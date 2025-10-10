@@ -30,7 +30,7 @@ class BugCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
-    @commands.command(name="bug", aliases=[])
+    @commands.command(name="bug", aliases=["report"])
     async def bug(self, ctx: Context, *, content) -> Response:
         session = self.SessionsCaches.Bug.session
         url = self.bot.config.Discord.bug_webhook

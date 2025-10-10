@@ -5,7 +5,7 @@ import asyncio
 from typing import TYPE_CHECKING
 
 from bot.ext import Context, Response, commands
-from bot.utils import SessionsCaches
+from bot.utils import SessionsCaches, StringTools
 
 from .translations import Translations
 
@@ -17,6 +17,7 @@ class WikiHowCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
         self.translations: Translations = Translations(bot)
+        self.StringTools: StringTools = StringTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
     cooldown_rate = 3
@@ -30,13 +31,14 @@ class WikiHowCmd(commands.CustomComponent):
         return True
 
     @commands.command(name="wikihow", aliases=[])
-    async def wikihow(self, ctx: Context) -> Response:
-        url = self.translations.Wikihow.url(ctx)
-        session = self.SessionsCaches.WikihowCachedSession.session
+    async def wikihow(self, ctx: Context, lang="") -> Response:
+        _, lang = self.StringTools.extract_and_remove_field(lang, "lang", ctx.user.language or "en")
+        url = self.translations.Wikihow.url(lang)
+        session = self.SessionsCaches.Wikihow.session
         start_time = asyncio.get_event_loop().time()
         try:
             while True:
-                wiki = await self.SessionsCaches.WikihowCachedSession.get_not_cached(session, url)
+                wiki = await self.SessionsCaches.Wikihow.get_not_cached(session, url)
                 if wiki.status in [200, 304]:
                     break
                 if asyncio.get_event_loop().time() - start_time >= 30:

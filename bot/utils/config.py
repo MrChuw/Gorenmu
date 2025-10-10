@@ -111,6 +111,7 @@ class ApisConfig:
         self.pastebin_url: URL = URL(data.get("pastebin_url", "https://bit.exemple.org"))
         self.enable_site_endpoints: bool = data.get("enable_site_endpoints", False)
         self.alias_url: URL = URL(data.get("alias_url", "https://exemple.org"))
+        self.dicio_url: URL = URL(data.get("dicio_url", "https://dicio.exemple.org"))
 
 
 class DatabaseConfig:
@@ -166,11 +167,11 @@ class CacheConfig:
 
 class DiscordConfig:
     def __init__(self, data: Dict[str, dict]) -> None:
-        self.webhook_avatar = data.get("webhook_avatar", None)
-        self.to_mark = data.get("users_to_mark", None)
-        self.bug_webhook = data.get("bug_webhook", None)
-        self.suggest_webhook = data.get("suggest_webhook", None)
-        self.log_webhook = data.get("log_webhook", None)
+        self.webhook_avatar = data.get("webhook_avatar")
+        self.to_mark = data.get("users_to_mark")
+        self.bug_webhook = data.get("bug_webhook")
+        self.suggest_webhook = data.get("suggest_webhook")
+        self.log_webhook = data.get("log_webhook")
 
 
 class Config:

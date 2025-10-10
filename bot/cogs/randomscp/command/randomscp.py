@@ -35,7 +35,7 @@ class RandomSCPCmd(commands.CustomComponent):
 
     @commands.command(name="randomscp", aliases=["rscp"])
     async def randomscp(self, ctx: Context) -> Response:
-        session = self.SessionsCaches.ScpCachedSession.session
+        session = self.SessionsCaches.Scp.session
         start_time = asyncio.get_event_loop().time()
         try:
             while True:

@@ -1,11 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    ...
-    # Add singleton as outras coisas e mudar pra usar as funcoes de utilidade somente no __init__ comandos
 
 
 class Singleton(type):
@@ -22,3 +15,8 @@ class Singleton(type):
             Singleton._instances[key] = super().__call__(*args, **kwargs)
             Singleton._class_ids[key] = mro_ids
         return Singleton._instances[key]
+
+    @classmethod
+    def clear(cls) -> None:
+        cls._instances.clear()
+        cls._class_ids.clear()

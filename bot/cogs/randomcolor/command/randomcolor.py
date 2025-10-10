@@ -34,7 +34,7 @@ class RandomColorCmd(commands.CustomComponent):
     @commands.command(name="randomcolor", aliases=["rc"])
     async def randomcolor(self, ctx: Context, tipo: str = None) -> Response:
         translations = self.translations.RandomColor
-        session = self.SessionsCaches.ColorCachedSession.session
+        session = self.SessionsCaches.Color.session
         url = ctx.bot.config.ApisConfig.color_site_url
         params = defaultdict()
         hex_code = None

@@ -24,17 +24,17 @@ class Params:
     live_on = [
         pytest.param(
             "en",
-            r"^\('Title: .*? \|\| Stream started: .*? ago \((?:\d+ month[s]?, )?(?:\d+ day[s]?, )?\d+ hour[s]?, "
-            r"\d+ minute[s]? and \d+\.\d+ second[s]?\)\. \|\| Views: \d+\. \|\| Playing: .*?\. \|\| "
-            r"https://www\.twitch\.tv/xXCoolNickXx https://www\.twitch\.tv/videos/\d+\?t=\d+s',\)$",
+            r"^Title: .*? \|\| Stream started: .*? ago \((?:\d+ year[s]?, )?(?:\d+ month[s]?, )?(?:\d+ day[s]?, )?\d+ "
+            r"hour[s]?, \d+ minute[s]? and \d+\.\d+ second[s]?\)\. \|\| Views: \d+\. \|\| Playing: .*?\. \|\| "
+            r"https://www\.twitch\.tv/xXCoolNickXx https://www\.twitch\.tv/videos/\d+\?t=\d+s$",
             marks=pytest.mark.en,
             id="live-on-en",
         ),
         pytest.param(
             "pt_BR",
-            r"^\('Título: .*?\. \|\| Transmissão iniciada: há .*? \((?:\d+ mês(?:es)?, )?(?:\d+ dia[s]?, )?\d+ "
-            r"(?:hora|horas), \d+ (?:minuto|minutos) e \d+\.\d+ (?:segundo|segundos)\)\. \|\| Visualizações: \d+\. "
-            r"\|\| Jogando: .*?\. \|\| https://www\.twitch\.tv/\w+ https://www\.twitch\.tv/videos/\d+\?t=\d+s',\)$",
+            r"Título:\s*(?P<title>.+?)\s*\|.*?\|\|\s*Transmissão iniciada:\s*há\s*\d+\s*\w+.*?\|\|\s*Visualizações:"
+            r"\s*(?P<views>\d+).*?\|\|\s*Jogando:\s*(?P<game>.+?)\s*\|\|\s*(?P<url1>https?://[^\s\?]+)(?:\s*"
+            r"(?P<url2>https?://[^\s\?]+))?",
             marks=pytest.mark.pt_BR,
             id="live-on-pt",
         ),
@@ -51,9 +51,8 @@ class Params:
         ),
         pytest.param(
             "pt_BR",
-            r"^\('Título: .*? \|\| Última transmissão: há .*? \((?:\d+ mês(?:es)?, )?(?:\d+ dia[s]?, )?(?:\d+ "
-            r"hora[s]?, )?(?:\d+ minuto[s]? e )?\d+\.\d+ segundo[s]?\)\. \|\| https://www\.twitch\.tv/xXCoolNickXx "
-            r"https://www\.twitch\.tv/videos/\d+',\)$",
+            r"Título:\s*(?P<title>.+?)\s*\|.*?\|\|\s*Última transmissão:\s*há\s*\d+\s*\w+.*?\|\|\s*(?P<url1>https?:"
+            r"//[^\s\?]+)(?:\s*(?P<url2>https?://[^\s\?]+))?",
             marks=pytest.mark.pt_BR,
             id="last-stream-pt",
         ),

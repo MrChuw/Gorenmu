@@ -30,7 +30,7 @@ async def base_wikipedia(interact, mock_context: MockContext, expected, success:
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.two_hundred)
 async def test_two_hundred(interact, mock_context: MockContext, lang: str, expected: str):
-    session = interact.SessionsCaches.WikipediaCachedSession
+    session = interact.SessionsCaches.Wikipedia
     await mock_context.prepare_context(lang)
     async with mock_context.MockBuilder.Session.get_not_cached(session, "www.some_url.com"):
         await base_wikipedia(interact, mock_context, expected=expected, success=True)
@@ -39,7 +39,7 @@ async def test_two_hundred(interact, mock_context: MockContext, lang: str, expec
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.timeout)
 async def test_timeout(interact, mock_context: MockContext, lang: str, expected: str):
-    session = interact.SessionsCaches.WikipediaCachedSession
+    session = interact.SessionsCaches.Wikipedia
     await mock_context.prepare_context(lang)
     async with (
         mock_context.MockBuilder.Session.get_not_cached(session, status=404)
@@ -52,7 +52,7 @@ async def test_timeout(interact, mock_context: MockContext, lang: str, expected:
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.exception)
 async def test_unexpected_exception(interact, mock_context: MockContext, lang: str, expected: str):
-    session = interact.SessionsCaches.WikipediaCachedSession
+    session = interact.SessionsCaches.Wikipedia
     await mock_context.prepare_context(lang)
     async with mock_context.MockBuilder.Session.get_not_cached(
         session, side_effect=Exception("fail")

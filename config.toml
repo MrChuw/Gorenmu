@@ -31,6 +31,7 @@ refresh_token = "${REFRESH_TOKEN}"
 client_id = "${CLIENT_ID}"
 api_client_id = "${API_CLIENT_ID}"
 api_client_secret = "${API_CLIENT_SECRET}"
+dicio_url = "https://dicio.mrchuw.com.br/"
 
 [discord]
 webhook_avatar="https://cdn.7tv.app/emote/01HMFCPNNR00070FCM1Q64QFRS/4x.webp"

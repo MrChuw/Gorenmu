@@ -36,7 +36,7 @@ class CountCmd(commands.CustomComponent):
     async def count(self, ctx: Context, *, content: str) -> Response:
         if (urls := URLExtract().find_urls(text=content)) and "type:url" in content:
             content = ""
-            cache_session = self.SessionsCaches.CountCachedSession
+            cache_session = self.SessionsCaches.Count
             for url in urls:
                 response = await cache_session.session.get(url)
                 content += f"{await response.text()} "

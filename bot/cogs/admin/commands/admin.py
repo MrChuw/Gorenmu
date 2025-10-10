@@ -9,7 +9,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from bot.ext import Context, Response, commands
-from bot.utils import Role, SessionsCaches
+from bot.utils import Role, SessionsCaches, StringTools
+from bot.utils.singleton import Singleton
 
 from .translations import Translations
 
@@ -22,6 +23,7 @@ class AdminSmallCmds(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
+        self.StringTools: StringTools = StringTools()
 
     name = "Admin Commands"
     cooldown_rate = 3
@@ -36,18 +38,18 @@ class AdminSmallCmds(commands.CustomComponent):
 
     @commands.command(name="nada", aliases=["bonjour", "hello"])
     async def nada(self, ctx: Context, *, args: str) -> Response:
-        if " " in args:
-            command, subcommand = args.split()
-            command = ctx.bot.get_command(command)
-            try:
-                command = command.get_command(subcommand)
-            except Exception as e:
-                print(e)
-
-            teste = command.component.translations.get_decorator(ctx=command)
-            teste2 = teste.deco_usage(ctx, prefix=ctx.prefix)
-            await ctx.reply(teste2)
-        return self.translations.Nada.nada(ctx, args)
+        # if " " in args:
+        #     command, subcommand = args.split()
+        #     command = ctx.bot.get_command(command)
+        #     try:
+        #         command = command.get_command(subcommand)
+        #     except Exception as e:
+        #         print(e)
+        #
+        #     teste = command.component.translations.get_decorator(ctx=command)
+        #     teste2 = teste.deco_usage(ctx, prefix=ctx.prefix)
+        #     await ctx.reply(teste2)
+        return self.translations.Nada.nada(ctx, args + self.StringTools.inv_char())
         # return self.translations.Exceptions.empty(ctx, args)
 
     @commands.command(name="restart", aliases=[])
@@ -99,6 +101,7 @@ class AdminSmallCmds(commands.CustomComponent):
             return translations.commands_reloaded(ctx)
 
         if command == "all":
+            Singleton.clear()
             results = []
             for key in ["translations", "commands", *reloader_map]:
                 fake_ctx = await self.reload._callback(self, ctx, command=key)  # NOQA
@@ -134,6 +137,7 @@ class AdminSmallCmds(commands.CustomComponent):
             except Exception as e:
                 ctx.bot.log.error(e)
                 return translations.module_reloaded_error(ctx, "Translations", e)
+
         command_to_reload = ctx.bot.get_command(command)
         if not command_to_reload:
             return translations.command_not_found(ctx, command)

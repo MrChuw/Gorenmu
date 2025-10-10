@@ -80,7 +80,7 @@ async def response(ctx: Context, args: str, timeout, command: SafeBooruCmd):
 
 
 async def choices(args: str, timeout: TimeTools.Timeout, ctx: Context, command: SafeBooruCmd):
-    session = command.SessionsCaches.SafebooruCachedSession.session
+    session = command.SessionsCaches.Safebooru.session
     instance = booru.Booru().Safebooru(session=session)
     while timeout.still_valid():
         try:
@@ -93,7 +93,7 @@ async def choices(args: str, timeout: TimeTools.Timeout, ctx: Context, command: 
 
 
 async def shortener(images: list[URL], images_preview: list[URL], ctx: Context, command: SafeBooruCmd):
-    session = command.SessionsCaches.SafebooruCachedSession.session
+    session = command.SessionsCaches.Safebooru.session
     shortener_ = command.UploadThings.shortener
 
     async def shorten(imagem):

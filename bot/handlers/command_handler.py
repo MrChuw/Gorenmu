@@ -140,7 +140,6 @@ class CommandHandler:
         if ctx.prefix != self.bot.channels[ctx.channel.name].prefix:
             return None
         translations = ctx.command.component.translations
-
         if not isinstance(error, InvalidArgument):
             await self.send_bug(ctx, error)
 

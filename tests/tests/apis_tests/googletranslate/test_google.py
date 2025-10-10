@@ -15,7 +15,7 @@ from bot.apis import GoogleTranslator
     ],
 )
 async def test_translate_real_session(mock_bot, target: str, content: str, expected: str):
-    session = mock_bot.SessionsCaches.TranslateCachedSession.session
+    session = mock_bot.SessionsCaches.Translate.session
     translator = GoogleTranslator(session=session, target=target)
     result = await translator.translate(content)
     assert result == expected, f"Expected {expected!r}, but got {result!r}"

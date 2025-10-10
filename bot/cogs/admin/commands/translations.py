@@ -23,7 +23,7 @@ class Translations(TranslationBase):
         def nada(self, ctx: Context, args: str, success: bool = True, handle: str = None) -> Response:
             response = Response(ctx=ctx, success=success, handle=handle, response_list=None)
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "The command was executed successfully.{}")
+                self.lang_dict.add_with("en", "The command was executed successfully. {}")
                 self.lang_dict.add_with(["pt_br", "pt"], "O comando foi executado com sucesso. {}")
             return response.format_response(self._untangle_str(ctx, self._cname), args)
 
@@ -76,27 +76,15 @@ class Translations(TranslationBase):
 
         def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
             with self.lang_dict.once("usage"):
-                self.lang_dict.add_with("en", f"To use: {prefix}restart")
-                self.lang_dict.add_with(["pt_br", "pt"], f"Para usar: {prefix}restart")
-            return self._untangle_str(ctx, "usage")
+                self.lang_dict.add_with("en", "To use: {}restart")
+                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}restart")
+            return self._untangle_str(ctx, "usage").format(prefix)
 
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once("description"):
                 self.lang_dict.add_with("en", "Restarts the bot.")
                 self.lang_dict.add_with(["pt_br", "pt"], "Reinicia o bot.")
             return self._untangle_str(ctx, "description")
-
-        def deco_commands(self, ctx: Context, *args, **kwargs) -> CommandExemples:
-            with self.lang_dict.once("commands"):
-                self.lang_dict.add_with("en", CommandExemples([]))
-                self.lang_dict.add_with(["pt_br", "pt"], CommandExemples([]))
-            return self._untangle_commands(ctx, "commands")
-
-        def deco_admonitions(self, ctx: Context, *args, **kwargs) -> Admonitions:
-            with self.lang_dict.once("admonitions"):
-                self.lang_dict.add_with("en", Admonitions([]))
-                self.lang_dict.add_with(["pt_br", "pt"], Admonitions([]))
-            return self._untangle_admonitions(ctx, "admonitions")
 
     Restart: Restart
 

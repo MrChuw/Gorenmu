@@ -19,7 +19,7 @@ class ColorCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
         self.translations: Translations = Translations(bot)
-        self.color_cache: SessionsCaches.ColorCachedSession = SessionsCaches(bot).ColorCachedSession
+        self.color_cache: SessionsCaches.Color = SessionsCaches(bot).Color
         self.StringTools: StringTools = StringTools()
 
     cooldown_rate = 3

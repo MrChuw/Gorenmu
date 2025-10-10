@@ -401,7 +401,7 @@ async def upload_alias(ctx: Context, aliases: list[Alias], table_name: str, comm
 
     data = {"markdown": markdown_table, "table_name": table_name}
 
-    alias_cached_session = command.SessionsCaches.AliasCachedSession.session
+    alias_cached_session = command.SessionsCaches.Alias.session
     response_url = await command.UploadThings.upload_alias(data=data, session=alias_cached_session)
 
     return await command.UploadThings.shortener(response_url, ["aliases"], alias_cached_session)
