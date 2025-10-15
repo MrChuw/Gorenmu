@@ -54,7 +54,7 @@ async def test_random_content(interact, mock_context: MockContext, lang: str, ex
 @pytest.mark.parametrize("lang, expected", Params.target_user)
 async def test_target_user(interact, mock_context: MockContext, lang: str, expected: str):
     await base_randomline(
-        interact, mock_context, lang=lang, content="user:some_user_50", re_expected=expected, success=True
+        interact, mock_context, lang=lang, content="user:username", re_expected=expected, success=True
     )
 
 

@@ -66,4 +66,10 @@ async def create_fake_db(bot: Gorenmu):
         cookie.stocked = 93 * num
         await cookie.save()
         await cookie.new_cooldown()
-    ...
+
+    ctx = MockContext("no_mention_user", 1234512341234, "channelname", 123456, bot)
+    ctx.bot.channels["channelname"] = channel
+    user = await User.create_or_update(ctx)
+    user.saved_color = "FF4500"
+    user.mention = False
+    await user.save()

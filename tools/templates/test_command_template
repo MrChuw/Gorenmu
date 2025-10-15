@@ -3,14 +3,14 @@
 import pytest
 import pytest_asyncio
 
-from bot.cogs.{command_name}.commands.{command_name} import {command_name}Cmd
+from bot.cogs.{command_name}.command.{command_name} import {command_title}Cmd
 from tests.helpers.mock_classes import MockContext
 from .test_params import Params
 
 
 @pytest_asyncio.fixture
 async def interact(mock_bot):
-    return {command_name}Cmd(bot=mock_bot)
+    return {command_title}Cmd(bot=mock_bot)
 
 
 @pytest.mark.asyncio

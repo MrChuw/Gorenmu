@@ -25,11 +25,11 @@ class Params:
 
     no_content = [
         pytest.param(
-            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @some_user_49\)", marks=pytest.mark.en, id="en"
+            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)", marks=pytest.mark.en, id="en"
         ),
         pytest.param(
             "pt_BR",
-            r"Some Text \(enviado há (\d+(?:\.\d+)?) seconds por @some_user_49\)",
+            r"Some Text \(enviado há (\d+(?:\.\d+)?) seconds por @username\)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -37,11 +37,11 @@ class Params:
 
     random_content = [
         pytest.param(
-            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @some_user_49\)", marks=pytest.mark.en, id="en"
+            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)", marks=pytest.mark.en, id="en"
         ),
         pytest.param(
             "pt_BR",
-            r"Some Text \(enviado há (\d+(?:\.\d+)?) seconds por @some_user_49\)",
+            r"Some Text \(enviado há (\d+(?:\.\d+)?) seconds por @username\)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -49,11 +49,11 @@ class Params:
 
     target_user = [
         pytest.param(
-            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @some_user_50\)", marks=pytest.mark.en, id="en"
+            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)", marks=pytest.mark.en, id="en"
         ),
         pytest.param(
             "pt_BR",
-            r"Some Text \(enviado há (\d+(?:\.\d+)?) seconds por @some_user_50\)",
+            r"Some Text \(enviado há (\d+(?:\.\d+)?) seconds por @username\)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -61,11 +61,11 @@ class Params:
 
     target_channel = [
         pytest.param(
-            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @some_user_49\)", marks=pytest.mark.en, id="en"
+            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)", marks=pytest.mark.en, id="en"
         ),
         pytest.param(
             "pt_BR",
-            r"Some Text \(enviado há (\d+(?:\.\d+)?) seconds por @some_user_49\)",
+            r"Some Text \(enviado há (\d+(?:\.\d+)?) seconds por @username\)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

@@ -43,7 +43,8 @@ class LifecycleHandler:
         self.bot.MarkovTask.cancel()
         with contextlib.suppress(asyncio.CancelledError):
             await self.bot.MarkovTask
-        await super(type(self.bot), self.bot).close()
+        if not self.bot.mock:
+            await super(type(self.bot), self.bot).close()
 
     async def event_ready(self):
         if not self.bot.mock:
