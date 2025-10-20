@@ -81,7 +81,12 @@ class PixelSortCmd(commands.CustomComponent):
         if isinstance(manipulated, Response):
             return manipulated
         upload = await self.UploadThings.upload_file(
-            manipulated.getvalue(), "image/png", session=session, filename="manipulated.png"
+            manipulated.getvalue(),
+            "image/png",
+            session=session,
+            filename="manipulated.png",
+            url=self.bot.config.ApisConfig.feridinha_url,
+            api_key={"token": self.bot.config.ApisConfig.feridinha_key},
         )
         shortened = await self.UploadThings.shortener(url=upload, session=session, tags=["PixelSorting"])
         return translations.image(ctx, shortened)

@@ -103,6 +103,7 @@ class BaseCachedSession(ABC):
     def __init__(self, bot, useragent: str, cache_name: str = None):
         self.bot = bot
         self.upload_url = self.bot.config.ApisConfig.file_upload_url / "*"
+        self.feridinha_url = self.bot.config.ApisConfig.feridinha_url / "*"
         self.shortener_url = self.bot.config.ApisConfig.shlink_url / "*"
         self.alias_url = self.bot.config.ApisConfig.alias_url / "*"
 

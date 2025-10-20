@@ -7,7 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "aiocache[memcached,redis]==0.12.3",
     "aiohttp==3.12.15",
-    "aiohttp-client-cache==0.13.0",
+    "aiohttp-client-cache[all]==0.13.0",
     "aiomcache==0.8.2",
     "aioresponses==0.7.8",
     "aiosqlite==0.21.0",
@@ -79,5 +79,5 @@ markers = ["network: tests that make real requests", "disabled: Tests that have 
     "pt_BR: Test for Portuguse language.", "en: Test for English language."]
 #addopts = "-m 'not disabled'"
 #addopts = "-n auto -m 'not disabled'"
-#addopts = "-m 'not network and not disabled'"
-addopts = "-n auto -m 'not network and not disabled'"
+addopts = "-m 'not network and not disabled'"
+#addopts = "-n auto -m 'not network and not disabled'"

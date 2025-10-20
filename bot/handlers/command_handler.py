@@ -157,8 +157,8 @@ class CommandHandler:
         if isinstance(error, NotImplementedError):
             return await ctx.simple_response(ctx, translations.Exceptions.not_implemented(ctx).response_string)
         if isinstance(error, InvalidArgument) and ctx.command:
-            teste = ctx.command.component.translations.get_decorator(ctx=ctx)
-            await ctx.reply(teste.deco_usage(ctx, prefix=ctx.prefix))
+            deco = ctx.command.component.translations.get_decorator(ctx=ctx)
+            await ctx.reply(deco.deco_usage(ctx, prefix=ctx.prefix))
             return None
         if isinstance(error, GuardFailure):
             return None

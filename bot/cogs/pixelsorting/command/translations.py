@@ -52,7 +52,7 @@ class Translations(TranslationBase):
             return response.format_response(self._untangle_str(ctx, self._cname), time)
 
         def image(self, ctx: Context, shortened) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
+            response = Response(ctx=ctx, success=True, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(["pt_br", "pt", "en"], "{}")
             return response.format_response(self._untangle_str(ctx, self._cname), shortened)

@@ -43,7 +43,12 @@ class ProfilePictureCmd(commands.CustomComponent):
         imagem = await image_tmi.read()
 
         uploaded_image = await self.UploadThings.upload_file(
-            data=imagem, mime_type="image/png", filename="profile_pic.png", session=session
+            data=imagem,
+            mime_type="image/png",
+            filename="profile_pic.png",
+            session=session,
+            url=self.bot.config.ApisConfig.feridinha_url,
+            api_key={"token": self.bot.config.ApisConfig.feridinha_key},
         )
         uploaded_shorter = None
         if uploaded_image:

@@ -131,7 +131,7 @@ class ContextHandler:
 
     async def pipe_handler(self, external_ctx: Context, message: ChatMessage):
         response_str = ""
-        translation = external_ctx.component.translations.Exceptions
+        translation = external_ctx.command.component.translations.Exceptions
         message.text = message.text.replace(" | ", f" | {external_ctx.prefix}")
         original_message = message
         response: Response | None = None

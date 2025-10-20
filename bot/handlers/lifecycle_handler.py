@@ -96,9 +96,9 @@ class LifecycleHandler:
             return None
 
         except InvalidArgument:
-            if ctx.command and hasattr(ctx.command, "usage"):
-                decorator = ctx.command.decorators[ctx.user.language]
-                return await ctx.reply(decorator.usage)
+            deco = ctx.command.component.translations.get_decorator(ctx=ctx)
+            if usage := deco.deco_usage(ctx):
+                return await ctx.reply(usage)
 
             error_not_registered = ctx.command.component.translations.Exceptions.error_not_registered(
                 ctx, self.config.BotConfig.dev_name

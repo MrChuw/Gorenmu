@@ -61,7 +61,7 @@ class LiveCmd(commands.CustomComponent):
             current_stream_precise = humanize.precisedelta(stream_started)
             broadcast_time = translations.stream_started(ctx, current_stream_natural, current_stream_precise)
             stream2 = (await ctx.bot.fetch_videos(user_id=user_tmi.id))[0]
-            now_adjusted = datetime.datetime.now(datetime.UTC).replace(tzinfo=None) - datetime.timedelta(seconds=90)
+            now_adjusted = datetime.datetime.now().replace(tzinfo=None) - datetime.timedelta(seconds=90)
             vod_offset = (now_adjusted - stream_started).total_seconds()
             vod_offset = max(0, int(vod_offset))
             vod_url = (twitch_url / "videos" / stream2.id).update_query(t=f"{vod_offset}s")

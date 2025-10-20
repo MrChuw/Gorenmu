@@ -214,6 +214,7 @@ class SessionsCaches(metaclass=Singleton):
                 "https://static-cdn.jtvnw.net/*": timedelta(hours=1),
                 self.upload_url: timedelta(hours=12),
                 self.shortener_url: timedelta(hours=12),
+                self.feridinha_url: timedelta(hours=12),
             }
 
     ProfilePicture: ProfilePicture
@@ -256,6 +257,19 @@ class SessionsCaches(metaclass=Singleton):
             super().__init__(bot=bot, useragent=useragent)
 
         def get_expiry_times(self) -> dict:
-            return {"dicio.mrchuw.com.br/*": timedelta(hours=12)}
+            return {self.bot.config.ApisConfig.dicio_url / "*": timedelta(hours=12)}
 
     Dicio: Dicio
+
+    class Clips(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {
+                self.bot.config.ApisConfig.clips_url / "*": timedelta(seconds=15),
+                self.feridinha_url: timedelta(hours=12),
+            }
+
+    Clips: Clips

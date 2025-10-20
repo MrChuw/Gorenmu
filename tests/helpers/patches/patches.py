@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import bot.cogs.randomscp.command.randomscp as randomscp
 from bot.apis.ivrfi.parsers.user import UserElement
+from bot.cogs.preview.command.preview import PreviewCmd
 
 
 class MockBuilder:
@@ -53,13 +54,14 @@ class MockBuilder:
             self.builder = builder
             self.bot = builder.mock_context.bot if hasattr(builder.mock_context, "bot") else builder.mock_context
 
-        def fetch_user(self, name="mock_user", user_id=1234, created_at=None) -> "MockBuilder":
+        def fetch_user(self, name="mock_user", user_id=1234, created_at=None, stream=False) -> "MockBuilder":
             if name is None:
                 mock_fetch = AsyncMock(return_value=None)
             else:
                 mock_user = MagicMock()
                 mock_user.name = name
                 mock_user.id = user_id
+                mock_user.stream = stream
                 mock_user.created_at = created_at or datetime.datetime(2020, 1, 1, tzinfo=datetime.UTC)
                 mock_fetch = AsyncMock(return_value=mock_user)
             self.builder.patches["fetch_user"].append(patch.object(self.bot, "fetch_user", mock_fetch))
@@ -174,10 +176,16 @@ class MockBuilder:
             self.builder = builder
 
         def get_scp(self, return_value: str = None, side_effect=None, status=200) -> "MockBuilder":
-            mock_get_scp = AsyncMock(side_effect=side_effect)
+            mock_get = AsyncMock(side_effect=side_effect)
             mock_url = MagicMock(human_repr=MagicMock(return_value=return_value or "www.some_url.com"))
-            mock_get_scp.return_value = MagicMock(status=status, url=mock_url)
-            self.builder.patches["get_scp"].append(patch.object(randomscp, "get_scp", mock_get_scp))
+            mock_get.return_value = MagicMock(status=status, url=mock_url)
+            self.builder.patches["get_scp"].append(patch.object(randomscp, "get_scp", mock_get))
+            return self.builder
+
+        def get_preview(self, return_value: str = None, side_effect=None, status=200) -> "MockBuilder":
+            mock_get = AsyncMock(side_effect=side_effect)
+            mock_get.return_value = return_value or "www.some_url.com"
+            self.builder.patches["get_preview"].append(patch.object(PreviewCmd, "get_preview", mock_get))
             return self.builder
 
     class _Asyncio:

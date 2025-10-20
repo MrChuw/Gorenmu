@@ -112,6 +112,9 @@ class ApisConfig:
         self.enable_site_endpoints: bool = data.get("enable_site_endpoints", False)
         self.alias_url: URL = URL(data.get("alias_url", "https://exemple.org"))
         self.dicio_url: URL = URL(data.get("dicio_url", "https://dicio.exemple.org"))
+        self.clips_url: URL = URL(data.get("clip_url", "https://clips.exemple.org"))
+        self.feridinha_url: URL = URL(data.get("feridinha_url", "https://upload.exemple.org"))
+        self.feridinha_key: str = data.get("feridinha_key", "api_exemple")
 
 
 class DatabaseConfig:
