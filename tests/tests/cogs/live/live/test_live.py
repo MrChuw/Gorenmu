@@ -32,7 +32,7 @@ async def base_live(
     success: bool = False,
 ):
     await mock_context.prepare_context(lang)
-    async with mock_context.MockBuilder.ApiIvrFi.User.fetch_user(dict_to_parse=json_response).Bot.fetch_videos():
+    async with mock_context.MockBuilder.ApiIvrFi.Twitch.User.fetch_user(dict_to_parse=json_response).Bot.fetch_videos():
         response = await interact.live._callback(self=interact, ctx=mock_context, channel=content)  # NOQA
         mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
@@ -63,6 +63,20 @@ async def test_live_off(interact, mock_context: MockContext, lang: str, expected
         re_expected=expected,
         json_response=Params.offline_json,
         success=True,
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, expected", Params.live_never)
+async def test_live_never(interact, mock_context: MockContext, lang: str, expected: str):
+    await base_live(
+        interact=interact,
+        mock_context=mock_context,
+        lang=lang,
+        content="",
+        re_expected=expected,
+        json_response=Params.never_json,
+        success=False,
     )
 
 

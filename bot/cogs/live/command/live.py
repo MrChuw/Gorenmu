@@ -38,9 +38,9 @@ class LiveCmd(commands.CustomComponent):
     async def live(self, ctx: Context, channel: str = "") -> Response:
         if not channel.isdigit():
             channel = self.StringTools.str2name_or(channel or ctx.channel.name)
-            user_tmi = await self.ApiIvrFi.User.fetch_user(name=channel)
+            user_tmi = await self.ApiIvrFi.Twitch.User.fetch_user(name=channel)
         else:
-            user_tmi = await self.ApiIvrFi.User.fetch_user(user_id=int(channel) or ctx.channel.id)
+            user_tmi = await self.ApiIvrFi.Twitch.User.fetch_user(user_id=int(channel) or ctx.channel.id)
         if not user_tmi:
             return self.translations.Exceptions.user_not_found_name(ctx, channel)
 
@@ -49,7 +49,9 @@ class LiveCmd(commands.CustomComponent):
         humanize = self.translations.SupportTools.TimeTools.Humanize(ctx)
         title = translations.title(ctx, stream.title)
         twitch_url = URL("https://www.twitch.tv/")
-        if not hasattr(stream, "id"):
+        if not hasattr(stream, "id") and not stream.started_at:
+            return self.translations.Live.never_streamed(ctx, name=channel)
+        elif not hasattr(stream, "id"):
             last_stream_natural = humanize.naturaltime(user_tmi.last_broadcast.started_at)
             last_stream_precise = humanize.precisedelta(user_tmi.last_broadcast.started_at)
             broadcast_time = translations.last_stream(ctx, last_stream_natural, last_stream_precise)

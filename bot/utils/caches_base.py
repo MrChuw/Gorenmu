@@ -164,7 +164,7 @@ class BaseCachedSession(ABC):
             )
         else:
             return SQLiteBackend(
-                cache_name=f".cache/aiohttp-{cache_name}.db",
+                cache_name=f"./data/cache/aiohttp-{cache_name}.db",
                 urls_expire_after=self.get_expiry_times(),
                 allowed_methods=self.allowed_methods,
                 include_headers=True,

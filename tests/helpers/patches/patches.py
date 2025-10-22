@@ -10,6 +10,7 @@ from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import bot.cogs.randomscp.command.randomscp as randomscp
+from bot.apis.ivrfi.parsers.subage import SubAge
 from bot.apis.ivrfi.parsers.user import UserElement
 from bot.cogs.preview.command.preview import PreviewCmd
 
@@ -211,20 +212,39 @@ class MockBuilder:
     class _ApiIvrFi:
         def __init__(self, builder):
             self.builder = builder
-            self.User: "MockBuilder._ApiIvrFi._User" = self._User(builder)
+            self.Twitch: "MockBuilder._ApiIvrFi._Twitch" = self._Twitch(builder)
 
-        class _User:
+        class _Twitch:
             def __init__(self, builder):
                 self.builder = builder
+                self.User: "MockBuilder._ApiIvrFi._Twitch._User" = self._User(builder)
+                self.Channel: "MockBuilder._ApiIvrFi._Twitch._Channel" = self._Channel(builder)
 
-            def fetch_user(self, dict_to_parse: dict = None) -> "MockBuilder":
-                self.builder.patches["ivrfi_user_fetch_user"].append(
-                    patch(
-                        "bot.apis.ivrfi.api.ApiIvrFi.User.fetch_user",
-                        AsyncMock(return_value=UserElement.from_dict(dict_to_parse[0]) if dict_to_parse else None),
+            class _User:
+                def __init__(self, builder):
+                    self.builder = builder
+
+                def fetch_user(self, dict_to_parse: dict = None) -> "MockBuilder":
+                    self.builder.patches["ivrfi_user_fetch_user"].append(
+                        patch(
+                            "bot.apis.ivrfi.api.ApiIvrFi.Twitch.User.fetch_user",
+                            AsyncMock(return_value=UserElement.from_dict(dict_to_parse[0]) if dict_to_parse else None),
+                        )
                     )
-                )
-                return self.builder
+                    return self.builder
+
+            class _Channel:
+                def __init__(self, builder):
+                    self.builder = builder
+
+                def fetch_preview(self, dict_to_parse: dict = None) -> "MockBuilder":
+                    self.builder.patches["ivrfi_user_fetch_user"].append(
+                        patch(
+                            "bot.apis.ivrfi.api.ApiIvrFi.Twitch.Channel.fetch_followage",
+                            AsyncMock(return_value=SubAge.from_dict(dict_to_parse) if dict_to_parse else None),
+                        )
+                    )
+                    return self.builder
 
     async def __aenter__(self):
         self._stack = AsyncExitStack()  # NOQA

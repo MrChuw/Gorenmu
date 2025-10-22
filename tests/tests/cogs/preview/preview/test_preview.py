@@ -43,7 +43,7 @@ async def base_preview(
 @pytest.mark.parametrize("lang, expected", Params.offline)
 async def test_offline(interact, mock_context: MockContext, lang: str, expected: str):
     async with (
-        mock_context.MockBuilder.ApiIvrFi.User.fetch_user(dict_to_parse=Params.offline_json)
+        mock_context.MockBuilder.ApiIvrFi.Twitch.User.fetch_user(dict_to_parse=Params.offline_json)
         .Bot.fetch_videos()
         .Bot.fetch_user()
         .Commands.get_preview()
@@ -55,7 +55,7 @@ async def test_offline(interact, mock_context: MockContext, lang: str, expected:
 @pytest.mark.parametrize("lang, expected", Params.online)
 async def test_online(interact, mock_context: MockContext, lang: str, expected: str):
     async with (
-        mock_context.MockBuilder.ApiIvrFi.User.fetch_user(dict_to_parse=Params.online_json)
+        mock_context.MockBuilder.ApiIvrFi.Twitch.User.fetch_user(dict_to_parse=Params.online_json)
         .Bot.fetch_videos()
         .Bot.fetch_user()
         .Commands.get_preview("link")

@@ -58,6 +58,13 @@ class Params:
         ),
     ]
 
+    live_never = [
+        pytest.param("en", "User channelname has never opened any stream.", marks=pytest.mark.en, id="last-stream-en"),
+        pytest.param(
+            "pt_BR", "Usuário channelname nunca abriu nenhuma stream.", marks=pytest.mark.pt_BR, id="last-stream-pt"
+        ),
+    ]
+
     not_found = [
         pytest.param("en", "I couldn't find any user named @nonexistent_user.", marks=pytest.mark.en, id="notfound-en"),
         pytest.param(
@@ -100,5 +107,16 @@ class Params:
                 "startedAt": "2025-08-06T20:19:26.925204Z",
                 "title": "Live?! | !discord | !reddit | !roblox",
             },
+        }
+    ]
+
+    never_json = [
+        {
+            "displayName": "xXCoolNickXx",
+            "login": "xXCoolNickXx",
+            "id": "123456",
+            "bio": "Cool lives :)",
+            "stream": None,
+            "lastBroadcast": {"startedAt": None},
         }
     ]

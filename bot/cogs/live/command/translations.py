@@ -3,11 +3,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase
+from bot.ext import CommandExemples, Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context, commands
+    from bot.ext import Context
 
 
 class Translations(TranslationBase):
@@ -18,6 +18,13 @@ class Translations(TranslationBase):
     class Live(TBase):
         def __init__(self):
             super().__init__()
+
+        def never_streamed(self, ctx, name: str) -> Response:
+            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "User {} has never opened any stream.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Usuário {} nunca abriu nenhuma stream.")
+            return response.format_response(self._untangle_str(ctx, self._cname), name)
 
         def response(self, ctx: Context, args) -> Response:
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)

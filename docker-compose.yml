@@ -1,6 +1,6 @@
 services:
   Gorenmu_bot:
-    image: python:3.12.6
+    image: python:3.13.1
     container_name: Gorenmu
     working_dir: /app
     network_mode: host
@@ -22,7 +22,7 @@ services:
       MYSQL_USER: ${DB_LOGIN}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./.db_data:/var/lib/mysql
+      - ./.data/database:/var/lib/mysql
     ports:
       - "3307:3306"
     restart: always
@@ -31,7 +31,7 @@ services:
     image: valkey/valkey:unstable
     container_name: Valkey
     volumes:
-      - ./.redis_data:/data
+      - ./.data/redis:/data
     ports:
       - "6379:6379"
     command: "valkey-server --save 60 1 --loglevel warning"
@@ -44,13 +44,12 @@ services:
       dockerfile: Dockerfile
     image: pogocache/pogocache
     volumes:
-      - ./.redis_data:/data
+      - ./.data/.redis:/data
     ports:
       - "9401:9401"
 #    entrypoint: bash -c "sleep 100000"
 #    command: "-h 0.0.0.0 --persist=/data/data.db --evict=no"
     restart: always
-
 
 
   js-apis:

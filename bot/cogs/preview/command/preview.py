@@ -46,9 +46,9 @@ class PreviewCmd(commands.CustomComponent):
         if not user_tmi:
             return translations.Exceptions.user_not_found_name(ctx, name)
 
-        user_tmi = await self.ApiIvrFi.User.fetch_user(user_id=int(user_tmi.id))
+        user_tmi = await self.ApiIvrFi.Twitch.User.fetch_user(user_id=int(user_tmi.id))
         if not user_tmi:
-            return translations.Exceptions.user_not_found_name(ctx, user_tmi)
+            return translations.Exceptions.user_not_found_name(ctx, name)
         if not user_tmi.stream:
             return translations.Preview.not_live(ctx, name)
 
