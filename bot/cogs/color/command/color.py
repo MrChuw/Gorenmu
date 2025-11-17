@@ -59,7 +59,7 @@ class ColorCmd(commands.CustomComponent):
             await get_color_info(color_hex, translations.hex_color(ctx))
 
         if user:
-            user_db = await User.get_user(ctx, user_id=user.id, is_none=True, translations=self.translations)
+            user_db = await User.get_user(ctx, translations=self.translations, user_id=user.id, is_none=True)
             if user_db and user_db.saved_color:
                 await get_color_info(user_db.saved_color, translations.saved_color(ctx))
 

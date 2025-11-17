@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from .best_logs import BestLogs
 from .color import Color
 from .currency import Currency
 from .dictionary import Dictionary

@@ -5,11 +5,13 @@ from zoneinfo import ZoneInfo
 
 from tortoise import fields
 
+from bot.ext import Context
 from bot.models.base import Base, ContentMixin, TimestampMixin
 from bot.models.User_extras import MessagesLog, NickHistory
 from bot.utils.string_manipulation import StringTools
 
 if TYPE_CHECKING:
+    from bot.bot import Gorenmu
     from bot.ext import Context, Response, TranslationBase
     from bot.models.User_extras import (
         Annotation,
@@ -153,47 +155,57 @@ class User(Base, TimestampMixin, ContentMixin):
             return None
 
     @staticmethod
-    async def find_by_name(name: str, ctx: Context, translations: TranslationBase, is_none: bool = False) -> GetReturnT:
-        user = await ctx.bot.memcache.User.get_by_name(name=name)
+    async def find_by_name(
+        name: str, ctx_bot: Context | Gorenmu, translations: TranslationBase | None, is_none: bool = False
+    ) -> GetReturnT:
+        bot = ctx_bot.bot if isinstance(ctx_bot, Context) else ctx_bot
+        user = await bot.memcache.User.get_by_name(name=name)
         if not user:
             user = await User.get_or_none(name=name)
             if is_none and not user:
                 return None
-            if not user:
-                return translations.Exceptions.user_not_found_name(ctx, name)
-            await ctx.bot.memcache.User.set(user=user)
+            if not user and isinstance(ctx_bot, Context):
+                return translations.Exceptions.user_not_found_name(ctx_bot, name)
+            await bot.memcache.User.set(user=user)
         return user
 
     @staticmethod
     async def find_by_id(
-        user_id: int, ctx: Context, translations: TranslationBase, is_none: bool = False
+        user_id: int, ctx_bot: Context, translations: TranslationBase | None, is_none: bool = False
     ) -> GetReturnT:
-        user = await ctx.bot.memcache.User.get(user_id=user_id)
+        bot = ctx_bot.bot if isinstance(ctx_bot, Context) else ctx_bot
+        user = await bot.memcache.User.get(user_id=user_id)
         if not user:
             user = await User.get_or_none(id=user_id)
             if is_none and not user:
                 return None
-            if not user:
-                return translations.Exceptions.user_not_found_id(ctx, user_id)
-            await ctx.bot.memcache.User.set(user=user)
+            if not user and isinstance(ctx_bot, Context):
+                return translations.Exceptions.user_not_found_id(ctx_bot, user_id)
+            await bot.memcache.User.set(user=user)
         return user
 
     @staticmethod
     async def get_user(
-        ctx: Context, translations: TranslationBase, name: str = None, user_id: int = None, is_none: bool = False
+        ctx_bot: Context | Gorenmu,
+        translations: TranslationBase | None,
+        name: str = None,
+        user_id: int = None,
+        is_none: bool = False,
     ) -> GetReturnT:
         if name:
-            return await User.find_by_name(name=name, ctx=ctx, is_none=is_none, translations=translations)
+            return await User.find_by_name(name=name, ctx_bot=ctx_bot, translations=translations, is_none=is_none)
         elif user_id:
-            return await User.find_by_id(user_id=user_id, ctx=ctx, is_none=is_none, translations=translations)
+            return await User.find_by_id(user_id=user_id, ctx_bot=ctx_bot, translations=translations, is_none=is_none)
         else:
-            return await User.find_by_id(user_id=ctx.user.id, ctx=ctx, is_none=is_none, translations=translations)
+            return await User.find_by_id(
+                user_id=ctx_bot.user.id, ctx_bot=ctx_bot, translations=translations, is_none=is_none
+            )
 
     @staticmethod
     async def get_user_or_none(
-        ctx: Context, translations: TranslationBase, name: str = None, user_id: int = None
+        ctx_bot: Context | Gorenmu, translations: TranslationBase | None, name: str = None, user_id: int = None
     ) -> GetReturnT:
-        return await User.get_user(ctx, translations, name, user_id, is_none=True)
+        return await User.get_user(ctx_bot, translations, name, user_id, is_none=True)
 
 
 class TwitchTokens(Base, TimestampMixin):

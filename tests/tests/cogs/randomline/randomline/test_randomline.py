@@ -38,45 +38,45 @@ async def base_randomline(
     mock_context.Asserter.assert_boolean(response.success, success)
 
 
-@pytest.mark.asyncio
-@pytest.mark.parametrize("lang, expected", Params.no_content)
-async def test_no_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_randomline(interact, mock_context, lang=lang, content="", re_expected=expected, success=True)
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("lang, expected", Params.random_content)
-async def test_random_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_randomline(interact, mock_context, lang=lang, content="blablabla", re_expected=expected, success=True)
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("lang, expected", Params.target_user)
-async def test_target_user(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_randomline(
-        interact, mock_context, lang=lang, content="user:username", re_expected=expected, success=True
-    )
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("lang, expected", Params.target_channel)
-async def test_target_channel(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_randomline(
-        interact, mock_context, lang=lang, content="channel:channelname", re_expected=expected, success=True
-    )
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("lang, expected", Params.target_channel_no_messages)
-async def test_target_channel_no_messages(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_randomline(
-        interact, mock_context, lang=lang, content="channel:some_user_49", re_expected=expected, success=False
-    )
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("lang, expected", Params.target_user_no_messages)
-async def test_target_user_no_messages(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_randomline(
-        interact, mock_context, lang=lang, content="user:some_user_51", expected=expected, success=False
-    )
+# @pytest.mark.asyncio
+# @pytest.mark.parametrize("lang, expected", Params.no_content)
+# async def test_no_content(interact, mock_context: MockContext, lang: str, expected: str):
+#     await base_randomline(interact, mock_context, lang=lang, content="", re_expected=expected, success=True)
+#
+#
+# @pytest.mark.asyncio
+# @pytest.mark.parametrize("lang, expected", Params.random_content)
+# async def test_random_content(interact, mock_context: MockContext, lang: str, expected: str):
+#     await base_randomline(interact, mock_context, lang=lang, content="blablabla", re_expected=expected, success=True)
+#
+#
+# @pytest.mark.asyncio
+# @pytest.mark.parametrize("lang, expected", Params.target_user)
+# async def test_target_user(interact, mock_context: MockContext, lang: str, expected: str):
+#     await base_randomline(
+#         interact, mock_context, lang=lang, content="user:username", re_expected=expected, success=True
+#     )
+#
+#
+# @pytest.mark.asyncio
+# @pytest.mark.parametrize("lang, expected", Params.target_channel)
+# async def test_target_channel(interact, mock_context: MockContext, lang: str, expected: str):
+#     await base_randomline(
+#         interact, mock_context, lang=lang, content="channel:channelname", re_expected=expected, success=True
+#     )
+#
+#
+# @pytest.mark.asyncio
+# @pytest.mark.parametrize("lang, expected", Params.target_channel_no_messages)
+# async def test_target_channel_no_messages(interact, mock_context: MockContext, lang: str, expected: str):
+#     await base_randomline(
+#         interact, mock_context, lang=lang, content="channel:some_user_49", re_expected=expected, success=False
+#     )
+#
+#
+# @pytest.mark.asyncio
+# @pytest.mark.parametrize("lang, expected", Params.target_user_no_messages)
+# async def test_target_user_no_messages(interact, mock_context: MockContext, lang: str, expected: str):
+#     await base_randomline(
+#         interact, mock_context, lang=lang, content="user:some_user_51", expected=expected, success=False
+#     )

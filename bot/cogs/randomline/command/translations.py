@@ -54,8 +54,8 @@ class Translations(TranslationBase):
         def random_line(self, ctx: Context, content, time, nick) -> Response:
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "{} (sent {} ago by @{})")
-                self.lang_dict.add_with(["pt_br", "pt"], "{} (enviado há {} por @{})")
+                self.lang_dict.add_with("en", "{} (sent {} ago by @{} )")
+                self.lang_dict.add_with(["pt_br", "pt"], "{} (enviado há {} por @{} )")
             return response.format_response(self._untangle_str(ctx, self._cname), content, time, nick)
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:

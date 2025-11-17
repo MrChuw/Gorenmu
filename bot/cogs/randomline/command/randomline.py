@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING
 
+from bot.apis import BestLogs
 from bot.ext import Context, Response, commands
 from bot.models import MessagesLog, User
 from bot.utils import SessionsCaches, StringTools, TimeTools, UploadThings
@@ -18,6 +20,8 @@ class RandomLineCmd(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot)
         self.StringTools: StringTools = StringTools()
+        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
+        self.BestLogs: BestLogs = BestLogs(bot, self.SessionsCaches.RandomLine.session)
 
     cooldown_rate = 1
     cooldown_per = 5
@@ -34,43 +38,21 @@ class RandomLineCmd(commands.CustomComponent):
         translations = self.translations
         humanize = self.translations.SupportTools.TimeTools.Humanize(ctx)
         options_split = options.split(" ")
-        channel_original = self.StringTools.find_prefixed_option(options_split, "channel:")
-        user_original = self.StringTools.find_prefixed_option(options_split, "user:")
-        user, channel = None, None
-        if user_original:
-            if user_original.lower() != ctx.author.name.lower():
-                user = await User.get_user(ctx, name=user_original, translations=self.translations)
-            else:
-                user = ctx.user
-            if hasattr(user, "response_string"):
-                return user
-
-        if channel_original and channel_original != "global":
-            channel = ctx.bot.channels.get(channel_original)
-            if not channel:
-                return translations.Exceptions.channel_not_found(ctx, channel_original)
-
-        if channel is None and channel_original != "global":
-            channel = ctx.bot.channels.get(ctx.channel.name)
-
-        message, count = await MessagesLog.get_random_message(user=user, channel=channel)
-        message: MessagesLog
-        if count == 0:
+        channel = self.StringTools.find_prefixed_option(options_split, "channel:")
+        user = self.StringTools.find_prefixed_option(options_split, "user:")
+        messages = await self.BestLogs.RustLogs.get_random_message(ctx, channel or ctx.channel.name, user)
+        if messages == "No user logs found":
             if not channel and user:
-                return translations.RandomLine.no_user_message(ctx, user_original)
+                return translations.RandomLine.no_user_message(ctx, user)
             elif channel and not user:
-                return translations.RandomLine.no_channel_message(ctx, channel_original or ctx.channel.name)
-
-            return translations.RandomLine.no_user_on_channel(ctx, user_original, channel_original or ctx.channel.name)
-        if not count:
-            return translations.RandomLine.search_timeout(
-                ctx, user_original or "", channel_original or ctx.channel.name
-            )
+                return translations.RandomLine.no_channel_message(ctx, channel or ctx.channel.name)
+            return translations.RandomLine.no_user_on_channel(ctx, user, channel or ctx.channel.name)
+        message = messages.messages[0]
         return translations.RandomLine.random_line(
             ctx,
-            message.content,
-            humanize.created_a_time(created_at=message.created_at, timezone=ctx.user.timezone_),
-            message.user.nickname or message.user.name,
+            message.text,
+            humanize.created_a_time(created_at=message.timestamp, timezone=ctx.user.timezone_),
+            message.username,
         )
 
 

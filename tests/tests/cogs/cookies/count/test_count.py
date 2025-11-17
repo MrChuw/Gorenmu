@@ -33,7 +33,7 @@ async def base_count(
     await Check.cookie_check(mock_context, interact.translations)
 
     if target_user:
-        user = await User.get_user(mock_context, user_id=123456, translations=interact.translations)
+        user = await User.get_user(mock_context, translations=interact.translations, user_id=123456)
         await mock_context.create_cookie(user, received=25, consumed=54, donated=93, stocked=8534)
         response: Response = await interact.count._callback(interact, mock_context, *[user.name])  # NOQA
     else:

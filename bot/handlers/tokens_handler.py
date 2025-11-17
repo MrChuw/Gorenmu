@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import twitchio
 from twitchio import eventsub
 
-from bot.models import TwitchTokens
+from bot.models import Channel, TwitchTokens
 from bot.models import User as UserModel
 
 if TYPE_CHECKING:
@@ -55,15 +55,16 @@ class TokensHandler:
 
     async def event_oauth_authorized(self, payload: twitchio.authentication.UserTokenPayload) -> None:
         await self.add_token(payload.access_token, payload.refresh_token)
-
         if not payload.user_id:
             return
 
-        if payload.user_id == self.config.BotConfig.bot_id:
+        if payload.user_id == str(self.config.BotConfig.bot_id):
             return
 
         subs: list[eventsub.SubscriptionPayload] = [
-            eventsub.ChatMessageSubscription(broadcaster_user_id=payload.user_id, user_id=self.config.BotConfig.bot_id),
+            eventsub.ChatMessageSubscription(
+                broadcaster_user_id=payload.user_id, user_id=str(self.config.BotConfig.bot_id)
+            ),
             eventsub.StreamOnlineSubscription(broadcaster_user_id=payload.user_id),
         ]
 
@@ -74,9 +75,16 @@ class TokensHandler:
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
         resp = await super(type(self.bot), self.bot).add_token(token, refresh)
 
-        user = await UserModel.get(id=resp.user_id)
+        user = await UserModel.get_user_or_none(
+            ctx_bot=self.bot, user_id=resp.user_id if resp.user_id.isnumeric() else int(resp.user_id), translations=None
+        )
+        if not user:
+            user = await UserModel.create(name=resp.login, id=resp.user_id)
+            await Channel.get_or_create(user=user)
+            await self.bot.ChannelHandler.load_channels()
+
         token_db = await TwitchTokens.get_or_none(user=user)
-        if token and token_db.token != token or token_db.refresh != refresh:
+        if (token and token_db) and (token_db.token != token or token_db.refresh != refresh):
             token_db.token = token
             token_db.refresh = refresh
             await token_db.save()

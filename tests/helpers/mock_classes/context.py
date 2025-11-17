@@ -8,6 +8,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from twitchio.models import ChatMessage
 
+from bot.ext import Context
 from bot.models import Alias, Channel, Cookies, MessagesLog, User
 
 from ..patches.patches import MockBuilder
@@ -42,7 +43,7 @@ class MockMessage(MagicMock):
 
 class MockContext(AsyncMock):
     def __init__(self, user_name: str, user_id: int, channel_name: str, channel_id: int, bot: Gorenmu):
-        super().__init__()
+        super().__init__(spec=Context)
         self.bot = bot
         self.user = MockUser(user_id, user_name)  # NOQA
         self.author = MockAuthor(user_name, user_id)

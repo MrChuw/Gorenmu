@@ -105,7 +105,7 @@ class CommandHandler:
         module: types.ModuleType = import_module(name, package=package)
         return module, name
 
-    async def send_bug(self, ctx: Context, error: Exception):
+    async def send_bug(self, ctx: Context, error: Exception, ping: bool = True):
         command = self.bot.get_command("bug")
         url = self.bot.config.Discord.log_webhook
         component: BugCmd = command.component  # NOQA
@@ -126,6 +126,7 @@ class CommandHandler:
             title2=f"Error occurred while user @{ctx.author.name} "
             f"was running the command: {ctx.command.name} "
             f"in #{ctx.channel.name} channel.",
+            ping=ping,
         )
 
     async def event_command_error(self, payload: CommandErrorPayload) -> None:
@@ -140,7 +141,7 @@ class CommandHandler:
         if ctx.prefix != self.bot.channels[ctx.channel.name].prefix:
             return None
         translations = ctx.command.component.translations
-        if not isinstance(error, InvalidArgument):
+        if not isinstance(error, (InvalidArgument, CommandOnCooldown)):
             await self.send_bug(ctx, error)
 
         if isinstance(error, CommandNotFound):
@@ -151,7 +152,7 @@ class CommandHandler:
         if isinstance(error, OwnerRequired):
             await ctx.simple_response(ctx, translations.Exceptions.owner_required(ctx).response_string)
         if isinstance(error, CommandOnCooldown):
-            format_string = translations.SupportTools.TimeTools.Humanize.naturaltime(error.remaining, future=True)
+            format_string = translations.SupportTools.TimeTools.Humanize(ctx).naturaltime(error.remaining, future=True)
             cooldown_str = translations.Exceptions.command_on_cooldown(ctx, format_string)
             return await ctx.simple_response(ctx, cooldown_str.response_string)
         if isinstance(error, NotImplementedError):

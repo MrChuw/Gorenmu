@@ -115,6 +115,9 @@ class ApisConfig:
         self.clips_url: URL = URL(data.get("clip_url", "https://clips.exemple.org"))
         self.feridinha_url: URL = URL(data.get("feridinha_url", "https://upload.exemple.org"))
         self.feridinha_key: str = data.get("feridinha_key", "api_exemple")
+        self.bot_logs: URL = URL(data.get("bot_logs", "https://bot_logs.exemple.org"))
+        self.bot_logs_key: str = data.get("bot_logs_key", "api_exemple")
+        self.best_logs: URL = URL(data.get("best_logs", "https://bot_logs.exemple.org"))
 
 
 class DatabaseConfig:

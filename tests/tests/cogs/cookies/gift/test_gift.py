@@ -25,7 +25,7 @@ async def prepare_and_create_cookie(mock_context: MockContext, lang, content, co
     await Check.cookie_check(mock_context, interact.translations)
 
     if cookie_data:
-        user = await User.get_user(mock_context, name=content[0], translations=interact.translations)
+        user = await User.get_user(mock_context, translations=interact.translations, name=content[0])
         await mock_context.create_cookie(user, **cookie_data)
 
 

@@ -273,3 +273,23 @@ class SessionsCaches(metaclass=Singleton):
             }
 
     Clips: Clips
+
+    class RandomLine(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {self.bot.config.ApisConfig.best_logs / "*": timedelta(microseconds=250)}
+
+    RandomLine: RandomLine
+
+    class Nicks(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {self.bot.config.ApisConfig.best_logs / "*": timedelta(microseconds=250)}
+
+    Nicks: Nicks

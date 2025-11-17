@@ -41,7 +41,7 @@ class IsAfkCmd(commands.CustomComponent):
         if name in actions:
             return actions[name]
         user = (
-            await User.get_user(ctx=ctx, name=name, is_none=True, translations=self.translations)
+            await User.get_user(ctx_bot=ctx, translations=self.translations, name=name, is_none=True)
             if name != ctx.author.name.lower()
             else ctx.user
         )

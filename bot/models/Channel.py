@@ -52,5 +52,7 @@ class Channel(Base, TimestampMixin):
     markov = fields.ReverseRelation["MarkovUsers"]
     markov_channels = fields.ReverseRelation["MarkovChannels"]
 
+    user_id: int
+
     class Meta:
         table = "channel"

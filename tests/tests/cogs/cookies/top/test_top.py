@@ -22,7 +22,7 @@ async def base_top(
 ):
     await mock_context.prepare_context(lang)
     await Check.cookie_check(mock_context, interact.translations)
-    user = await User.get_user(mock_context, user_id=123456, translations=interact.translations)
+    user = await User.get_user(mock_context, translations=interact.translations, user_id=123456)
     await mock_context.create_cookie(user, received=25, consumed=54, donated=93, stocked=8534)
     response: Response = await interact.top._callback(interact, mock_context, *content)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected)

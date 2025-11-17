@@ -35,6 +35,10 @@ dicio_url = "https://dicio.mrchuw.com.br/"
 clip_url = "https://cliptv.mrchuw.com.br/"
 feridinha_url = "https://feridinha.com/upload"
 feridinha_key = "${API_KEY}"
+bot_logs = "https://logs.mrchuw.com.br/"
+bot_logs_key = "${BOT_LOGS_KEY}"
+best_logs = "https://logs.zonian.dev/"
+
 
 [discord]
 webhook_avatar="https://cdn.7tv.app/emote/01HMFCPNNR00070FCM1Q64QFRS/4x.webp"

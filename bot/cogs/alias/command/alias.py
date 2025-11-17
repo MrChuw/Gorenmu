@@ -147,7 +147,7 @@ class AliasCmd(commands.CustomComponent):
 
         if target_alias.command is None and target_alias.parent:
             original_user = await User.get_user(
-                ctx, user_id=target_alias.parent.user_id, translations=self.translations
+                ctx, translations=self.translations, user_id=target_alias.parent.user_id
             )
             return translations.Copy.link_to_a_link(ctx, ctx.prefix, original_user.name, target_alias.parent.name)
         else:

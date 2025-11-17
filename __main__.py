@@ -34,7 +34,7 @@ if __name__ == "__main__":
     log.info("Ligando bot", exc_info=True)
 
     async def runner() -> None:
-        adapter: StarletteAdapter = StarletteAdapter(host="0.0.0.0")
+        adapter: StarletteAdapter = StarletteAdapter(host="localhost")
         bot: Gorenmu = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
         # bot.site = api
         # bot.api_start = api_start
