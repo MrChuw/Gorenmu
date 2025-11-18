@@ -134,12 +134,6 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], CommandExemples([]))
             return self._untangle_commands(ctx, self._cname)
 
-        def deco_admonitions(self, ctx: Context, *args, **kwargs) -> Admonitions:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", Admonitions([]))
-                self.lang_dict.add_with(["pt_br", "pt"], Admonitions([]))
-            return self._untangle_admonitions(ctx, self._cname)
-
         # endregion
 
     Dicio: Dicio

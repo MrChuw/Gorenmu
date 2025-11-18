@@ -50,14 +50,3 @@ services:
 #    entrypoint: bash -c "sleep 100000"
 #    command: "-h 0.0.0.0 --persist=/data/data.db --evict=no"
     restart: unless-stopped
-
-
-  js-apis:
-    image: oven/bun:slim
-    working_dir: /app
-    volumes:
-      - ./bot/apis/js_apis:/code
-    ports:
-      - "12843:3000"
-    command: >
-      sh /code/start.sh

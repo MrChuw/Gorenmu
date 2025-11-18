@@ -6,13 +6,16 @@ import datetime
 import types
 from collections import defaultdict
 from contextlib import AsyncExitStack
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import bot.cogs.randomscp.command.randomscp as randomscp
 from bot.apis.ivrfi.parsers.subage import SubAge
 from bot.apis.ivrfi.parsers.user import UserElement
 from bot.cogs.preview.command.preview import PreviewCmd
+
+if TYPE_CHECKING:
+    from bot.bot import Gorenmu
 
 
 class MockBuilder:
@@ -33,6 +36,9 @@ class MockBuilder:
     class _Errors:
         def __init__(self, builder):
             self.builder = builder
+            self.bot: Gorenmu = (
+                builder.mock_context.bot if hasattr(builder.mock_context, "bot") else builder.mock_context
+            )
 
         def import_module(self, side_effect: Any = None) -> "MockBuilder":
             self.builder.patches["import_module"].append(patch("importlib.import_module", side_effect=side_effect))
@@ -40,6 +46,12 @@ class MockBuilder:
 
         def os_execv(self, side_effect: Any = None) -> "MockBuilder":
             self.builder.patches["execv"].append(patch("os.execv", side_effect=side_effect))
+            return self.builder
+
+        def send_bug(self, side_effect: Any = None) -> "MockBuilder":
+            self.builder.patches["execv"].append(
+                patch.object(self.bot.CommandHandler, "send_bug", side_effect=side_effect)
+            )
             return self.builder
 
     class _Color:
