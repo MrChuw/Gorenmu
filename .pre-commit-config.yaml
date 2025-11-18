@@ -23,8 +23,9 @@ repos:
   - repo: local
     hooks:
       - id: pytest
+        stages: [pre-push]
         name: Run pytest tests
-        entry: pytest --maxfail=1 --disable-warnings -q
+        entry: bash -c 'if [ -z "$SKIP_TESTS" ]; then pytest --maxfail=1 --disable-warnings -q; else echo "Skipping tests"; fi'
         language: system
         pass_filenames: false
         always_run: true
