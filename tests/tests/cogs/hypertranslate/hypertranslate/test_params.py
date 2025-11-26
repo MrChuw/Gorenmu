@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Translates a text into random languages depending on how many times the user requests.",
@@ -20,12 +20,13 @@ class Params:
             id="pt_BR",
         ),
     ]
-    text = [
+
+    text: ClassVar[list] = [
         pytest.param("en", "Some_Text", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "Some_Text", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    text_and_quantity = [
+    text_and_quantity: ClassVar[list] = [
         pytest.param("en", "Some Nice Text", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "Some Nice Text", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]

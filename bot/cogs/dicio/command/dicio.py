@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import tempfile
 from typing import TYPE_CHECKING
 
-from aiohttp import ClientSession
-
 from bot.ext import Context, Response, commands
-from bot.utils import Check, Role, SessionsCaches, StringTools
+from bot.utils import SessionsCaches, StringTools
 
 from .translations import Translations
 
@@ -42,7 +38,11 @@ class DicioCmd(commands.CustomComponent):
 
         json_response = await self.get_word(word, lang)  # NOQA
         if "error" in json_response:
-            return translations.error(ctx, self.bot.config.ApisConfig.dicio_url / "languages", self.bot.dev_name)
+            return translations.error(
+                ctx,
+                self.bot.config.ApisConfig.dicio_url / "languages",
+                self.bot.dev_name,
+            )
 
         if json_response["exist"]:
             exist = translations.exist(ctx)
@@ -51,15 +51,9 @@ class DicioCmd(commands.CustomComponent):
             exist = translations.not_exist(ctx)
             url = ""
 
-        if json_response["suggestions"]:
-            similar = ", ".join(json_response["suggestions"])
-        else:
-            similar = ""
+        similar = ", ".join(json_response["suggestions"]) if json_response["suggestions"] else ""
 
-        if json_response["stem"]:
-            origin = ", ".join(json_response["stem"])
-        else:
-            origin = word if json_response["exist"] else ""
+        origin = ", ".join(json_response["stem"]) if json_response["stem"] else word if json_response["exist"] else ""
 
         return translations.response(ctx, word, exist, similar, origin, url)
 

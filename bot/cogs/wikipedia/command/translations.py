@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -31,7 +30,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Envia uma wikipedia aleatória.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}wikihow")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}wikihow")
@@ -55,7 +54,8 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", CommandExemples([{"response": "(random wikipedia link)"}]))
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], CommandExemples([{"response": "(link aleatório para o wikipedia)"}])
+                    ["pt_br", "pt"],
+                    CommandExemples([{"response": "(link aleatório para o wikipedia)"}]),
                 )
             return self._untangle_commands(ctx, self._cname)
 

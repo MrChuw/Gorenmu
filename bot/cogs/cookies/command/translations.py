@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import random
@@ -28,10 +27,12 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", 'Choose from one of the options "eat", "count", "top", "gift", "stock" or "sm"'
+                    "en",
+                    'Choose from one of the options "eat", "count", "top", "gift", "stock" or "sm"',
                 )
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], 'Escolha entre uma das opções "eat", "count", "top", "gift", "stock" ou "sm"'
+                    ["pt_br", "pt"],
+                    'Escolha entre uma das opções "eat", "count", "top", "gift", "stock" ou "sm"',
                 )
             return response.format_response(self._untangle_str(ctx, self._cname))
 
@@ -40,7 +41,8 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "You're still on cooldown, wait {} until the next batch! ⌛")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Você ainda está em cooldown, espere {} até o próximo lote! ⌛"
+                    ["pt_br", "pt"],
+                    "Você ainda está em cooldown, espere {} até o próximo lote! ⌛",
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), cooldown)
 
@@ -48,10 +50,12 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "user @{} has not yet been registered and has not used any cookie commands."
+                    "en",
+                    "user @{} has not yet been registered and has not used any cookie commands.",
                 )
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "o usuário @{} ainda não foi registrado e não usou nenhum comando de cookie."
+                    ["pt_br", "pt"],
+                    "o usuário @{} ainda não foi registrado e não usou nenhum comando de cookie.",
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), name)
 
@@ -60,7 +64,8 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "User @{} has not yet used any command related to cookies.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "O usuário @{} ainda não usou nenhum comando relacionado aos cookies."
+                    ["pt_br", "pt"],
+                    "O usuário @{} ainda não usou nenhum comando relacionado aos cookies.",
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), name)
 
@@ -76,11 +81,15 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Comando usado para gerenciar cookies.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To use: {}alias Eat|Count|Gift|Stock|Top|SlotMachine (options)")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Para usar: {}cookie Eat|Count|Gift|Stock|Top|SlotMachine (opções)"
+                    "en",
+                    "To use: {}alias Eat|Count|Gift|Stock|Top|SlotMachine (options)",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Para usar: {}cookie Eat|Count|Gift|Stock|Top|SlotMachine (opções)",
                 )
             return self._untangle_str(ctx, self._cname).format(prefix)
 
@@ -106,9 +115,13 @@ class Translations(TranslationBase):
         def negative_eat(self, ctx: Context, amount) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To eat {} cookies, you must first know how to reverse entropy.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Para comer {} cookies, você deve primeiro saber como reverter entropia."
+                    "en",
+                    "To eat {} cookies, you must first know how to reverse entropy.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Para comer {} cookies, você deve primeiro saber como reverter entropia.",
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), amount)
 
@@ -128,7 +141,10 @@ class Translations(TranslationBase):
         def random_line(self, ctx: Context) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", Path(__file__).parent / "extras" / "lines_en.txt")
-                self.lang_dict.add_with(["pt_br", "pt"], Path(__file__).parent / "extras" / "lines_pt_br.txt")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    Path(__file__).parent / "extras" / "lines_pt_br.txt",
+                )
             return random.choice(self._untangle_any(ctx, self._cname).read_text().split("\n"))
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
@@ -137,7 +153,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Pegue seu biscoito da sorte diário.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}cookie eat")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}cookie eat")
@@ -149,18 +165,27 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "This command is used to get a daily fortune.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Este comando é usado para pegar seu biscoito da sorte diário."
+                    ["pt_br", "pt"],
+                    "Este comando é usado para pegar seu biscoito da sorte diário.",
                 )
             return self._untangle_str(ctx, self._cname)
 
         def deco_commands(self, ctx: Context, *args, **kwargs) -> CommandExemples:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", CommandExemples([{"args": "eat", "response": "(random fortune from a list)"}])
+                    "en",
+                    CommandExemples([{"args": "eat", "response": "(random fortune from a list)"}]),
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
-                    CommandExemples([{"args": "eat", "response": "(Mensagem de sorte aleatória de uma lista)"}]),
+                    CommandExemples(
+                        [
+                            {
+                                "args": "eat",
+                                "response": "(Mensagem de sorte aleatória de uma lista)",
+                            }
+                        ]
+                    ),
                 )
             return self._untangle_commands(ctx, self._cname)
 
@@ -175,8 +200,14 @@ class Translations(TranslationBase):
         def cc_bot_nick(self, ctx: Context, *args) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "I have infinite cookies, and I give away a fraction of them to you.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Tenho cookies infinitos e dou uma fração deles para você.")
+                self.lang_dict.add_with(
+                    "en",
+                    "I have infinite cookies, and I give away a fraction of them to you.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Tenho cookies infinitos e dou uma fração deles para você.",
+                )
             return response.format_response(self._untangle_str(ctx, self._cname), args)
 
         def _format_cookie_count(self, ctx: Context) -> dict[str, str]:
@@ -236,7 +267,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Veja o status dos cookies.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}cookie count (user_name)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}cookie count (nome_do_usuário)")
@@ -247,7 +278,10 @@ class Translations(TranslationBase):
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Get status about cookies.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Veja quantos cookies você ou outra pessoa possuem.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Veja quantos cookies você ou outra pessoa possuem.",
+                )
             return self._untangle_str(ctx, self._cname)
 
         def deco_commands(self, ctx: Context, *args, **kwargs) -> CommandExemples:
@@ -256,8 +290,14 @@ class Translations(TranslationBase):
                     "en",
                     CommandExemples(
                         [
-                            {"args": "cc", "response": "(status about your cookie account)"},
-                            {"args": "cc other_user", "response": "(status about other_user cookie account)"},
+                            {
+                                "args": "cc",
+                                "response": "(status about your cookie account)",
+                            },
+                            {
+                                "args": "cc other_user",
+                                "response": "(status about other_user cookie account)",
+                            },
                         ]
                     ),
                 )
@@ -265,7 +305,10 @@ class Translations(TranslationBase):
                     ["pt_br", "pt"],
                     CommandExemples(
                         [
-                            {"args": "cc", "response": "(Status sobre sua conta de cookies)"},
+                            {
+                                "args": "cc",
+                                "response": "(Status sobre sua conta de cookies)",
+                            },
                             {
                                 "args": "cc outro_usuário",
                                 "response": "(Status sobre a conta de cookies do outro usuário)",
@@ -300,7 +343,10 @@ class Translations(TranslationBase):
         def gift_no_stock_but_cooldown(self, ctx: Context, amount) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To gift, you must first redeem the {} cookies you have available.")
+                self.lang_dict.add_with(
+                    "en",
+                    "To gift, you must first redeem the {} cookies you have available.",
+                )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
                     "Para presentear, você deve primeiro resgatar os {} cookies que você tem disponíveis.",
@@ -318,7 +364,8 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "You can't give negative cookies unless you're a cookie thief... and you're not, right?"
+                    "en",
+                    "You can't give negative cookies unless you're a cookie thief... and you're not, right?",
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
@@ -345,7 +392,8 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "You don’t have any cookies 🍪 stored or waiting to be redeemed. The next one arrives in {}."
+                    "en",
+                    "You don`t have any cookies 🍪 stored or waiting to be redeemed. The next one arrives in {}.",
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
@@ -359,10 +407,13 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Presenteie alguém com seus cookies.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}cookie gift (user_name) (amount|all)")
-                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}cookie gift (nome_do_usuário) (quantidade|all)")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Para usar: {}cookie gift (nome_do_usuário) (quantidade|all)",
+                )
             return self._untangle_str(ctx, self._cname).format(prefix)
 
         # region Hide.
@@ -379,8 +430,14 @@ class Translations(TranslationBase):
                     "en",
                     CommandExemples(
                         [
-                            {"args": "gift other_user", "response": "you gifted @other_user with 1 cookie 🎁"},
-                            {"args": "gift other_user 2", "response": "you gifted @other_user with 2 cookie 🎁"},
+                            {
+                                "args": "gift other_user",
+                                "response": "you gifted @other_user with 1 cookie 🎁",
+                            },
+                            {
+                                "args": "gift other_user 2",
+                                "response": "you gifted @other_user with 2 cookie 🎁",
+                            },
                             {
                                 "args": "gift other_user all",
                                 "response": "you gifted @other_user with (all the cookies in your account) cookie 🎁",
@@ -392,8 +449,14 @@ class Translations(TranslationBase):
                     ["pt_br", "pt"],
                     CommandExemples(
                         [
-                            {"args": "gift outro_usuário", "response": "Você deu 1 cookie 🎁 para @outro_usuário"},
-                            {"args": "gift outro_usuário 2", "response": "Você deu 2 cookies 🎁 para @outro_usuário"},
+                            {
+                                "args": "gift outro_usuário",
+                                "response": "Você deu 1 cookie 🎁 para @outro_usuário",
+                            },
+                            {
+                                "args": "gift outro_usuário 2",
+                                "response": "Você deu 2 cookies 🎁 para @outro_usuário",
+                            },
                             {
                                 "args": "gift outro_usuário all",
                                 "response": "Você deu (todos os cookies da sua conta) 🎁 para @outro_usuário",
@@ -470,7 +533,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Estoque seus cookies diários para usar depois.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}cookie stock (all)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}cookie stock (all)")
@@ -481,7 +544,10 @@ class Translations(TranslationBase):
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Stock your daily cookie.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Guarde seus cookies diários em vez de usá-los imediatamente.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Guarde seus cookies diários em vez de usá-los imediatamente.",
+                )
             return self._untangle_str(ctx, self._cname)
 
         def deco_commands(self, ctx: Context, *args, **kwargs) -> CommandExemples:
@@ -490,8 +556,14 @@ class Translations(TranslationBase):
                     "en",
                     CommandExemples(
                         [
-                            {"args": "stock", "response": "you stocked 1 cookies 🍪, the next one comes out in 6h."},
-                            {"args": "stock all", "response": "you stocked (number of all available) cookies 🍪."},
+                            {
+                                "args": "stock",
+                                "response": "you stocked 1 cookies 🍪, the next one comes out in 6h.",
+                            },
+                            {
+                                "args": "stock all",
+                                "response": "you stocked (number of all available) cookies 🍪.",
+                            },
                         ]
                     ),
                 )
@@ -556,9 +628,13 @@ class Translations(TranslationBase):
         def top10_ish(self, ctx: Context, length, title, tops, index, amount) -> Response:
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "top {} {}: {} || You are in the {}th position in the ranking with {}.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "top {} {}: {} || Você está na {}ª posição na classificação com {}."
+                    "en",
+                    "top {} {}: {} || You are in the {}th position in the ranking with {}.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "top {} {}: {} || Você está na {}ª posição na classificação com {}.",
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), length, title, tops, index, amount)
 
@@ -566,11 +642,12 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "See who are the top cookie eaters or donors.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Veja quem são os melhores comedores, doadores ou acumuladores de cookies."
+                    ["pt_br", "pt"],
+                    "Veja quem são os melhores comedores, doadores ou acumuladores de cookies.",
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
                     "en",
@@ -601,8 +678,14 @@ class Translations(TranslationBase):
                     "en",
                     CommandExemples(
                         [
-                            {"args": "top", "response": "top 10 stocked: 🏆 @user_name: (10) 🥈 ..."},
-                            {"args": "top donated", "response": "top 10 givers: 🏆 @user_name: (10) 🥈 ..."},
+                            {
+                                "args": "top",
+                                "response": "top 10 stocked: 🏆 @user_name: (10) 🥈 ...",
+                            },
+                            {
+                                "args": "top donated",
+                                "response": "top 10 givers: 🏆 @user_name: (10) 🥈 ...",
+                            },
                         ]
                     ),
                 )
@@ -610,8 +693,14 @@ class Translations(TranslationBase):
                     ["pt_br", "pt"],
                     CommandExemples(
                         [
-                            {"args": "top", "response": "Top 10 acumuladores: 🏆 @nome_usuário: (10) 🥈 ..."},
-                            {"args": "top donated", "response": "Top 10 doadores: 🏆 @nome_usuário: (10) 🥈 ..."},
+                            {
+                                "args": "top",
+                                "response": "Top 10 acumuladores: 🏆 @nome_usuário: (10) 🥈 ...",
+                            },
+                            {
+                                "args": "top donated",
+                                "response": "Top 10 doadores: 🏆 @nome_usuário: (10) 🥈 ...",
+                            },
                         ]
                     ),
                 )
@@ -630,9 +719,13 @@ class Translations(TranslationBase):
         def invalid_amount(self, ctx: Context, amount: str, amount_available: int) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "you are trying to bet {} but you only have {} unredeemed cookies.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "você está tentando apostar {} mas só tem {} cookies não resgatados."
+                    "en",
+                    "you are trying to bet {} but you only have {} unredeemed cookies.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "você está tentando apostar {} mas só tem {} cookies não resgatados.",
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), amount, amount_available)
 
@@ -674,10 +767,11 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Aposte seus cookies para tentar ganhar mais.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "To use: {}cookie slotmachine (all can be used to bet all unclaimed cookies quickly)"
+                    "en",
+                    "To use: {}cookie slotmachine (all can be used to bet all unclaimed cookies quickly)",
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
@@ -692,7 +786,8 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Bet your daily cookie for a chance to win others.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Use a máquina caça-níquel de cookies para tentar multiplicar seus cookies."
+                    ["pt_br", "pt"],
+                    "Use a máquina caça-níquel de cookies para tentar multiplicar seus cookies.",
                 )
             return self._untangle_str(ctx, self._cname)
 
@@ -702,8 +797,14 @@ class Translations(TranslationBase):
                     "en",
                     CommandExemples(
                         [
-                            {"args": "slotmachine", "response": "(the results of the slotmachine.)"},
-                            {"args": "slotmachine all", "response": "(the results of the slotmachine.)"},
+                            {
+                                "args": "slotmachine",
+                                "response": "(the results of the slotmachine.)",
+                            },
+                            {
+                                "args": "slotmachine all",
+                                "response": "(the results of the slotmachine.)",
+                            },
                         ]
                     ),
                 )
@@ -711,8 +812,14 @@ class Translations(TranslationBase):
                     ["pt_br", "pt"],
                     CommandExemples(
                         [
-                            {"args": "slotmachine", "response": "(Resultado da máquina caça-níquel.)"},
-                            {"args": "slotmachine all", "response": "(Resultado da máquina caça-níquel.)"},
+                            {
+                                "args": "slotmachine",
+                                "response": "(Resultado da máquina caça-níquel.)",
+                            },
+                            {
+                                "args": "slotmachine all",
+                                "response": "(Resultado da máquina caça-níquel.)",
+                            },
                         ]
                     ),
                 )

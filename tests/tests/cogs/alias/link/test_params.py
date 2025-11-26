@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "This subcommand is used to create link for an alias.",
@@ -20,7 +20,8 @@ class Params:
             id="pt_BR",
         ),
     ]
-    no_content = [
+
+    no_content: ClassVar[list] = [
         pytest.param(
             "en",
             "You didn't provide a user or alias name! Use: +alias link (user) (alias name)",
@@ -35,7 +36,7 @@ class Params:
         ),
     ]
 
-    alias_conflict = [
+    alias_conflict: ClassVar[list] = [
         pytest.param(
             "en",
             'Cannot add alias "The_Tests_alias" - you already have one! '
@@ -52,7 +53,7 @@ class Params:
         ),
     ]
 
-    name_conflict = [
+    name_conflict: ClassVar[list] = [
         pytest.param(
             "en",
             "Cannot link a new alias - you already have an alias named: The_Tests_alias!",
@@ -67,8 +68,13 @@ class Params:
         ),
     ]
 
-    wrong_username = [
-        pytest.param("en", "I couldn't find any user named @Wrong_username.", marks=pytest.mark.en, id="en"),
+    wrong_username: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "I couldn't find any user named @Wrong_username.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
         pytest.param(
             "pt_BR",
             "Não consegui encontrar nenhum usuário chamado @Wrong_username.",
@@ -77,14 +83,22 @@ class Params:
         ),
     ]
 
-    user_no_alias = [
-        pytest.param("en", 'The provided user does not have the alias "The_Alias_"!', marks=pytest.mark.en, id="en"),
+    user_no_alias: ClassVar[list] = [
         pytest.param(
-            "pt_BR", 'O usuário fornecido não possui o alias "The_Alias_"!', marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            'The provided user does not have the alias "The_Alias_"!',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'O usuário fornecido não possui o alias "The_Alias_"!',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]
 
-    user_link_to_link = [
+    user_link_to_link: ClassVar[list] = [
         pytest.param(
             "en",
             "You tried to create a link from a linked alias "
@@ -103,7 +117,7 @@ class Params:
         ),
     ]
 
-    user_link_to_link_custom_name = [
+    user_link_to_link_custom_name: ClassVar[list] = [
         pytest.param(
             "en",
             "You tried to create a link from a linked alias "
@@ -123,9 +137,12 @@ class Params:
         ),
     ]
 
-    user_alias_success = [
+    user_alias_success: ClassVar[list] = [
         pytest.param(
-            "en", "Alias successfully linked. When the original changes, yours will too.", marks=pytest.mark.en, id="en"
+            "en",
+            "Alias successfully linked. When the original changes, yours will too.",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -135,7 +152,7 @@ class Params:
         ),
     ]
 
-    user_alias_custom_name_success = [
+    user_alias_custom_name_success: ClassVar[list] = [
         pytest.param(
             "en",
             'Alias successfully linked, with a custom name of "Custom_Name". '

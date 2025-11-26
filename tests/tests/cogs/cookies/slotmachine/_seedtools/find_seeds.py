@@ -1,22 +1,34 @@
-# -*- coding: utf-8 -*-
-
 import datetime
 
 import pytest
 
 from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
-from tests.tests.cogs.cookies.slotmachine.test_slotmachine import mock_external_apis, prepare_cookie_context
+from tests.tests.cogs.cookies.slotmachine.test_slotmachine import (
+    mock_external_apis,
+    prepare_cookie_context,
+)
 
 
 async def base_find_seed(
-    interact, mock_context: MockContext, lang: str, target_reward: int, bloco: int, emotes: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    target_reward: int,
+    bloco: int,
+    emotes: bool = False,
 ):
     step = 1000
     min_seed = bloco * step
     max_seed = min_seed + step
 
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     for seed in range(min_seed, max_seed):
         await prepare_cookie_context(mock_context, lang, seed, values)
         with mock_external_apis(emotes=emotes):
@@ -38,7 +50,7 @@ async def test_find_seed_for_reward_no_emotes(interact, mock_context: MockContex
         if found:
             print(f"Seed found in block {i}")
             return
-    assert False
+    raise AssertionError()
 
 
 @pytest.mark.asyncio
@@ -49,4 +61,4 @@ async def test_find_seed_for_reward(interact, mock_context: MockContext, lang: s
         if found:
             print(f"Seed found in block {i}")
             return
-    assert False
+    raise AssertionError()

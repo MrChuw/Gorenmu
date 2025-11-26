@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-
 import datetime
+from typing import ClassVar
 
 import pytest
 
@@ -8,7 +7,7 @@ import pytest
 class Params:
     _created_at = datetime.datetime(2019, 1, 20, 19, 34, 45, tzinfo=datetime.UTC)
 
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Check the Twitch account creation date.",
@@ -25,7 +24,7 @@ class Params:
         ),
     ]
 
-    yourself = [
+    yourself: ClassVar[list] = [
         pytest.param(
             "en",
             r"you created the account on \d{2}/\d{2}/\d{4} at \d{2}:\d{2} (AM|PM) "
@@ -44,7 +43,7 @@ class Params:
         ),
     ]
 
-    other = [
+    other: ClassVar[list] = [
         pytest.param(
             "en",
             r"@mr_chuw created the account on \d{2}/\d{2}/\d{4} at \d{2}:\d{2} (AM|PM) "
@@ -63,8 +62,13 @@ class Params:
         ),
     ]
 
-    not_found = [
-        pytest.param("en", "I couldn't find any user named @asdfasdf.", marks=pytest.mark.en, id="notfound-en"),
+    not_found: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "I couldn't find any user named @asdfasdf.",
+            marks=pytest.mark.en,
+            id="notfound-en",
+        ),
         pytest.param(
             "pt_BR",
             "Não consegui encontrar nenhum usuário chamado @asdfasdf.",

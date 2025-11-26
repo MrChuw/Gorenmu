@@ -1,30 +1,38 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List, Optional, TypeVar
+from typing import Any, TypeVar
 from uuid import UUID
 
-from .shared import from_datetime, from_int, from_list, from_none, from_str, from_union, is_type, to_class
+from .shared import (
+    from_datetime,
+    from_int,
+    from_list,
+    from_none,
+    from_str,
+    from_union,
+    is_type,
+    to_class,
+)
 
 T = TypeVar("T")
 
 
 @dataclass
 class Tags:
-    id: Optional[UUID] = None
-    room_id: Optional[int] = None
-    badges: Optional[str] = None
-    flags: Optional[str] = None
-    tmi_sent_ts: Optional[str] = None
-    badge_info: Optional[str] = None
-    color: Optional[str] = None
-    emotes: Optional[str] = None
-    user_type: Optional[str] = None
-    user_id: Optional[int] = None
-    display_name: Optional[str] = None
-    mod: Optional[int] = None
-    subscriber: Optional[int] = None
-    vip: Optional[int] = None
+    id: UUID | None = None
+    room_id: int | None = None
+    badges: str | None = None
+    flags: str | None = None
+    tmi_sent_ts: str | None = None
+    badge_info: str | None = None
+    color: str | None = None
+    emotes: str | None = None
+    user_type: str | None = None
+    user_id: int | None = None
+    display_name: str | None = None
+    mod: int | None = None
+    subscriber: int | None = None
+    vip: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Tags":
@@ -125,15 +133,15 @@ class Tags:
 
 @dataclass
 class Message:
-    text: Optional[str] = None
-    display_name: Optional[str] = None
-    timestamp: Optional[datetime] = None
-    id: Optional[UUID] = None
-    tags: Optional[Tags] = None
-    username: Optional[str] = None
-    channel: Optional[str] = None
-    raw: Optional[str] = None
-    type: Optional[int] = None
+    text: str | None = None
+    display_name: str | None = None
+    timestamp: datetime | None = None
+    id: UUID | None = None
+    tags: Tags | None = None
+    username: str | None = None
+    channel: str | None = None
+    raw: str | None = None
+    type: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Message":
@@ -174,7 +182,7 @@ class Message:
 
 @dataclass
 class Random:
-    messages: Optional[List[Message]] = None
+    messages: list[Message] | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Random":
@@ -186,7 +194,8 @@ class Random:
         result: dict = {}
         if self.messages is not None:
             result["messages"] = from_union(
-                [lambda x: from_list(lambda x: to_class(Message, x), x), from_none], self.messages
+                [lambda x: from_list(lambda x: to_class(Message, x), x), from_none],
+                self.messages,
             )
         return result
 

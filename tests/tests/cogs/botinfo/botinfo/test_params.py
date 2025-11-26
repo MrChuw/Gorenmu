@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Shows general bot statistics, uptime, and metadata like site and developer.",
@@ -20,7 +20,8 @@ class Params:
             id="pt_BR",
         ),
     ]
-    no_content = [
+
+    no_content: ClassVar[list] = [
         pytest.param(
             "en",
             r"I am connected to 8 channels, with (7[0-9]|[89][0-9]|\d{3,}) commands, "
@@ -37,12 +38,17 @@ class Params:
         ),
     ]
 
-    site = [
+    site: ClassVar[list] = [
         pytest.param("en", "https://gorenmu.vercel.app/", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "https://gorenmu.vercel.app/", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    uptime = [
+    uptime: ClassVar[list] = [
         pytest.param("en", r"I woke up \d+\.\d{2} seconds ago.", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", r"Eu acordei há \d+\.\d{2} segundo", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param(
+            "pt_BR",
+            r"Eu acordei há \d+\.\d{2} segundo",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]

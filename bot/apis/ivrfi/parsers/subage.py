@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Optional, TypeVar
+from typing import Any, TypeVar
 
 from bot.apis.ivrfi.parsers.common import (
     from_bool,
@@ -19,9 +18,9 @@ T = TypeVar("T")
 
 @dataclass
 class Channel:
-    id: Optional[int] = None
-    login: Optional[str] = None
-    display_name: Optional[str] = None
+    id: int | None = None
+    login: str | None = None
+    display_name: str | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Channel":
@@ -50,11 +49,11 @@ class Channel:
 
 @dataclass
 class Cumulative:
-    elapsed_days: Optional[int] = None
-    days_remaining: Optional[int] = None
-    months: Optional[int] = None
-    end: Optional[datetime] = None
-    start: Optional[datetime] = None
+    elapsed_days: int | None = None
+    days_remaining: int | None = None
+    months: int | None = None
+    end: datetime | None = None
+    start: datetime | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Cumulative":
@@ -83,8 +82,8 @@ class Cumulative:
 
 @dataclass
 class GiftMeta:
-    gift_date: Optional[datetime] = None
-    gifter: Optional[Channel] = None
+    gift_date: datetime | None = None
+    gifter: Channel | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "GiftMeta":
@@ -104,11 +103,11 @@ class GiftMeta:
 
 @dataclass
 class Meta:
-    type: Optional[str] = None
-    tier: Optional[int] = None
-    ends_at: Optional[datetime] = None
-    renews_at: Optional[datetime] = None
-    gift_meta: Optional[GiftMeta] = None
+    type: str | None = None
+    tier: int | None = None
+    ends_at: datetime | None = None
+    renews_at: datetime | None = None
+    gift_meta: GiftMeta | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Meta":
@@ -143,13 +142,13 @@ class Meta:
 
 @dataclass
 class SubAge:
-    user: Optional[Channel] = None
-    channel: Optional[Channel] = None
-    status_hidden: Optional[bool] = None
-    followed_at: Optional[datetime] = None
-    streak: Optional[Cumulative] = None
-    cumulative: Optional[Cumulative] = None
-    meta: Optional[Meta] = None
+    user: Channel | None = None
+    channel: Channel | None = None
+    status_hidden: bool | None = None
+    followed_at: datetime | None = None
+    streak: Cumulative | None = None
+    cumulative: Cumulative | None = None
+    meta: Meta | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "SubAge":

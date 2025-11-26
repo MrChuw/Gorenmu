@@ -1,21 +1,32 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
-        pytest.param("en", "Repeats the message you send.", "+echo (message)", marks=pytest.mark.en, id="en"),
+    decorators: ClassVar[list] = [
         pytest.param(
-            "pt_BR", "Repete a mensagem que você enviar.", "+echo (mensagem)", marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            "Repeats the message you send.",
+            "+echo (message)",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Repete a mensagem que você enviar.",
+            "+echo (mensagem)",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]
-    no_content = [
+
+    no_content: ClassVar[list] = [
         pytest.param("en", "test", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "test", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    punctuation = [
+    punctuation: ClassVar[list] = [
         pytest.param("en", "️@test", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "️@test", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]

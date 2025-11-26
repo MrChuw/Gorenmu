@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from bot.ext import Response
@@ -35,13 +33,27 @@ async def alias_copy(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_no_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await alias_copy(interact, mock_context, lang=lang, content=[""], expected=expected, success=False)
+    await alias_copy(
+        interact,
+        mock_context,
+        lang=lang,
+        content=[""],
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.user_no_alias)
 async def test_user_no_alias(interact, mock_context: MockContext, lang: str, expected: str):
-    await alias_copy(interact, mock_context, lang=lang, content=["The_Tests_user"], expected=expected, success=False)
+    await alias_copy(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["The_Tests_user"],
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
@@ -74,7 +86,12 @@ async def test_user_alias_conflict(interact, mock_context: MockContext, lang: st
 @pytest.mark.parametrize("lang, expected", Params.user_not_found)
 async def test_user_not_found(interact, mock_context: MockContext, lang: str, expected: str):
     await alias_copy(
-        interact, mock_context, lang=lang, content=["The_Tests_ser", "Invalid_alias"], expected=expected, success=False
+        interact,
+        mock_context,
+        lang=lang,
+        content=["The_Tests_ser", "Invalid_alias"],
+        expected=expected,
+        success=False,
     )
 
 

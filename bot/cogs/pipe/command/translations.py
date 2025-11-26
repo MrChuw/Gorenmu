@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -22,25 +21,37 @@ class Translations(TranslationBase):
         def pipe(self, ctx: Context, *args) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Pipe is not really a command. For more information, visit this link: {}")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Pipe não é realmente um comando. Para mais informações, visite este link: {}"
+                    "en",
+                    "Pipe is not really a command. For more information, visit this link: {}",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Pipe não é realmente um comando. Para mais informações, visite este link: {}",
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), args)
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Pipe is not really a command. For more information, visit the website.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Pipe não é realmente um comando. Para mais informações, visite o site."
+                    "en",
+                    "Pipe is not really a command. For more information, visit the website.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Pipe não é realmente um comando. Para mais informações, visite o site.",
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Pipe is not really a command. For more information, visit the website.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Pipe não é realmente um comando. Para mais informações, visite o site."
+                    "en",
+                    "Pipe is not really a command. For more information, visit the website.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Pipe não é realmente um comando. Para mais informações, visite o site.",
                 )
             return self._untangle_str(ctx, self._cname).format(prefix)
 
@@ -49,9 +60,13 @@ class Translations(TranslationBase):
         # TODO: fix this site description.
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Pipe is not really a command. For more information, visit the website.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Pipe não é realmente um comando. Para mais informações, visite o site."
+                    "en",
+                    "Pipe is not really a command. For more information, visit the website.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Pipe não é realmente um comando. Para mais informações, visite o site.",
                 )
             return self._untangle_str(ctx, self._cname)
 

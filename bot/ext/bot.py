@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
 from asyncio import Task
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from twitchio.ext import commands
 
@@ -27,5 +26,5 @@ class TypesBot(commands.AutoBot):
         self.routines: list[Routine] = []
         self.bots_ids: list[int] = []
 
-    def get_command(self, name: str, /) -> Optional[Command | Group]:
+    def get_command(self, name: str, /) -> Command | Group | None:
         return super().get_command(name)

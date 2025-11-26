@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from tests.helpers.mock_classes import MockContext
@@ -15,7 +13,12 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_reminder(
-    interact, mock_context: MockContext, lang: str, args: str, expected: str, success: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    args: str,
+    expected: str,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     response = await interact.set_reminder._callback(self=interact, ctx=mock_context, args=args)  # NOQA

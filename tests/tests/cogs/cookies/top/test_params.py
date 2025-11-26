@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "See who are the top cookie eaters or donors.",
@@ -15,14 +15,13 @@ class Params:
         pytest.param(
             "pt_BR",
             "Veja quem são os melhores comedores, doadores ou acumuladores de cookies.",
-            "Para usar: +cookie top "
-            "(ou passe uma das opções stocked | streak | consumed | donated | received | total)",
+            "Para usar: +cookie top (ou passe uma das opções stocked | streak | consumed | donated | received | total)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
     ]
 
-    no_content = [
+    no_content: ClassVar[list] = [
         pytest.param(
             "en",
             "top 5 stocked: 🏆 @channelname: (8534) 🥈 @some_user_45: (4185) 🥉 @some_user_44: (4092) "
@@ -39,7 +38,7 @@ class Params:
         ),
     ]
 
-    stocked = [
+    stocked: ClassVar[list] = [
         pytest.param(
             "en",
             "top 5 stocked: 🏆 @channelname: (8534) 🥈 @some_user_45: (4185) "
@@ -58,7 +57,7 @@ class Params:
         ),
     ]
 
-    consumed = [
+    consumed: ClassVar[list] = [
         pytest.param(
             "en",
             "top 5 cookiers: 🏆 @some_user_45: (3285) 🥈 @some_user_44: (3212) "
@@ -77,7 +76,7 @@ class Params:
         ),
     ]
 
-    donated = [
+    donated: ClassVar[list] = [
         pytest.param(
             "en",
             "top 5 givers: 🏆 @some_user_45: (2520) 🥈 @some_user_44: (2464) "
@@ -96,7 +95,7 @@ class Params:
         ),
     ]
 
-    received = [
+    received: ClassVar[list] = [
         pytest.param(
             "en",
             "top 5 receivers: 🏆 @some_user_45: (2430) 🥈 @some_user_44: (2376) "
@@ -115,7 +114,7 @@ class Params:
         ),
     ]
 
-    total = [
+    total: ClassVar[list] = [
         pytest.param(
             "en",
             "top 5 total: 🏆 @some_user_40: (0) 🥈 @some_user_41: (0) "

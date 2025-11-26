@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -30,7 +29,8 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "Only real image files (like .jpg, .png) are accepted, no previews or unsupported links."
+                    "en",
+                    "Only real image files (like .jpg, .png) are accepted, no previews or unsupported links.",
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
@@ -43,7 +43,8 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "{} seconds have passed and the process has not finished. Try a smaller image or less types."
+                    "en",
+                    "{} seconds have passed and the process has not finished. Try a smaller image or less types.",
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
@@ -67,10 +68,13 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Command used to make basic pixel sorting in images.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Comando usado para aplicar pixel sorting básico em imagens.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Comando usado para aplicar pixel sorting básico em imagens.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}pxs (url or shortened direct link) ")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}pxs (url ou link direto encurtado)")

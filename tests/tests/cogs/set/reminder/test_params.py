@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Enable or disable reminders.",
@@ -21,17 +21,41 @@ class Params:
         ),
     ]
 
-    enable = [
-        pytest.param("en", "on", "Reminder successfully turned on.", marks=pytest.mark.en, id="on-en"),
-        pytest.param("pt_BR", "on", "Lembrete ativado com sucesso.", marks=pytest.mark.pt_BR, id="on-pt"),
+    enable: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "on",
+            "Reminder successfully turned on.",
+            marks=pytest.mark.en,
+            id="on-en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "on",
+            "Lembrete ativado com sucesso.",
+            marks=pytest.mark.pt_BR,
+            id="on-pt",
+        ),
     ]
 
-    disable = [
-        pytest.param("en", "off", "Reminder successfully turned off.", marks=pytest.mark.en, id="off-en"),
-        pytest.param("pt_BR", "off", "Lembrete desativado com sucesso.", marks=pytest.mark.pt_BR, id="off-pt"),
+    disable: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "off",
+            "Reminder successfully turned off.",
+            marks=pytest.mark.en,
+            id="off-en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "off",
+            "Lembrete desativado com sucesso.",
+            marks=pytest.mark.pt_BR,
+            id="off-pt",
+        ),
     ]
 
-    invalid = [
+    invalid: ClassVar[list] = [
         pytest.param(
             "en",
             "maybe",

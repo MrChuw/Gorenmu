@@ -1,4 +1,4 @@
-from tortoise import BaseDBAsyncClient, Tortoise
+from tortoise import BaseDBAsyncClient
 
 
 class HelpMigration:

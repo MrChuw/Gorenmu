@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -37,14 +36,18 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Counts the number of symbols in a text or a URL.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Conta o número de símbolos em um texto ou uma URL.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Conta o número de símbolos em um texto ou uma URL.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}count (text) or type:url (URL URL URL URL)")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Para usar: {}count <texto> ou type:url <quantas URLs você quiser>"
+                    ["pt_br", "pt"],
+                    "Para usar: {}count <texto> ou type:url <quantas URLs você quiser>",
                 )
             return self._untangle_str(ctx, self._cname).format(prefix)
 

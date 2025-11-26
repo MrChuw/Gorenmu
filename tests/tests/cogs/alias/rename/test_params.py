@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "This subcommand is used to rename an alias.",
@@ -20,24 +20,53 @@ class Params:
             id="pt_BR",
         ),
     ]
-    no_content = [
+
+    no_content: ClassVar[list] = [
         pytest.param(
-            "en", "You must provide both the current alias name and the new one!", marks=pytest.mark.en, id="en"
+            "en",
+            "You must provide both the current alias name and the new one!",
+            marks=pytest.mark.en,
+            id="en",
         ),
-        pytest.param("pt_BR", "Você deve fornecer o nome alias atual e o novo!", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param(
+            "pt_BR",
+            "Você deve fornecer o nome alias atual e o novo!",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    no_alias = [
-        pytest.param("en", 'You don\'t have the "Wrong_alias_name" alias!', marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", 'Você não tem o alias "Wrong_alias_name"!', marks=pytest.mark.pt_BR, id="pt_BR"),
+    no_alias: ClassVar[list] = [
+        pytest.param(
+            "en",
+            'You don\'t have the "Wrong_alias_name" alias!',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Você não tem o alias "Wrong_alias_name"!',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    alias_conflict = [
-        pytest.param("en", 'You already have the "The_Tests_user" alias!', marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", 'Você já tem o alias "The_Tests_user"!', marks=pytest.mark.pt_BR, id="pt_BR"),
+    alias_conflict: ClassVar[list] = [
+        pytest.param(
+            "en",
+            'You already have the "The_Tests_user" alias!',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Você já tem o alias "The_Tests_user"!',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    rename_success = [
+    rename_success: ClassVar[list] = [
         pytest.param(
             "en",
             'Your alias "The_Tests_alias" has been successfully renamed to "The_new_name".',

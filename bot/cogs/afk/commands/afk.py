@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from datetime import datetime
@@ -62,8 +61,7 @@ class AFKCmd(commands.CustomComponent):
         if (
             not ctx.bot.CommandHandler.is_enabled(ctx, "afk")
             or not ctx.bot.channels[ctx.channel.name].online
-            or ctx.command is not None
-            and ctx.command.name in ["afk", "rafk"]
+            or (ctx.command is not None and ctx.command.name in ["afk", "rafk"])
         ):
             return False
         user_status: Status = await Status.get_afk(ctx)
@@ -106,13 +104,21 @@ class AFKCmd(commands.CustomComponent):
             response = translations.AFKReturn.afk(ctx, status.returned, status.emoji, a_time, clock_emoji)
         else:
             response = translations.AFKReturn.content(
-                ctx, status.returned, status.emoji, user_status.message, a_time, clock_emoji
+                ctx,
+                status.returned,
+                status.emoji,
+                user_status.message,
+                a_time,
+                clock_emoji,
             )
 
         user_status.online = True
         await user_status.save()
         afk_tuple = RAfkNamedTuple(
-            content=user_status.message, updated_at=user_status.updated_at, alias=user_status.alias, afk=user_status
+            content=user_status.message,
+            updated_at=user_status.updated_at,
+            alias=user_status.alias,
+            afk=user_status,
         )
 
         await ctx.bot.memcache.RAfk.set(user=ctx.user, value=afk_tuple)

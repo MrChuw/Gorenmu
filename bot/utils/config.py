@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 import os
 import re
 from enum import Enum
 from itertools import product
-from typing import Any, Dict, List
+from typing import Any
 
 import toml
 from dotenv import load_dotenv
@@ -15,7 +14,7 @@ from bot.exceptions import MissingOAuthTokenError
 load_dotenv()
 
 
-def expand_env_vars(config: Dict[str, Any]) -> Dict[str, Any]:
+def expand_env_vars(config: dict[str, Any]) -> dict[str, Any]:
     def expand_value(val: Any) -> Any:
         if isinstance(val, str):
             return re.sub(r"\$\{([^}]+)}", lambda m: os.getenv(m.group(1), m.group(0)), val)
@@ -28,14 +27,14 @@ def expand_env_vars(config: Dict[str, Any]) -> Dict[str, Any]:
     return {k: expand_value(v) for k, v in config.items()}
 
 
-def load_config(config_path: str) -> Dict[str, dict]:
-    with open(config_path, "r") as f:
+def load_config(config_path: str) -> dict[str, dict]:
+    with open(config_path) as f:
         config = toml.load(f)
     config = expand_env_vars(config)
     return config
 
 
-def prefix_generator(prefixes: str) -> List[str]:
+def prefix_generator(prefixes: str) -> list[str]:
     if len(prefixes) == 1:
         return [prefixes]
 
@@ -70,18 +69,18 @@ class LoggingType(Enum):
 
 
 class DevelopmentConfig:
-    def __init__(self, data: Dict[str, dict]) -> None:
+    def __init__(self, data: dict[str, dict]) -> None:
         self.development: bool = data.get("development", False)
         self.test: bool = data.get("test", False)
 
 
 class BotConfig:
-    def __init__(self, data: Dict[str, dict]) -> None:
+    def __init__(self, data: dict[str, dict]) -> None:
         self.bot_id: int = data.get("bot_id", 0000000)
         self.color: str = data.get("color", "#000000")
         self.dev_userid: str = data.get("dev_userid", "Exemple")
         self.dev_name: str = data.get("dev_name", "Exemple")
-        self.prefix: List[str] = [data.get("default_prefix", "+")]
+        self.prefix: list[str] = [data.get("default_prefix", "+")]
         if allowed_prefix := data.get("allowed_prefix_list"):
             self.prefix = prefix_generator(f"{self.prefix}{allowed_prefix}")
         self.allowed_prefix_size: int = data.get("allowed_prefix_size", 1)
@@ -89,7 +88,7 @@ class BotConfig:
 
 
 class ApisConfig:
-    def __init__(self, data: Dict[str, dict]) -> None:
+    def __init__(self, data: dict[str, dict]) -> None:
         self.color_site_url: URL = URL(data.get("color_site_url", "https://color.exemple.org"))
         self.site_api_key: str = data.get("site_api_key", "api_exemple")
         self.shlink_url: URL = URL(data.get("shlink_url", "https://shlink.exemple.org/rest/v3/short-urls"))
@@ -121,7 +120,7 @@ class ApisConfig:
 
 
 class DatabaseConfig:
-    def __init__(self, data: Dict[str, dict], mock: bool) -> None:
+    def __init__(self, data: dict[str, dict], mock: bool) -> None:
         db_type = data.get("type", "sqlite")
 
         try:
@@ -158,7 +157,7 @@ class DatabaseConfig:
 
 
 class CacheConfig:
-    def __init__(self, data: Dict[str, dict]) -> None:
+    def __init__(self, data: dict[str, dict]) -> None:
         cache_type = data.get("type", "memory")
         try:
             self.type: CacheType = CacheType(cache_type)
@@ -172,12 +171,13 @@ class CacheConfig:
 
 
 class DiscordConfig:
-    def __init__(self, data: Dict[str, dict]) -> None:
+    def __init__(self, data: dict[str, dict]) -> None:
         self.webhook_avatar = data.get("webhook_avatar")
         self.to_mark = data.get("users_to_mark")
         self.bug_webhook = data.get("bug_webhook")
         self.suggest_webhook = data.get("suggest_webhook")
         self.log_webhook = data.get("log_webhook")
+        self.ping_webhook = data.get("ping_webhook")
 
 
 class Config:

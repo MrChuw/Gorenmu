@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -25,14 +24,23 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with("en", "{}{}: {} - Cooldown: {} {} - Aliases: {}")
                 self.lang_dict.add_with(["pt_br", "pt"], "{}{}: {} - Cooldown: {} {} - Aliases: {}")
             return response.format_response(
-                self._untangle_str(ctx, self._cname), prefix, name, helper, cooldown, url, alias
+                self._untangle_str(ctx, self._cname),
+                prefix,
+                name,
+                helper,
+                cooldown,
+                url,
+                alias,
             )
 
         def command_site(self, ctx: Context, url) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Site in construction, here is the list of commands: {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "Site em construção, aqui está a lista de comandos: {}")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Site em construção, aqui está a lista de comandos: {}",
+                )
             return response.format_response(self._untangle_str(ctx, self._cname), url)
 
         def suggested_command(self, ctx: Context, content, suggested) -> Response:
@@ -40,17 +48,21 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", 'I dont have command with name "{}", maybe you meant "{}".')
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], 'Não tenho um comando com o nome "{}", talvez você quis dizer "{}".'
+                    ["pt_br", "pt"],
+                    'Não tenho um comando com o nome "{}", talvez você quis dizer "{}".',
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), content, suggested)
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Command to get information about other commands.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Comando para obter informações sobre outros comandos.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Comando para obter informações sobre outros comandos.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}help (command name)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}help (nome do comando)")

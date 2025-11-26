@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "This subcommand is used to delete an alias.",
@@ -20,21 +20,43 @@ class Params:
             id="pt_BR",
         ),
     ]
-    no_content = [
+
+    no_content: ClassVar[list] = [
         pytest.param("en", "No alias name provided!", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "Nenhum nome de alias fornecido!", marks=pytest.mark.pt_BR, id="pt_BR"),
-    ]
-
-    remove_no_alias = [
-        pytest.param("en", 'You don\'t have the "Some_Alias" alias!', marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", 'Você não tem o alias "Some_Alias"!', marks=pytest.mark.pt_BR, id="pt_BR"),
-    ]
-
-    remove_success = [
         pytest.param(
-            "en", 'Your alias "The_Tests_alias" has been successfully removed.', marks=pytest.mark.en, id="en"
+            "pt_BR",
+            "Nenhum nome de alias fornecido!",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
+    remove_no_alias: ClassVar[list] = [
+        pytest.param(
+            "en",
+            'You don\'t have the "Some_Alias" alias!',
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
-            "pt_BR", 'Seu alias "The_Tests_alias" foi removido com sucesso.', marks=pytest.mark.pt_BR, id="pt_BR"
+            "pt_BR",
+            'Você não tem o alias "Some_Alias"!',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
+    remove_success: ClassVar[list] = [
+        pytest.param(
+            "en",
+            'Your alias "The_Tests_alias" has been successfully removed.',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Seu alias "The_Tests_alias" foi removido com sucesso.',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]

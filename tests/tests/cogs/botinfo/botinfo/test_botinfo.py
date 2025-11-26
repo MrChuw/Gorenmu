@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -26,8 +24,8 @@ async def base_botinfo(
     mock_context: MockContext,
     lang: str,
     content: str,
-    expected: str = None,
-    re_expected: str = None,
+    expected: str | None = None,
+    re_expected: str | None = None,
     success: bool = False,
 ):
     await mock_context.prepare_context(lang)
@@ -40,7 +38,14 @@ async def base_botinfo(
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_bot_info(interact, mock_context: MockContext, lang: str, expected: str):
     mock_context.invoked_with = "botinfo"
-    await base_botinfo(interact, mock_context, lang=lang, content="", re_expected=expected, success=True)
+    await base_botinfo(
+        interact,
+        mock_context,
+        lang=lang,
+        content="",
+        re_expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
@@ -54,4 +59,11 @@ async def test_site(interact, mock_context: MockContext, lang: str, expected: st
 @pytest.mark.parametrize("lang, expected", Params.uptime)
 async def test_uptime(interact, mock_context: MockContext, lang: str, expected: str):
     mock_context.invoked_with = "uptime"
-    await base_botinfo(interact, mock_context, lang=lang, content="", re_expected=expected, success=True)
+    await base_botinfo(
+        interact,
+        mock_context,
+        lang=lang,
+        content="",
+        re_expected=expected,
+        success=True,
+    )

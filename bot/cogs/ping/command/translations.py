@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -32,7 +31,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Comando para verificar se o bot esta vivo.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}ping or {}pong")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}ping ou {}pong")
@@ -59,13 +58,23 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(
                     "en",
                     CommandExemples(
-                        [{"args": "", "response": "pong 🏓 || TMI: 123 ms || RAM: 123 MB || up for 1 hour"}]
+                        [
+                            {
+                                "args": "",
+                                "response": "pong 🏓 || TMI: 123 ms || RAM: 123 MB || up for 1 hour",
+                            }
+                        ]
                     ),
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
                     CommandExemples(
-                        [{"args": "", "response": "pong 🏓 || TMI: 123 ms || RAM: 123 MB || ligado há 1 hora"}]
+                        [
+                            {
+                                "args": "",
+                                "response": "pong 🏓 || TMI: 123 ms || RAM: 123 MB || ligado há 1 hora",
+                            }
+                        ]
                     ),
                 )
             return self._untangle_commands(ctx, self._cname)

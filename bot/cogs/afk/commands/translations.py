@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -43,7 +42,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Comando para definir seu status.")
             return self._untangle_str(ctx, "helper")
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once("usage"):
                 self.lang_dict.add_with("en", "How to use: {}Afk (message)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}Afk (mensagem)")
@@ -124,18 +123,102 @@ class Translations(TranslationBase):
                                 "returned": "you",
                             },
                             "afks": {
-                                "afk": ["afk", "🏃⌨", "went afk", "afk", "came back", "afk"],
-                                "read": ["read", "📖", "went to read", "reading", "read", "reading"],
-                                "brb": ["brb", "🏃⌨", "coming back soon", "away", "came back", "away"],
-                                "eat": ["food", "🍽", "went to eat", "eating", "ate", "eating"],
-                                "food": ["food", "🍽", "went to eat", "eating", "ate", "eating"],
-                                "play": ["game", "🎮", "went to play", "playing", "played", "playing"],
-                                "game": ["game", "🎮", "went to play", "playing", "played", "playing"],
-                                "sleep": ["gn", "💤", "went to sleep", "sleeping", "woke up", "sleeping"],
-                                "night": ["gn", "💤", "went to sleep", "sleeping", "woke up", "sleeping"],
-                                "study": ["study", "📚", "went to study", "studying", "studied", "studying"],
-                                "art": ["art", "🎨", "went to draw", "drawing", "drew", "drawing"],
-                                "watch": ["watch", "📺", "went to watch", "watching", "watched", "watching"],
+                                "afk": [
+                                    "afk",
+                                    "🏃⌨",
+                                    "went afk",
+                                    "afk",
+                                    "came back",
+                                    "afk",
+                                ],
+                                "read": [
+                                    "read",
+                                    "📖",
+                                    "went to read",
+                                    "reading",
+                                    "read",
+                                    "reading",
+                                ],
+                                "brb": [
+                                    "brb",
+                                    "🏃⌨",
+                                    "coming back soon",
+                                    "away",
+                                    "came back",
+                                    "away",
+                                ],
+                                "eat": [
+                                    "food",
+                                    "🍽",
+                                    "went to eat",
+                                    "eating",
+                                    "ate",
+                                    "eating",
+                                ],
+                                "food": [
+                                    "food",
+                                    "🍽",
+                                    "went to eat",
+                                    "eating",
+                                    "ate",
+                                    "eating",
+                                ],
+                                "play": [
+                                    "game",
+                                    "🎮",
+                                    "went to play",
+                                    "playing",
+                                    "played",
+                                    "playing",
+                                ],
+                                "game": [
+                                    "game",
+                                    "🎮",
+                                    "went to play",
+                                    "playing",
+                                    "played",
+                                    "playing",
+                                ],
+                                "sleep": [
+                                    "gn",
+                                    "💤",
+                                    "went to sleep",
+                                    "sleeping",
+                                    "woke up",
+                                    "sleeping",
+                                ],
+                                "night": [
+                                    "gn",
+                                    "💤",
+                                    "went to sleep",
+                                    "sleeping",
+                                    "woke up",
+                                    "sleeping",
+                                ],
+                                "study": [
+                                    "study",
+                                    "📚",
+                                    "went to study",
+                                    "studying",
+                                    "studied",
+                                    "studying",
+                                ],
+                                "art": [
+                                    "art",
+                                    "🎨",
+                                    "went to draw",
+                                    "drawing",
+                                    "drew",
+                                    "drawing",
+                                ],
+                                "watch": [
+                                    "watch",
+                                    "📺",
+                                    "went to watch",
+                                    "watching",
+                                    "watched",
+                                    "watching",
+                                ],
                                 "shower": [
                                     "shower",
                                     "🚿",
@@ -144,8 +227,22 @@ class Translations(TranslationBase):
                                     "took a shower",
                                     "the shower",
                                 ],
-                                "code": ["code", "💻", "went to code", "coding", "coded", "coding"],
-                                "work": ["work", "💼", "went to work", "working", "worked", "working"],
+                                "code": [
+                                    "code",
+                                    "💻",
+                                    "went to code",
+                                    "coding",
+                                    "coded",
+                                    "coding",
+                                ],
+                                "work": [
+                                    "work",
+                                    "💼",
+                                    "went to work",
+                                    "working",
+                                    "worked",
+                                    "working",
+                                ],
                             },
                         }
                     ).afks,
@@ -161,21 +258,126 @@ class Translations(TranslationBase):
                                 "returned": "você",
                             },
                             "afks": {
-                                "afk": ["afk", "🏃⌨", "ficou ausente", "ausente", "voltou", "ausente"],
-                                "read": ["read", "📖", "foi ler", "lendo", "leu", "lendo"],
-                                "brb": ["brb", "🏃⌨", "volta logo", "ausente", "voltou", "ausente"],
-                                "eat": ["food", "🍽", "foi comer", "comendo", "comeu", "comendo"],
-                                "food": ["food", "🍽", "foi comer", "comendo", "comeu", "comendo"],
-                                "play": ["game", "🎮", "foi jogar", "jogando", "jogou", "jogando"],
-                                "game": ["game", "🎮", "foi jogar", "jogando", "jogou", "jogando"],
-                                "sleep": ["gn", "💤", "foi dormir", "dormindo", "acordou", "dormindo"],
-                                "night": ["gn", "💤", "foi dormir", "dormindo", "acordou", "dormindo"],
-                                "study": ["study", "📚", "foi estudar", "estudando", "estudou", "estudando"],
-                                "art": ["art", "🎨", "foi desenhar", "desenhando", "desenhou", "desenhando"],
-                                "watch": ["watch", "📺", "foi assistir", "assistindo", "assistiu", "assistindo"],
-                                "shower": ["shower", "🚿", "foi tomar banho", "no banho", "tomou banho", "no banho"],
-                                "code": ["code", "💻", "foi programar", "programando", "programou", "programando"],
-                                "work": ["work", "💼", "foi trabalhar", "trabalhando", "trabalhou", "trabalhando"],
+                                "afk": [
+                                    "afk",
+                                    "🏃⌨",
+                                    "ficou ausente",
+                                    "ausente",
+                                    "voltou",
+                                    "ausente",
+                                ],
+                                "read": [
+                                    "read",
+                                    "📖",
+                                    "foi ler",
+                                    "lendo",
+                                    "leu",
+                                    "lendo",
+                                ],
+                                "brb": [
+                                    "brb",
+                                    "🏃⌨",
+                                    "volta logo",
+                                    "ausente",
+                                    "voltou",
+                                    "ausente",
+                                ],
+                                "eat": [
+                                    "food",
+                                    "🍽",
+                                    "foi comer",
+                                    "comendo",
+                                    "comeu",
+                                    "comendo",
+                                ],
+                                "food": [
+                                    "food",
+                                    "🍽",
+                                    "foi comer",
+                                    "comendo",
+                                    "comeu",
+                                    "comendo",
+                                ],
+                                "play": [
+                                    "game",
+                                    "🎮",
+                                    "foi jogar",
+                                    "jogando",
+                                    "jogou",
+                                    "jogando",
+                                ],
+                                "game": [
+                                    "game",
+                                    "🎮",
+                                    "foi jogar",
+                                    "jogando",
+                                    "jogou",
+                                    "jogando",
+                                ],
+                                "sleep": [
+                                    "gn",
+                                    "💤",
+                                    "foi dormir",
+                                    "dormindo",
+                                    "acordou",
+                                    "dormindo",
+                                ],
+                                "night": [
+                                    "gn",
+                                    "💤",
+                                    "foi dormir",
+                                    "dormindo",
+                                    "acordou",
+                                    "dormindo",
+                                ],
+                                "study": [
+                                    "study",
+                                    "📚",
+                                    "foi estudar",
+                                    "estudando",
+                                    "estudou",
+                                    "estudando",
+                                ],
+                                "art": [
+                                    "art",
+                                    "🎨",
+                                    "foi desenhar",
+                                    "desenhando",
+                                    "desenhou",
+                                    "desenhando",
+                                ],
+                                "watch": [
+                                    "watch",
+                                    "📺",
+                                    "foi assistir",
+                                    "assistindo",
+                                    "assistiu",
+                                    "assistindo",
+                                ],
+                                "shower": [
+                                    "shower",
+                                    "🚿",
+                                    "foi tomar banho",
+                                    "no banho",
+                                    "tomou banho",
+                                    "no banho",
+                                ],
+                                "code": [
+                                    "code",
+                                    "💻",
+                                    "foi programar",
+                                    "programando",
+                                    "programou",
+                                    "programando",
+                                ],
+                                "work": [
+                                    "work",
+                                    "💼",
+                                    "foi trabalhar",
+                                    "trabalhando",
+                                    "trabalhou",
+                                    "trabalhando",
+                                ],
                             },
                         }
                     ).afks,
@@ -218,13 +420,26 @@ class Translations(TranslationBase):
 
         is_afk: Response = is_afk
 
-        def is_afk_content(self, ctx: Context, name: str, status: str, emoji: str, message: str, time: str):
+        def is_afk_content(
+            self,
+            ctx: Context,
+            name: str,
+            status: str,
+            emoji: str,
+            message: str,
+            time: str,
+        ):
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)
             with self.lang_dict.once("is_afk_content"):
                 self.lang_dict.add_with("en", "@{} {} {} and left a note: {} (for {})")
                 self.lang_dict.add_with(["pt_br", "pt"], "@{} {} {} e deixou uma nota: {} (há {})")
             return response.format_response(
-                self._untangle_str(ctx, "is_afk_content"), name, status, emoji, message, time
+                self._untangle_str(ctx, "is_afk_content"),
+                name,
+                status,
+                emoji,
+                message,
+                time,
             )
 
         is_afk_content: Response = is_afk_content
@@ -242,11 +457,12 @@ class Translations(TranslationBase):
             with self.lang_dict.once("helper"):
                 self.lang_dict.add_with("en", "Type the command and the user's name to see if they are AFK.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Digite o comando e o nome do usuário para ver se eles são AFK."
+                    ["pt_br", "pt"],
+                    "Digite o comando e o nome do usuário para ver se eles são AFK.",
                 )
             return self._untangle_str(ctx, "helper")
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once("usage"):
                 self.lang_dict.add_with("en", "How to use: {}IsAfk (username)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}IsAfk (nome de usuário)")
@@ -266,7 +482,10 @@ class Translations(TranslationBase):
                         [
                             {"args": "user2", "response": "@user2 is not AFK."},
                             {"args": "user3", "response": "@user3 is AFK."},
-                            {"args": "user4", "response": "@user4 is AFK and left a note: <message>"},
+                            {
+                                "args": "user4",
+                                "response": "@user4 is AFK and left a note: <message>",
+                            },
                         ]
                     ),
                 )
@@ -276,7 +495,10 @@ class Translations(TranslationBase):
                         [
                             {"response": "@usuário2 não está AFK.", "args": "usuário2"},
                             {"args": "usuário3", "response": "@usuário3 está AFK."},
-                            {"args": "usuário4", "response": "@usuário4 está AFK e deixou uma nota: <message>"},
+                            {
+                                "args": "usuário4",
+                                "response": "@usuário4 está AFK e deixou uma nota: <message>",
+                            },
                         ]
                     ),
                 )
@@ -325,7 +547,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Retornar ao status AFK.")
             return self._untangle_str(ctx, "helper")
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once("usage"):
                 self.lang_dict.add_with("en", "To use: {}rafk")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}rafk")
@@ -410,12 +632,30 @@ class Translations(TranslationBase):
 
         afk: Response = afk
 
-        def content(self, ctx: Context, status: str, emoji: str, message: str, a_time: str, clock: str):
+        def content(
+            self,
+            ctx: Context,
+            status: str,
+            emoji: str,
+            message: str,
+            a_time: str,
+            clock: str,
+        ):
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)
             with self.lang_dict.once("content"):
                 self.lang_dict.add_with("en", "{} {} and left a note: {} (was away for {} {})")
-                self.lang_dict.add_with(["pt_br", "pt"], "{} {} e deixou uma nota: {} (estava ausente por {} {})")
-            return response.format_response(self._untangle_str(ctx, "content"), status, emoji, message, a_time, clock)
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "{} {} e deixou uma nota: {} (estava ausente por {} {})",
+                )
+            return response.format_response(
+                self._untangle_str(ctx, "content"),
+                status,
+                emoji,
+                message,
+                a_time,
+                clock,
+            )
 
         content: Response = content
 

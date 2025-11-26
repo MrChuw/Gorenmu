@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -48,7 +47,8 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "Translates a text into random languages depending on how many times the user requests."
+                    "en",
+                    "Translates a text into random languages depending on how many times the user requests.",
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
@@ -56,10 +56,13 @@ class Translations(TranslationBase):
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}hypertranslate (number of times) text")
-                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}hypertranslate (número de vezes) texto")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Para usar: {}hypertranslate (número de vezes) texto",
+                )
             return self._untangle_str(ctx, self._cname).format(prefix)
 
         # region Hide.
@@ -80,9 +83,13 @@ class Translations(TranslationBase):
 
         def deco_commands(self, ctx: Context, *args, **kwargs) -> CommandExemples:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", CommandExemples([{"args": "10 test", "response": "<some random text.>"}]))
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], CommandExemples([{"args": "10 teste", "response": "<algum texto aleatório.>"}])
+                    "en",
+                    CommandExemples([{"args": "10 test", "response": "<some random text.>"}]),
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    CommandExemples([{"args": "10 teste", "response": "<algum texto aleatório.>"}]),
                 )
             return self._untangle_commands(ctx, self._cname)
 

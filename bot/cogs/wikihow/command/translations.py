@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -31,7 +30,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Envia um wikihow aleatório.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}wikihow (amount)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}wikihow <quantidade>")
@@ -42,7 +41,8 @@ class Translations(TranslationBase):
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "This command uses the random from [Wikihow](https://wikihow.com) to generate random links."
+                    "en",
+                    "This command uses the random from [Wikihow](https://wikihow.com) to generate random links.",
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
@@ -54,7 +54,8 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", CommandExemples([{"response": "(random wikihow link)"}]))
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], CommandExemples([{"response": "(link aleatório para o wikihow)"}])
+                    ["pt_br", "pt"],
+                    CommandExemples([{"response": "(link aleatório para o wikihow)"}]),
                 )
             return self._untangle_commands(ctx, self._cname)
 

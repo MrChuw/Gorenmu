@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import datetime
 
 import pytest
@@ -46,44 +44,124 @@ async def base_stock(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.on_cooldown)
 async def test_on_cooldown(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1)]
-    await base_stock(interact, mock_context, lang=lang, content=[], re_expected=expected, values=values, success=False)
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1),
+    ]
+    await base_stock(
+        interact,
+        mock_context,
+        lang=lang,
+        content=[],
+        re_expected=expected,
+        values=values,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_no_content(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20)]
-    await base_stock(interact, mock_context, lang=lang, content=[], expected=expected, values=values, success=True)
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20),
+    ]
+    await base_stock(
+        interact,
+        mock_context,
+        lang=lang,
+        content=[],
+        expected=expected,
+        values=values,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.all)
 async def test_all(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20)]
-    await base_stock(interact, mock_context, lang=lang, content=["all"], expected=expected, values=values, success=True)
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20),
+    ]
+    await base_stock(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["all"],
+        expected=expected,
+        values=values,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.with_amount)
 async def test_with_amount(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20)]
-    await base_stock(interact, mock_context, lang=lang, content=["1"], expected=expected, values=values, success=True)
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20),
+    ]
+    await base_stock(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["1"],
+        expected=expected,
+        values=values,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.with_exact_amount)
 async def test_with_exact_amount(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20),
+    ]
     await base_stock(
-        interact, mock_context, lang=lang, content=["4"], re_expected=expected, values=values, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content=["4"],
+        re_expected=expected,
+        values=values,
+        success=True,
     )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.not_enough_cookies)
 async def test_not_enough_cookies(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=20),
+    ]
     await base_stock(
-        interact, mock_context, lang=lang, content=["6"], re_expected=expected, values=values, success=False
+        interact,
+        mock_context,
+        lang=lang,
+        content=["6"],
+        re_expected=expected,
+        values=values,
+        success=False,
     )

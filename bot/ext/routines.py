@@ -1,6 +1,6 @@
 import asyncio
 import datetime
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from twitchio.ext.routines import Routine as BaseRoutine
 from twitchio.ext.routines import compute_timedelta
@@ -16,13 +16,13 @@ class Routine(BaseRoutine):
         self,
         *,
         coro: Callable,
-        loop: Optional[asyncio.AbstractEventLoop] = None,
-        iterations: Optional[int] = None,
-        time: Optional[datetime.datetime] = None,
-        delta: Optional[float] = None,
-        wait_first: Optional[bool] = False,
-        weekly_days: Optional[list[int]] = None,
-        weekly_times: Optional[list[datetime.time]] = None,
+        loop: asyncio.AbstractEventLoop | None = None,
+        iterations: int | None = None,
+        time: datetime.datetime | None = None,
+        delta: float | None = None,
+        wait_first: bool | None = False,
+        weekly_days: list[int] | None = None,
+        weekly_times: list[datetime.time] | None = None,
     ):
         self._coro = coro
         self._loop = loop or asyncio.get_event_loop()
@@ -60,7 +60,7 @@ class Routine(BaseRoutine):
     async def _routine(self, *args, **kwargs) -> None:
         self._stop_on_error = kwargs.pop("stop_on_error", self._stop_on_error)
 
-        self._start_time = datetime.datetime.now(datetime.timezone.utc)
+        self._start_time = datetime.datetime.now(datetime.UTC)
 
         try:
             if self._before:
@@ -101,7 +101,7 @@ class Routine(BaseRoutine):
             iteration: int = 0
             while True:
                 iteration += 1
-                start = datetime.datetime.now(datetime.timezone.utc)
+                start = datetime.datetime.now(datetime.UTC)
 
                 await self._execute_routine(args, kwargs)
 
@@ -120,7 +120,10 @@ class Routine(BaseRoutine):
                 if self._time:
                     sleep = compute_timedelta(self._time + datetime.timedelta(days=iteration))
                 else:
-                    sleep = max((start - datetime.datetime.now(datetime.timezone.utc)).total_seconds() + self._delta, 0)
+                    sleep = max(
+                        (start - datetime.datetime.now(datetime.UTC)).total_seconds() + self._delta,
+                        0,
+                    )
 
                 self._completed_loops += 1
                 await asyncio.sleep(sleep)
@@ -134,17 +137,16 @@ class Routine(BaseRoutine):
         except Exception as e:
             await self._error(e)
         finally:
-            return self.cancel()
+            return self.cancel()  # NOQA: B012
 
     def _compute_next_weekly_run(self, now: datetime.datetime) -> datetime.datetime:
         """Compute the next run time based on weekly_days and weekly_time."""
         next_run = None
-        for day, time in zip(self._weekly_days, self.weekly_times):
+        for day, time in zip(self._weekly_days, self.weekly_times, strict=False):
             next_run_candidate = now + datetime.timedelta((day - now.weekday() + 7) % 7)
             next_run_candidate = datetime.datetime.combine(next_run_candidate.date(), time)
-            if next_run_candidate > now:
-                if next_run is None or next_run_candidate < next_run:
-                    next_run = next_run_candidate
+            if next_run_candidate > now and (next_run is None or next_run_candidate < next_run):
+                next_run = next_run_candidate
         if next_run is None:
             next_run = datetime.datetime.combine(now.date() + datetime.timedelta(7), self.weekly_times[0])
         return next_run
@@ -164,14 +166,14 @@ class Routine(BaseRoutine):
 
 def routine(
     *,
-    seconds: Optional[float] = 0,
-    minutes: Optional[float] = 0,
-    hours: Optional[float] = 0,
-    time: Optional[datetime.datetime] = None,
-    iterations: Optional[int] = None,
-    wait_first: Optional[bool] = False,
-    weekly_days: Optional[list[int]] = None,  # Lista de dias da semana
-    weekly_times: Optional[list[datetime.time]] = None,  # Lista de horários
+    seconds: float | None = 0,
+    minutes: float | None = 0,
+    hours: float | None = 0,
+    time: datetime.datetime | None = None,
+    iterations: int | None = None,
+    wait_first: bool | None = False,
+    weekly_days: list[int] | None = None,  # Lista de dias da semana
+    weekly_times: list[datetime.time] | None = None,  # Lista de horários
 ):
     def decorator(coro: Callable) -> Routine:
         time_ = time
@@ -198,7 +200,7 @@ def routine(
         else:
             if not time_:
                 delta = compute_timedelta(
-                    datetime.datetime.now(datetime.timezone.utc)
+                    datetime.datetime.now(datetime.UTC)
                     + datetime.timedelta(seconds=seconds, minutes=minutes, hours=hours)
                 )
             else:

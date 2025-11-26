@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import asyncio
 import contextlib
 import importlib
@@ -7,7 +6,7 @@ import os
 import pkgutil
 import sys
 import threading
-from typing import Any, List
+from typing import Any
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -24,7 +23,7 @@ class _ReloadHandler(FileSystemEventHandler):
         if event.is_directory:
             return
         with _watch_lock:
-            for mod_name, info in _watched_files.items():
+            for info in _watched_files.values():
                 with contextlib.suppress(FileNotFoundError):
                     if os.path.samefile(event.src_path, info["path"]):
                         info["changed"] = True
@@ -85,8 +84,8 @@ async def reload_and_get_authorized(module_name: str, element: str, force: bool 
     return await reload_and_get(module_name, element, force=force)
 
 
-async def reload_all_translations(element: str, force: bool = False) -> List[Any]:
-    results: List[Any] = []
+async def reload_all_translations(element: str, force: bool = False) -> list[Any]:
+    results: list[Any] = []
     cogs_pkg = sys.modules["bot.cogs"]
     for _, cog_name, is_pkg in pkgutil.iter_modules(cogs_pkg.__path__, prefix="bot.cogs."):
         if not is_pkg:

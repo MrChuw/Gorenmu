@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Counts the number of symbols in a text or a URL.",
@@ -20,7 +20,8 @@ class Params:
             id="pt_BR",
         ),
     ]
-    no_content = [
+
+    no_content: ClassVar[list] = [
         pytest.param(
             "en",
             "There is a total of 0 characters. Of these, 0 are punctuation marks, "
@@ -37,7 +38,7 @@ class Params:
         ),
     ]
 
-    some_text = [
+    some_text: ClassVar[list] = [
         pytest.param(
             "en",
             "There is a total of 11 characters. Of these, 1 are punctuation marks, "
@@ -54,7 +55,7 @@ class Params:
         ),
     ]
 
-    complex_text = [
+    complex_text: ClassVar[list] = [
         pytest.param(
             "en",
             "There is a total of 500 characters. Of these, 129 are punctuation marks, "
@@ -71,27 +72,27 @@ class Params:
         ),
     ]
 
-    small_site_one_url = [
+    small_site_one_url: ClassVar[list] = [
         pytest.param(
             "en",
-            "There is a total of 501 characters. Of these, 115 are punctuation marks, "
+            "There is a total of 500 characters. Of these, 115 are punctuation marks, "
             "107 are uppercase letters, and 76 are special characters.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            "Há um total de caracteres 501. Destes, 115 são sinais de pontuação, "
+            "Há um total de caracteres 500. Destes, 115 são sinais de pontuação, "
             "107 são letras maiúsculas, e 76 são caracteres especiais.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
     ]
 
-    big_site_one_url = [
+    big_site_one_url: ClassVar[list] = [
         pytest.param(
             "en",
-            "There is a total of 100001 characters. Of these, "
+            "There is a total of 100000 characters. Of these, "
             "24506 are punctuation marks, 19775 are uppercase letters, "
             "and 17474 are special characters.",
             marks=pytest.mark.en,
@@ -99,7 +100,7 @@ class Params:
         ),
         pytest.param(
             "pt_BR",
-            "Há um total de caracteres 100001. Destes, "
+            "Há um total de caracteres 100000. Destes, "
             "24506 são sinais de pontuação, 19775 são letras maiúsculas, "
             "e 17474 são caracteres especiais.",
             marks=pytest.mark.pt_BR,
@@ -107,17 +108,17 @@ class Params:
         ),
     ]
 
-    small_site_four_url = [
+    small_site_four_url: ClassVar[list] = [
         pytest.param(
             "en",
-            "There is a total of 2004 characters. Of these, 460 are punctuation marks, "
+            "There is a total of 2000 characters. Of these, 460 are punctuation marks, "
             "428 are uppercase letters, and 304 are special characters.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            "Há um total de caracteres 2004. Destes, 460 são sinais de pontuação, "
+            "Há um total de caracteres 2000. Destes, 460 são sinais de pontuação, "
             "428 são letras maiúsculas, e 304 são caracteres especiais.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",

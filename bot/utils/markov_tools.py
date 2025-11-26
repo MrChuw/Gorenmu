@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import asyncio
 from collections import Counter
 
@@ -29,8 +27,8 @@ class MarkovProcessor:
 
     @staticmethod
     async def _get_current_state(curr_state: str, **kwargs):
-        channel = kwargs.get("channel", None)
-        user = kwargs.get("user", None)
+        channel = kwargs.get("channel")
+        user = kwargs.get("user")
         if channel and user:
             return await MarkovUserChannel.filter(curr_state=curr_state, channel=channel, user=user).first()
         elif channel:
@@ -41,11 +39,16 @@ class MarkovProcessor:
 
     @staticmethod
     async def _create_state(curr_state: str, next_state: dict[str, int], **kwargs):
-        channel = kwargs.get("channel", None)
-        user = kwargs.get("user", None)
+        channel = kwargs.get("channel")
+        user = kwargs.get("user")
         try:
             if channel and user:
-                await MarkovUserChannel.create(curr_state=curr_state, transition=next_state, channel=channel, user=user)
+                await MarkovUserChannel.create(
+                    curr_state=curr_state,
+                    transition=next_state,
+                    channel=channel,
+                    user=user,
+                )
             elif channel:
                 await MarkovChannels.create(curr_state=curr_state, transition=next_state, channel=channel)
             elif user:
@@ -71,7 +74,7 @@ class MarkovProcessor:
             return
 
         words = WhitespaceTokenizer().tokenize(text=message)
-        words = ["<s>"] + words + ["</s>"]
+        words = ["<s>", *words, "</s>"]
 
         for i in range(len(words) - ngram + 1):
             await asyncio.sleep(0)
@@ -82,7 +85,11 @@ class MarkovProcessor:
             if user.id not in self.bots_ids:
                 existing_curr_state = await self._get_current_state(curr_state=curr_state, channel=channel)
                 if not existing_curr_state:
-                    await self._create_state(curr_state=curr_state, next_state={next_state: 1}, channel=channel)
+                    await self._create_state(
+                        curr_state=curr_state,
+                        next_state={next_state: 1},
+                        channel=channel,
+                    )
                 else:
                     await self._sort_save(curr_state=existing_curr_state, next_state=next_state)
 
@@ -96,7 +103,12 @@ class MarkovProcessor:
             # User per channel
             existing_curr_state = await self._get_current_state(curr_state=curr_state, channel=channel, user=user)
             if not existing_curr_state:
-                await self._create_state(curr_state=curr_state, next_state={next_state: 1}, channel=channel, user=user)
+                await self._create_state(
+                    curr_state=curr_state,
+                    next_state={next_state: 1},
+                    channel=channel,
+                    user=user,
+                )
 
             else:
                 await self._sort_save(curr_state=existing_curr_state, next_state=next_state)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -21,11 +20,15 @@ async def sessions(mock_bot):
 @pytest.mark.network
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "lang", [pytest.param("en", marks=pytest.mark.en, id="en"), pytest.param("pt", marks=pytest.mark.pt_BR, id="pt_BR")]
+    "lang",
+    [
+        pytest.param("en", marks=pytest.mark.en, id="en"),
+        pytest.param("pt", marks=pytest.mark.pt_BR, id="pt_BR"),
+    ],
 )
 async def test_wikipedia_real_session(sessions, mock_bot: Gorenmu, mock_context: MockContext, lang: str):
     session = sessions.Wikipedia.session
     await mock_context.prepare_context(lang)
     main_url: str = mock_context.user.translations.Wikipedia.url
     wiki = await sessions.Wikipedia.get_not_cached(session, main_url)
-    assert wiki.status == 200, f"Expected {repr(200)}, got: {wiki.status!r}"
+    assert wiki.status == 200, f"Expected {200!r}, got: {wiki.status!r}"

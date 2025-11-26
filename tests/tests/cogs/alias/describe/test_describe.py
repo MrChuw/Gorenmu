@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 import pytest
 
 from bot.ext import Response
@@ -42,14 +39,26 @@ async def test_no_content(interact, mock_context: MockContext, lang: str, expect
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.wrong_alias_no_description)
 async def test_wrong_alias_no_description(interact, mock_context: MockContext, lang: str, expected: str):
-    await alias_describe(interact, mock_context, lang=lang, content=["Some_alias"], expected=expected, success=False)
+    await alias_describe(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["Some_alias"],
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.alias_no_description)
 async def test_alias_no_description(interact, mock_context: MockContext, lang: str, expected: str):
     await alias_describe(
-        interact, mock_context, lang=lang, content=["The_Tests_alias"], expected=expected, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content=["The_Tests_alias"],
+        expected=expected,
+        success=True,
     )
 
 

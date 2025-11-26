@@ -1,14 +1,15 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param("en", "", "", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "", "", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
-    pong = [
+
+    pong: ClassVar[list] = [
         pytest.param(
             "en",
             r"^pong 🏓 \|\| TMI: \d+\.\d+ ms \|\| RAM: \d+\.\d+ MB \|\| \d+\.\d+ seconds?$",
@@ -23,7 +24,7 @@ class Params:
         ),
     ]
 
-    ping = [
+    ping: ClassVar[list] = [
         pytest.param(
             "en",
             r"^ping 🏓 \|\| TMI: \d+\.\d+ ms \|\| RAM: \d+\.\d+ MB \|\| \d+\.\d+ seconds?$",

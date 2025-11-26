@@ -15,7 +15,6 @@ async def migrate_reminder_to_v2():
         sql_commands.append("ALTER TABLE reminder CHANGE COLUMN enviado sent BOOLEAN DEFAULT FALSE;")
 
     if sql_commands:
-
         for sql in sql_commands:
             await helper.conn.execute_script(sql)
         print(sql_commands)

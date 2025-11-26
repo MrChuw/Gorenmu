@@ -3,7 +3,7 @@ name = "gorenmu"
 version = "2.0.0"
 description = "Twitch bot build on top of twitchio."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "aiocache[memcached,redis]==0.12.3",
     "aiohttp==3.12.15",
@@ -42,35 +42,40 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "black==25.1.0",
-    "isort==6.0.1",
     "pre-commit>=4.3.0",
+    "ruff>=0.14.6",
 ]
 
-[tool.black]
+
+[tool.ruff]
 line-length = 120
-target-version = ['py312']
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-  | models/__init__\.py
-)/
-'''
-skip-string-normalization = false
-skip-magic-trailing-comma = true
+target-version = "py313"
+exclude = [
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".tox",
+    ".venv",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "models/__init__.py",
+    "bot/api/*",
+    "bot/apis/booru/*",
+    "bot/apis/translate/*",
+    "bot/apis/weather/*"
+]
 
-[tool.flake8]
-ignore = ["E203", "W503"]
+[tool.ruff.lint]
+ignore = ["E203", "RUF100", "UP047", "B023"]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "ISC", "TID", "RUF", "SIM", "N", "PERF"]
 
+[tool.ruff.format]
+quote-style = "preserve"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -80,5 +85,5 @@ markers = ["network: tests that make real requests", "disabled: Tests that have 
     "pt_BR: Test for Portuguse language.", "en: Test for English language."]
 #addopts = "-m 'not disabled'"
 #addopts = "-n auto -m 'not disabled'"
-addopts = "-m 'not network and not disabled'"
-#addopts = "-n auto -m 'not network and not disabled'"
+#addopts = "-m 'not network and not disabled'"
+addopts = "-n auto -m 'not network and not disabled'"

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from bot.cogs.cookies.command.cookies import CookieCmd

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -20,7 +19,13 @@ class Translations(TranslationBase):
         def __init__(self):
             super().__init__()
 
-        def nada(self, ctx: Context, args: str, success: bool = True, handle: str = None) -> Response:
+        def nada(
+            self,
+            ctx: Context,
+            args: str,
+            success: bool = True,
+            handle: str | None = None,
+        ) -> Response:
             response = Response(ctx=ctx, success=success, handle=handle, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "The command was executed successfully. {}")
@@ -35,7 +40,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Este comando é usado para testes.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}nada (text)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}nada (text)")
@@ -59,7 +64,13 @@ class Translations(TranslationBase):
         def __init__(self):
             super().__init__()
 
-        def unexpected_error(self, ctx: Context, exception: Exception, success: bool = False, handle: str = None):
+        def unexpected_error(
+            self,
+            ctx: Context,
+            exception: Exception,
+            success: bool = False,
+            handle: str | None = None,
+        ):
             response = Response(ctx=ctx, success=success, handle=handle, response_list=None)
             with self.lang_dict.once("unexpected_error"):
                 self.lang_dict.add_with("en", "There was an error restarting the bot: {}")
@@ -74,7 +85,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Reinicia o bot.")
             return self._untangle_str(ctx, "helper")
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once("usage"):
                 self.lang_dict.add_with("en", "To use: {}restart")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}restart")
@@ -149,13 +160,19 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once("helper"):
                 self.lang_dict.add_with("en", "Reloads the commands using all or command name.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Recarregar os comandos usando all ou nome do comando.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Recarregar os comandos usando all ou nome do comando.",
+                )
             return self._untangle_str(ctx, "helper")
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once("usage"):
                 self.lang_dict.add_with("en", f"How to use: {prefix}reload (all) or (command_name)")
-                self.lang_dict.add_with(["pt_br", "pt"], f"Como usar: {prefix}reload (all) ou (command_name)")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    f"Como usar: {prefix}reload (all) ou (command_name)",
+                )
             return self._untangle_str(ctx, "usage")
 
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
@@ -178,13 +195,34 @@ class Translations(TranslationBase):
                     "en",
                     CommandExemples(
                         [
-                            {"args": "commands", "response": "the commands have been successfully reloaded."},
-                            {"args": "emotes", "response": "Emotes were successfully reloaded."},
-                            {"args": "translations", "response": "TranslationManager were successfully reloaded."},
-                            {"args": "tokens_handler", "response": "TokensHandler were successfully reloaded."},
-                            {"args": "channel_handler", "response": "ChannelHandler were successfully reloaded."},
-                            {"args": "lifecycle_handler", "response": "LifecycleHandler were successfully reloaded."},
-                            {"args": "command_handler", "response": "CommandHandler were successfully reloaded."},
+                            {
+                                "args": "commands",
+                                "response": "the commands have been successfully reloaded.",
+                            },
+                            {
+                                "args": "emotes",
+                                "response": "Emotes were successfully reloaded.",
+                            },
+                            {
+                                "args": "translations",
+                                "response": "TranslationManager were successfully reloaded.",
+                            },
+                            {
+                                "args": "tokens_handler",
+                                "response": "TokensHandler were successfully reloaded.",
+                            },
+                            {
+                                "args": "channel_handler",
+                                "response": "ChannelHandler were successfully reloaded.",
+                            },
+                            {
+                                "args": "lifecycle_handler",
+                                "response": "LifecycleHandler were successfully reloaded.",
+                            },
+                            {
+                                "args": "command_handler",
+                                "response": "CommandHandler were successfully reloaded.",
+                            },
                         ]
                     ),
                 )
@@ -192,16 +230,34 @@ class Translations(TranslationBase):
                     ["pt_br", "pt"],
                     CommandExemples(
                         [
-                            {"args": "commands", "response": "Os comandos foram recarregados com sucesso."},
-                            {"args": "emotes", "response": "Emotes foram recarregadas com sucesso."},
-                            {"args": "translations", "response": "TranslationManager foram recarregadas com sucesso."},
-                            {"args": "tokens_handler", "response": "TokensHandler foram recarregadas com sucesso."},
-                            {"args": "channel_handler", "response": "ChannelHandler foram recarregadas com sucesso."},
+                            {
+                                "args": "commands",
+                                "response": "Os comandos foram recarregados com sucesso.",
+                            },
+                            {
+                                "args": "emotes",
+                                "response": "Emotes foram recarregadas com sucesso.",
+                            },
+                            {
+                                "args": "translations",
+                                "response": "TranslationManager foram recarregadas com sucesso.",
+                            },
+                            {
+                                "args": "tokens_handler",
+                                "response": "TokensHandler foram recarregadas com sucesso.",
+                            },
+                            {
+                                "args": "channel_handler",
+                                "response": "ChannelHandler foram recarregadas com sucesso.",
+                            },
                             {
                                 "args": "lifecycle_handler",
                                 "response": "LifecycleHandler foram recarregadas com sucesso.",
                             },
-                            {"args": "command_handler", "response": "CommandHandler foram recarregadas com sucesso."},
+                            {
+                                "args": "command_handler",
+                                "response": "CommandHandler foram recarregadas com sucesso.",
+                            },
                         ]
                     ),
                 )

@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase
+from bot.ext import CommandExemples, Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context, commands
+    from bot.ext import Context
 
 
 class Translations(TranslationBase):
@@ -22,9 +21,13 @@ class Translations(TranslationBase):
         def error(self, ctx: Context) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "An unexpected error occurred. Please report it to @{} on whispers.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Ocorreu um erro inesperado. Por favor, reporte-o para @{} nos whispers."
+                    "en",
+                    "An unexpected error occurred. Please report it to @{} on whispers.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Ocorreu um erro inesperado. Por favor, reporte-o para @{} nos whispers.",
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), ctx.bot.dev_name)
 
@@ -43,13 +46,17 @@ class Translations(TranslationBase):
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Enter the command and a mathematical operation for me to solve it.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Digite o comando e uma operação matemática para eu resolvê-la."
+                    "en",
+                    "Enter the command and a mathematical operation for me to solve it.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Digite o comando e uma operação matemática para eu resolvê-la.",
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}math (mathematical expression)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}math (expressão matemática)")
@@ -59,9 +66,13 @@ class Translations(TranslationBase):
 
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Enter the command and a mathematical operation for me to solve it.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Digite o comando e uma operação matemática para eu resolvê-la."
+                    "en",
+                    "Enter the command and a mathematical operation for me to solve it.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Digite o comando e uma operação matemática para eu resolvê-la.",
                 )
             return self._untangle_str(ctx, self._cname)
 
@@ -73,7 +84,10 @@ class Translations(TranslationBase):
                         [
                             {"args": "1 + 1", "response": "2"},
                             {"args": "sqrt(523452)", "response": "723.4998272287285"},
-                            {"args": "k = matrix(); k.subset(index(2), 6)", "response": "[[0, 6]]"},
+                            {
+                                "args": "k = matrix(); k.subset(index(2), 6)",
+                                "response": "[[0, 6]]",
+                            },
                             {
                                 "args": "h = diag(range(1, 4)); h.subset(index([1, 2], [1, 2]))",
                                 "response": "[[[1, 0], [0, 2]]]",

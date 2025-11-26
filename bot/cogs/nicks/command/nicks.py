@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from datetime import datetime
@@ -6,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from bot.apis import BestLogs
 from bot.ext import Context, Response, commands
-from bot.utils import Check, Role, SessionsCaches, StringTools
+from bot.utils import SessionsCaches, StringTools
 
 from .translations import Translations
 

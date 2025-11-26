@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -42,13 +41,17 @@ class Translations(TranslationBase):
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Command used to check how long someone has been following a channel.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Comando utilizado para verificar a quanto tempo alguém segue um canal."
+                    "en",
+                    "Command used to check how long someone has been following a channel.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Comando utilizado para verificar a quanto tempo alguém segue um canal.",
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "{}followage (user) (channel)")
                 self.lang_dict.add_with(["pt_br", "pt"], "{}followage (usuário) (canal)")
@@ -58,9 +61,13 @@ class Translations(TranslationBase):
 
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Command used to check how long someone has been following a channel.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Comando utilizado para verificar a quanto tempo alguém segue um canal."
+                    "en",
+                    "Command used to check how long someone has been following a channel.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Comando utilizado para verificar a quanto tempo alguém segue um canal.",
                 )
             return self._untangle_str(ctx, self._cname)
 

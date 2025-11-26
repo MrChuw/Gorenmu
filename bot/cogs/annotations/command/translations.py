@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -7,7 +6,7 @@ from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBa
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context, commands
+    from bot.ext import Context
 
 
 class Translations(TranslationBase):
@@ -22,10 +21,13 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "This subcommand is used to add an note.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Este subcomando é usado para adicionar uma anotação.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Este subcomando é usado para adicionar uma anotação.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}note add (text)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}note add (texto)")
@@ -148,10 +150,13 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "This subcommand is used to check infos for an note.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Este subcomando é usado para verificar uma anotação.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Este subcomando é usado para verificar uma anotação.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}note check (id)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}note check (id)")
@@ -169,7 +174,10 @@ class Translations(TranslationBase):
                     "en",
                     CommandExemples(
                         [
-                            {"args": "check", "response": "Your notes are those with ID: (title if available [id])"},
+                            {
+                                "args": "check",
+                                "response": "Your notes are those with ID: (title if available [id])",
+                            },
                             {"args": "check (id)", "response": "(Note content)"},
                         ]
                     ),
@@ -178,8 +186,14 @@ class Translations(TranslationBase):
                     ["pt_br", "pt"],
                     CommandExemples(
                         [
-                            {"args": "check", "response": "Suas anotações são: <título se houver [id]>"},
-                            {"args": "check <id>", "response": "<Conteúdo da anotação.>"},
+                            {
+                                "args": "check",
+                                "response": "Suas anotações são: <título se houver [id]>",
+                            },
+                            {
+                                "args": "check <id>",
+                                "response": "<Conteúdo da anotação.>",
+                            },
                         ]
                     ),
                 )
@@ -194,10 +208,13 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "This subcommand is used to delete an note.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Este subcomando é usado para deletar uma anotação.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Este subcomando é usado para deletar uma anotação.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}note delete cool_name")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}note delete (id)")
@@ -214,13 +231,23 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(
                     "en",
                     CommandExemples(
-                        [{"args": "delete (id)", "response": "Your note with ID (id) was successfully deleted. 🗑"}]
+                        [
+                            {
+                                "args": "delete (id)",
+                                "response": "Your note with ID (id) was successfully deleted. 🗑",
+                            }
+                        ]
                     ),
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
                     CommandExemples(
-                        [{"args": "delete <id>", "response": "Sua anotação com ID <id> foi excluída com sucesso. 🗑"}]
+                        [
+                            {
+                                "args": "delete <id>",
+                                "response": "Sua anotação com ID <id> foi excluída com sucesso. 🗑",
+                            }
+                        ]
                     ),
                 )
             return self._untangle_commands(ctx, self._cname)
@@ -242,7 +269,10 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "You forgot to send the annotation content.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Você se esqueceu de enviar o conteúdo da anotação.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Você se esqueceu de enviar o conteúdo da anotação.",
+                )
             return response.format_response(self._untangle_str(ctx, self._cname), args)
 
         def annotation_created(self, ctx: Context, note_id) -> Response:
@@ -276,14 +306,20 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Your annotation with ID {} was successfully deleted. 🗑")
-                self.lang_dict.add_with(["pt_br", "pt"], "Sua anotação com ID {} foi excluída com sucesso. 🗑")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Sua anotação com ID {} foi excluída com sucesso. 🗑",
+                )
             return response.format_response(self._untangle_str(ctx, self._cname), note_id)
 
         def option_not_recognized(self, ctx: Context) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", 'The valid options are only "add" "check" "delete"')
-                self.lang_dict.add_with(["pt_br", "pt"], 'As opções válidas são apenas "add" "check" "delete"')
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    'As opções válidas são apenas "add" "check" "delete"',
+                )
             return response.format_response(self._untangle_str(ctx, self._cname))
 
         def no_annotation_present(self, ctx: Context) -> Response:
@@ -299,7 +335,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Cria notas permanentes para o usuário.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}note add/check/delete")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}note add/check/delete")

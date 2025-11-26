@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -57,10 +56,13 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Used to see the last time a user was online.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Usado para ver a ultima vez que um usuário esteve online.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Usado para ver a ultima vez que um usuário esteve online.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Usage: {}lastseen (user)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Uso: {}lastseen (usuário)")
@@ -89,8 +91,7 @@ class Translations(TranslationBase):
                             },
                             {
                                 "args": "user_nick",
-                                "response": "@user_nick was last seen in @other_channel: "
-                                "Message content (2 days ago)",
+                                "response": "@user_nick was last seen in @other_channel: Message content (2 days ago)",
                             },
                         ]
                     ),

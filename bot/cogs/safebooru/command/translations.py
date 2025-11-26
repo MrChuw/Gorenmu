@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -33,7 +32,10 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Number of tags exceeded the allowed limit of {}.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Quantidade de tags ultrapassou o limite permitido de {}.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Quantidade de tags ultrapassou o limite permitido de {}.",
+                )
             return response.format_response(self._untangle_str(ctx, self._cname), args)
 
         def success(self, ctx: Context, *args) -> Response:
@@ -45,10 +47,13 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Command used to generate random images from Safebooru.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Comando usado para gerar imagens aleatórias de Safebooru.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Comando usado para gerar imagens aleatórias de Safebooru.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}safebooru (tags)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}safebooru (tags)")
@@ -75,7 +80,10 @@ class Translations(TranslationBase):
                     CommandExemples(
                         [
                             {"response": "Original: (URL) || Preview: (URL)"},
-                            {"args": "some_tag", "response": "Original: (URL) || Preview: (URL)"},
+                            {
+                                "args": "some_tag",
+                                "response": "Original: (URL) || Preview: (URL)",
+                            },
                         ]
                     ),
                 )
@@ -84,7 +92,10 @@ class Translations(TranslationBase):
                     CommandExemples(
                         [
                             {"response": "Original: (URL) || Preview: (URL)"},
-                            {"args": "some_tag", "response": "Original: (URL) || Preview: (URL)"},
+                            {
+                                "args": "some_tag",
+                                "response": "Original: (URL) || Preview: (URL)",
+                            },
                         ]
                     ),
                 )

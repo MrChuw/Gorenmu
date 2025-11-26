@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-
 import pytest
+from typing import ClassVar
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "",
@@ -20,7 +19,7 @@ class Params:
             id="pt_BR",
         ),
     ]
-    no_content = [
+    no_content: ClassVar[list] = [
         pytest.param(
                 "en",
                 "blablabla",
@@ -35,7 +34,7 @@ class Params:
         ),
     ]
 
-    params_ = [
+    params_: ClassVar[list] = [
         pytest.param(
                 "en",
                 "blablabla",
@@ -50,7 +49,7 @@ class Params:
         ),
     ]
 
-    params_ = [
+    params_: ClassVar[list] = [
         pytest.param(
                 "en",
                 "blablabla",
@@ -65,7 +64,7 @@ class Params:
         ),
     ]
 
-    params_ = [
+    params_: ClassVar[list] = [
         pytest.param(
                 "en",
                 "blablabla",

@@ -46,6 +46,7 @@ users_to_mark=[158431995834138624]
 bug_webhook="${DISCORD_BUG_WEBHOOK}"
 suggest_webhook="${DISCORD_SUGGEST_WEBHOOK}"
 log_webhook="${DISCORD_LOG_WEBHOOK}"
+ping_webhook="${DISCORD_PING_WEBHOOK}"
 
 enable_site_endpoints = false
 

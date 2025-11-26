@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "This subcommand is used to check infos for an alias.",
@@ -21,7 +21,7 @@ class Params:
         ),
     ]
 
-    no_content = [
+    no_content: ClassVar[list] = [
         pytest.param(
             "en",
             "List of your aliases: The_Tests_alias | Detailed list: https://shlink.mrchuw.com.br/uQqt5",
@@ -36,14 +36,22 @@ class Params:
         ),
     ]
 
-    no_match_and_no_second_name = [
-        pytest.param("en", "User some_user_44 has no registered aliases.", marks=pytest.mark.en, id="en"),
+    no_match_and_no_second_name: ClassVar[list] = [
         pytest.param(
-            "pt_BR", "O usuário some_user_44 não possui aliases registrados.", marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            "User some_user_44 has no registered aliases.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "O usuário some_user_44 não possui aliases registrados.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]
 
-    alias_match_without_second_name = [
+    alias_match_without_second_name: ClassVar[list] = [
         pytest.param(
             "en",
             "The_Tests_alias || Invoke: chance  || Link: https://shlink.mrchuw.com.br/uQqt5",
@@ -58,9 +66,12 @@ class Params:
         ),
     ]
 
-    check_user = [
+    check_user: ClassVar[list] = [
         pytest.param(
-            "en", "List of @some_user_45 aliases: https://shlink.mrchuw.com.br/uQqt5", marks=pytest.mark.en, id="en"
+            "en",
+            "List of @some_user_45 aliases: https://shlink.mrchuw.com.br/uQqt5",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -70,7 +81,7 @@ class Params:
         ),
     ]
 
-    special_case = [
+    special_case: ClassVar[list] = [
         pytest.param(
             "en",
             "Special case!\n "
@@ -89,7 +100,7 @@ class Params:
         ),
     ]
 
-    search_alias_on_user = [
+    search_alias_on_user: ClassVar[list] = [
         pytest.param(
             "en",
             "The_Alias_test || Invoke: chance  || Link: https://shlink.mrchuw.com.br/uQqt5",
@@ -104,16 +115,22 @@ class Params:
         ),
     ]
 
-    search_wrong_alias_on_user = [
+    search_wrong_alias_on_user: ClassVar[list] = [
         pytest.param(
-            "en", '@The_Tests_user don\'t have the "The_Wrong_Alias_test" alias!', marks=pytest.mark.en, id="en"
+            "en",
+            '@The_Tests_user don\'t have the "The_Wrong_Alias_test" alias!',
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
-            "pt_BR", '@The_Tests_user não tem o alias "The_Wrong_Alias_test"!', marks=pytest.mark.pt_BR, id="pt_BR"
+            "pt_BR",
+            '@The_Tests_user não tem o alias "The_Wrong_Alias_test"!',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]
 
-    search_deleted_alias_on_user = [
+    search_deleted_alias_on_user: ClassVar[list] = [
         pytest.param(
             "en",
             "The_Deleted_Alias_test alias is a link to a different alias, but the original has been deleted.",

@@ -1,6 +1,4 @@
-import asyncio
 import json
-import re
 import socket
 import time
 from random import randint, shuffle
@@ -43,7 +41,9 @@ class Lolibooru(object):
         """
         for i in range(len(raw_object)):
             if "id" in raw_object[i]:
-                raw_object[i]["post_url"] = f"{get_hostname(Booru.lolibooru)}/post/show/{raw_object[i]['id']}"
+                raw_object[i][
+                    "post_url"
+                ] = f"{get_hostname(Booru.lolibooru)}/post/show/{raw_object[i]['id']}"
                 raw_object[i]["file_url"] = raw_object[i]["file_url"].replace(" ", "&")
 
         return raw_object
@@ -114,8 +114,14 @@ class Lolibooru(object):
             elapsed_time = time.time() - start_time
             if elapsed_time > seconds:
                 return 1
-            async with aiohttp.ClientSession(request_class=KeepAliveClientRequest) as session:
-                response = await session.post(Booru.lolibooru, params=self.specs, headers={"Connection": "keep-alive"})
+            async with aiohttp.ClientSession(
+                request_class=KeepAliveClientRequest
+            ) as session:
+                response = await session.post(
+                    Booru.lolibooru,
+                    params=self.specs,
+                    headers={"Connection": "keep-alive"},
+                )
                 self.data = await response.text()
             self.final = self.final = deserialize(json.loads(self.data))
             if len(self.final) == 0:
@@ -141,7 +147,9 @@ class Lolibooru(object):
         except Exception as e:
             raise ValueError(f"Failed to get data: {e}")
 
-    async def get_image(self, query: str, limit: int = 100, page: int = randint(0, 100)):
+    async def get_image(
+        self, query: str, limit: int = 100, page: int = randint(0, 100)
+    ):
         """Gets images, meant just image urls from lolibooru.
 
         Parameters
@@ -175,7 +183,9 @@ class Lolibooru(object):
         try:
             timeout = aiohttp.ClientTimeout(total=240)
             async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(Booru.lolibooru, params=self.specs, allow_redirects=True) as resp:
+                async with session.get(
+                    Booru.lolibooru, params=self.specs, allow_redirects=True
+                ) as resp:
                     self.data = await resp.text()
             self.final = self.final = deserialize(json.loads(self.data))
 

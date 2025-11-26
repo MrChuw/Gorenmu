@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 from urllib.parse import unquote
 
 from yarl import URL
@@ -42,7 +42,9 @@ def str_to_url(data: dict, key: str) -> Optional[URL]:
 class Gelbooru:
     def __init__(self, data: dict):
         self.change: int = data.get("change", 0)
-        self.created_at: Optional[datetime] = parse_datetime(data, "created_at", "%a %b %d %H:%M:%S %z %Y")
+        self.created_at: Optional[datetime] = parse_datetime(
+            data, "created_at", "%a %b %d %H:%M:%S %z %Y"
+        )
         self.creator_id: int = data.get("creator_id", 0)
         self.directory: str = data.get("directory", "")
         self.file_url: Optional[URL] = str_to_url(data, "file_url")
@@ -218,7 +220,9 @@ class Variants:
 
 class MediaAsset:
     def __init__(self, data: Dict[str, Union[str, int, bool, None]]) -> None:
-        self.created_at: Optional[datetime] = parse_datetime(data, "created_at", "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.created_at: Optional[datetime] = parse_datetime(
+            data, "created_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.duration: Optional[str] = data.get("duration")
         self.file_ext: Optional[str] = data.get("file_ext")
         self.file_size: Optional[int] = data.get("file_size")
@@ -229,24 +233,36 @@ class MediaAsset:
         self.md5: Optional[str] = data.get("md5")
         self.pixel_hash: Optional[str] = data.get("pixel_hash")
         self.status: Optional[str] = data.get("status")
-        self.updated_at: Optional[datetime] = parse_datetime(data, "updated_at", "%Y-%m-%dT%H:%M:%S.%f%z")
-        self.variants: Optional[List[Variants]] = [Variants(variant) for variant in data.get("variants", [])]
+        self.updated_at: Optional[datetime] = parse_datetime(
+            data, "updated_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
+        self.variants: Optional[List[Variants]] = [
+            Variants(variant) for variant in data.get("variants", [])
+        ]
 
 
 class Danbooru:
-    def __init__(self, data: Dict[str, Union[str, int, bool, None, MediaAsset]]) -> None:
+    def __init__(
+        self, data: Dict[str, Union[str, int, bool, None, MediaAsset]]
+    ) -> None:
         self.approver_id: Optional[int] = data.get("approver_id")
         self.bit_flags: Optional[int] = data.get("bit_flags", 0)
-        self.created_at: Optional[datetime] = parse_datetime(data, "created_at", "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.created_at: Optional[datetime] = parse_datetime(
+            data, "created_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.down_score: Optional[int] = data.get("down_score", 0)
         self.fav_count: Optional[int] = data.get("fav_count", 0)
         self.file_ext: Optional[str] = data.get("file_ext")
         self.file_size: Optional[int] = data.get("file_size", 0)
         self.file_url: Optional[URL] = str_to_url(data, "file_url")
-        self.has_active_children: Optional[bool] = data.get("has_active_children", False)
+        self.has_active_children: Optional[bool] = data.get(
+            "has_active_children", False
+        )
         self.has_children: Optional[bool] = data.get("has_children", False)
         self.has_large: Optional[bool] = data.get("has_large", False)
-        self.has_visible_children: Optional[bool] = data.get("has_visible_children", False)
+        self.has_visible_children: Optional[bool] = data.get(
+            "has_visible_children", False
+        )
         self.id: Optional[int] = data.get("id", 0)
         self.image_height: Optional[int] = data.get("image_height", 0)
         self.image_width: Optional[int] = data.get("image_width", 0)
@@ -257,8 +273,12 @@ class Danbooru:
         self.last_comment_bumped_at: Optional[datetime] = parse_datetime(
             data, "last_comment_bumped_at", "%Y-%m-%dT%H:%M:%S.%f%z"
         )
-        self.last_commented_at: Optional[datetime] = parse_datetime(data, "last_commented_at", "%Y-%m-%dT%H:%M:%S.%f%z")
-        self.last_noted_at: Optional[datetime] = parse_datetime(data, "last_noted_at", "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.last_commented_at: Optional[datetime] = parse_datetime(
+            data, "last_commented_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
+        self.last_noted_at: Optional[datetime] = parse_datetime(
+            data, "last_noted_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.md5: Optional[str] = data.get("md5", "")
         self.media_asset: MediaAsset = MediaAsset(data.get("media_asset", {}))
         self.parent_id: Optional[int] = data.get("parent_id")
@@ -278,27 +298,39 @@ class Danbooru:
         self.tag_string_artist: Optional[str] = data.get("tag_string_artist", "")
         self.tag_string_character: Optional[str] = data.get("tag_string_character", "")
         self.tag_string_copyright: Optional[str] = data.get("tag_string_copyright", "")
-        self.tag_string_general: List[str] = data.get("tag_string_general", "").split(" ")
+        self.tag_string_general: List[str] = data.get("tag_string_general", "").split(
+            " "
+        )
         self.tag_string_meta: Optional[str] = data.get("tag_string_meta", "")
         self.up_score: Optional[int] = data.get("up_score", 0)
-        self.updated_at: Optional[datetime] = parse_datetime(data, "updated_at", "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.updated_at: Optional[datetime] = parse_datetime(
+            data, "updated_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.uploader_id: Optional[int] = data.get("uploader_id", 0)
 
 
 class Atfbooru:
-    def __init__(self, data: Dict[str, Union[str, int, bool, None, MediaAsset]]) -> None:
+    def __init__(
+        self, data: Dict[str, Union[str, int, bool, None, MediaAsset]]
+    ) -> None:
         self.approver_id: Optional[int] = data.get("approver_id")
         self.bit_flags: Optional[int] = data.get("bit_flags", 0)
-        self.created_at: Optional[datetime] = parse_datetime(data, "created_at", "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.created_at: Optional[datetime] = parse_datetime(
+            data, "created_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.down_score: Optional[int] = data.get("down_score", 0)
         self.fav_count: Optional[int] = data.get("fav_count", 0)
         self.file_ext: Optional[str] = data.get("file_ext")
         self.file_size: Optional[int] = data.get("file_size", 0)
         self.file_url: Optional[URL] = str_to_url(data, "file_url")
-        self.has_active_children: Optional[bool] = data.get("has_active_children", False)
+        self.has_active_children: Optional[bool] = data.get(
+            "has_active_children", False
+        )
         self.has_children: Optional[bool] = data.get("has_children", False)
         self.has_large: Optional[bool] = data.get("has_large", False)
-        self.has_visible_children: Optional[bool] = data.get("has_visible_children", False)
+        self.has_visible_children: Optional[bool] = data.get(
+            "has_visible_children", False
+        )
         self.id: Optional[int] = data.get("id", 0)
         self.image_height: Optional[int] = data.get("image_height", 0)
         self.image_width: Optional[int] = data.get("image_width", 0)
@@ -309,8 +341,12 @@ class Atfbooru:
         self.last_comment_bumped_at: Optional[datetime] = parse_datetime(
             data, "last_comment_bumped_at", "%Y-%m-%dT%H:%M:%S.%f%z"
         )
-        self.last_commented_at: Optional[datetime] = parse_datetime(data, "last_commented_at", "%Y-%m-%dT%H:%M:%S.%f%z")
-        self.last_noted_at: Optional[datetime] = parse_datetime(data, "last_noted_at", "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.last_commented_at: Optional[datetime] = parse_datetime(
+            data, "last_commented_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
+        self.last_noted_at: Optional[datetime] = parse_datetime(
+            data, "last_noted_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.md5: Optional[str] = data.get("md5", "")
         self.media_asset: MediaAsset = MediaAsset(data.get("media_asset", {}))
         self.parent_id: Optional[int] = data.get("parent_id")
@@ -330,10 +366,14 @@ class Atfbooru:
         self.tag_string_artist: Optional[str] = data.get("tag_string_artist", "")
         self.tag_string_character: Optional[str] = data.get("tag_string_character", "")
         self.tag_string_copyright: Optional[str] = data.get("tag_string_copyright", "")
-        self.tag_string_general: List[str] = data.get("tag_string_general", "").split(" ")
+        self.tag_string_general: List[str] = data.get("tag_string_general", "").split(
+            " "
+        )
         self.tag_string_meta: Optional[str] = data.get("tag_string_meta", "")
         self.up_score: Optional[int] = data.get("up_score", 0)
-        self.updated_at: Optional[datetime] = datetime.strptime(data.get("updated_at", ""), "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.updated_at: Optional[datetime] = datetime.strptime(
+            data.get("updated_at", ""), "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.uploader_id: Optional[int] = data.get("uploader_id", 0)
 
 
@@ -344,7 +384,9 @@ class Yandere:
         self.approver_id: Optional[int] = data.get("approver_id")
         self.author: Optional[str] = data.get("author")
         self.change: Optional[int] = data.get("change")
-        self.created_at: Optional[datetime] = parse_datetime(data, "created_at", "timestamp")
+        self.created_at: Optional[datetime] = parse_datetime(
+            data, "created_at", "timestamp"
+        )
         self.creator_id: Optional[int] = data.get("creator_id")
         self.file_ext: Optional[str] = data.get("file_ext")
         self.file_size: Optional[int] = data.get("file_size")
@@ -382,7 +424,9 @@ class Yandere:
         self.source: Optional[URL] = str_to_url(data, "source")
         self.status: Optional[str] = data.get("status")
         self.tags: Optional[List[str]] = data.get("tags").split(" ")
-        self.updated_at: Optional[datetime] = parse_datetime(data, "updated_at", "timestamp")
+        self.updated_at: Optional[datetime] = parse_datetime(
+            data, "updated_at", "timestamp"
+        )
         self.width: Optional[int] = data.get("width")
 
 
@@ -393,7 +437,9 @@ class Konachan:
         self.approver_id: Optional[int] = data.get("approver_id")
         self.author: Optional[str] = data.get("author")
         self.change: Optional[int] = data.get("change")
-        self.created_at: Optional[datetime] = parse_datetime(data, "created_at", "timestamp")
+        self.created_at: Optional[datetime] = parse_datetime(
+            data, "created_at", "timestamp"
+        )
         self.creator_id: Optional[int] = data.get("creator_id")
         self.file_ext: Optional[str] = data.get("file_ext")
         self.file_size: Optional[int] = data.get("file_size")
@@ -431,7 +477,9 @@ class Konachan:
         self.source: Optional[URL] = str_to_url(data, "source")
         self.status: Optional[str] = data.get("status")
         self.tags: Optional[List[str]] = data.get("tags").split(" ")
-        self.updated_at: Optional[datetime] = parse_datetime(data, "updated_at", "timestamp")
+        self.updated_at: Optional[datetime] = parse_datetime(
+            data, "updated_at", "timestamp"
+        )
         self.width: Optional[int] = data.get("width")
 
 
@@ -442,7 +490,9 @@ class Konachan_Net:
         self.approver_id: Optional[int] = data.get("approver_id")
         self.author: Optional[str] = data.get("author")
         self.change: Optional[int] = data.get("change")
-        self.created_at: Optional[datetime] = parse_datetime(data, "created_at", "timestamp")
+        self.created_at: Optional[datetime] = parse_datetime(
+            data, "created_at", "timestamp"
+        )
         self.creator_id: Optional[int] = data.get("creator_id")
         self.file_ext: Optional[str] = data.get("file_ext")
         self.file_size: Optional[int] = data.get("file_size")
@@ -480,7 +530,9 @@ class Konachan_Net:
         self.source: Optional[URL] = str_to_url(data, "source")
         self.status: Optional[str] = data.get("status")
         self.tags: Optional[List[str]] = data.get("tags").split(" ")
-        self.updated_at: Optional[datetime] = parse_datetime(data, "updated_at", "timestamp")
+        self.updated_at: Optional[datetime] = parse_datetime(
+            data, "updated_at", "timestamp"
+        )
         self.width: Optional[int] = data.get("width")
 
 
@@ -580,7 +632,9 @@ class E621:
         self.approver_id: int = data.get("approver_id", 0)
         self.change_seq: int = data.get("change_seq", 0)
         self.comment_count: int = data.get("comment_count", 0)
-        self.created_at: Optional[datetime] = parse_datetime(data, "created_at", "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.created_at: Optional[datetime] = parse_datetime(
+            data, "created_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.description: str = data.get("description", "")
         self.duration: Optional[int] = data.get("duration", None)
         self.fav_count: int = data.get("fav_count", 0)
@@ -599,7 +653,9 @@ class E621:
         self.score: Score = Score(data.get("score", {}))
         self.sources: List[str] = data.get("sources", [])
         self.tags: Tags = Tags(data.get("tags", {}))
-        self.updated_at: Optional[datetime] = parse_datetime(data, "updated_at", "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.updated_at: Optional[datetime] = parse_datetime(
+            data, "updated_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.uploader_id: int = data.get("uploader_id", 0)
 
 
@@ -608,7 +664,9 @@ class E926:
         self.approver_id: int = data.get("approver_id", 0)
         self.change_seq: int = data.get("change_seq", 0)
         self.comment_count: int = data.get("comment_count", 0)
-        self.created_at: Optional[datetime] = parse_datetime(data, "created_at", "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.created_at: Optional[datetime] = parse_datetime(
+            data, "created_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.description: str = data.get("description", "")
         self.duration: Optional[int] = data.get("duration", None)
         self.fav_count: int = data.get("fav_count", 0)
@@ -627,7 +685,9 @@ class E926:
         self.score: Score = Score(data.get("score", {}))
         self.sources: List[str] = data.get("sources", [])
         self.tags: Tags = Tags(data.get("tags", {}))
-        self.updated_at: Optional[datetime] = parse_datetime(data, "updated_at", "%Y-%m-%dT%H:%M:%S.%f%z")
+        self.updated_at: Optional[datetime] = parse_datetime(
+            data, "updated_at", "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
         self.uploader_id: int = data.get("uploader_id", 0)
 
 
@@ -656,14 +716,18 @@ class Derpibooru:
         self.animated: bool = data.get("animated", False)
         self.aspect_ratio: float = data.get("aspect_ratio", 0.0)
         self.comment_count: int = data.get("comment_count", 0)
-        self.created_at: datetime = parse_datetime(data, "created_at", "%Y-%m-%dT%H:%M:%SZ")
+        self.created_at: datetime = parse_datetime(
+            data, "created_at", "%Y-%m-%dT%H:%M:%SZ"
+        )
         self.deletion_reason = data.get("deletion_reason")
         self.description: str = data.get("description", "")
         self.downvotes: int = data.get("downvotes", 0)
         self.duplicate_of = data.get("duplicate_of", None)
         self.duration: float = data.get("duration", 0.0)
         self.faves: int = data.get("faves", 0)
-        self.first_seen_at: datetime = parse_datetime(data, "first_seen_at", "%Y-%m-%dT%H:%M:%SZ")
+        self.first_seen_at: datetime = parse_datetime(
+            data, "first_seen_at", "%Y-%m-%dT%H:%M:%SZ"
+        )
         self.format: str = data.get("format", "")
         self.height: int = data.get("height", 0)
         self.hidden_from_users: bool = data.get("hidden_from_users", False)
@@ -674,7 +738,9 @@ class Derpibooru:
         self.orig_sha512_hash: str = data.get("orig_sha512_hash", "")
         self.post_url: URL = str_to_url(data, "post_url")
         self.processed: bool = data.get("processed", False)
-        self.representations: Representations = Representations(data.get("representations", {}))
+        self.representations: Representations = Representations(
+            data.get("representations", {})
+        )
         self.score: int = data.get("score", 0)
         self.sha512_hash: str = data.get("sha512_hash", "")
         self.size: int = data.get("size", 0)
@@ -685,7 +751,9 @@ class Derpibooru:
         self.tag_ids: List[int] = data.get("tag_ids", [])
         self.tags: List[str] = data.get("tags", [])
         self.thumbnails_generated: bool = data.get("thumbnails_generated", False)
-        self.updated_at: datetime = parse_datetime(data, "updated_at", "%Y-%m-%dT%H:%M:%SZ")
+        self.updated_at: datetime = parse_datetime(
+            data, "updated_at", "%Y-%m-%dT%H:%M:%SZ"
+        )
         self.uploader = data.get("uploader")
         self.uploader_id = data.get("uploader_id")
         self.upvotes: int = data.get("upvotes", 0)

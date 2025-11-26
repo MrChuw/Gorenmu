@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -27,7 +26,7 @@ class Translations(TranslationBase):
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Usage: {}set (subcommand) [arguments]")
                 self.lang_dict.add_with(["pt_br", "pt"], "Uso: {}set (subcomando) [argumentos]")
@@ -83,7 +82,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Ativar ou desativar menções do bot.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Usage: {}set mention <on/off>")
                 self.lang_dict.add_with(["pt_br", "pt"], "Uso: {}set mention <on/off>")
@@ -173,7 +172,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Definir ou remover sua cidade salva.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Usage: {}set city (name or remove) [hidden:true]")
                 self.lang_dict.add_with(["pt_br", "pt"], "Uso: {}set city (nome ou remove) [hidden:true]")
@@ -321,7 +320,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Definir ou remover um apelido personalizado.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Usage: {}set nick <nickname or remove>")
                 self.lang_dict.add_with(["pt_br", "pt"], "Uso: {}set nick <apelido ou remove>")
@@ -437,7 +436,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Salvar ou remover uma cor personalizada.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Usage: {}set color (#hex or remove)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Uso: {}set color (#hex ou remove)")
@@ -524,7 +523,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Ativar ou desativar lembretes.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Usage: {}set reminder (on/off)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Uso: {}set reminder (on/off)")

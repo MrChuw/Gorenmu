@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from .api_zonian import APIZonian
 from .channel_messages import ChannelMessages
 from .channel_status import ChannelStats
@@ -11,3 +10,18 @@ from .namehistory import NameHistory
 from .random import Random
 from .search import Search
 from .stats import Stats
+
+__all__ = [
+    APIZonian,
+    ChannelMessages,
+    ChannelStats,
+    Channels,
+    ChannelsZonian,
+    Health,
+    Instances,
+    List,
+    NameHistory,
+    Random,
+    Search,
+    Stats,
+]

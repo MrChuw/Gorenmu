@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -27,8 +25,8 @@ async def base_reverse(
     mock_context: MockContext,
     lang: str,
     content: str,
-    expected: str = None,
-    re_expected: str = None,
+    expected: str | None = None,
+    re_expected: str | None = None,
     success: bool = False,
 ):
     await mock_context.prepare_context(lang)
@@ -40,4 +38,11 @@ async def base_reverse(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.content)
 async def test_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_reverse(interact, mock_context, lang=lang, content="blablabla", expected=expected, success=True)
+    await base_reverse(
+        interact,
+        mock_context,
+        lang=lang,
+        content="blablabla",
+        expected=expected,
+        success=True,
+    )

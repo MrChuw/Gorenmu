@@ -1,13 +1,8 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import Any, TypeVar
 
 from .shared import (
-    from_bool,
-    from_datetime,
     from_dict,
-    from_float,
     from_int,
     from_list,
     from_none,
@@ -15,7 +10,6 @@ from .shared import (
     from_union,
     is_type,
     to_class,
-    to_float,
 )
 
 T = TypeVar("T")
@@ -23,8 +17,8 @@ T = TypeVar("T")
 
 @dataclass
 class Instance:
-    name: Optional[str] = None
-    user_id: Optional[int] = None
+    name: str | None = None
+    user_id: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Instance":
@@ -50,8 +44,8 @@ class Instance:
 
 @dataclass
 class InstancesStats:
-    count: Optional[int] = None
-    down: Optional[int] = None
+    count: int | None = None
+    down: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "InstancesStats":
@@ -71,15 +65,19 @@ class InstancesStats:
 
 @dataclass
 class Instances:
-    instances_stats: Optional[InstancesStats] = None
-    instances: Optional[Dict[str, List[Instance]]] = None
+    instances_stats: InstancesStats | None = None
+    instances: dict[str, list[Instance]] | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Instances":
         assert isinstance(obj, dict)
         instances_stats = from_union([InstancesStats.from_dict, from_none], obj.get("instancesStats"))
         instances = from_union(
-            [lambda x: from_dict(lambda x: from_list(Instance.from_dict, x), x), from_none], obj.get("instances")
+            [
+                lambda x: from_dict(lambda x: from_list(Instance.from_dict, x), x),
+                from_none,
+            ],
+            obj.get("instances"),
         )
         return Instances(instances_stats, instances)
 
@@ -91,7 +89,10 @@ class Instances:
             )
         if self.instances is not None:
             result["instances"] = from_union(
-                [lambda x: from_dict(lambda x: from_list(lambda x: to_class(Instance, x), x), x), from_none],
+                [
+                    lambda x: from_dict(lambda x: from_list(lambda x: to_class(Instance, x), x), x),
+                    from_none,
+                ],
                 self.instances,
             )
         return result

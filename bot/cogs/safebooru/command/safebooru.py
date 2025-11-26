@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
@@ -45,7 +44,7 @@ class SafeBooruCmd(commands.CustomComponent):
         timeout = self.TimeTools.Timeout(15)
 
         while True:
-            img, img_preview, response_final = await response(ctx, " ".join(tags), timeout, self)
+            _img, img_preview, response_final = await response(ctx, " ".join(tags), timeout, self)
             if not img_preview:
                 return self.translations.Exceptions.unexpected_error(ctx, response_final)
             if response_final:
@@ -89,7 +88,10 @@ async def choices(args: str, timeout: TimeTools.Timeout, ctx: Context, command: 
             return await shortener(image, preview, ctx, command)
         except Exception as e:
             ctx.bot.log.error(e)
-    return command.translations.SupportTools.TimeTools.Humanize.precisedelta(timeout.elapsed()), "error"
+    return (
+        command.translations.SupportTools.TimeTools.Humanize.precisedelta(timeout.elapsed()),
+        "error",
+    )
 
 
 async def shortener(images: list[URL], images_preview: list[URL], ctx: Context, command: SafeBooruCmd):

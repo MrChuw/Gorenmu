@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase
+from bot.ext import CommandExemples, Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -23,7 +22,10 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "The word {} {} || Similar: {} || Origin: {} || Url: {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "A palavra {} {} || Similares: {}  || Origem: {} || Url: {}")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "A palavra {} {} || Similares: {}  || Origem: {} || Url: {}",
+                )
             return response.format_response(self._untangle_str(ctx, self._cname), word, exist, similar, origin, url)
 
         def all_languages(self, ctx: Context, languages) -> Response:
@@ -114,7 +116,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "{}dicio (word) <lang:en>")
                 self.lang_dict.add_with(["pt_br", "pt"], "{}dicio (palavra) <lang:pt_br>")

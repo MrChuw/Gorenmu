@@ -1,11 +1,16 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
+
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
-            "en", "Enable or disable bot mentions.", "Usage: +set mention <on/off>", marks=pytest.mark.en, id="en"
+            "en",
+            "Enable or disable bot mentions.",
+            "Usage: +set mention <on/off>",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -16,7 +21,7 @@ class Params:
         ),
     ]
 
-    valid_on = [
+    valid_on: ClassVar[list] = [
         pytest.param(
             "en",
             "on",
@@ -25,11 +30,15 @@ class Params:
             id="on-en",
         ),
         pytest.param(
-            "pt_BR", "on", "Você voltará a receber menções do bot nos comandos.", marks=pytest.mark.pt_BR, id="on-pt"
+            "pt_BR",
+            "on",
+            "Você voltará a receber menções do bot nos comandos.",
+            marks=pytest.mark.pt_BR,
+            id="on-pt",
         ),
     ]
 
-    valid_off = [
+    valid_off: ClassVar[list] = [
         pytest.param(
             "en",
             "off",
@@ -46,7 +55,7 @@ class Params:
         ),
     ]
 
-    invalid_input = [
+    invalid_input: ClassVar[list] = [
         pytest.param(
             "en",
             "maybe",

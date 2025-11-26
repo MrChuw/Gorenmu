@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import Any, TypeVar
 from uuid import UUID
 
 from .shared import (
-    from_bool,
     from_datetime,
-    from_dict,
     from_int,
     from_list,
     from_none,
@@ -22,33 +19,33 @@ T = TypeVar("T")
 
 @dataclass
 class Tags:
-    badges: Optional[str] = None
-    badge_info: Optional[str] = None
-    id: Optional[UUID] = None
-    user_id: Optional[int] = None
-    color: Optional[str] = None
-    flags: Optional[str] = None
-    display_name: Optional[str] = None
-    vip: Optional[int] = None
-    user_type: Optional[str] = None
-    emotes: Optional[str] = None
-    tmi_sent_ts: Optional[str] = None
-    room_id: Optional[int] = None
-    subscriber: Optional[int] = None
-    mod: Optional[int] = None
-    reply_thread_parent_msg_id: Optional[UUID] = None
-    reply_parent_msg_body: Optional[str] = None
-    reply_parent_user_login: Optional[str] = None
-    reply_parent_msg_id: Optional[UUID] = None
-    reply_parent_display_name: Optional[str] = None
-    reply_parent_user_id: Optional[int] = None
-    reply_thread_parent_user_id: Optional[int] = None
-    reply_thread_parent_display_name: Optional[str] = None
-    reply_thread_parent_user_login: Optional[str] = None
-    emote_only: Optional[int] = None
-    target_user_id: Optional[int] = None
-    ban_duration: Optional[int] = None
-    client_nonce: Optional[str] = None
+    badges: str | None = None
+    badge_info: str | None = None
+    id: UUID | None = None
+    user_id: int | None = None
+    color: str | None = None
+    flags: str | None = None
+    display_name: str | None = None
+    vip: int | None = None
+    user_type: str | None = None
+    emotes: str | None = None
+    tmi_sent_ts: str | None = None
+    room_id: int | None = None
+    subscriber: int | None = None
+    mod: int | None = None
+    reply_thread_parent_msg_id: UUID | None = None
+    reply_parent_msg_body: str | None = None
+    reply_parent_user_login: str | None = None
+    reply_parent_msg_id: UUID | None = None
+    reply_parent_display_name: str | None = None
+    reply_parent_user_id: int | None = None
+    reply_thread_parent_user_id: int | None = None
+    reply_thread_parent_display_name: str | None = None
+    reply_thread_parent_user_login: str | None = None
+    emote_only: int | None = None
+    target_user_id: int | None = None
+    ban_duration: int | None = None
+    client_nonce: str | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Tags":
@@ -74,7 +71,8 @@ class Tags:
         reply_parent_display_name = from_union([from_str, from_none], obj.get("reply-parent-display-name"))
         reply_parent_user_id = from_union([from_none, lambda x: int(from_str(x))], obj.get("reply-parent-user-id"))
         reply_thread_parent_user_id = from_union(
-            [from_none, lambda x: int(from_str(x))], obj.get("reply-thread-parent-user-id")
+            [from_none, lambda x: int(from_str(x))],
+            obj.get("reply-thread-parent-user-id"),
         )
         reply_thread_parent_display_name = from_union(
             [from_str, from_none], obj.get("reply-thread-parent-display-name")
@@ -241,15 +239,15 @@ class Tags:
 
 @dataclass
 class Message:
-    text: Optional[str] = None
-    display_name: Optional[str] = None
-    channel: Optional[str] = None
-    timestamp: Optional[datetime] = None
-    id: Optional[str] = None
-    tags: Optional[Tags] = None
-    username: Optional[str] = None
-    raw: Optional[str] = None
-    type: Optional[int] = None
+    text: str | None = None
+    display_name: str | None = None
+    channel: str | None = None
+    timestamp: datetime | None = None
+    id: str | None = None
+    tags: Tags | None = None
+    username: str | None = None
+    raw: str | None = None
+    type: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Message":
@@ -265,7 +263,7 @@ class Message:
         type = from_union([from_int, from_none], obj.get("type"))
         return Message(text, display_name, channel, timestamp, id, tags, username, raw, type)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict:  # NOQA: C901
         result: dict = {}
         if self.text is not None:
             result["text"] = from_union([from_str, from_none], self.text)
@@ -290,7 +288,7 @@ class Message:
 
 @dataclass
 class ChannelMessages:
-    messages: Optional[List[Message]] = None
+    messages: list[Message] | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "ChannelMessages":
@@ -302,7 +300,8 @@ class ChannelMessages:
         result: dict = {}
         if self.messages is not None:
             result["messages"] = from_union(
-                [lambda x: from_list(lambda x: to_class(Message, x), x), from_none], self.messages
+                [lambda x: from_list(lambda x: to_class(Message, x), x), from_none],
+                self.messages,
             )
         return result
 

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from bot.cogs.cookies.command.cookies import CookieCmd
@@ -47,7 +45,15 @@ async def base_count(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_name)
 async def test_no_name(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_count(interact, mock_context, target_user=False, lang=lang, content=[], expected=expected, success=True)
+    await base_count(
+        interact,
+        mock_context,
+        target_user=False,
+        lang=lang,
+        content=[],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
@@ -67,18 +73,40 @@ async def test_bot_name(interact, mock_context: MockContext, lang: str, expected
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.other_user)
 async def test_other_user(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_count(interact, mock_context, target_user=True, lang=lang, content=[], expected=expected, success=True)
+    await base_count(
+        interact,
+        mock_context,
+        target_user=True,
+        lang=lang,
+        content=[],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.author_with_a_bunch_of_things)
 async def test_author_with_a_bunch_of_things(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_count(interact, mock_context, target_user=False, lang=lang, content=[], expected=expected, success=True)
+    await base_count(
+        interact,
+        mock_context,
+        target_user=False,
+        lang=lang,
+        content=[],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.user_not_found)
 async def test_user_not_found(interact, mock_context: MockContext, lang: str, expected: str):
     await base_count(
-        interact, mock_context, target_user=False, lang=lang, content=["random_user"], expected=expected, success=False
+        interact,
+        mock_context,
+        target_user=False,
+        lang=lang,
+        content=["random_user"],
+        expected=expected,
+        success=False,
     )

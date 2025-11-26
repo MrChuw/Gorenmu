@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
+from collections.abc import Iterable
 from datetime import timedelta
-from typing import TYPE_CHECKING, Any, Iterable
+from typing import TYPE_CHECKING, Any
 
 import redis
 from aiocache import Cache as aioCache
@@ -17,7 +17,7 @@ from bot.ext.named_tuples import AliasCached, RAfkNamedTuple
 from bot.models import Cookies as CookiesDB
 from bot.models import Status
 from bot.models import User as UserDB
-from bot.models.Others.Alias import Alias
+from bot.models.Others.alias import Alias
 from bot.utils.caches_base import MemoryCacheCore
 from bot.utils.config import CacheType
 
@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 
 CODE_LIST = (200, 201, 202, 204, 301, 302, 304, 400, 401, 403, 404, 405, 408, 409, 410, 500, 501, 502, 503, 504)
 
-__all__ = ("Cache", "aioCache", "MemCache")
+__all__ = ("Cache", "MemCache", "aioCache")
 
 
 class Cache:
@@ -98,7 +98,7 @@ class MemCache:
         def __init__(self) -> None:
             super().__init__(ttl=timedelta(hours=6))
 
-        async def set(self, user: UserDB, ttl: float = None) -> None:
+        async def set(self, user: UserDB, ttl: float | None = None) -> None:
             await self._set_map(key=str(user.id), value=user, ttl=ttl, name=user.name, user_id=user.id)
 
         async def get(self, user_id: int) -> UserDB | None:
@@ -116,7 +116,7 @@ class MemCache:
         def __init__(self) -> None:
             super().__init__(ttl=timedelta(hours=16))
 
-        async def set(self, user: UserDB | list, cookie: CookiesDB, ttl: float = None) -> None:
+        async def set(self, user: UserDB | list, cookie: CookiesDB, ttl: float | None = None) -> None:
             user_id, user_name = (user[0], user[1]) if isinstance(user, list) else (user.id, user.name)
             await self._set_map(key=str(user_id), value=cookie, ttl=ttl, name=user_name, user_id=user_id)
 
@@ -138,7 +138,7 @@ class MemCache:
         def __init__(self):
             super().__init__(ttl=timedelta(hours=12))
 
-        async def set(self, user: UserDB, value: Status, ttl: float = None) -> None:
+        async def set(self, user: UserDB, value: Status, ttl: float | None = None) -> None:
             await self._set_map(key=str(user.id), value=value, ttl=ttl, name=user.name, user_id=user.id)
 
         async def get(self, user_id: int) -> Status | None:
@@ -160,7 +160,7 @@ class MemCache:
         def __init__(self):
             super().__init__(ttl=timedelta(minutes=4))
 
-        async def set(self, user: UserDB | list, value: RAfkNamedTuple, ttl: float = None) -> None:
+        async def set(self, user: UserDB | list, value: RAfkNamedTuple, ttl: float | None = None) -> None:
             user_id, user_name = (user[0], user[1]) if isinstance(user, list) else (user.id, user.name)
             await self._set_map(key=str(user_id), value=value, ttl=ttl, name=user_name, user_id=user_id)
 
@@ -189,7 +189,7 @@ class MemCache:
         async def get(self, key: str) -> UserTmi:
             return await self._get(key=key)
 
-        async def cached_or_get(self, ctx: Context, name: str = None, user_id: str | int = None):
+        async def cached_or_get(self, ctx: Context, name: str | None = None, user_id: str | int | None = None):
             cached = await self.get(key=name)
             if cached:
                 return cached

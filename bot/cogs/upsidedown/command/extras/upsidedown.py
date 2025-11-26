@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
+import string
+import unicodedata
 
 __all__ = ["transform"]
 __version__ = "0.4"
@@ -31,13 +30,10 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import string
-import unicodedata
-
 FLIP_RANGES = [
     (string.ascii_lowercase, "ɐqɔpǝɟƃɥᴉɾʞꞁɯuodbɹsʇnʌʍxʎz"),  # NOQA
     (string.ascii_uppercase, "ⱯᗺƆᗡƎᖵ⅁HIᒋ⋊ꞀWNOԀꝹᴚS⊥∩ɅMX⅄Z"),  # NOQA
-    (string.digits, "0ІᘔƐᔭ59Ɫ86"),
+    (string.digits, "0ІᘔƐᔭ59Ɫ86"),  # NOQA: RUF001
     (string.punctuation, "¡„#$%⅋,)(*+'-˙/:؛>=<¿@]\\[ᵥ‾`}|{~"),
 ]
 UNICODE_COMBINING_DIACRITICS = {
@@ -59,18 +55,17 @@ TRANSLITERATIONS = {"ß": "ss"}
 
 _CHARLOOKUP = {}
 for chars, flipped in FLIP_RANGES:
-    _CHARLOOKUP |= zip(chars, flipped)
+    _CHARLOOKUP |= zip(chars, flipped, strict=False)
 
 for char in _CHARLOOKUP.copy():
-    assert (
-        _CHARLOOKUP[char] not in _CHARLOOKUP or _CHARLOOKUP[_CHARLOOKUP[char]] == char
-    ), f"{_CHARLOOKUP[char]} has ambiguous mapping"
+    assert _CHARLOOKUP[char] not in _CHARLOOKUP or _CHARLOOKUP[_CHARLOOKUP[char]] == char, (
+        f"{_CHARLOOKUP[char]} has ambiguous mapping"
+    )
     _CHARLOOKUP[_CHARLOOKUP[char]] = char
 
-_DIACRITICSLOOKUP = (
-    dict([(UNICODE_COMBINING_DIACRITICS[char], char) for char in UNICODE_COMBINING_DIACRITICS])
-    | UNICODE_COMBINING_DIACRITICS
-)
+_DIACRITICSLOOKUP = {
+    UNICODE_COMBINING_DIACRITICS[char]: char for char in UNICODE_COMBINING_DIACRITICS
+} | UNICODE_COMBINING_DIACRITICS
 
 
 def transform(string_: str, transliterations=None):

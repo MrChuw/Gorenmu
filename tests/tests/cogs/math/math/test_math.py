@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -27,8 +25,8 @@ async def base_math(
     mock_context: MockContext,
     lang: str,
     content: str,
-    expected: str = None,
-    re_expected: str = None,
+    expected: str | None = None,
+    re_expected: str | None = None,
     success: bool = False,
 ):
     await mock_context.prepare_context(lang)
@@ -40,13 +38,27 @@ async def base_math(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.simple_formula)
 async def test_simple_formula(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_math(interact, mock_context, lang=lang, content="1 + 1", expected=expected, success=True)
+    await base_math(
+        interact,
+        mock_context,
+        lang=lang,
+        content="1 + 1",
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.not_so_simple_formula)
 async def test_not_so_simple_formula(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_math(interact, mock_context, lang=lang, content="sqrt(523452)", expected=expected, success=True)
+    await base_math(
+        interact,
+        mock_context,
+        lang=lang,
+        content="sqrt(523452)",
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
@@ -66,4 +78,11 @@ async def test_multi_line_ish_formula(interact, mock_context: MockContext, lang:
 @pytest.mark.parametrize("lang, expected", Params.error)
 async def test_error(interact, mock_context: MockContext, lang: str, expected: str):
     async with mock_context.MockBuilder.Errors.send_bug():
-        await base_math(interact, mock_context, lang=lang, content="blablabla", expected=expected, success=False)
+        await base_math(
+            interact,
+            mock_context,
+            lang=lang,
+            content="blablabla",
+            expected=expected,
+            success=False,
+        )

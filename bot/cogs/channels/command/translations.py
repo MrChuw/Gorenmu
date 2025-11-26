@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase
+from bot.ext import Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context, commands
+    from bot.ext import Context
 
 
 class Translations(TranslationBase):
@@ -35,10 +34,13 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once("helper"):
                 self.lang_dict.add_with("en", "Shows the list of channels where the bot is present.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Mostra a lista de canais em que o bot está presente.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Mostra a lista de canais em que o bot está presente.",
+                )
             return self._untangle_str(ctx, "helper")
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once("usage"):
                 self.lang_dict.add_with("en", "To use: {}channels [quantity|ping]")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}channels [quantity|ping]")
@@ -46,9 +48,13 @@ class Translations(TranslationBase):
 
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once("description"):
-                self.lang_dict.add_with("en", "Displays the channels where the bot is connected or their quantity.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Exibe os canais em que o bot está conectado ou a quantidade deles."
+                    "en",
+                    "Displays the channels where the bot is connected or their quantity.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Exibe os canais em que o bot está conectado ou a quantidade deles.",
                 )
             return self._untangle_str(ctx, "description")
 

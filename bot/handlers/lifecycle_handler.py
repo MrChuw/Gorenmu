@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
@@ -10,7 +9,7 @@ import twitchio
 from bot.exceptions import InvalidArgument
 from bot.ext import ChatMessage, Context
 from bot.models import User as UserModel
-from bot.models.User_extras import BotsIgnore
+from bot.models.user_extras import BotsIgnore
 from bot.utils import Check, MarkovProcessor, SessionsCaches
 
 if TYPE_CHECKING:
@@ -168,6 +167,11 @@ class LifecycleHandler:
         if payload and payload.text and prefix_in:
             invoke_by = payload.text.partition(" ")[0][len(prefix) :].lower()
 
-        ctx = Context(message=payload, bot=self.bot, prefix=prefix if prefix_in else None, invoke_by=invoke_by)
+        ctx = Context(
+            message=payload,
+            bot=self.bot,
+            prefix=prefix if prefix_in else None,
+            invoke_by=invoke_by,
+        )
         ctx.get_command()
         return ctx

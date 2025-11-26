@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import inspect
 from collections import defaultdict
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
-
-# from bot.ext.translations.extras import LangDict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from bot.ext import Admonitions, CommandExemples, Context
@@ -16,9 +13,9 @@ class TBase:
     _is_tbase = True
 
     def __init__(self):
-        self.lang_dict: "LangDict" = LangDict()
+        self.lang_dict: LangDict = LangDict()
 
-    def get_language(self, ctx: Context | str) -> Optional[str]:
+    def get_language(self, ctx: Context | str) -> str | None:
         if ctx:
             return ctx.user.language.lower() if ctx.user.language else None
         return ctx if type(ctx) is str and ctx in self.lang_dict else None
@@ -50,7 +47,7 @@ class TBase:
 
     deco_helper: str = deco_helper
 
-    def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+    def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
         return self._not_implemented(ctx, namespace="not_implemented")
 
     deco_usage: str = deco_usage
@@ -82,8 +79,8 @@ class ClassBase:
 
 class LangDict:
     def __init__(self):
-        self._namespaces: Dict[str, Dict[str, str]] = defaultdict(dict)
-        self._current_namespace: Optional[str] = None
+        self._namespaces: dict[str, dict[str, str]] = defaultdict(dict)
+        self._current_namespace: str | None = None
         self._initialized: dict[str, bool] = defaultdict(bool)
         self._skip_mode = False
 
@@ -113,7 +110,7 @@ class LangDict:
                 self._current_namespace = prev
             self._skip_mode = False
 
-    def add(self, lang: Union[str, List[str]], value: str, namespace: str):
+    def add(self, lang: str | list[str], value: str, namespace: str):
         if isinstance(lang, str):
             lang = [lang]
         for k in lang:
@@ -126,14 +123,14 @@ class LangDict:
             return
         self.add(lang, value, self._current_namespace)
 
-    def get(self, namespace_or_lang: str, namespace: str = None):
+    def get(self, namespace_or_lang: str, namespace: str | None = None):
         if namespace is None and namespace_or_lang in self._namespaces:
             return dict(self._namespaces[namespace_or_lang])
         if namespace is not None:
             return self._namespaces.get(namespace.lower(), {}).get(namespace_or_lang.lower())
         return None
 
-    def get_namespace(self, namespace: str) -> Dict[str, str]:
+    def get_namespace(self, namespace: str) -> dict[str, str]:
         return dict(self._namespaces[namespace])
 
     def get_lang(self, lang: str, namespace: str, fallback: str = "en") -> str | CommandExemples | Admonitions | None:

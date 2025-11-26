@@ -1,5 +1,5 @@
 import time
-from random import choice, randint, shuffle
+from random import choice, randint
 
 from aiohttp_client_cache import CachedSession
 from bs4 import BeautifulSoup
@@ -89,7 +89,12 @@ class Paheal(object):
         return True
 
     async def random(
-        self, query: str, block: str = "", limit: int = 100, page: int = randint(0, 300), gacha: bool = False
+        self,
+        query: str,
+        block: str = "",
+        limit: int = 100,
+        page: int = randint(0, 300),
+        gacha: bool = False,
     ):
         if self.amount > 1:
             images = []

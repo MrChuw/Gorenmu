@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Gift someone your daily cookie.",
@@ -21,17 +21,22 @@ class Params:
         ),
     ]
 
-    bot_nick = [
+    bot_nick: ClassVar[list] = [
         pytest.param("en", "I don't want your cookie.", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "Não quero a seu cookie.", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    yourself = [
+    yourself: ClassVar[list] = [
         pytest.param("en", "Did you try gifting it yourself, wow!", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "você tentou presentear você mesmo, uau!", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param(
+            "pt_BR",
+            "você tentou presentear você mesmo, uau!",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    unknown_user = [
+    unknown_user: ClassVar[list] = [
         pytest.param(
             "en",
             "user @random_user has not yet been registered and has not used any cookie commands.",
@@ -46,9 +51,12 @@ class Params:
         ),
     ]
 
-    other_user_no_cookie = [
+    other_user_no_cookie: ClassVar[list] = [
         pytest.param(
-            "en", "User @channelname has not yet used any command related to cookies.", marks=pytest.mark.en, id="en"
+            "en",
+            "User @channelname has not yet used any command related to cookies.",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -58,12 +66,17 @@ class Params:
         ),
     ]
 
-    other_user_zero = [
+    other_user_zero: ClassVar[list] = [
         pytest.param("en", ["You didn't gift anything, wow!"], marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", ["Você não deu nada de presente, uau!"], marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param(
+            "pt_BR",
+            ["Você não deu nada de presente, uau!"],
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    other_user_negative_amount = [
+    other_user_negative_amount: ClassVar[list] = [
         pytest.param(
             "en",
             ["You can't give negative cookies unless you're a cookie thief... and you're not, right?"],
@@ -78,10 +91,10 @@ class Params:
         ),
     ]
 
-    cooldown_no_stock = [
+    cooldown_no_stock: ClassVar[list] = [
         pytest.param(
             "en",
-            ["You don’t have any cookies 🍪 stored or waiting to be redeemed. The next one arrives in 59"],
+            ["You don`t have any cookies 🍪 stored or waiting to be redeemed. The next one arrives in 59"],
             marks=pytest.mark.en,
             id="en",
         ),
@@ -93,27 +106,57 @@ class Params:
         ),
     ]
 
-    other_user_all = [
-        pytest.param("en", ["you gifted @channelname with 12 cookie 🎁"], marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", ["você presenteou @channelname com 12 cookie 🎁"], marks=pytest.mark.pt_BR, id="pt_BR"),
+    other_user_all: ClassVar[list] = [
+        pytest.param(
+            "en",
+            ["you gifted @channelname with 12 cookie 🎁"],
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            ["você presenteou @channelname com 12 cookie 🎁"],
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    other_user_no_amount = [
+    other_user_no_amount: ClassVar[list] = [
         pytest.param("en", ["you gave @channelname a cookie 🎁"], marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", ["você deu um cookie para @channelname 🎁"], marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param(
+            "pt_BR",
+            ["você deu um cookie para @channelname 🎁"],
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    other_user_exact_amount = [
-        pytest.param("en", ["you gifted @channelname with 10 cookie 🎁"], marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", ["você presenteou @channelname com 10 cookie 🎁"], marks=pytest.mark.pt_BR, id="pt_BR"),
+    other_user_exact_amount: ClassVar[list] = [
+        pytest.param(
+            "en",
+            ["you gifted @channelname with 10 cookie 🎁"],
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            ["você presenteou @channelname com 10 cookie 🎁"],
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    other_user = [
+    other_user: ClassVar[list] = [
         pytest.param("en", ["you gave @channelname a cookie 🎁"], marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", ["você deu um cookie para @channelname 🎁"], marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param(
+            "pt_BR",
+            ["você deu um cookie para @channelname 🎁"],
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    other_user_no_stock_cooldown = [
+    other_user_no_stock_cooldown: ClassVar[list] = [
         pytest.param(
             "en",
             [

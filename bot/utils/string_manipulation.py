@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import json
@@ -8,13 +7,12 @@ import re
 import string
 from datetime import datetime
 from string import ascii_letters, digits
-from typing import List, Optional, Tuple, Union
 
 from emoji import demojize
 from unidecode import unidecode
 from urlextract import URLExtract
 
-from bot.exceptions import InvalidUsername
+from bot.exceptions import InvalidUsernameError
 from bot.utils.singleton import Singleton
 
 letters_and_digits = ascii_letters + digits
@@ -37,7 +35,7 @@ class StringTools(metaclass=Singleton):
         return target.isoformat()
 
     @staticmethod
-    def dict2str(target: Optional[dict]) -> str:
+    def dict2str(target: dict | None) -> str:
         try:
             return json.dumps(target, ensure_ascii=False)
         except TypeError:
@@ -52,12 +50,12 @@ class StringTools(metaclass=Singleton):
 
     @staticmethod
     def txt2randomline(target: str) -> str:
-        with open(target, "r", encoding="utf-8") as f:
+        with open(target, encoding="utf-8") as f:
             lines = f.read().splitlines()
         return random.choice(lines)
 
     @staticmethod
-    def number2str(target: Union[int, float]) -> Optional[str]:
+    def number2str(target: int | float) -> str | None:
         if isinstance(target, int):
             return f"{target:,d}".replace(",", ".")
         if isinstance(target, float):
@@ -73,7 +71,7 @@ class StringTools(metaclass=Singleton):
         return datetime.fromisoformat(target)
 
     @staticmethod
-    def str2dict(target: Optional[str]) -> dict:
+    def str2dict(target: str | None) -> dict:
         try:
             return json.loads(target)
         except json.JSONDecodeError as e:
@@ -81,7 +79,7 @@ class StringTools(metaclass=Singleton):
             return {}
 
     @staticmethod
-    def str2float(target: Optional[str]) -> Optional[float]:
+    def str2float(target: str | None) -> float | None:
         try:
             return float(target.replace(",", "."))
         except (ValueError, TypeError):
@@ -91,7 +89,7 @@ class StringTools(metaclass=Singleton):
             return None
 
     @staticmethod
-    def str2int(target: Optional[str]) -> Optional[int]:
+    def str2int(target: str | None) -> int | None:
         try:
             return int(target)
         except (ValueError, TypeError):
@@ -101,13 +99,13 @@ class StringTools(metaclass=Singleton):
             return None
 
     @staticmethod
-    def str2hex(target: Optional[str]) -> Optional[str]:
+    def str2hex(target: str | None) -> str | None:
         if not target:
             return None
         return match[0] if (match := re.match(r"#[0-9A-Fa-f]{6}$", target)) else None
 
     @staticmethod
-    def str2name(target: str, default: Optional[str] = None) -> Optional[str]:
+    def str2name(target: str, default: str | None = None) -> str | None:
         if not target:
             return default or None
         if target[0] == "@":
@@ -116,10 +114,10 @@ class StringTools(metaclass=Singleton):
             target = target[:-1]
         if target.replace("_", "").isalnum() and unidecode(target) == target:
             return target.lower()
-        raise InvalidUsername
+        raise InvalidUsernameError
 
     @staticmethod
-    def str2name_or(target: str) -> Optional[str]:
+    def str2name_or(target: str) -> str | None:
         if target[0] == "@":
             target = target[1:]
         if target[-1] == ",":
@@ -129,7 +127,7 @@ class StringTools(metaclass=Singleton):
         return target
 
     @staticmethod
-    def tpl2str(target: Optional[tuple]) -> str:
+    def tpl2str(target: tuple | None) -> str:
         try:
             return json.dumps(target)
         except Exception as e:
@@ -171,12 +169,12 @@ class StringTools(metaclass=Singleton):
         return "".join(x for x in value if x in letters_and_digits).encode().hex()
 
     @staticmethod
-    def json_to_dict(filename: str) -> Union[dict, list]:
-        with open(filename, "r", encoding="utf-8") as f:
+    def json_to_dict(filename: str) -> dict | list:
+        with open(filename, encoding="utf-8") as f:
             return json.load(f)
 
     @staticmethod
-    def str2url(target: str) -> Optional[str]:
+    def str2url(target: str) -> str | None:
         return re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", target)
 
     @staticmethod
@@ -189,7 +187,7 @@ class StringTools(metaclass=Singleton):
         return text, option
 
     @staticmethod
-    def extract_and_remove_field(text: str, field: str, default: str | float = None) -> tuple[str, str | None]:
+    def extract_and_remove_field(text: str, field: str, default: str | float | None = None) -> tuple[str, str | None]:
         pattern = rf'{field}:(?:"(.*?)"|(\S+))'
         if match := re.search(pattern, text):
             value = match[1] or match[2]
@@ -198,7 +196,7 @@ class StringTools(metaclass=Singleton):
         return text, default
 
     @staticmethod
-    def extract_and_remove_all_fields(text: str, field: str, default: List[str] = None) -> Tuple[str, List[str]]:
+    def extract_and_remove_all_fields(text: str, field: str, default: list[str] | None = None) -> tuple[str, list[str]]:
         if default is None:
             default = []
         pattern = rf'{field}:(?:"(.*?)"|(\S+))'

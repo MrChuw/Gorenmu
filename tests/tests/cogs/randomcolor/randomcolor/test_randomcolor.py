@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -42,7 +40,13 @@ async def base_randomcolor(
 @pytest.mark.parametrize("lang, expected", Params.no_tipo)
 async def test_no_tipo(interact, mock_context: MockContext, lang: str, expected: str):
     await base_randomcolor(
-        interact, mock_context, lang=lang, content="", expected=expected, return_value="Medium Purple", success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="",
+        expected=expected,
+        return_value="Medium Purple",
+        success=True,
     )
 
 
@@ -64,7 +68,13 @@ async def test_hex_tipo(interact, mock_context: MockContext, lang: str, expected
 @pytest.mark.parametrize("lang, expected", Params.hex_name_api_down)
 async def test_hex_name_api_down(interact, mock_context: MockContext, lang: str, expected: str):
     await base_randomcolor(
-        interact, mock_context, lang=lang, content="", expected=expected, return_value=None, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="",
+        expected=expected,
+        return_value=None,
+        success=True,
     )
 
 
@@ -72,5 +82,11 @@ async def test_hex_name_api_down(interact, mock_context: MockContext, lang: str,
 @pytest.mark.parametrize("lang, expected", Params.rgb_name_api_down)
 async def test_rgb_name_api_down(interact, mock_context: MockContext, lang: str, expected: str):
     await base_randomcolor(
-        interact, mock_context, lang=lang, content="type:rgb", expected=expected, return_value=None, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="type:rgb",
+        expected=expected,
+        return_value=None,
+        success=True,
     )

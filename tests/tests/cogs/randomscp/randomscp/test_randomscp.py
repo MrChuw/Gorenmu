@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 import pytest
 import pytest_asyncio
 
@@ -43,7 +40,7 @@ async def test_timeout(interact, mock_context: MockContext, lang: str, expected:
     async with (
         mock_context.MockBuilder.Commands.get_scp(status=404)
         .Asyncio.sleep()
-        .Asyncio.get_event_loop_time([0] + list(range(1, 35)))
+        .Asyncio.get_event_loop_time([0, *list(range(1, 35))])
     ):
         await base_randomscp(interact, mock_context, expected=expected, success=False)
 

@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Union
 
 import pytz
 from tortoise import Model, fields
 
-CharFieldStr = Union[str, fields.CharField]
-IntFieldInt = Union[int, fields.IntField]
-DatetimeTzField = Union[datetime, fields.DatetimeField]
+CharFieldStr = str | fields.CharField
+IntFieldInt = int | fields.IntField
+DatetimeTzField = datetime | fields.DatetimeField
 
 
 class Base(Model):
@@ -46,7 +45,7 @@ class ContentMixin:
     content: CharFieldStr = fields.CharField(max_length=1200, null=True, description="Twitch message content")
 
 
-CharFieldIntStr = Union[int, fields.CharField]
-TextFieldStr = Union[str, fields.TextField]
-BoolFieldBool = Union[bool, fields.BooleanField]
-FloatFieldFloat = Union[float, fields.FloatField]
+CharFieldIntStr = int | fields.CharField
+TextFieldStr = str | fields.TextField
+BoolFieldBool = bool | fields.BooleanField
+FloatFieldFloat = float | fields.FloatField

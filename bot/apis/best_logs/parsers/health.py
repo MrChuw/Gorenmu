@@ -1,19 +1,13 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import Any, TypeVar
 
 from .shared import (
-    from_bool,
-    from_datetime,
     from_dict,
     from_float,
     from_int,
-    from_list,
     from_none,
     from_str,
     from_union,
-    is_type,
     to_class,
     to_float,
 )
@@ -23,8 +17,8 @@ T = TypeVar("T")
 
 @dataclass
 class Elapsed:
-    ms: Optional[float] = None
-    s: Optional[int] = None
+    ms: float | None = None
+    s: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Elapsed":
@@ -44,12 +38,12 @@ class Elapsed:
 
 @dataclass
 class Instance:
-    maintainer: Optional[str] = None
+    maintainer: str | None = None
     message: None = None
-    country: Optional[str] = None
-    city: Optional[str] = None
-    flag: Optional[str] = None
-    url: Optional[str] = None
+    country: str | None = None
+    city: str | None = None
+    flag: str | None = None
+    url: str | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Instance":
@@ -81,8 +75,8 @@ class Instance:
 
 @dataclass
 class InstancesStats:
-    count: Optional[int] = None
-    down: Optional[int] = None
+    count: int | None = None
+    down: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "InstancesStats":
@@ -102,11 +96,11 @@ class InstancesStats:
 
 @dataclass
 class Health:
-    elapsed: Optional[Elapsed] = None
-    instances_stats: Optional[InstancesStats] = None
-    instances: Optional[Dict[str, int]] = None
-    channels: Optional[int] = None
-    instance: Optional[Instance] = None
+    elapsed: Elapsed | None = None
+    instances_stats: InstancesStats | None = None
+    instances: dict[str, int] | None = None
+    channels: int | None = None
+    instance: Instance | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Health":

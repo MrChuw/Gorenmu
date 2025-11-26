@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
-
-# -*- coding: utf-8 -*-
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Used to see the last time a user was online.",
@@ -23,18 +21,33 @@ class Params:
         ),
     ]
 
-    bot = [
+    bot: ClassVar[list] = [
         pytest.param("en", "I am everywhere, at every moment...", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "eu estou em todos os lugares, a todo momento...", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param(
+            "pt_BR",
+            "eu estou em todos os lugares, a todo momento...",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    author = [
+    author: ClassVar[list] = [
         pytest.param("en", "you were last seen here ☝️", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "você foi visto pela última vez aqui ☝️", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param(
+            "pt_BR",
+            "você foi visto pela última vez aqui ☝️",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    not_found = [
-        pytest.param("en", "I couldn't find any user named @nonexistent_user.", marks=pytest.mark.en, id="en"),
+    not_found: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "I couldn't find any user named @nonexistent_user.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
         pytest.param(
             "pt_BR",
             "Não consegui encontrar nenhum usuário chamado @nonexistent_user.",
@@ -43,14 +56,22 @@ class Params:
         ),
     ]
 
-    not_authorized = [
-        pytest.param("en", r"@no_mention_user️ was last seen \d+\ minutes ago", marks=pytest.mark.en, id="en"),
+    not_authorized: ClassVar[list] = [
         pytest.param(
-            "pt_BR", r"@no_mention_user️ foi visto ultima vez há \d+\ minutos", marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            r"@no_mention_user️ was last seen \d+\ minutes ago",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            r"@no_mention_user️ foi visto ultima vez há \d+\ minutos",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]
 
-    last_seen = [
+    last_seen: ClassVar[list] = [
         pytest.param(
             "en",
             r"@status_user_50 was last seen in @channelname: Some Text \(0\.\d+ seconds\)",

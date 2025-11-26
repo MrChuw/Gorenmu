@@ -1,13 +1,7 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, List, Optional, TypeVar
+from typing import Any, TypeVar
 
 from .shared import (
-    from_bool,
-    from_datetime,
-    from_dict,
-    from_float,
     from_int,
     from_list,
     from_none,
@@ -15,7 +9,6 @@ from .shared import (
     from_union,
     is_type,
     to_class,
-    to_float,
 )
 
 T = TypeVar("T")
@@ -23,8 +16,8 @@ T = TypeVar("T")
 
 @dataclass
 class Channel:
-    name: Optional[str] = None
-    user_id: Optional[int] = None
+    name: str | None = None
+    user_id: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Channel":
@@ -50,8 +43,8 @@ class Channel:
 
 @dataclass
 class InstancesStats:
-    count: Optional[int] = None
-    down: Optional[int] = None
+    count: int | None = None
+    down: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "InstancesStats":
@@ -71,8 +64,8 @@ class InstancesStats:
 
 @dataclass
 class ChannelsZonian:
-    instances_stats: Optional[InstancesStats] = None
-    channels: Optional[List[Channel]] = None
+    instances_stats: InstancesStats | None = None
+    channels: list[Channel] | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "ChannelsZonian":
@@ -89,7 +82,8 @@ class ChannelsZonian:
             )
         if self.channels is not None:
             result["channels"] = from_union(
-                [lambda x: from_list(lambda x: to_class(Channel, x), x), from_none], self.channels
+                [lambda x: from_list(lambda x: to_class(Channel, x), x), from_none],
+                self.channels,
             )
         return result
 

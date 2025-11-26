@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -20,7 +18,9 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
     await mock_context.prepare_context(lang)
     mock_context.Asserter.assert_string(interact.translations.Preview.deco_usage(mock_context, "+"), usage, strict=True)
     mock_context.Asserter.assert_string(
-        interact.translations.Preview.deco_helper(mock_context, "+"), helper, strict=True
+        interact.translations.Preview.deco_helper(mock_context, "+"),
+        helper,
+        strict=True,
     )
 
 
@@ -29,8 +29,8 @@ async def base_preview(
     mock_context: MockContext,
     lang: str,
     content: str,
-    expected: str = None,
-    re_expected: str = None,
+    expected: str | None = None,
+    re_expected: str | None = None,
     success: bool = False,
 ):
     await mock_context.prepare_context(lang)
@@ -48,7 +48,14 @@ async def test_offline(interact, mock_context: MockContext, lang: str, expected:
         .Bot.fetch_user()
         .Commands.get_preview()
     ):
-        await base_preview(interact, mock_context, lang=lang, content="channelname", expected=expected, success=True)
+        await base_preview(
+            interact,
+            mock_context,
+            lang=lang,
+            content="channelname",
+            expected=expected,
+            success=True,
+        )
 
 
 @pytest.mark.asyncio
@@ -60,4 +67,11 @@ async def test_online(interact, mock_context: MockContext, lang: str, expected: 
         .Bot.fetch_user()
         .Commands.get_preview("link")
     ):
-        await base_preview(interact, mock_context, lang=lang, content="channelname", re_expected=expected, success=True)
+        await base_preview(
+            interact,
+            mock_context,
+            lang=lang,
+            content="channelname",
+            re_expected=expected,
+            success=True,
+        )

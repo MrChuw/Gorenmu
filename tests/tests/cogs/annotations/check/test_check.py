@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 import pytest
 import pytest_asyncio
 
@@ -25,7 +22,13 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_annotations_check(
-    interact, mock_context: MockContext, lang: str, content: str, expected: str, amount: int = 0, success: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    content: str,
+    expected: str,
+    amount: int = 0,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     for value in range(amount):
@@ -40,7 +43,14 @@ async def base_annotations_check(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.check_wrong_id)
 async def test_check_wrong_id(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_annotations_check(interact, mock_context, lang=lang, content="title", expected=expected, success=False)
+    await base_annotations_check(
+        interact,
+        mock_context,
+        lang=lang,
+        content="title",
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
@@ -53,7 +63,13 @@ async def test_check_no_content_no_annotations(interact, mock_context: MockConte
 @pytest.mark.parametrize("lang, expected", Params.check_one_annotation)
 async def test_check_one_annotation(interact, mock_context: MockContext, lang: str, expected: str):
     await base_annotations_check(
-        interact, mock_context, lang=lang, content="", expected=expected, amount=1, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="",
+        expected=expected,
+        amount=1,
+        success=True,
     )
 
 
@@ -61,7 +77,13 @@ async def test_check_one_annotation(interact, mock_context: MockContext, lang: s
 @pytest.mark.parametrize("lang, expected", Params.check_two_annotation)
 async def test_check_two_annotation(interact, mock_context: MockContext, lang: str, expected: str):
     await base_annotations_check(
-        interact, mock_context, lang=lang, content="", expected=expected, amount=2, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="",
+        expected=expected,
+        amount=2,
+        success=True,
     )
 
 
@@ -69,7 +91,13 @@ async def test_check_two_annotation(interact, mock_context: MockContext, lang: s
 @pytest.mark.parametrize("lang, expected", Params.check_annotation_id_one)
 async def test_check_annotation_id_one(interact, mock_context: MockContext, lang: str, expected: str):
     await base_annotations_check(
-        interact, mock_context, lang=lang, content="1", expected=expected, amount=2, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="1",
+        expected=expected,
+        amount=2,
+        success=True,
     )
 
 
@@ -77,7 +105,13 @@ async def test_check_annotation_id_one(interact, mock_context: MockContext, lang
 @pytest.mark.parametrize("lang, expected", Params.check_annotation_id_two)
 async def test_check_annotation_id_two(interact, mock_context: MockContext, lang: str, expected: str):
     await base_annotations_check(
-        interact, mock_context, lang=lang, content="2", expected=expected, amount=2, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="2",
+        expected=expected,
+        amount=2,
+        success=True,
     )
 
 
@@ -85,5 +119,11 @@ async def test_check_annotation_id_two(interact, mock_context: MockContext, lang
 @pytest.mark.parametrize("lang, expected", Params.check_annotation_wrong_id)
 async def test_check_annotation_wrong_id(interact, mock_context: MockContext, lang: str, expected: str):
     await base_annotations_check(
-        interact, mock_context, lang=lang, content="3", expected=expected, amount=2, success=False
+        interact,
+        mock_context,
+        lang=lang,
+        content="3",
+        expected=expected,
+        amount=2,
+        success=False,
     )

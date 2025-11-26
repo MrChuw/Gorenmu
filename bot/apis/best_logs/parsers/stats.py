@@ -1,19 +1,12 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, List, Optional, TypeVar
+from typing import Any, TypeVar
 
 from .shared import (
-    from_bool,
-    from_datetime,
-    from_dict,
     from_int,
-    from_list,
     from_none,
     from_str,
     from_union,
     is_type,
-    to_class,
 )
 
 T = TypeVar("T")
@@ -21,9 +14,9 @@ T = TypeVar("T")
 
 @dataclass
 class Stats:
-    user_id: Optional[int] = None
-    user_login: Optional[str] = None
-    message_count: Optional[int] = None
+    user_id: int | None = None
+    user_login: str | None = None
+    message_count: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Stats":

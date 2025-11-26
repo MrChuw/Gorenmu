@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -64,13 +63,17 @@ class Translations(TranslationBase):
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Shows information about a channel's current or last broadcast.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Mostra informações sobre a live atual ou a última de um canal."
+                    "en",
+                    "Shows information about a channel's current or last broadcast.",
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Mostra informações sobre a live atual ou a última de um canal.",
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}live (channel or id)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}live (canal ou id)")

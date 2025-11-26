@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import datetime
@@ -76,7 +75,15 @@ class LiveCmd(commands.CustomComponent):
         views = translations.views(ctx, stream.viewers_count) if hasattr(stream, "viewers_count") else ""
         game = translations.playing(ctx, stream.game.display_name) if hasattr(stream, "game") else ""
         response = " || ".join(
-            part for part in [title, broadcast_time, views, game, f"{channel_link} {vod_url}"] if part
+            part
+            for part in [
+                title,
+                broadcast_time,
+                views,
+                game,
+                f"{channel_link} {vod_url}",
+            ]
+            if part
         )
         return translations.response(ctx, response)
 

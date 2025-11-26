@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from aiohttp import FormData
 from aiohttp_client_cache import CachedSession
 from loguru import logger
 
@@ -56,7 +54,12 @@ class UploadThings(metaclass=Singleton):
             return None
         tags += ["Gorenmu"]
         shlink_url = self.bot.config.ApisConfig.shlink_url
-        payload = {"longUrl": url, "forwardQuery": "true", "findIfExists": "true", "tags": tags}
+        payload = {
+            "longUrl": url,
+            "forwardQuery": "true",
+            "findIfExists": "true",
+            "tags": tags,
+        }
         headers = {
             "accept": "application/json",
             "Content-Type": "application/json",
@@ -72,7 +75,13 @@ class UploadThings(metaclass=Singleton):
         return None
 
     async def upload_file(
-        self, data: bytes, mime_type: str, filename: str, session: CachedSession, url: str, api_key: dict[str, str]
+        self,
+        data: bytes,
+        mime_type: str,
+        filename: str,
+        session: CachedSession,
+        url: str,
+        api_key: dict[str, str],
     ) -> str | None:
         boundary = "faa88938ece74999ac092a3e782951fb"
         url = url
@@ -82,9 +91,9 @@ class UploadThings(metaclass=Singleton):
                 f"--{boundary}\r\n"
                 f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
                 f"Content-Type: {mime_type}\r\n\r\n"
-            ).encode("utf-8")
+            ).encode()
             + data
-            + f"\r\n--{boundary}--\r\n".encode("utf-8")
+            + f"\r\n--{boundary}--\r\n".encode()
         )
 
         data = await self._json_post(session, url, data=body, headers=headers)

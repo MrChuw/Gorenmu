@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -31,7 +30,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Repete a mensagem que você enviar.")
             return self._untangle_str(ctx, "helper")
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once("usage"):
                 self.lang_dict.add_with("en", "{}echo (message)")
                 self.lang_dict.add_with(["pt_br", "pt"], "{}echo (mensagem)")
@@ -40,7 +39,10 @@ class Translations(TranslationBase):
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once("description"):
                 self.lang_dict.add_with("en", "Sends back the same message provided by the user.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Envia de volta a mesma mensagem fornecida pelo usuário.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Envia de volta a mesma mensagem fornecida pelo usuário.",
+                )
             return self._untangle_str(ctx, "description")
 
         def deco_admonitions(self, ctx: Context, *args, **kwargs) -> Admonitions:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -38,9 +37,12 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Envia uma cor aleatória.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To use: {}random_color or add type:hex / type:rgb to specify the type.")
+                self.lang_dict.add_with(
+                    "en",
+                    "To use: {}random_color or add type:hex / type:rgb to specify the type.",
+                )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
                     "Para usar: {}random_color ou adicione type:hex / type:rgb para especificar o tipo.",
@@ -64,10 +66,12 @@ class Translations(TranslationBase):
         def deco_commands(self, ctx: Context, *args, **kwargs) -> CommandExemples:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", CommandExemples([{"response": "#<HEX> <Color Name> <Link to the color image>"}])
+                    "en",
+                    CommandExemples([{"response": "#<HEX> <Color Name> <Link to the color image>"}]),
                 )
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], CommandExemples([{"response": "#<HEX> <Nome da cor> <Link para a imagem da cor>"}])
+                    ["pt_br", "pt"],
+                    CommandExemples([{"response": "#<HEX> <Nome da cor> <Link para a imagem da cor>"}]),
                 )
             return self._untangle_commands(ctx, self._cname)
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # !/usr/bin/env python3
 import sys
 from pathlib import Path
@@ -9,7 +8,7 @@ def create_file_from_template(template_path: Path, output_path: Path, command_na
         print(f"Template not found: {template_path}")
         return
 
-    with open(template_path, "r", encoding="utf-8") as f:
+    with open(template_path, encoding="utf-8") as f:
         content = f.read()
 
     content = content.replace("{command_name}", command_name).replace("{command_title}", command_title)
@@ -56,7 +55,10 @@ def main() -> None:
     files_to_create = [
         (templates_dir / "command_template", bot_dir / f"{command_name}.py"),
         (templates_dir / "translations_template", bot_dir / "translations.py"),
-        (templates_dir / "test_command_template", tests_dir / f"test_{command_name}.py"),
+        (
+            templates_dir / "test_command_template",
+            tests_dir / f"test_{command_name}.py",
+        ),
         (templates_dir / "test_params_template", tests_dir / "test_params.py"),
     ]
     for template_path, output_path in files_to_create:

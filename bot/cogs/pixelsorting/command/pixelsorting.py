@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
@@ -6,7 +5,7 @@ import colorsys
 import itertools
 import random
 from io import BytesIO
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING
 
 from aiohttp_client_cache import CachedSession
 from PIL import Image, ImageFilter, ImageOps
@@ -99,7 +98,7 @@ async def setup(bot: Gorenmu) -> None:
 async def teardown(bot: Gorenmu) -> None: ...  # NOQA
 
 
-async def request_images(urls: str, session: CachedSession) -> List[ImageFile] | str:
+async def request_images(urls: str, session: CachedSession) -> list[ImageFile] | str:
     images = []
     max_width = 1920
     max_height = 1080
@@ -117,14 +116,14 @@ async def request_images(urls: str, session: CachedSession) -> List[ImageFile] |
 
 
 async def manipulate(
-    images: List[ImageFile],
-    tipos: List[str],
+    images: list[ImageFile],
+    tipos: list[str],
     intensity: int,
     direction: str = "global",
-    crop: list[str] = None,
-    rand: str = None,
-    mask_mode: str = None,  # 'none' | 'external' | 'internal'
-    mask_image: Optional[Image.Image] = None,
+    crop: list[str] | None = None,
+    rand: str | None = None,
+    mask_mode: str | None = None,  # 'none' | 'external' | 'internal'
+    mask_image: Image.Image | None = None,
     mask_threshold: int = 128,
 ) -> BytesIO | Response:
     positions = None
@@ -171,7 +170,7 @@ async def manipulate(
             await asyncio.sleep(0)
     if crop:
         reconstructed = [Image.new(img.mode, img.size) for img in images]
-        for tile, (img_idx, x, y) in zip(manipulated, positions):
+        for tile, (img_idx, x, y) in zip(manipulated, positions, strict=False):
             reconstructed[img_idx].paste(tile, (x, y))
         reconstructed[0].save(buffer, format="PNG")
         buffer.seek(0)
@@ -182,9 +181,9 @@ async def manipulate(
     return buffer
 
 
-async def cut(images: List[ImageFile], size: str) -> Tuple[List[ImageFile], List[Tuple[int, int, int]]]:
-    tiles: List[ImageFile] = []
-    positions: List[Tuple[int, int, int]] = []
+async def cut(images: list[ImageFile], size: str) -> tuple[list[ImageFile], list[tuple[int, int, int]]]:
+    tiles: list[ImageFile] = []
+    positions: list[tuple[int, int, int]] = []
 
     for img_idx, image in enumerate(images):
         w_step, h_step = size.split("px:")
@@ -204,15 +203,15 @@ async def cut(images: List[ImageFile], size: str) -> Tuple[List[ImageFile], List
 
 
 async def sorting(
-    images: List[ImageFile],
+    images: list[ImageFile],
     mode: str,
     rand: bool,
     direction: str,
     intensity: int,
     mask_mode: str | None,
-    mask_image: Optional[Image],
+    mask_image: Image | None,
     mask_threshold: int,
-) -> List[ImageFile]:
+) -> list[ImageFile]:
     result = []
     for image in images:
         img_rgba = image.convert("RGBA")
@@ -251,10 +250,10 @@ async def sorting(
             if direction == "global":
                 idxs = list(range(w * h))  # NOQA
                 to_sort = [(flat_pixels[i], i) for i in idxs if should_sort(i)]
-                pixels_only, positions = zip(*to_sort) if to_sort else ([], [])
+                pixels_only, positions = zip(*to_sort, strict=False) if to_sort else ([], [])
                 sorted_pixels = await quick_sort(list(pixels_only), mode) if pixels_only else []
                 new_flat = flat_pixels[:]
-                for pos, px in zip(positions, sorted_pixels):
+                for pos, px in zip(positions, sorted_pixels, strict=False):
                     new_flat[pos] = px
                 sorted_img.putdata(new_flat)
 
@@ -266,7 +265,7 @@ async def sorting(
                     base = row_i * w
 
                     to_sort = [(row[j], j) for j in range(w) if should_sort(base + j)]
-                    pixels_only, rel_positions = zip(*to_sort) if to_sort else ([], ())
+                    pixels_only, rel_positions = zip(*to_sort, strict=False) if to_sort else ([], ())
 
                     async def sort_row(pixels, rel_pos, original_row):
                         await asyncio.sleep(0)
@@ -283,13 +282,13 @@ async def sorting(
 
             else:  # vertical
                 rows = [flat_pixels[i * w : (i + 1) * w] for i in range(h)]
-                cols = list(zip(*rows))
+                cols = list(zip(*rows, strict=False))
                 tasks = []
                 for col_j, col in enumerate(cols):
                     await asyncio.sleep(0)
                     idxs = [r * w + col_j for r in range(h)]  # NOQA
                     to_sort = [(col[r], idxs[r]) for r in range(h) if should_sort(idxs[r])]
-                    pixels_only, positions = zip(*to_sort) if to_sort else ([], [])
+                    pixels_only, positions = zip(*to_sort, strict=False) if to_sort else ([], [])
 
                     async def sort_col(pixels, pos):  # NOQA
                         await asyncio.sleep(0)
@@ -301,7 +300,7 @@ async def sorting(
 
                     tasks.append(sort_col(pixels_only, positions))
                 sorted_cols = await asyncio.gather(*tasks)
-                transposed = list(zip(*sorted_cols))
+                transposed = list(zip(*sorted_cols, strict=False))
                 sorted_img.putdata([px for row in transposed for px in row])
 
         else:
@@ -358,7 +357,7 @@ async def sorting(
 
             else:  # vertical
                 rows = [flat_pixels[i * w : (i + 1) * w] for i in range(h)]
-                cols = list(zip(*rows))
+                cols = list(zip(*rows, strict=False))
                 tasks = []
 
                 for col_j, col in enumerate(cols):
@@ -386,7 +385,7 @@ async def sorting(
                     tasks.append(process_col())
 
                 sorted_cols = await asyncio.gather(*tasks)
-                transposed = list(zip(*sorted_cols))
+                transposed = list(zip(*sorted_cols, strict=False))
                 sorted_img.putdata([px for row in transposed for px in row])
 
         result.append(sorted_img)
@@ -418,12 +417,12 @@ async def quick_sort(pixels, mode="RGB"):
 
 
 async def random_sort_pixels(
-    images: List[Image.Image],
+    images: list[Image.Image],
     intensity: int,
     mask_image: Image.Image,
     mask_mode: str = "external",  # 'external' | 'internal' | 'none'
-    mask_threshold: int = 128,  # 0–255
-) -> List[Image.Image]:
+    mask_threshold: int = 128,  # 0-255
+) -> list[Image.Image]:
     intensity = max(0, min(intensity, 100))
 
     def build_mask(img, mode):  # NOQA
@@ -477,7 +476,7 @@ async def random_sort_pixels(
                 line_tasks.append(copy_line_nosort())
                 continue
 
-            pixels_only, xs = zip(*to_sort)
+            pixels_only, xs = zip(*to_sort, strict=False)
 
             async def sort_and_rebuild(pixels_list, xs, y=y):  # NOQA
                 sorted_seg = await quick_sort(list(pixels_list), mode="sum")

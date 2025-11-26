@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
@@ -24,14 +23,14 @@ class MockBuilder:
         self.mock_context = mock_context
         self._stack: AsyncExitStack | None = None
         self.patched = types.SimpleNamespace()
-        self.Color: "MockBuilder._Color" = self._Color(self)
-        self.Bot: "MockBuilder._Bot" = self._Bot(self)
-        self.Session: "MockBuilder._Session" = self._Session(self)
-        self.Emotes: "MockBuilder._Emotes" = self._Emotes(self)
-        self.Errors: "MockBuilder._Errors" = self._Errors(self)
-        self.Commands: "MockBuilder._Commands" = self._Commands(self)
-        self.Asyncio: "MockBuilder._Asyncio" = self._Asyncio(self)
-        self.ApiIvrFi: "MockBuilder._ApiIvrFi" = self._ApiIvrFi(self)
+        self.Color: MockBuilder._Color = self._Color(self)
+        self.Bot: MockBuilder._Bot = self._Bot(self)
+        self.Session: MockBuilder._Session = self._Session(self)
+        self.Emotes: MockBuilder._Emotes = self._Emotes(self)
+        self.Errors: MockBuilder._Errors = self._Errors(self)
+        self.Commands: MockBuilder._Commands = self._Commands(self)
+        self.Asyncio: MockBuilder._Asyncio = self._Asyncio(self)
+        self.ApiIvrFi: MockBuilder._ApiIvrFi = self._ApiIvrFi(self)
 
     class _Errors:
         def __init__(self, builder):
@@ -40,15 +39,15 @@ class MockBuilder:
                 builder.mock_context.bot if hasattr(builder.mock_context, "bot") else builder.mock_context
             )
 
-        def import_module(self, side_effect: Any = None) -> "MockBuilder":
+        def import_module(self, side_effect: Any = None) -> MockBuilder:
             self.builder.patches["import_module"].append(patch("importlib.import_module", side_effect=side_effect))
             return self.builder
 
-        def os_execv(self, side_effect: Any = None) -> "MockBuilder":
+        def os_execv(self, side_effect: Any = None) -> MockBuilder:
             self.builder.patches["execv"].append(patch("os.execv", side_effect=side_effect))
             return self.builder
 
-        def send_bug(self, side_effect: Any = None) -> "MockBuilder":
+        def send_bug(self, side_effect: Any = None) -> MockBuilder:
             self.builder.patches["execv"].append(
                 patch.object(self.bot.CommandHandler, "send_bug", side_effect=side_effect)
             )
@@ -58,7 +57,7 @@ class MockBuilder:
         def __init__(self, builder):
             self.builder = builder
 
-        def name(self, return_value: str = "Vermilion") -> "MockBuilder":
+        def name(self, return_value: str = "Vermilion") -> MockBuilder:
             self.builder.patches["color_name"].append(patch("bot.apis.color.Color.name", return_value=return_value))
             return self.builder
 
@@ -67,7 +66,7 @@ class MockBuilder:
             self.builder = builder
             self.bot = builder.mock_context.bot if hasattr(builder.mock_context, "bot") else builder.mock_context
 
-        def fetch_user(self, name="mock_user", user_id=1234, created_at=None, stream=False) -> "MockBuilder":
+        def fetch_user(self, name="mock_user", user_id=1234, created_at=None, stream=False) -> MockBuilder:
             if name is None:
                 mock_fetch = AsyncMock(return_value=None)
             else:
@@ -80,7 +79,7 @@ class MockBuilder:
             self.builder.patches["fetch_user"].append(patch.object(self.bot, "fetch_user", mock_fetch))
             return self.builder
 
-        def fetch_chatters_color(self, return_value: str | None = "FF4500") -> "MockBuilder":
+        def fetch_chatters_color(self, return_value: str | None = "FF4500") -> MockBuilder:
             mock_color = MagicMock()
             mock_color.hex_clean = return_value
             mock_chatter = MagicMock()
@@ -95,7 +94,7 @@ class MockBuilder:
             self.builder.patches["silence_errors"].append(patch.object(self.bot.log, "error"))
             return self.builder
 
-        def fetch_videos(self) -> "MockBuilder":
+        def fetch_videos(self) -> MockBuilder:
             return_value = MagicMock()
             return_value.id = "12345"
             mock_fetch = AsyncMock(return_value=[return_value])
@@ -106,7 +105,7 @@ class MockBuilder:
         def __init__(self, builder):
             self.builder = builder
 
-        def get_json(self, session, return_value: Any = None, side_effect=None, status: int = 200) -> "MockBuilder":
+        def get_json(self, session, return_value: Any = None, side_effect=None, status: int = 200) -> MockBuilder:
             mock_response = AsyncMock()
             mock_response.json.return_value = return_value or {}
             mock_response.status = status
@@ -114,7 +113,13 @@ class MockBuilder:
             self.builder.patches["session_get_json"].append(patch.object(session, "get", mock_get))
             return self.builder
 
-        def get(self, session, return_value: str = None, side_effect=None, status: int = 200) -> "MockBuilder":
+        def get(
+            self,
+            session,
+            return_value: str | None = None,
+            side_effect=None,
+            status: int = 200,
+        ) -> MockBuilder:
             mock_response = AsyncMock()
             mock_response.text = AsyncMock(return_value=return_value or "")
             mock_response.status = status
@@ -122,7 +127,7 @@ class MockBuilder:
             self.builder.patches["session_get"].append(patch.object(session, "get", mock_get))
             return self.builder
 
-        def post_json(self, session, return_value: Any = None, side_effect=None, status: int = 200) -> "MockBuilder":
+        def post_json(self, session, return_value: Any = None, side_effect=None, status: int = 200) -> MockBuilder:
             mock_response = AsyncMock()
             mock_response.json.return_value = return_value or {}
             mock_response.status = status
@@ -130,7 +135,13 @@ class MockBuilder:
             self.builder.patches["session_get_json"].append(patch.object(session, "post", mock_get))
             return self.builder
 
-        def post(self, session, return_value: str = None, side_effect=None, status: int = 200) -> "MockBuilder":
+        def post(
+            self,
+            session,
+            return_value: str | None = None,
+            side_effect=None,
+            status: int = 200,
+        ) -> MockBuilder:
             mock_response = AsyncMock()
             mock_response.text = AsyncMock(return_value=return_value or "")
             mock_response.status = status
@@ -139,8 +150,12 @@ class MockBuilder:
             return self.builder
 
         def get_not_cached(
-            self, target, return_value: str = None, side_effect=None, status: int = 200
-        ) -> "MockBuilder":
+            self,
+            target,
+            return_value: str | None = None,
+            side_effect=None,
+            status: int = 200,
+        ) -> MockBuilder:
             mock_url = MagicMock()
             mock_url.human_repr = MagicMock(return_value=return_value)
             mock_response = MagicMock()
@@ -154,33 +169,48 @@ class MockBuilder:
         def __init__(self, builder):
             self.builder = builder
 
-        def get_7tv(self, return_value: Any = None) -> "MockBuilder":
+        def get_7tv(self, return_value: Any = None) -> MockBuilder:
             self.builder.patches["get_7tv"].append(
-                patch("bot.apis.emotes.Emotes.get_7tv", AsyncMock(return_value=return_value))
+                patch(
+                    "bot.apis.emotes.Emotes.get_7tv",
+                    AsyncMock(return_value=return_value),
+                )
             )
             return self.builder
 
-        def get_bttv(self, return_value: Any = None) -> "MockBuilder":
+        def get_bttv(self, return_value: Any = None) -> MockBuilder:
             self.builder.patches["get_bttv"].append(
-                patch("bot.apis.emotes.Emotes.get_bttv", AsyncMock(return_value=return_value))
+                patch(
+                    "bot.apis.emotes.Emotes.get_bttv",
+                    AsyncMock(return_value=return_value),
+                )
             )
             return self.builder
 
-        def get_ffz(self, return_value: Any = None) -> "MockBuilder":
+        def get_ffz(self, return_value: Any = None) -> MockBuilder:
             self.builder.patches["get_ffz"].append(
-                patch("bot.apis.emotes.Emotes.get_ffz", AsyncMock(return_value=return_value))
+                patch(
+                    "bot.apis.emotes.Emotes.get_ffz",
+                    AsyncMock(return_value=return_value),
+                )
             )
             return self.builder
 
-        def get_emotes(self, return_value: Any = None) -> "MockBuilder":
+        def get_emotes(self, return_value: Any = None) -> MockBuilder:
             self.builder.patches["get_emotes"].append(
-                patch("bot.apis.emotes.Emotes.get_emotes", AsyncMock(return_value=return_value))
+                patch(
+                    "bot.apis.emotes.Emotes.get_emotes",
+                    AsyncMock(return_value=return_value),
+                )
             )
             return self.builder
 
-        def get_random_by_amount(self, return_value: Any = None) -> "MockBuilder":
+        def get_random_by_amount(self, return_value: Any = None) -> MockBuilder:
             self.builder.patches["get_random_by_amount"].append(
-                patch("bot.apis.emotes.Emotes.get_random_by_amount", AsyncMock(return_value=return_value))
+                patch(
+                    "bot.apis.emotes.Emotes.get_random_by_amount",
+                    AsyncMock(return_value=return_value),
+                )
             )
             return self.builder
 
@@ -188,14 +218,14 @@ class MockBuilder:
         def __init__(self, builder):
             self.builder = builder
 
-        def get_scp(self, return_value: str = None, side_effect=None, status=200) -> "MockBuilder":
+        def get_scp(self, return_value: str | None = None, side_effect=None, status=200) -> MockBuilder:
             mock_get = AsyncMock(side_effect=side_effect)
             mock_url = MagicMock(human_repr=MagicMock(return_value=return_value or "www.some_url.com"))
             mock_get.return_value = MagicMock(status=status, url=mock_url)
             self.builder.patches["get_scp"].append(patch.object(randomscp, "get_scp", mock_get))
             return self.builder
 
-        def get_preview(self, return_value: str = None, side_effect=None, status=200) -> "MockBuilder":
+        def get_preview(self, return_value: str | None = None, side_effect=None, status=200) -> MockBuilder:
             mock_get = AsyncMock(side_effect=side_effect)
             mock_get.return_value = return_value or "www.some_url.com"
             self.builder.patches["get_preview"].append(patch.object(PreviewCmd, "get_preview", mock_get))
@@ -205,7 +235,7 @@ class MockBuilder:
         def __init__(self, builder):
             self.builder = builder
 
-        def sleep(self, seconds: float = 0) -> "MockBuilder":
+        def sleep(self, seconds: float = 0) -> MockBuilder:
             async def fixed_sleep(_):
                 if seconds > 0:
                     await asyncio.sleep(seconds)
@@ -214,8 +244,8 @@ class MockBuilder:
             self.builder.patches["sleep"].append(patch("asyncio.sleep", AsyncMock(side_effect=fixed_sleep)))
             return self.builder
 
-        def get_event_loop_time(self, times: list[int] = None) -> "MockBuilder":
-            times = times or [0] + list(range(1, 35))
+        def get_event_loop_time(self, times: list[int] | None = None) -> MockBuilder:
+            times = times or [0, *list(range(1, 35))]
             mock_loop = MagicMock()
             mock_loop.time.side_effect = times
             self.builder.patches["get_event_loop"].append(patch("asyncio.get_event_loop", return_value=mock_loop))
@@ -224,23 +254,25 @@ class MockBuilder:
     class _ApiIvrFi:
         def __init__(self, builder):
             self.builder = builder
-            self.Twitch: "MockBuilder._ApiIvrFi._Twitch" = self._Twitch(builder)
+            self.Twitch: MockBuilder._ApiIvrFi._Twitch = self._Twitch(builder)
 
         class _Twitch:
             def __init__(self, builder):
                 self.builder = builder
-                self.User: "MockBuilder._ApiIvrFi._Twitch._User" = self._User(builder)
-                self.Channel: "MockBuilder._ApiIvrFi._Twitch._Channel" = self._Channel(builder)
+                self.User: MockBuilder._ApiIvrFi._Twitch._User = self._User(builder)
+                self.Channel: MockBuilder._ApiIvrFi._Twitch._Channel = self._Channel(builder)
 
             class _User:
                 def __init__(self, builder):
                     self.builder = builder
 
-                def fetch_user(self, dict_to_parse: dict = None) -> "MockBuilder":
+                def fetch_user(self, dict_to_parse: dict | None = None) -> MockBuilder:
                     self.builder.patches["ivrfi_user_fetch_user"].append(
                         patch(
                             "bot.apis.ivrfi.api.ApiIvrFi.Twitch.User.fetch_user",
-                            AsyncMock(return_value=UserElement.from_dict(dict_to_parse[0]) if dict_to_parse else None),
+                            AsyncMock(
+                                return_value=(UserElement.from_dict(dict_to_parse[0]) if dict_to_parse else None)
+                            ),
                         )
                     )
                     return self.builder
@@ -249,11 +281,11 @@ class MockBuilder:
                 def __init__(self, builder):
                     self.builder = builder
 
-                def fetch_preview(self, dict_to_parse: dict = None) -> "MockBuilder":
+                def fetch_preview(self, dict_to_parse: dict | None = None) -> MockBuilder:
                     self.builder.patches["ivrfi_user_fetch_user"].append(
                         patch(
                             "bot.apis.ivrfi.api.ApiIvrFi.Twitch.Channel.fetch_followage",
-                            AsyncMock(return_value=SubAge.from_dict(dict_to_parse) if dict_to_parse else None),
+                            AsyncMock(return_value=(SubAge.from_dict(dict_to_parse) if dict_to_parse else None)),
                         )
                     )
                     return self.builder

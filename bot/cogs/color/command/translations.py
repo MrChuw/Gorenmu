@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -29,14 +28,20 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "User not found or valid hex color provided.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Usuário não encontrado ou cor hexadecimal válida fornecida.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Usuário não encontrado ou cor hexadecimal válida fornecida.",
+                )
             return response.format_response(self._untangle_str(ctx, self._cname))
 
         def user_not_color(self, ctx: Context) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Provided user has no color defined on twitch.")
-                self.lang_dict.add_with(["pt_br", "pt"], "O usuário não tenha nenhuma cor definida no Twitch.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "O usuário não tenha nenhuma cor definida no Twitch.",
+                )
             return response.format_response(self._untangle_str(ctx, self._cname))
 
         def user_color(self, ctx: Context, name=None, hex_value=None, hex_name=None) -> str:
@@ -67,11 +72,12 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Command to get Twitch or hex color info.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Comando para obter informações de cor do Twitch ou hexadecimal."
+                    ["pt_br", "pt"],
+                    "Comando para obter informações de cor do Twitch ou hexadecimal.",
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}color (username | hex)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}color (usuário | hex)")
@@ -154,7 +160,8 @@ class Translations(TranslationBase):
                                 "admonition_type": "info",
                                 "position": "top",
                                 "title": "Username or HEX",
-                                "message": "You can input a Twitch username or a 6-digit hexadecimal color code like #FF00FF.",
+                                "message": "You can input a Twitch username or a 6-digit "
+                                "hexadecimal color code like #FF00FF.",
                             }
                         ]
                     ),
@@ -167,7 +174,8 @@ class Translations(TranslationBase):
                                 "admonition_type": "info",
                                 "position": "top",
                                 "title": "Usuário ou HEX",
-                                "message": "Você pode informar um nome de usuário do Twitch ou um código hexadecimal de 6 dígitos como #FF00FF.",
+                                "message": "Você pode informar um nome de usuário do Twitch "
+                                "ou um código hexadecimal de 6 dígitos como #FF00FF.",
                             }
                         ]
                     ),

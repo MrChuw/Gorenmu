@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -26,8 +24,8 @@ async def base_live(
     mock_context: MockContext,
     lang: str,
     content: str,
-    expected: str = None,
-    re_expected: str = None,
+    expected: str | None = None,
+    re_expected: str | None = None,
     json_response: dict | None = None,
     success: bool = False,
 ):

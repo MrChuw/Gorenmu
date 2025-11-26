@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -23,7 +21,12 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_choice(
-    interact, mock_context: MockContext, lang: str, content: str, expected: str, success: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    content: str,
+    expected: str,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     response: Response = await interact.choice._callback(self=interact, ctx=mock_context, content=content)  # NOQA

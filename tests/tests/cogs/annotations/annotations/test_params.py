@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Creates permanent notes for the user.",
@@ -21,7 +21,7 @@ class Params:
         ),
     ]
 
-    annotations = [
+    annotations: ClassVar[list] = [
         pytest.param("en", ["", 1, "Shush"], marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", ["", 1, "Shush"], marks=pytest.mark.pt_BR, id="pt_BR"),
     ]

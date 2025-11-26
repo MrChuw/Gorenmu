@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import random
 import string
 
@@ -26,11 +24,17 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_count(
-    interact, mock_context: MockContext, lang: str, content: str, expected, size=500, success: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    content: str,
+    expected,
+    size=500,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     random.seed(2)
-    text = "".join(random.choices(f"{string.printable}©®€¥µ±§¶†‡∞∑∆∏ΩæÆßøØ¿¡†•√π÷×≠≈😊", k=size))
+    text = "".join(random.choices(f"{string.printable}©®€¥µ±§¶†‡∞∑∆∏ΩæÆßøØ¿¡†•√π÷×≠≈😊", k=size))  # NOQA: RUF001
     session = interact.SessionsCaches.Count.session
     async with mock_context.MockBuilder.Session.get(session, text):
         response: Response = await interact.count._callback(interact, mock_context, content=content)  # NOQA
@@ -47,14 +51,21 @@ async def test_no_content(interact, mock_context: MockContext, lang: str, expect
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.some_text)
 async def test_some_text(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_count(interact, mock_context, lang=lang, content="some text _", expected=expected, success=True)
+    await base_count(
+        interact,
+        mock_context,
+        lang=lang,
+        content="some text _",
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.complex_text)
 async def test_complex_text(interact, mock_context: MockContext, lang: str, expected: str):
     random.seed(0)
-    text = "".join(random.choices(f"{string.printable}©®€¥µ±§¶†‡∞∑∆∏ΩæÆßøØ¿¡†•√π÷×≠≈😊", k=500))
+    text = "".join(random.choices(f"{string.printable}©®€¥µ±§¶†‡∞∑∆∏ΩæÆßøØ¿¡†•√π÷×≠≈😊", k=500))  # NOQA: RUF001
     await base_count(interact, mock_context, lang=lang, content=text, expected=expected, success=True)
 
 
@@ -62,7 +73,12 @@ async def test_complex_text(interact, mock_context: MockContext, lang: str, expe
 @pytest.mark.parametrize("lang, expected", Params.small_site_one_url)
 async def test_small_site_one_url(interact, mock_context: MockContext, lang: str, expected: str):
     await base_count(
-        interact, mock_context, lang=lang, content="http://somesite.com type:url", expected=expected, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="http://somesite.com type:url",
+        expected=expected,
+        success=True,
     )
 
 

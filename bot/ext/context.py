@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -36,7 +35,7 @@ class Context(TwitchioContext):
     def get_command(self):
         self._get_command()
 
-    async def simple_response(self, ctx: Context, response: str, handle: str = None) -> None | bool:
+    async def simple_response(self, ctx: Context, response: str, handle: str | None = None) -> None | bool:
         if ctx.bot.channels[ctx.channel.name].online is False:
             return False
         response_str = response

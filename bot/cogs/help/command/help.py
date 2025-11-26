@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import difflib
@@ -54,7 +53,15 @@ class HelpCmd(commands.CustomComponent):
             cooldown = self.translations.SupportTools.TimeTools.Humanize(ctx).naturaldelta(command.per / command.rate)
         else:
             cooldown = "None"
-        return translations.help(ctx, ctx.prefix, command.name, decorator.deco_helper(ctx), cooldown, url, aliases)
+        return translations.help(
+            ctx,
+            ctx.prefix,
+            command.name,
+            decorator.deco_helper(ctx),
+            cooldown,
+            url,
+            aliases,
+        )
 
 
 async def setup(bot: Gorenmu) -> None:

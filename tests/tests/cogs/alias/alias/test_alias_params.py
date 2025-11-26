@@ -1,9 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
+
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Command used to manage aliases.",
@@ -20,7 +21,7 @@ class Params:
         ),
     ]
 
-    params_alias = [
+    params_alias: ClassVar[list] = [
         pytest.param("en", ["", 1, "Shush"], marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", ["", 1, "Shush"], marks=pytest.mark.pt_BR, id="pt_BR"),
     ]

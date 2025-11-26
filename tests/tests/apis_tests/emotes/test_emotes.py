@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import random
 import time
 
@@ -23,11 +22,27 @@ ttv_payload = {
     }
 }
 
-bttv_payload = {"channelEmotes": [{"code": "Sadge"}, {"code": "Despair"}, {"code": "chuw"}, {"code": "AYAYA"}]}
+bttv_payload = {
+    "channelEmotes": [
+        {"code": "Sadge"},
+        {"code": "Despair"},
+        {"code": "chuw"},
+        {"code": "AYAYA"},
+    ]
+}
 
 ffz_payload = {
     "room": {"set": "1010"},
-    "sets": {"1010": {"emoticons": [{"name": "ppL"}, {"name": "Clueless"}, {"name": "COPIUM"}, {"name": "papaoRun"}]}},
+    "sets": {
+        "1010": {
+            "emoticons": [
+                {"name": "ppL"},
+                {"name": "Clueless"},
+                {"name": "COPIUM"},
+                {"name": "papaoRun"},
+            ]
+        }
+    },
 }
 
 
@@ -202,7 +217,17 @@ async def test_get_emotes_random_by_amount_cached(interact):
 @pytest.mark.asyncio
 async def test_7tv_success_real_session(interact):
     response = await interact.get_7tv(411010313)
-    assert response == ["GIGACHAD", "NOOOO", "catJAM", "COPIUM", "Sadge", "modCheck", "Clueless", "chuw", "Despair"]
+    assert response == [
+        "GIGACHAD",
+        "NOOOO",
+        "catJAM",
+        "COPIUM",
+        "Sadge",
+        "modCheck",
+        "Clueless",
+        "chuw",
+        "Despair",
+    ]
 
 
 @pytest.mark.network

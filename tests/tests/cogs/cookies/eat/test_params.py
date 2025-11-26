@@ -1,11 +1,17 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
-        pytest.param("en", "Get your daily fortune.", "To use: +cookie eat", marks=pytest.mark.en, id="en"),
+    decorators: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "Get your daily fortune.",
+            "To use: +cookie eat",
+            marks=pytest.mark.en,
+            id="en",
+        ),
         pytest.param(
             "pt_BR",
             "Pegue seu biscoito da sorte diário.",
@@ -15,24 +21,37 @@ class Params:
         ),
     ]
 
-    with_nothing = [
+    with_nothing: ClassVar[list] = [
         pytest.param(
             "en",
             ["The person born with a talent they are meant to use will find their greatest happiness in using it."],
             marks=pytest.mark.en,
             id="en",
         ),
-        pytest.param("pt_BR", ["Porque ser contra o que é felicidade é loucura."], marks=pytest.mark.pt_BR, id="pt_BR"),
-    ]
-
-    amount_zero = [
-        pytest.param("en", ["You didn't eat anything, wow!"], marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", ["Você não comeu nada, nossa!"], marks=pytest.mark.pt_BR, id="pt_BR"),
-    ]
-
-    amount_negative = [
         pytest.param(
-            "en", ["To eat -1 cookies, you must first know how to reverse entropy."], marks=pytest.mark.en, id="en"
+            "pt_BR",
+            ["Porque ser contra o que é felicidade é loucura."],
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
+    amount_zero: ClassVar[list] = [
+        pytest.param("en", ["You didn't eat anything, wow!"], marks=pytest.mark.en, id="en"),
+        pytest.param(
+            "pt_BR",
+            ["Você não comeu nada, nossa!"],
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
+    amount_negative: ClassVar[list] = [
+        pytest.param(
+            "en",
+            ["To eat -1 cookies, you must first know how to reverse entropy."],
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -42,12 +61,22 @@ class Params:
         ),
     ]
 
-    multiple_amount = [
-        pytest.param("en", ["you ate 2 cookies in one sitting. 🥠"], marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", ["você comeu 2 cookies de uma só vez. 🥠"], marks=pytest.mark.pt_BR, id="pt_BR"),
+    multiple_amount: ClassVar[list] = [
+        pytest.param(
+            "en",
+            ["you ate 2 cookies in one sitting. 🥠"],
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            ["você comeu 2 cookies de uma só vez. 🥠"],
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    cooldown = [
+    cooldown: ClassVar[list] = [
         pytest.param(
             "en",
             [

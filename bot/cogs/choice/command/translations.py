@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import re
@@ -44,10 +43,13 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Chooses an option from the options provided by the user.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Escolhe uma opção das opções fornecidas pelo usuário.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Escolhe uma opção das opções fornecidas pelo usuário.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}choice (option1) or (option2)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}choice (opção1) ou (opção2)")
@@ -58,7 +60,10 @@ class Translations(TranslationBase):
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Chooses an option from the options provided by the user.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Escolhe uma opção das opções fornecidas pelo usuário.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Escolhe uma opção das opções fornecidas pelo usuário.",
+                )
             return self._untangle_str(ctx, self._cname)
 
         def deco_commands(self, ctx: Context, *args, **kwargs) -> CommandExemples:

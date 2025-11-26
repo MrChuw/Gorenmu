@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
 
 import loguru
@@ -11,7 +10,12 @@ class Dictionary:
 
     @classmethod
     async def exists(cls, word: str, lang: str, session: CachedSession, log: loguru.logger) -> bool:
-        params = {"action": "query", "titles": word, "format": "json", "formatversion": 2}  # NOQA
+        params = {
+            "action": "query",
+            "titles": word,
+            "format": "json",
+            "formatversion": 2,
+        }  # NOQA
 
         try:
             data = await (await session.get(cls.url.format(lang), params=params)).json()

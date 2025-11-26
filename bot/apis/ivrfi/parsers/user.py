@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List, Optional, TypeVar
+from typing import Any, TypeVar
 
 from bot.apis.ivrfi.parsers.common import (
     from_bool,
@@ -21,10 +19,10 @@ T = TypeVar("T")
 
 @dataclass
 class Badge:
-    set_id: Optional[str] = None
-    title: Optional[str] = None
-    description: Optional[str] = None
-    version: Optional[int] = None
+    set_id: str | None = None
+    title: str | None = None
+    description: str | None = None
+    version: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Badge":
@@ -62,16 +60,16 @@ class Badge:
 
 @dataclass
 class ChatSettings:
-    chat_delay_ms: Optional[int] = None
-    followers_only_duration_minutes: Optional[int] = None
-    slow_mode_duration_seconds: Optional[int] = None
-    block_links: Optional[bool] = None
-    is_subscribers_only_mode_enabled: Optional[bool] = None
-    is_emote_only_mode_enabled: Optional[bool] = None
-    is_fast_subs_mode_enabled: Optional[bool] = None
-    is_unique_chat_mode_enabled: Optional[bool] = None
-    require_verified_account: Optional[bool] = None
-    rules: Optional[List[str]] = None
+    chat_delay_ms: int | None = None
+    followers_only_duration_minutes: int | None = None
+    slow_mode_duration_seconds: int | None = None
+    block_links: bool | None = None
+    is_subscribers_only_mode_enabled: bool | None = None
+    is_emote_only_mode_enabled: bool | None = None
+    is_fast_subs_mode_enabled: bool | None = None
+    is_unique_chat_mode_enabled: bool | None = None
+    require_verified_account: bool | None = None
+    rules: list[str] | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "ChatSettings":
@@ -130,8 +128,8 @@ class ChatSettings:
 
 @dataclass
 class LastBroadcast:
-    started_at: Optional[datetime] = None
-    title: Optional[str] = None
+    started_at: datetime | None = None
+    title: str | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "LastBroadcast":
@@ -153,7 +151,7 @@ class LastBroadcast:
 
 @dataclass
 class Panel:
-    id: Optional[int] = None
+    id: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Panel":
@@ -180,9 +178,9 @@ class Panel:
 
 @dataclass
 class Roles:
-    is_affiliate: Optional[bool] = None
-    is_partner: Optional[bool] = None
-    is_staff: Optional[bool] = None
+    is_affiliate: bool | None = None
+    is_partner: bool | None = None
+    is_staff: bool | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Roles":
@@ -205,7 +203,7 @@ class Roles:
 
 @dataclass
 class Game:
-    display_name: Optional[str] = None
+    display_name: str | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Game":
@@ -222,12 +220,12 @@ class Game:
 
 @dataclass
 class Stream:
-    title: Optional[str] = None
-    id: Optional[str] = None
-    created_at: Optional[datetime] = None
-    type: Optional[str] = None
-    viewers_count: Optional[int] = None
-    game: Optional[Game] = None
+    title: str | None = None
+    id: str | None = None
+    created_at: datetime | None = None
+    type: str | None = None
+    viewers_count: int | None = None
+    game: Game | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Stream":
@@ -261,28 +259,28 @@ class Stream:
 
 @dataclass
 class UserElement:
-    banned: Optional[bool] = None
-    display_name: Optional[str] = None
-    login: Optional[str] = None
-    id: Optional[int] = None
-    bio: Optional[str] = None
-    follows: Optional[str] = None
-    followers: Optional[int] = None
-    profile_view_count: Optional[str] = None
-    chat_color: Optional[str] = None
-    logo: Optional[str] = None
-    banner: Optional[str] = None
-    verified_bot: Optional[str] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
-    emote_prefix: Optional[str] = None
-    roles: Optional[Roles] = None
-    badges: Optional[List[Badge]] = None
-    chatter_count: Optional[int] = None
-    chat_settings: Optional[ChatSettings] = None
-    stream: Optional[Stream] = None
-    last_broadcast: Optional[LastBroadcast] = None
-    panels: Optional[List[Panel]] = None
+    banned: bool | None = None
+    display_name: str | None = None
+    login: str | None = None
+    id: int | None = None
+    bio: str | None = None
+    follows: str | None = None
+    followers: int | None = None
+    profile_view_count: str | None = None
+    chat_color: str | None = None
+    logo: str | None = None
+    banner: str | None = None
+    verified_bot: str | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+    emote_prefix: str | None = None
+    roles: Roles | None = None
+    badges: list[Badge] | None = None
+    chatter_count: int | None = None
+    chat_settings: ChatSettings | None = None
+    stream: Stream | None = None
+    last_broadcast: LastBroadcast | None = None
+    panels: list[Panel] | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "UserElement":
@@ -376,7 +374,11 @@ class UserElement:
             result["roles"] = from_union([lambda x: to_class(Roles, x), from_none], self.roles)
         if self.badges is not None:
             result["badges"] = from_union(
-                [lambda x: from_list(lambda item_lambda: to_class(Badge, x), x), from_none], self.badges
+                [
+                    lambda x: from_list(lambda item_lambda: to_class(Badge, x), x),
+                    from_none,
+                ],
+                self.badges,
             )
         if self.chatter_count is not None:
             result["chatterCount"] = from_union([from_int, from_none], self.chatter_count)
@@ -388,14 +390,18 @@ class UserElement:
             result["lastBroadcast"] = from_union([lambda x: to_class(LastBroadcast, x), from_none], self.last_broadcast)
         if self.panels is not None:
             result["panels"] = from_union(
-                [lambda x: from_list(lambda item_lambda: to_class(Panel, x), x), from_none], self.panels
+                [
+                    lambda x: from_list(lambda item_lambda: to_class(Panel, x), x),
+                    from_none,
+                ],
+                self.panels,
             )
         return result
 
 
-def user_from_dict(s: Any) -> List[UserElement]:
+def user_from_dict(s: Any) -> list[UserElement]:
     return from_list(UserElement.from_dict, s)
 
 
-def user_to_dict(item_list: List[UserElement]) -> Any:
+def user_to_dict(item_list: list[UserElement]) -> Any:
     return from_list(lambda item_lambda: to_class(UserElement, item_list), item_list)

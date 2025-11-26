@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from datetime import UTC, datetime
@@ -22,8 +21,8 @@ class DiscordWebHook:
         content: str,
         title: str,
         author_url: str,
-        embeds: list[DiscordEmbed] = None,
-        title2: str = None,
+        embeds: list[DiscordEmbed] | None = None,
+        title2: str | None = None,
         ping: bool = True,
     ) -> aiohttp.ClientResponse:
         to_mark = ctx.bot.config.Discord.to_mark
@@ -31,14 +30,17 @@ class DiscordWebHook:
         user = await ctx.author.user()
         display_name = ctx.author.display_name
         profile_image = user.profile_image.url
-        webhook = DiscordWebhook(url=url, username=ctx.bot.bot_nick.title(), session=session, avatar_url=avatar_webhook)
+        webhook = DiscordWebhook(
+            url=url,
+            username=ctx.bot.bot_nick.title(),
+            session=session,
+            avatar_url=avatar_webhook,
+        )
         url_params = f"{ctx.channel.name}/{datetime.now(UTC).year}/{datetime.now(UTC).month}/{datetime.now(UTC).day}"
         log_url1 = f"https://logs.mrchuw.com.br/channel/{url_params}"
         log_url2 = f"https://logxx.dev/channel/{url_params}"
         log_url3 = (
-            f"https://tv.supa.sh/logs?c={ctx.channel.name}"
-            f"&d={datetime.now(UTC).strftime('%Y-%m-%d')}"
-            f"#{ctx.message.id}"
+            f"https://tv.supa.sh/logs?c={ctx.channel.name}&d={datetime.now(UTC).strftime('%Y-%m-%d')}#{ctx.message.id}"
         )
         embed = DiscordEmbed()
         embed.set_author(name=display_name, url=author_url, icon_url=profile_image)

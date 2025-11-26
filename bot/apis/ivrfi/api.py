@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -47,7 +46,7 @@ class ApiIvrFi(metaclass=Singleton):
             def __init__(self, bot: Gorenmu, session: CachedSession, url):
                 super().__init__(bot, session, url / "user")
 
-            async def fetch_user(self, name: str = None, user_id: int = None) -> UserElement:
+            async def fetch_user(self, name: str | None = None, user_id: int | None = None) -> UserElement:
                 base_url = self.base_url
                 if name:
                     full_url = base_url.update_query(login=name)

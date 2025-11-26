@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -21,7 +20,13 @@ class Translations(TranslationBase):
             super().__init__()
 
         def accountage(
-            self, ctx: Context, mention: str, date: str, delta: str, success: bool = True, handle: str = None
+            self,
+            ctx: Context,
+            mention: str,
+            date: str,
+            delta: str,
+            success: bool = True,
+            handle: str | None = None,
         ):
             response = Response(ctx=ctx, success=success, handle=handle, response_list=None)
             with self.lang_dict.once(self._cname):
@@ -34,10 +39,13 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Check the Twitch account creation date.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Verifica a data de criação de uma conta da Twitch.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Verifica a data de criação de uma conta da Twitch.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Usage: {}accountage (username)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Uso: {}accountage (nome_de_usuário)")

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from bot.cogs.cookies.command.cookies import CookieCmd
@@ -44,22 +42,51 @@ async def test_with_nothing(interact, mock_context: MockContext, lang: str, expe
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.amount_zero)
 async def test_amount_zero(interact, mock_context: MockContext, lang: str, expected: list[str]):
-    await base_eat(interact, mock_context, lang=lang, content=["0"], expected=expected, success=False)
+    await base_eat(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["0"],
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.amount_negative)
 async def test_amount_negative(interact, mock_context: MockContext, lang: str, expected: list[str]):
-    await base_eat(interact, mock_context, lang=lang, content=["-1"], expected=expected, success=False)
+    await base_eat(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["-1"],
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.multiple_amount)
 async def test_multiple_amount(interact, mock_context: MockContext, lang: str, expected: list[str]):
-    await base_eat(interact, mock_context, lang=lang, content=["2"], expected=expected, success=True)
+    await base_eat(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["2"],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.cooldown)
 async def test_cooldown(interact, mock_context: MockContext, lang: str, expected: list[str]):
-    await base_eat(interact, mock_context, lang=lang, content=["1"], amount=3, expected=expected, success=False)
+    await base_eat(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["1"],
+        amount=3,
+        expected=expected,
+        success=False,
+    )

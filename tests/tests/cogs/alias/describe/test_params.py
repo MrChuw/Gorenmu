@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "This subcommand is used to check infos for an alias.",
@@ -21,7 +21,7 @@ class Params:
         ),
     ]
 
-    no_content = [
+    no_content: ClassVar[list] = [
         pytest.param(
             "en",
             "You didn't provide a alias or description! Use: +alias describe (name) (…description)",
@@ -36,12 +36,22 @@ class Params:
         ),
     ]
 
-    wrong_alias_no_description = [
-        pytest.param("en", 'You don\'t have the "Some_alias" alias!', marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", 'Você não tem o alias "Some_alias"!', marks=pytest.mark.pt_BR, id="pt_BR"),
+    wrong_alias_no_description: ClassVar[list] = [
+        pytest.param(
+            "en",
+            'You don\'t have the "Some_alias" alias!',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Você não tem o alias "Some_alias"!',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    alias_no_description = [
+    alias_no_description: ClassVar[list] = [
         pytest.param(
             "en",
             'The description of alias "The_Tests_alias" has been reset successfully.',
@@ -56,7 +66,7 @@ class Params:
         ),
     ]
 
-    alias_description = [
+    alias_description: ClassVar[list] = [
         pytest.param(
             "en",
             'The description of alias "The_Tests_alias" has been updated successfully.',

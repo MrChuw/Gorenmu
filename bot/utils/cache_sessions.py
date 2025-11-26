@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import asyncio
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
@@ -25,9 +23,6 @@ class SessionsCaches(metaclass=Singleton):
         for session in vars(self).values():
             if isinstance(session, BaseCachedSession):
                 await session.close()
-
-    def close(self):
-        asyncio.create_task(self.close_all_sessions())
 
     # Old
 

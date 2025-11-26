@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Main command to customize your user settings.",
@@ -21,7 +21,7 @@ class Params:
         ),
     ]
 
-    set_base = [
+    set_base: ClassVar[list] = [
         pytest.param("en", "", "", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "", "", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]

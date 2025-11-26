@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
@@ -59,7 +58,7 @@ class AdminSmallCmds(commands.CustomComponent):
         else:
             python_executable = sys.executable
         try:
-            os.execv(python_executable, [python_executable] + sys.argv)
+            os.execv(python_executable, [python_executable, *sys.argv])
         except Exception as e:
             self.bot.log.error(e)
             return self.translations.Restart.unexpected_error(ctx, e)
@@ -69,7 +68,8 @@ class AdminSmallCmds(commands.CustomComponent):
         translations = self.translations.Reload
 
         reloader_map = {
-            # "emotes": {"attr": "Emotes", "module": "bot.apis.emotes", "class": "Emotes", "args": [self.bot, self.SessionsCaches.EmotesCachedSession.session]},
+            # "emotes": {"attr": "Emotes", "module": "bot.apis.emotes", "class": "Emotes", "args":
+            # [self.bot, self.SessionsCaches.EmotesCachedSession.session]},
             "tokens_handler": {
                 "attr": "TokensHandler",
                 "module": "bot.handlers.tokens_handler",
@@ -124,7 +124,10 @@ class AdminSmallCmds(commands.CustomComponent):
                 return translations.module_reloaded_error(ctx, config["attr"], e)
 
         if command == "translations":
-            from bot.utils.reload_util import reload_all_translations, reload_and_get_authorized
+            from bot.utils.reload_util import (
+                reload_all_translations,
+                reload_and_get_authorized,
+            )
 
             force = bool(extras)
             try:
@@ -158,7 +161,7 @@ async def setup(bot: Gorenmu) -> None:
 async def teardown(bot: Gorenmu) -> None: ...  # NOQA
 
 
-async def reload_component(bot_obj, attr_name: str, module_name: str, class_name: str, args: list = None):
+async def reload_component(bot_obj, attr_name: str, module_name: str, class_name: str, args: list | None = None):
     from bot.utils.reload_util import reload_and_get_authorized
 
     try:

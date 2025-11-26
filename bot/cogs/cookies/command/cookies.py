@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import datetime
 import random
 from collections import Counter
 from itertools import chain, groupby, repeat
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from bot.apis import Emotes
 from bot.ext import Context, Response, commands
@@ -44,7 +43,7 @@ class CookieCmd(commands.CustomComponent):
     @cookies.command(name="eat")
     async def eat(self, ctx: Context, *args):
         translations = self.translations.Eat
-        amount, *rest = chain(args, repeat(None, 1))
+        amount, *_rest = chain(args, repeat(None, 1))
         cookie = await Cookies.get_cookie(ctx, self.translations)
         amount_available = cookie.not_redeemed()
         amount = self.StringTools.to_amount(amount, 1)
@@ -66,7 +65,7 @@ class CookieCmd(commands.CustomComponent):
     @cookies.command(name="count", aliases=["cc"])
     async def count(self, ctx: Context, *args):
         translations = self.translations
-        name, *rest = chain(args, repeat(None, 1))
+        name, *_rest = chain(args, repeat(None, 1))
         name = self.StringTools.str2name(name) or ctx.author.name
         if name == ctx.bot.bot_nick:
             return translations.Count.cc_bot_nick(ctx)
@@ -94,7 +93,7 @@ class CookieCmd(commands.CustomComponent):
     async def gift(self, ctx: Context, *args):
         translations = self.translations.Gift
         all_options = self.translations.Cookies.all_string(ctx)
-        name, amount, *rest = chain(args, repeat(None, 2))
+        name, amount, *_rest = chain(args, repeat(None, 2))
         name = self.StringTools.str2name(name) or ctx.author.name
         if name == ctx.bot.bot_nick:
             return translations.gift_bot_nick(ctx)
@@ -146,7 +145,7 @@ class CookieCmd(commands.CustomComponent):
     async def stock(self, ctx: Context, *args):
         translations = self.translations.Stock
         all_options = self.translations.Cookies.all_string(ctx)
-        amount, *rest = chain(args, repeat(None, 1))
+        amount, *_rest = chain(args, repeat(None, 1))
 
         cookie = await Cookies.get(user=ctx.user)
         cookie_cooldown = await calculate_cooldown(cookie)
@@ -177,7 +176,7 @@ class CookieCmd(commands.CustomComponent):
     @cookies.command(name="top")
     async def top(self, ctx: Context, *args):
         translations = self.translations.Top
-        order_by, *rest = chain(args, repeat(None, 1))
+        order_by, *_rest = chain(args, repeat(None, 1))
         if order_by not in translations.rank_dict(ctx) and order_by is not None:
             return translations.ranks(ctx, ", ".join(list(translations.rank_dict(ctx).keys())))
         elif order_by is None:
@@ -188,7 +187,8 @@ class CookieCmd(commands.CustomComponent):
         cookies = await Cookies.all().order_by(f"-{order_by}").prefetch_related("user").limit(10)
         emojis = "🏆🥈🥉🏅🏅"
         top_10ish = [
-            f"{emoji} @{cookie.user.name}: ({getattr(cookie, order_by)})" for emoji, cookie in zip(emojis, cookies)
+            f"{emoji} @{cookie.user.name}: ({getattr(cookie, order_by)})"
+            for emoji, cookie in zip(emojis, cookies, strict=False)
         ]
         tops = " ".join(top_10ish)
         cookie_user = await Cookies.get(user=ctx.user)
@@ -293,7 +293,7 @@ async def calculate_reward(sequencia, recompensas, comprimento_sequencia):
     return total_recompensa
 
 
-async def all_slotmachine(fruits: List[str], rewards: dict[tuple[int, str], int], quantidade):
+async def all_slotmachine(fruits: list[str], rewards: dict[tuple[int, str], int], quantidade):
     sequencias = [random.choices(fruits, k=5) for _ in range(quantidade)]
     recompensas_valores = [await calculate_reward(sequencia, rewards, 2) for sequencia in sequencias]
     soma_total = sum(recompensas_valores)
@@ -313,7 +313,23 @@ async def _cooldown_response(ctx: Context, cookie, translations: Translations) -
 
 
 def _get_fruit_emojis() -> list[str]:
-    return ["🍇", "🍊", "🍋", "🍒", "🍉", "🍓", "🍌", "🍍", "🥕", "🍆", "🌽", "🥔", "🌶️", "🫑", "🥑"]
+    return [
+        "🍇",
+        "🍊",
+        "🍋",
+        "🍒",
+        "🍉",
+        "🍓",
+        "🍌",
+        "🍍",
+        "🥕",
+        "🍆",
+        "🌽",
+        "🥔",
+        "🌶️",
+        "🫑",
+        "🥑",
+    ]
 
 
 async def _get_emotes(ctx: Context, fallback_fruits: list[str], emotes: Emotes) -> list[str]:

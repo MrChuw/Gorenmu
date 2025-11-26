@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import asyncio
 import datetime
 from unittest.mock import MagicMock, patch
@@ -43,7 +42,11 @@ def set_cookie_values(cookie, values: list[int | datetime.datetime]):
 
 
 async def prepare_cookie_context(
-    mock_context: MockContext, lang: str, seed: int, values: list[int | datetime.datetime] | None = None, interact=None
+    mock_context: MockContext,
+    lang: str,
+    seed: int,
+    values: list[int | datetime.datetime] | None = None,
+    interact=None,
 ):
     await mock_context.prepare_context(lang, seed)
     await Check.cookie_check(mock_context, interact.translations)
@@ -84,9 +87,22 @@ async def base_slotmachine(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.on_cooldown)
 async def test_on_cooldown(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1),
+    ]
     await base_slotmachine(
-        interact, mock_context, lang=lang, content="", re_expected=expected, values=values, emotes=False, success=False
+        interact,
+        mock_context,
+        lang=lang,
+        content="",
+        re_expected=expected,
+        values=values,
+        emotes=False,
+        success=False,
     )
 
 
@@ -97,7 +113,13 @@ async def test_on_cooldown(interact, mock_context: MockContext, lang: str, expec
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.invalid_amount)
 async def test_invalid_amount(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(minutes=1)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(minutes=1),
+    ]
     await base_slotmachine(
         interact,
         mock_context,
@@ -114,9 +136,22 @@ async def test_invalid_amount(interact, mock_context: MockContext, lang: str, ex
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.bunch_unredeemed_one)
 async def test_bunch_unredeemed_one(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     await base_slotmachine(
-        interact, mock_context, lang=lang, content="1", expected=expected, values=values, emotes=False, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="1",
+        expected=expected,
+        values=values,
+        emotes=False,
+        success=True,
     )
 
 
@@ -124,9 +159,22 @@ async def test_bunch_unredeemed_one(interact, mock_context: MockContext, lang: s
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.bunch_unredeemed_all)
 async def test_bunch_unredeemed_all(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     await base_slotmachine(
-        interact, mock_context, lang=lang, content="all", expected=expected, values=values, emotes=False, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="all",
+        expected=expected,
+        values=values,
+        emotes=False,
+        success=True,
     )
 
 
@@ -134,7 +182,13 @@ async def test_bunch_unredeemed_all(interact, mock_context: MockContext, lang: s
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.bunch_unredeemed_one_win_3)
 async def test_bunch_unredeemed_one_win_3(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     await base_slotmachine(
         interact,
         mock_context,
@@ -152,7 +206,13 @@ async def test_bunch_unredeemed_one_win_3(interact, mock_context: MockContext, l
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.bunch_unredeemed_one_win_6)
 async def test_bunch_unredeemed_one_win_6(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     await base_slotmachine(
         interact,
         mock_context,
@@ -170,7 +230,13 @@ async def test_bunch_unredeemed_one_win_6(interact, mock_context: MockContext, l
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.bunch_unredeemed_one_win_12)
 async def test_bunch_unredeemed_one_win_12(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     await base_slotmachine(
         interact,
         mock_context,
@@ -188,7 +254,13 @@ async def test_bunch_unredeemed_one_win_12(interact, mock_context: MockContext, 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.bunch_unredeemed_one_win_30)
 async def test_bunch_unredeemed_one_win_30(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     await base_slotmachine(
         interact,
         mock_context,
@@ -206,7 +278,13 @@ async def test_bunch_unredeemed_one_win_30(interact, mock_context: MockContext, 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.bunch_unredeemed_one_win_3_emotes)
 async def test_bunch_unredeemed_one_win_3_emotes(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     await base_slotmachine(
         interact,
         mock_context,
@@ -224,7 +302,13 @@ async def test_bunch_unredeemed_one_win_3_emotes(interact, mock_context: MockCon
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.bunch_unredeemed_one_win_6_emotes)
 async def test_bunch_unredeemed_one_win_6_emotes(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     await base_slotmachine(
         interact,
         mock_context,
@@ -242,7 +326,13 @@ async def test_bunch_unredeemed_one_win_6_emotes(interact, mock_context: MockCon
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.bunch_unredeemed_one_win_12_emotes)
 async def test_bunch_unredeemed_one_win_12_emotes(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     await base_slotmachine(
         interact,
         mock_context,
@@ -260,7 +350,13 @@ async def test_bunch_unredeemed_one_win_12_emotes(interact, mock_context: MockCo
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.bunch_unredeemed_one_win_30_emotes)
 async def test_bunch_unredeemed_one_win_30_emotes(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [10, 0, 10, 10, datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24)]
+    values = [
+        10,
+        0,
+        10,
+        10,
+        datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=24),
+    ]
     await base_slotmachine(
         interact,
         mock_context,

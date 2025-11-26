@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -26,8 +24,8 @@ async def base_color(
     mock_context: MockContext,
     lang: str,
     content: str,
-    expected: str = None,
-    re_expected: str = None,
+    expected: str | None = None,
+    re_expected: str | None = None,
     success: bool = False,
 ):
     await mock_context.prepare_context(lang)
@@ -40,39 +38,81 @@ async def base_color(
 @pytest.mark.parametrize("lang, expected", Params.hex_color)
 async def test_hex_color(interact, mock_context: MockContext, lang: str, expected: str):
     async with mock_context.MockBuilder.Color.name().Bot.fetch_user(None):
-        await base_color(interact, mock_context, lang=lang, content="#FF4500", expected=expected, success=True)
+        await base_color(
+            interact,
+            mock_context,
+            lang=lang,
+            content="#FF4500",
+            expected=expected,
+            success=True,
+        )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.valid_nick)
 async def test_valid_nick(interact, mock_context: MockContext, lang: str, expected: str):
     async with mock_context.MockBuilder.Color.name().Bot.fetch_user().Bot.fetch_chatters_color():
-        await base_color(interact, mock_context, lang=lang, content="@some_nick", expected=expected, success=True)
+        await base_color(
+            interact,
+            mock_context,
+            lang=lang,
+            content="@some_nick",
+            expected=expected,
+            success=True,
+        )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.hex_name)
 async def test_hex_name(interact, mock_context: MockContext, lang: str, expected: str):
     async with mock_context.MockBuilder.Color.name().Bot.fetch_user().Bot.fetch_chatters_color():
-        await base_color(interact, mock_context, lang=lang, content="FF4500", expected=expected, success=True)
+        await base_color(
+            interact,
+            mock_context,
+            lang=lang,
+            content="FF4500",
+            expected=expected,
+            success=True,
+        )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.user_db)
 async def test_user_db(interact, mock_context: MockContext, lang: str, expected: str):
     async with mock_context.MockBuilder.Color.name().Bot.fetch_user(user_id=12345).Bot.fetch_chatters_color():
-        await base_color(interact, mock_context, lang=lang, content="@some_nick", expected=expected, success=True)
+        await base_color(
+            interact,
+            mock_context,
+            lang=lang,
+            content="@some_nick",
+            expected=expected,
+            success=True,
+        )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_user_no_hex)
 async def test_no_user_no_hex(interact, mock_context: MockContext, lang: str, expected: str):
     async with mock_context.MockBuilder.Color.name().Bot.fetch_user(None):
-        await base_color(interact, mock_context, lang=lang, content="some_text", expected=expected, success=False)
+        await base_color(
+            interact,
+            mock_context,
+            lang=lang,
+            content="some_text",
+            expected=expected,
+            success=False,
+        )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.user_no_color)
 async def test_user_no_color(interact, mock_context: MockContext, lang: str, expected: str):
     async with mock_context.MockBuilder.Color.name().Bot.fetch_user().Bot.fetch_chatters_color(None):
-        await base_color(interact, mock_context, lang=lang, content="@some_user", expected=expected, success=False)
+        await base_color(
+            interact,
+            mock_context,
+            lang=lang,
+            content="@some_user",
+            expected=expected,
+            success=False,
+        )

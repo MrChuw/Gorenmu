@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
@@ -56,7 +55,10 @@ async def get_scp(session: CachedSession) -> ClientResponse:
     async with session.disabled():
         response = await session.get("https://scp-wiki.wikidot.com/random:random-page")  # NOQA
     soup = BeautifulSoup(await response.text(), "html.parser")
-    iframe = soup.find("iframe", src=lambda x: x and "https://snippets.wdfiles.com/local--code/code:" in x)
+    iframe = soup.find(
+        "iframe",
+        src=lambda x: x and "https://snippets.wdfiles.com/local--code/code:" in x,
+    )
     url = iframe["src"].replace("https://snippets.wdfiles.com/local--code/code:iframe-redirect#http", "https")  # NOQA
     return await session.head(url)
 

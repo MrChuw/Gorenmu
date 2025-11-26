@@ -1,3 +1,5 @@
-from .Channel import MockChannel
+from .channel import MockChannel
 from .context import MockContext
-from .User import MockUser
+from .user import MockUser
+
+__all__ = [MockChannel, MockContext, MockUser]

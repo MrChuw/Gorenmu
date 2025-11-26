@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Bet your daily cookie for a chance to win more.",
@@ -22,7 +22,7 @@ class Params:
         ),
     ]
 
-    on_cooldown = [
+    on_cooldown: ClassVar[list] = [
         pytest.param(
             "en",
             r"You're still on cooldown, wait \d+\.\d{2} seconds until the next batch! ⌛",
@@ -37,25 +37,27 @@ class Params:
         ),
     ]
 
-    invalid_amount = [
+    invalid_amount: ClassVar[list] = [
         pytest.param(
             "en",
-            " You used your last available cookie and lost everything. "
-            "The next one is available in 6 hours. PoroSad",
+            " You used your last available cookie and lost everything. The next one is available in 6 hours. PoroSad",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            " Você usou seu último cookie disponível e perdeu tudo. " "O próximo está disponível em 6 horas. PoroSad",
+            " Você usou seu último cookie disponível e perdeu tudo. O próximo está disponível em 6 horas. PoroSad",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
     ]
 
-    bunch_unredeemed_one = [
+    bunch_unredeemed_one: ClassVar[list] = [
         pytest.param(
-            "en", " You have used 1 unredeemed cookie(s) and lost everything. ", marks=pytest.mark.en, id="en"
+            "en",
+            " You have used 1 unredeemed cookie(s) and lost everything. ",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -65,7 +67,7 @@ class Params:
         ),
     ]
 
-    bunch_unredeemed_all = [
+    bunch_unredeemed_all: ClassVar[list] = [
         pytest.param(
             "en",
             " You have used all 5 unredeemed cookie(s) and lost everything. The next one is available in 6 hours.",
@@ -74,14 +76,13 @@ class Params:
         ),
         pytest.param(
             "pt_BR",
-            " Você usou all 5 cookie(s) não resgatado(s) e perdeu tudo. "
-            "O próximo está disponível em 6 horas. PoroSad",
+            " Você usou all 5 cookie(s) não resgatado(s) e perdeu tudo. O próximo está disponível em 6 horas. PoroSad",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
     ]
 
-    bunch_unredeemed_one_win_3 = [
+    bunch_unredeemed_one_win_3: ClassVar[list] = [
         pytest.param(
             "en",
             "[ 🍍 | 🍌 | 🍌 | 🍉 | 🍓 ] You have used 1 unredeemed cookie(s) and earned 3 cookies. ",
@@ -96,7 +97,7 @@ class Params:
         ),
     ]
 
-    bunch_unredeemed_one_win_6 = [
+    bunch_unredeemed_one_win_6: ClassVar[list] = [
         pytest.param(
             "en",
             "[ 🥑 | 🍋 | 🍋 | 🍋 | 🍉 ] You have used 1 unredeemed cookie(s) and earned 6 cookies. ",
@@ -111,7 +112,7 @@ class Params:
         ),
     ]
 
-    bunch_unredeemed_one_win_12 = [
+    bunch_unredeemed_one_win_12: ClassVar[list] = [
         pytest.param(
             "en",
             "[ 🍓 | 🍓 | 🍓 | 🍓 | 🍇 ] You have used 1 unredeemed cookie(s) and earned 12 cookies. ",
@@ -126,7 +127,7 @@ class Params:
         ),
     ]
 
-    bunch_unredeemed_one_win_30 = [
+    bunch_unredeemed_one_win_30: ClassVar[list] = [
         pytest.param(
             "en",
             "[ 🍇 | 🍇 | 🍇 | 🍇 | 🍇 ] You have used 1 unredeemed cookie(s) and earned 30 cookies. ",
@@ -141,24 +142,22 @@ class Params:
         ),
     ]
 
-    bunch_unredeemed_one_win_3_emotes = [
+    bunch_unredeemed_one_win_3_emotes: ClassVar[list] = [
         pytest.param(
             "en",
-            "[ ppL | ppL | chuw | catJAM | 🍌 ] You have used 1 unredeemed cookie(s) and earned 3 cookies.  "
-            "PogChamp",
+            "[ ppL | ppL | chuw | catJAM | 🍌 ] You have used 1 unredeemed cookie(s) and earned 3 cookies.  PogChamp",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            "[ ppL | ppL | chuw | catJAM | 🍌 ] Você usou 1 cookie(s) não resgatado(s) e ganhou 3 cookies.  "
-            "PogChamp",
+            "[ ppL | ppL | chuw | catJAM | 🍌 ] Você usou 1 cookie(s) não resgatado(s) e ganhou 3 cookies.  PogChamp",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
     ]
 
-    bunch_unredeemed_one_win_6_emotes = [
+    bunch_unredeemed_one_win_6_emotes: ClassVar[list] = [
         pytest.param(
             "en",
             "[ papaoRun | papaoRun | papaoRun | 🥔 | COPIUM ] "  # NOQA
@@ -175,7 +174,7 @@ class Params:
         ),
     ]
 
-    bunch_unredeemed_one_win_12_emotes = [
+    bunch_unredeemed_one_win_12_emotes: ClassVar[list] = [
         pytest.param(
             "en",
             "[ GIGACHAD | GIGACHAD | GIGACHAD | GIGACHAD | NOOOO ] "  # NOQA
@@ -192,7 +191,7 @@ class Params:
         ),
     ]
 
-    bunch_unredeemed_one_win_30_emotes = [
+    bunch_unredeemed_one_win_30_emotes: ClassVar[list] = [
         pytest.param(
             "en",
             "[ papaoRun | papaoRun | papaoRun | papaoRun | papaoRun ] "  # NOQA

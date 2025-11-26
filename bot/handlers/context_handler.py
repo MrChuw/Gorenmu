@@ -1,29 +1,30 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
 import re
 from collections.abc import Callable, Coroutine, Iterable
-from typing import TYPE_CHECKING, Any, ParamSpec, TypeAlias, TypeVar
+from typing import TYPE_CHECKING, Any, ParamSpec, TypeVar
 
 from twitchio.ext.commands.core import CommandErrorPayload
-from twitchio.ext.commands.exceptions import CommandError, CommandHookError, CommandNotFound
+from twitchio.ext.commands.exceptions import (
+    CommandError,
+    CommandHookError,
+    CommandNotFound,
+)
 
 from bot.ext import ChatMessage
 from bot.models import Alias
 
 T = TypeVar("T")
-Coro: TypeAlias = Coroutine[Any, Any, None]
-CoroC: TypeAlias = Coroutine[Any, Any, bool]
+type Coro = Coroutine[Any, Any, None]
+type CoroC = Coroutine[Any, Any, bool]
 
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
     from bot.ext import Context, Response
 
-    PrefixT: TypeAlias = (
-        str | Iterable[str] | Callable[[Gorenmu, ChatMessage], Coroutine[Any, Any, str | Iterable[str]]]
-    )
+    type PrefixT = str | Iterable[str] | Callable[[Gorenmu, ChatMessage], Coroutine[Any, Any, str | Iterable[str]]]
 
     P = ParamSpec("P")
 else:
@@ -76,7 +77,7 @@ class ContextHandler:
     async def handle_banwords(ctx: Context, response_str: str):
         banwords = ctx.bot.channels[ctx.channel.name].banwords
         user_handler = ctx.user.nickname or ctx.author.name
-        for word in banwords.keys():
+        for word in banwords:  # TODO: verificar se vai quebrar
             if word in response_str:
                 tamanho = len(word)
                 asteriscos = "".join("*" for _ in range(tamanho))
@@ -106,7 +107,7 @@ class ContextHandler:
         ctx: Context = response.ctx
         if ctx.bot.channels[ctx.channel.name].online is False:
             return False
-        handle, response_str, response_list, success = await self.extract_response(response)
+        handle, response_str, response_list, _ = await self.extract_response(response)
         response_str, user_handler = await self.handle_banwords(ctx, response_str)
 
         if handle == "echo" and not response_list:
@@ -117,7 +118,7 @@ class ContextHandler:
             await self.handle_response_list(ctx, response_list, handle)
         return None
 
-    async def simple_response(self, ctx: Context, response: str, handle: str = None) -> None | bool:
+    async def simple_response(self, ctx: Context, response: str, handle: str | None = None) -> None | bool:
         if ctx.bot.channels[ctx.channel.name].online is False:
             return False
         response_str = response
@@ -145,18 +146,30 @@ class ContextHandler:
             ctx.get_command()
             ctx.user = external_ctx.user
             if not ctx.command.pipeble:
-                await self.simple_response(ctx, translation.command_not_pipeble(ctx, ctx.command.name).response_string)
+                await self.simple_response(
+                    ctx,
+                    translation.command_not_pipeble(ctx, ctx.command.name).response_string,
+                )
                 if response_str:
-                    await self.simple_response(ctx, translation.pipe_response(ctx, response_str).response_string)
+                    await self.simple_response(
+                        ctx,
+                        translation.pipe_response(ctx, response_str).response_string,
+                    )
                 break
 
             response: Response = await ctx.invoke()
             if not response and response_str:
                 return await self.simple_response(ctx, response_str)
             if not response.success:
-                await self.simple_response(ctx, translation.pipe_response_error(ctx, ctx.command.name).response_string)
+                await self.simple_response(
+                    ctx,
+                    translation.pipe_response_error(ctx, ctx.command.name).response_string,
+                )
                 if response_str:
-                    await self.simple_response(ctx, translation.pipe_response(ctx, response_str).response_string)
+                    await self.simple_response(
+                        ctx,
+                        translation.pipe_response(ctx, response_str).response_string,
+                    )
                 if response:
                     response.response_string = f"{translation.pipe_response} {response.response_string}"
                 break
@@ -166,7 +179,7 @@ class ContextHandler:
         return None
 
     async def alias_handler(self, external_ctx: Context, message: ChatMessage):
-        args: list[str] = message.content.replace(f"{external_ctx.prefix}{external_ctx.prefix}", f"").split()
+        args: list[str] = message.content.replace(f"{external_ctx.prefix}{external_ctx.prefix}", "").split()
         name: str = args.pop(0)
         alias = await Alias.get_or_none(user=external_ctx.user, name=name, deleted=False)
         if not alias.command:  # NOQA

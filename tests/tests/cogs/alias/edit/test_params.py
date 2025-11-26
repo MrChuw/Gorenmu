@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "This subcommand is used to edit the command and arguments for an alias.",
@@ -20,22 +20,43 @@ class Params:
             id="pt_BR",
         ),
     ]
-    no_content = [
+
+    no_content: ClassVar[list] = [
         pytest.param("en", "No alias or command name provided!", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "Nenhum alias ou nome de comando fornecido!", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param(
+            "pt_BR",
+            "Nenhum alias ou nome de comando fornecido!",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    wrong_name_no_command = [
+    wrong_name_no_command: ClassVar[list] = [
         pytest.param("en", "No alias or command name provided!", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "Nenhum alias ou nome de comando fornecido!", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param(
+            "pt_BR",
+            "Nenhum alias ou nome de comando fornecido!",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    wrong_name_wrong_command = [
-        pytest.param("en", 'You don\'t have the "Wrong_alias" alias!', marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", 'Você não tem o alias "Wrong_alias"!', marks=pytest.mark.pt_BR, id="pt_BR"),
+    wrong_name_wrong_command: ClassVar[list] = [
+        pytest.param(
+            "en",
+            'You don\'t have the "Wrong_alias" alias!',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Você não tem o alias "Wrong_alias"!',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    name_wrong_command = [
+    name_wrong_command: ClassVar[list] = [
         pytest.param(
             "en",
             'Cannot edit alias! The command "blablablablablablablablablablablabla" does not exist.',
@@ -50,31 +71,49 @@ class Params:
         ),
     ]
 
-    alias_link_wrong_command = [
-        pytest.param("en", "You cannot edit links to other aliases!", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "Você não pode editar links para outros aliases!", marks=pytest.mark.pt_BR, id="pt_BR"),
-    ]
-
-    guard_caught = [
+    alias_link_wrong_command: ClassVar[list] = [
         pytest.param(
             "en",
-            'You are not authorized to use the "restart" command due to "DevRequired". '
+            "You cannot edit links to other aliases!",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Você não pode editar links para outros aliases!",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
+    guard_caught: ClassVar[list] = [
+        pytest.param(
+            "en",
+            'You are not authorized to use the "restart" command due to "DevRequiredError". '
             "If you think this is an error, contact @dev_name.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            'Você não está autorizado a usar o comando "restart" motivo: "DevRequired". '
+            'Você não está autorizado a usar o comando "restart" motivo: "DevRequiredError". '
             "Se achar que isso é um erro, entre em contato com @dev_name.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
     ]
 
-    describe_success = [
-        pytest.param("en", 'Your alias "The_Tests_alias" has been successfully edited.', marks=pytest.mark.en, id="en"),
+    describe_success: ClassVar[list] = [
         pytest.param(
-            "pt_BR", 'Seu alias "The_Tests_alias" foi editado com sucesso.', marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            'Your alias "The_Tests_alias" has been successfully edited.',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Seu alias "The_Tests_alias" foi editado com sucesso.',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]

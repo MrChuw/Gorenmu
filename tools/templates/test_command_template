@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 import pytest
 import pytest_asyncio
@@ -22,7 +22,7 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_{command_name}(
-    interact, mock_context: MockContext, lang: str, content: str, expected: str = None, re_expected: str = None, success: bool = False
+    interact, mock_context: MockContext, lang: str, content: str, expected: str | None = None, re_expected: str | None = None, success: bool = False
 ):
     await mock_context.prepare_context(lang)
     response: Response = await interact.{command_name}._callback(interact, mock_context, content)  # NOQA

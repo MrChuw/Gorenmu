@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, List, Optional, TypeVar
+from typing import Any, TypeVar
 
 from .shared import (
     from_bool,
-    from_datetime,
-    from_dict,
     from_float,
     from_int,
     from_list,
@@ -23,8 +19,8 @@ T = TypeVar("T")
 
 @dataclass
 class Available:
-    user: Optional[bool] = None
-    channel: Optional[bool] = None
+    user: bool | None = None
+    channel: bool | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Available":
@@ -44,9 +40,9 @@ class Available:
 
 @dataclass
 class Logs:
-    count: Optional[int] = None
-    instances: Optional[List[str]] = None
-    full_link: Optional[List[str]] = None
+    count: int | None = None
+    instances: list[str] | None = None
+    full_link: list[str] | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Logs":
@@ -69,8 +65,8 @@ class Logs:
 
 @dataclass
 class Elapsed:
-    ms: Optional[float] = None
-    s: Optional[float] = None
+    ms: float | None = None
+    s: float | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Elapsed":
@@ -90,8 +86,8 @@ class Elapsed:
 
 @dataclass
 class InstancesInfo:
-    count: Optional[int] = None
-    down: Optional[int] = None
+    count: int | None = None
+    down: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "InstancesInfo":
@@ -111,8 +107,8 @@ class InstancesInfo:
 
 @dataclass
 class LastUpdated:
-    unix: Optional[int] = None
-    utc: Optional[str] = None
+    unix: int | None = None
+    utc: str | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "LastUpdated":
@@ -132,9 +128,9 @@ class LastUpdated:
 
 @dataclass
 class Since:
-    year: Optional[int] = None
-    month: Optional[int] = None
-    day: Optional[int] = None
+    year: int | None = None
+    month: int | None = None
+    day: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Since":
@@ -175,22 +171,26 @@ class Since:
 
 @dataclass
 class LoggedData:
-    list: Optional[List[Since]] = None
-    days: Optional[int] = None
-    since: Optional[Since] = None
+    def __init__(self):
+        self.list: list[Since] | None = None
+        self.days: int | None = None
+        self.since: Since | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "LoggedData":
         assert isinstance(obj, dict)
-        list = from_union([lambda x: from_list(Since.from_dict, x), from_none], obj.get("list"))
+        _list = from_union([lambda x: from_list(Since.from_dict, x), from_none], obj.get("list"))
         days = from_union([from_int, from_none], obj.get("days"))
         since = from_union([Since.from_dict, from_none], obj.get("since"))
-        return LoggedData(list, days, since)
+        return LoggedData(_list, days, since)
 
     def to_dict(self) -> dict:
         result: dict = {}
         if self.list is not None:
-            result["list"] = from_union([lambda x: from_list(lambda x: to_class(Since, x), x), from_none], self.list)
+            result["list"] = from_union(
+                [lambda x: from_list(lambda x: to_class(Since, x), x), from_none],
+                self.list,
+            )
         if self.days is not None:
             result["days"] = from_union([from_int, from_none], self.days)
         if self.since is not None:
@@ -200,8 +200,8 @@ class LoggedData:
 
 @dataclass
 class OptedOut:
-    count: Optional[int] = None
-    instances: Optional[List[Any]] = None
+    count: int | None = None
+    instances: list[Any] | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "OptedOut":
@@ -221,9 +221,9 @@ class OptedOut:
 
 @dataclass
 class Channel:
-    login: Optional[str] = None
-    id: Optional[int] = None
-    banned: Optional[bool] = None
+    login: str | None = None
+    id: int | None = None
+    banned: bool | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Channel":
@@ -252,9 +252,9 @@ class Channel:
 
 @dataclass
 class Request:
-    channel: Optional[Channel] = None
-    user: Optional[Channel] = None
-    forced: Optional[bool] = None
+    channel: Channel | None = None
+    user: Channel | None = None
+    forced: bool | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Request":
@@ -277,17 +277,17 @@ class Request:
 
 @dataclass
 class APIZonian:
-    error: Optional[str] = None
-    status: Optional[int] = None
-    instances_info: Optional[InstancesInfo] = None
-    request: Optional[Request] = None
-    available: Optional[Available] = None
-    logged_data: Optional[LoggedData] = None
-    user_logs: Optional[Logs] = None
-    channel_logs: Optional[Logs] = None
-    opted_out: Optional[OptedOut] = None
-    last_updated: Optional[LastUpdated] = None
-    elapsed: Optional[Elapsed] = None
+    error: str | None = None
+    status: int | None = None
+    instances_info: InstancesInfo | None = None
+    request: Request | None = None
+    available: Available | None = None
+    logged_data: LoggedData | None = None
+    user_logs: Logs | None = None
+    channel_logs: Logs | None = None
+    opted_out: OptedOut | None = None
+    last_updated: LastUpdated | None = None
+    elapsed: Elapsed | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "APIZonian":

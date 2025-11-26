@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from bot.ext import Response
@@ -10,7 +8,12 @@ from .test_params import Params
 
 
 async def alias_add(
-    interact, mock_context: MockContext, lang: str, content: list[str], expected: str, success: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    content: list[str],
+    expected: str,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     command_ = mock_context.bot.get_command("chance")
@@ -31,7 +34,14 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_alias_add_no_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await alias_add(interact, mock_context, lang=lang, content=[""], expected=expected, success=False)
+    await alias_add(
+        interact,
+        mock_context,
+        lang=lang,
+        content=[""],
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
@@ -73,7 +83,7 @@ async def test_alias_add_valid_name(interact, mock_context: MockContext, lang: s
         "test-name",
         "©name",
         "®brand",
-        "   name",
+        "   name",  # NOQA: RUF001
         "名字",
         "hello你好",
         "1234567890",
@@ -95,7 +105,12 @@ async def test_alias_add_valid_name(interact, mock_context: MockContext, lang: s
 @pytest.mark.parametrize("lang, expected", Params.conflict)
 async def test_alias_add_conflict(interact, mock_context: MockContext, lang: str, expected: str):
     await alias_add(
-        interact, mock_context, lang=lang, content=["The_Tests_alias", "chance"], expected=expected, success=False
+        interact,
+        mock_context,
+        lang=lang,
+        content=["The_Tests_alias", "chance"],
+        expected=expected,
+        success=False,
     )
 
 
@@ -103,19 +118,36 @@ async def test_alias_add_conflict(interact, mock_context: MockContext, lang: str
 @pytest.mark.parametrize("lang, expected", Params.guard_caught)
 async def test_alias_add_guard_caught(interact, mock_context: MockContext, lang: str, expected: str):
     await alias_add(
-        interact, mock_context, lang=lang, content=["The_Tests", "restart"], expected=expected, success=False
+        interact,
+        mock_context,
+        lang=lang,
+        content=["The_Tests", "restart"],
+        expected=expected,
+        success=False,
     )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.success)
 async def test_alias_add_success(interact, mock_context: MockContext, lang: str, expected: str):
-    await alias_add(interact, mock_context, lang=lang, content=["The_Tests", "choice"], expected=expected, success=True)
+    await alias_add(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["The_Tests", "choice"],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.pipe_guard_caught)
 async def test_alias_add_pipe_guard_caught(interact, mock_context: MockContext, lang: str, expected: str):
     await alias_add(
-        interact, mock_context, lang=lang, content=["The_Tests", "choice | restart"], expected=expected, success=False
+        interact,
+        mock_context,
+        lang=lang,
+        content=["The_Tests", "choice | restart"],
+        expected=expected,
+        success=False,
     )

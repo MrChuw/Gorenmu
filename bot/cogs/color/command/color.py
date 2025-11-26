@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from bot.apis import Color
 from bot.ext import Context, Response, commands
@@ -50,9 +49,12 @@ class ColorCmd(commands.CustomComponent):
             urls.append(url_preview)
             responses.append(response)
 
-        if "#" not in name and (user := await ctx.bot.fetch_user(login=name)):
-            if tmi_color := (await ctx.bot.fetch_chatters_color([user.id]))[0].color:
-                await get_color_info(tmi_color.hex_clean, translations.user_color(ctx).replace("{}", name, 1))
+        if "#" not in name and (user := await ctx.bot.fetch_user(login=name)):  # NOQA: SIM102
+            if tmi_color := (await ctx.bot.fetch_chatters_color([user.id]))[0].color:  # NOQA: SIM102
+                await get_color_info(
+                    tmi_color.hex_clean,
+                    translations.user_color(ctx).replace("{}", name, 1),
+                )
 
         if color_hex := re.match(r"^#?[0-9a-fA-F]{6}$", name):
             color_hex = color_hex[0].replace("#", "")

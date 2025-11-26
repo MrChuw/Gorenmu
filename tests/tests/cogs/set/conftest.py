@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import pytest_asyncio
 
 from bot.cogs.set.command.set import SetCmd

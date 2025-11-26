@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from twitchio.ext.commands import CommandExistsError  # NOQA
 from twitchio.ext.commands import (
     BadArgument,
@@ -13,8 +12,33 @@ from twitchio.ext.commands import (
 
 InvalidArgument = (BadArgument, MissingRequiredArgument)
 
+__all__ = [
+    CommandExistsError,
+    CommandInvokeError,
+    CommandNotFound,
+    CommandOnCooldown,
+    ModuleAlreadyLoadedError,
+    ModuleLoadFailure,
+    InvalidArgument,
+    "InvalidUsernameError",
+    "CustomGuardError",
+    "AlreadyPlayingError",
+    "BotOfflineError",
+    "CommandDisabledError",
+    "ModRequiredError",
+    "DevRequiredError",
+    "OwnerRequiredError",
+    "UserIsNotAllowedError",
+    "ContentHasBanwordError",
+    "GameIsAlreadyRunningError",
+    "VipRequiredError",
+    "SubRequiredError",
+    "UnknownErrorError",
+    "MissingOAuthTokenError",
+]
 
-class InvalidUsername(BadArgument):
+
+class InvalidUsernameError(BadArgument):
     pass
 
 
@@ -23,51 +47,51 @@ class CustomGuardError(GuardFailure):
     __slots__ = ()
 
 
-class AlreadyPlaying(CustomGuardError):
+class AlreadyPlayingError(CustomGuardError):
     pass
 
 
-class BotOffline(CustomGuardError):
+class BotOfflineError(CustomGuardError):
     pass
 
 
-class CommandDisabled(CustomGuardError):
+class CommandDisabledError(CustomGuardError):
     pass
 
 
-class ModRequired(CustomGuardError):
+class ModRequiredError(CustomGuardError):
     pass
 
 
-class DevRequired(CustomGuardError):
+class DevRequiredError(CustomGuardError):
     pass
 
 
-class OwnerRequired(CustomGuardError):
+class OwnerRequiredError(CustomGuardError):
     pass
 
 
-class UserIsNotAllowed(CustomGuardError):
+class UserIsNotAllowedError(CustomGuardError):
     pass
 
 
-class ContentHasBanword(CustomGuardError):
+class ContentHasBanwordError(CustomGuardError):
     pass
 
 
-class GameIsAlreadyRunning(CustomGuardError):
+class GameIsAlreadyRunningError(CustomGuardError):
     pass
 
 
-class VipRequired(CustomGuardError):
+class VipRequiredError(CustomGuardError):
     pass
 
 
-class SubRequired(CustomGuardError):
+class SubRequiredError(CustomGuardError):
     pass
 
 
-class UnknownError(CustomGuardError):
+class UnknownErrorError(CustomGuardError):
     pass
 
 

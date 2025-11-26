@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from tests.helpers.mock_classes import MockContext
@@ -14,7 +12,14 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
     mock_context.Asserter.assert_string(interact.translations.City.deco_helper(mock_context, "+"), helper)
 
 
-async def base_city(interact, mock_context: MockContext, lang: str, args: str, expected: str, success: bool = False):
+async def base_city(
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    args: str,
+    expected: str,
+    success: bool = False,
+):
     await mock_context.prepare_context(lang)
     response = await interact.set_city._callback(self=interact, ctx=mock_context, args=args)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected, strict=True)

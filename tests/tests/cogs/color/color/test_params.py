@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Command to get Twitch or hex color info.",
@@ -20,9 +20,13 @@ class Params:
             id="pt_BR",
         ),
     ]
-    hex_color = [
+
+    hex_color: ClassVar[list] = [
         pytest.param(
-            "en", "#FF4500 its Named: Vermilion https://color.mrchuw.com.br/hex/FF4500", marks=pytest.mark.en, id="en"
+            "en",
+            "#FF4500 its Named: Vermilion https://color.mrchuw.com.br/hex/FF4500",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -32,7 +36,7 @@ class Params:
         ),
     ]
 
-    valid_nick = [
+    valid_nick: ClassVar[list] = [
         pytest.param(
             "en",
             "@some_nick color is: #FF4500. Named: Vermilion https://color.mrchuw.com.br/hex/FF4500",
@@ -47,7 +51,7 @@ class Params:
         ),
     ]
 
-    hex_name = [
+    hex_name: ClassVar[list] = [
         pytest.param(
             "en",
             "@ff4500 color is: #FF4500. Named: Vermilion || #FF4500 its Named: Vermilion "
@@ -64,7 +68,7 @@ class Params:
         ),
     ]
 
-    user_db = [
+    user_db: ClassVar[list] = [
         pytest.param(
             "en",
             "@some_nick color is: #FF4500. Named: Vermilion || And has the following saved color: #FF4500. "
@@ -81,15 +85,32 @@ class Params:
         ),
     ]
 
-    no_user_no_hex = [
-        pytest.param("en", "User not found or valid hex color provided.", marks=pytest.mark.en, id="en"),
+    no_user_no_hex: ClassVar[list] = [
         pytest.param(
-            "pt_BR", "Usuário não encontrado ou cor hexadecimal válida fornecida.", marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            "User not found or valid hex color provided.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Usuário não encontrado ou cor hexadecimal válida fornecida.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]
-    user_no_color = [
-        pytest.param("en", "Provided user has no color defined on twitch.", marks=pytest.mark.en, id="en"),
+
+    user_no_color: ClassVar[list] = [
         pytest.param(
-            "pt_BR", "O usuário não tenha nenhuma cor definida no Twitch.", marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            "Provided user has no color defined on twitch.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "O usuário não tenha nenhuma cor definida no Twitch.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]

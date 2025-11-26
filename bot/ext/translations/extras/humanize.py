@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 from datetime import UTC, datetime
-from typing import Dict, List
 
 import humanize
 
@@ -18,9 +16,9 @@ class HumanizeContext:
 
 
 class Humanize:
-    def __init__(self, pattern_time: dict, lang: str, fallback_pattern: dict = None):
+    def __init__(self, pattern_time: dict, lang: str, fallback_pattern: dict | None = None):
         self.lang = lang
-        self.units: Dict[str, List[str]]
+        self.units: dict[str, list[str]]
         pattern = pattern_time
         if fallback_pattern:
             pattern = pattern_time | fallback_pattern
@@ -33,10 +31,21 @@ class Humanize:
         return response
 
     def naturaltime(
-        self, value, future: bool = False, months: bool = True, minimum_unit: str = "seconds", when: datetime = None
+        self,
+        value,
+        future: bool = False,
+        months: bool = True,
+        minimum_unit: str = "seconds",
+        when: datetime | None = None,
     ) -> str:
         with HumanizeContext(self.lang):
-            response = humanize.naturaltime(value, future=future, months=months, minimum_unit=minimum_unit, when=when)
+            response = humanize.naturaltime(
+                value,
+                future=future,
+                months=months,
+                minimum_unit=minimum_unit,
+                when=when,
+            )
         return response
 
     def naturaldelta(self, value, months: bool = True, minimum_unit: str = "seconds") -> str:

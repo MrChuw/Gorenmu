@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, List
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase
 
@@ -31,7 +31,7 @@ class Translations(TranslationBase):
                 )
             return self._untangle_any(ctx, self._cname)
 
-        alias_table_headers: Callable[[Context], List[str]] = alias_table_headers
+        alias_table_headers: Callable[[Context], list[str]] = alias_table_headers
 
         def alias_table_replaces(self, ctx: Context) -> list[str]:
             with self.lang_dict.once(self._cname):
@@ -39,14 +39,14 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], ["Nenhuma descrição", "Sem argumentos", "Nada"])
             return self._untangle_any(ctx, self._cname)
 
-        alias_table_replaces: Callable[[Context], List[str]] = alias_table_replaces
+        alias_table_replaces: Callable[[Context], list[str]] = alias_table_replaces
 
         def alias_table_name(self, ctx: Context, name: str) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(["pt_br", "pt", "en"], "{} aliases")
             return self._untangle_str(ctx, self._cname).format(name)
 
-        alias_table_name: Callable[[Context, str], List[str]] = alias_table_name
+        alias_table_name: Callable[[Context, str], list[str]] = alias_table_name
 
     class Alias(TBase):
         def __init__(self):
@@ -87,7 +87,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Comando usado para gerir aliases.")
             return self._untangle_str(ctx, "helper")
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once("usage"):
                 self.lang_dict.add_with(
                     "en", "To use: {}alias add|check|copy|describe|edit|link|remove|rename (options)"
@@ -107,10 +107,10 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "You didn't send a command! Usage: " "{}alias add (name) (command) (…arguments)"
+                    "en", "You didn't send a command! Usage: {}alias add (name) (command) (…arguments)"
                 )
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Você não enviou um comando! Use: " "{}alias add (nome) (comando) (…argumentos)"
+                    ["pt_br", "pt"], "Você não enviou um comando! Use: {}alias add (nome) (comando) (…argumentos)"
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), prefix)
 
@@ -151,7 +151,7 @@ class Translations(TranslationBase):
 
         # region Hide.
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}alias add (name) (command) (…arguments)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}alias add (nome) (comando) (…argumentos)")
@@ -284,7 +284,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Lista dos seus aliases: {} | Lista detalhada: {}")
             return response.format_response(self._untangle_str(ctx, self._cname), names, url)
 
-        def no_alias_found(self, ctx: Context, success: bool = False, handle: str = None, *args):
+        def no_alias_found(self, ctx: Context, success: bool = False, handle: str | None = None, *args):
             response = Response(ctx=ctx, success=success, handle=handle, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Could not find {} in {} aliases or any of your aliases!")
@@ -368,7 +368,7 @@ class Translations(TranslationBase):
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}alias check cool_name")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}alias check cool_name")
@@ -483,7 +483,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Este subcomando é usado para copiar um alias.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}alias copy (user) (alias) (…arguments)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}alias copy (usuário) (alias) (…argumentos)")
@@ -576,7 +576,7 @@ class Translations(TranslationBase):
 
         # region Hide.
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}alias description cool_name (new description)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}alias description cool_name (nova descrição)")
@@ -673,7 +673,7 @@ class Translations(TranslationBase):
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}alias edit (alias) (command) (…arguments)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}alias edit (alias) (comando) (…argumentos)")
@@ -842,7 +842,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Este subcomando é usado para criar um link para um alias.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}alias link (user) cool_name")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}alias link (usuário) cool_name")
@@ -952,7 +952,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Este subcomando é usado para excluir um alias.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}alias remove (alias)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}alias remove (alias)")
@@ -1039,7 +1039,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Este subcomando é usado para renomear um alias.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}alias rename cool_name new_cool_name")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}alias rename cool_name new_cool_name")

@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import datetime
 from collections import defaultdict
+from collections.abc import Callable
 from logging import Logger
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import twitchio
 from aiocache.backends.memcached import MemcachedCache
@@ -39,7 +39,7 @@ class Gorenmu(TypesBot):
             bot_id=configs.BotConfig.bot_id,
             adapter=adapter,
         )
-        self.boot: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
+        self.boot: datetime.datetime = datetime.datetime.now(datetime.UTC)
         self.manual_events: defaultdict[str, dict[str, dict[str, Callable]]] = defaultdict(lambda: defaultdict(dict))
         # self.api: api | None = None
         # self.api_start: api_start = None

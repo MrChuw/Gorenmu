@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -31,7 +30,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Retorna uma porcentagem aleatória.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}chance")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}chance")
@@ -43,12 +42,11 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
                     "en",
-                    "This command generates and returns a random percentage, "
-                    "representing a value between 0% and 100%.",
+                    "This command generates and returns a random percentage, representing a value between 0% and 100%.",
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
-                    "Este comando gera e retorna uma porcentagem aleatória, " "representando um valor entre 0% e 100%.",
+                    "Este comando gera e retorna uma porcentagem aleatória, representando um valor entre 0% e 100%.",
                 )
             return self._untangle_str(ctx, self._cname)
 

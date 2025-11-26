@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
@@ -20,8 +19,23 @@ class Emotes:
         self.session: CachedSession = session
         self.cached_emotes = {}
         self.sad_emotes = ["sadge", "sadgecry", "sadcat", "sadchamp"]  # NOQA
-        self.happy_emotes = ["peepoglad", "gladge", "peepohappy", "peepohappyu", "happycat"]  # NOQA
-        self.pog_emotes = ["pog", "pogu", "pagbounce", "pogg", "pogs", "noway", "nowaying", "nowaycat"]  # NOQA
+        self.happy_emotes = [
+            "peepoglad",
+            "gladge",
+            "peepohappy",
+            "peepohappyu",
+            "happycat",
+        ]  # NOQA
+        self.pog_emotes = [
+            "pog",
+            "pogu",
+            "pagbounce",
+            "pogg",
+            "pogs",
+            "noway",
+            "nowaying",
+            "nowaycat",
+        ]  # NOQA
 
     async def fetch_json(self, url) -> dict:
         try:
@@ -66,7 +80,10 @@ class Emotes:
 
     async def fetch_emotes(self, channel_id) -> list[str]:
         ttv, bttv, ffz = await asyncio.gather(
-            self.get_7tv(channel_id), self.get_bttv(channel_id), self.get_ffz(channel_id), return_exceptions=True
+            self.get_7tv(channel_id),
+            self.get_bttv(channel_id),
+            self.get_ffz(channel_id),
+            return_exceptions=True,
         )
 
         all_emotes = []
@@ -74,7 +91,12 @@ class Emotes:
             if isinstance(source, list):
                 all_emotes.extend(source)
 
-        await self.bot.cache.set(channel_id, all_emotes, namespace="emotes", ttl=timedelta(minutes=15).total_seconds())
+        await self.bot.cache.set(
+            channel_id,
+            all_emotes,
+            namespace="emotes",
+            ttl=timedelta(minutes=15).total_seconds(),
+        )
         return all_emotes
 
     async def get_emotes(self, channel_id: int) -> list[str]:

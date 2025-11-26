@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -44,10 +43,12 @@ class Translations(TranslationBase):
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "30s has passed and I has unable to find a message from user @{} on channel @{}"
+                    "en",
+                    "30s has passed and I has unable to find a message from user @{} on channel @{}",
                 )
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "30s se passaram e não consegui encontrar uma mensagem do usuário @{} no canal @{}"
+                    ["pt_br", "pt"],
+                    "30s se passaram e não consegui encontrar uma mensagem do usuário @{} no canal @{}",
                 )
             return response.format_response(self._untangle_str(ctx, self._cname), name, channel_name)
 
@@ -61,14 +62,16 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "Fetches a random message from the channel or from a user in the channel."
+                    "en",
+                    "Fetches a random message from the channel or from a user in the channel.",
                 )
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Pega uma mensagem aleatória do canal ou de um usuário em um canal."
+                    ["pt_br", "pt"],
+                    "Pega uma mensagem aleatória do canal ou de um usuário em um canal.",
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
                     "en",
@@ -87,10 +90,12 @@ class Translations(TranslationBase):
         def deco_description(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "This command selects a random message depending on the options provided."
+                    "en",
+                    "This command selects a random message depending on the options provided.",
                 )
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Este comando seleciona uma mensagem aleatória dependendo das opções fornecidas."
+                    ["pt_br", "pt"],
+                    "Este comando seleciona uma mensagem aleatória dependendo das opções fornecidas.",
                 )
             return self._untangle_str(ctx, self._cname)
 

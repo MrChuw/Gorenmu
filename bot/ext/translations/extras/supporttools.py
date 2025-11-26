@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -68,8 +67,19 @@ class OtherTools(ClassBase):
                                 "hours": ["hours", "hour", "h"],
                                 "minutes": ["minutes", "minute", "min", "m"],
                                 "seconds": ["seconds", "second", "secs", "sec", "s"],
-                                "milliseconds": ["milliseconds", "millisecond", "millisecs", "millisec", "milli"],
-                                "microseconds": ["microseconds", "microsecond", "micro", "us"],
+                                "milliseconds": [
+                                    "milliseconds",
+                                    "millisecond",
+                                    "millisecs",
+                                    "millisec",
+                                    "milli",
+                                ],
+                                "microseconds": [
+                                    "microseconds",
+                                    "microsecond",
+                                    "micro",
+                                    "us",
+                                ],
                                 "time": ["time", "t"],
                             },
                             "en",
@@ -86,8 +96,19 @@ class OtherTools(ClassBase):
                                 "hours": ["horas", "hora", "h"],
                                 "minutes": ["minutos", "minuto", "min", "m"],
                                 "seconds": ["segundos", "segundo", "segs", "seg", "s"],
-                                "milliseconds": ["milissegundos", "milissegundo", "milisecs", "milisec", "mili"],
-                                "microseconds": ["microssegundos", "microssegundo", "micro", "us"],
+                                "milliseconds": [
+                                    "milissegundos",
+                                    "milissegundo",
+                                    "milisecs",
+                                    "milisec",
+                                    "mili",
+                                ],
+                                "microseconds": [
+                                    "microssegundos",
+                                    "microssegundo",
+                                    "micro",
+                                    "us",
+                                ],
                                 "time": ["tempo", "t"],
                             },
                             "pt_BR",

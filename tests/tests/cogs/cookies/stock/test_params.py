@@ -1,11 +1,17 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
-        pytest.param("en", "Stock your daily cookie.", "To use: +cookie stock (all)", marks=pytest.mark.en, id="en"),
+    decorators: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "Stock your daily cookie.",
+            "To use: +cookie stock (all)",
+            marks=pytest.mark.en,
+            id="en",
+        ),
         pytest.param(
             "pt_BR",
             "Estoque seus cookies diários para usar depois.",
@@ -14,7 +20,8 @@ class Params:
             id="pt_BR",
         ),
     ]
-    on_cooldown = [
+
+    on_cooldown: ClassVar[list] = [
         pytest.param(
             "en",
             r"You're still on cooldown, wait \d+\.\d{2} seconds until the next batch! ⌛",
@@ -29,27 +36,47 @@ class Params:
         ),
     ]
 
-    no_content = [
+    no_content: ClassVar[list] = [
         pytest.param("en", "you stocked 1 cookies 🍪.", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "você estocou 1 cookies 🍪.", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    all = [
-        pytest.param("en", "you stocked 4 cookies 🍪, the next one comes out in 6h.", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "você estocou 4 cookies 🍪, o próximo sai em 6h.", marks=pytest.mark.pt_BR, id="pt_BR"),
+    all: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "you stocked 4 cookies 🍪, the next one comes out in 6h.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "você estocou 4 cookies 🍪, o próximo sai em 6h.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    with_amount = [
+    with_amount: ClassVar[list] = [
         pytest.param("en", "you stocked 1 cookies 🍪.", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "você estocou 1 cookies 🍪.", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    with_exact_amount = [
-        pytest.param("en", "you stocked 4 cookies 🍪, the next one comes out in 6h.", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "você estocou 4 cookies 🍪, o próximo sai em 6h.", marks=pytest.mark.pt_BR, id="pt_BR"),
+    with_exact_amount: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "you stocked 4 cookies 🍪, the next one comes out in 6h.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "você estocou 4 cookies 🍪, o próximo sai em 6h.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    not_enough_cookies = [
+    not_enough_cookies: ClassVar[list] = [
         pytest.param("en", "you can only stock 4 🍪.", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "você só pode estocar 4.", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]

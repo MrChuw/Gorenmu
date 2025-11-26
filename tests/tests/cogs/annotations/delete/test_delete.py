@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 import pytest
 import pytest_asyncio
 
@@ -25,7 +22,13 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_annotations_delete(
-    interact, mock_context: MockContext, lang: str, content: str, expected, amount=0, success: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    content: str,
+    expected,
+    amount=0,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     for value in range(amount):
@@ -41,7 +44,13 @@ async def base_annotations_delete(
 @pytest.mark.parametrize("lang, expected", Params.delete_no_id)
 async def test_delete_no_id(interact, mock_context: MockContext, lang: str, expected: str):
     await base_annotations_delete(
-        interact, mock_context, lang=lang, content="", expected=expected, amount=2, success=False
+        interact,
+        mock_context,
+        lang=lang,
+        content="",
+        expected=expected,
+        amount=2,
+        success=False,
     )
 
 
@@ -49,5 +58,11 @@ async def test_delete_no_id(interact, mock_context: MockContext, lang: str, expe
 @pytest.mark.parametrize("lang, expected", Params.delete_id)
 async def test_delete_id(interact, mock_context: MockContext, lang: str, expected: str):
     await base_annotations_delete(
-        interact, mock_context, lang=lang, content="1", expected=expected, amount=2, success=True
+        interact,
+        mock_context,
+        lang=lang,
+        content="1",
+        expected=expected,
+        amount=2,
+        success=True,
     )

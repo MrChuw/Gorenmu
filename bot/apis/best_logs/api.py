@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Type, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from aiohttp import ClientResponse
 from aiohttp_client_cache import CachedSession
@@ -63,7 +62,9 @@ class BestLogs(metaclass=Singleton):
             response = await self.session.get(self.base_url / "channels")
             return await try_parse(self.bot, ctx, Channels, response)
 
-        async def get_list(self, ctx: Context, channel: str | int, user: str | int = None) -> str | List | str | None:
+        async def get_list(
+            self, ctx: Context, channel: str | int, user: str | int | None = None
+        ) -> str | List | str | None:
             url = self.base_url / "list"
             if str(channel).isnumeric():
                 url = url.update_query(channelid=str(channel))
@@ -177,7 +178,12 @@ class BestLogs(metaclass=Singleton):
             return await try_parse(self.bot, ctx, Stats, response)
 
         async def get_channel_stats(
-            self, ctx: Context, channel: str | int, *, from_: datetime | None = None, to: datetime | None = None
+            self,
+            ctx: Context,
+            channel: str | int,
+            *,
+            from_: datetime | None = None,
+            to: datetime | None = None,
         ) -> str | ChannelStats | None:
             if str(channel).isnumeric():
                 url = self.base_url / "channelid" / str(channel)
@@ -199,7 +205,7 @@ class BestLogs(metaclass=Singleton):
             self,
             ctx: Context,
             channel: str | int,
-            user: str | int = None,
+            user: str | int | None = None,
             *,
             json: bool = True,
             json_basic: bool = False,
@@ -437,7 +443,9 @@ class BestLogs(metaclass=Singleton):
                     setattr(self, name, cls(bot, self.session, self.base_url))
             super().__init__(bot, session, self.base_url)
 
-        async def api(self, ctx: Context, channel: str | int, user: str | int = None) -> str | APIZonian | str | None:
+        async def api(
+            self, ctx: Context, channel: str | int, user: str | int | None = None
+        ) -> str | APIZonian | str | None:
             if str(channel).isnumeric():
                 url = self.base_url / "api" / f"id:{channel}"
             elif isinstance(channel, str):
@@ -447,7 +455,7 @@ class BestLogs(metaclass=Singleton):
 
             if user:
                 if str(user).isnumeric():
-                    url = url / f"id{str(user)}"
+                    url = url / f"id{user!s}"
                 elif isinstance(user, str):
                     url = url / str(user)
                 else:
@@ -456,7 +464,7 @@ class BestLogs(metaclass=Singleton):
             response = await self.session.get(url)
             return await try_parse(self.bot, ctx, APIZonian, response)
 
-        async def redirect(self, channel: str | int, user: str | int = None) -> str | None:
+        async def redirect(self, channel: str | int, user: str | int | None = None) -> str | None:
             if str(channel).isnumeric():
                 url = self.base_url / "rdr" / f"id:{channel}"
             elif isinstance(channel, str):
@@ -466,7 +474,7 @@ class BestLogs(metaclass=Singleton):
 
             if user:
                 if str(user).isnumeric():
-                    url = url / f"id{str(user)}"
+                    url = url / f"id{user!s}"
                 elif isinstance(user, str):
                     url = url / str(user)
                 else:
@@ -514,7 +522,11 @@ def raise_user():
 
 
 async def try_parse(
-    bot: Gorenmu, ctx: Context, cls: Type[T], response: ClientResponse, alt: bool = False
+    bot: Gorenmu,
+    ctx: Context,
+    cls: type[T],
+    response: ClientResponse,
+    alt: bool = False,
 ) -> T | str | None:
     try:
         json_response = await response.json()

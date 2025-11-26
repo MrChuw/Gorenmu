@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
@@ -6,8 +5,9 @@ import contextlib
 import heapq
 import time
 from abc import ABC, abstractmethod
+from collections.abc import Callable, Iterable
 from datetime import timedelta
-from typing import Any, Callable, Iterable, Tuple
+from typing import Any
 
 import aiohttp
 from aiocache import Cache as aioCache
@@ -38,7 +38,7 @@ class MemoryCacheCore:
             if mapped == uid:
                 del self.name_to_user_id[name]
 
-    async def _set(self, key: str, value, ttl: float = None, namespace: str | int = "") -> None:
+    async def _set(self, key: str, value, ttl: float | None = None, namespace: str | int = "") -> None:
         ns = str(namespace)
         lifespan = ttl or self.ttl
         await self.cache.set(key=key, value=value, ttl=lifespan, namespace=ns)
@@ -46,7 +46,9 @@ class MemoryCacheCore:
             self.key_index.setdefault(ns, set()).add(key)
         self._scheduler.schedule(key, ns, lifespan)
 
-    async def _multi_set(self, items: Iterable[tuple[str, Any]], ttl: float = None, namespace: str | int = "") -> None:
+    async def _multi_set(
+        self, items: Iterable[tuple[str, Any]], ttl: float | None = None, namespace: str | int = ""
+    ) -> None:
         ns = str(namespace)
         lifespan = ttl or self.ttl
         await self.cache.multi_set(pairs=items, ttl=lifespan, namespace=ns)
@@ -56,7 +58,7 @@ class MemoryCacheCore:
             self._scheduler.schedule(key, ns, lifespan)
 
     async def _set_map(
-        self, key: str, value: Any, name: str, user_id: int, ttl: float = None, namespace: str | int = ""
+        self, key: str, value: Any, name: str, user_id: int, ttl: float | None = None, namespace: str | int = ""
     ) -> None:
         await self._set(key, value, ttl=ttl, namespace=namespace)
         self._map_name(name=name, user_id=user_id)
@@ -100,7 +102,7 @@ class MemoryCacheCore:
 class BaseCachedSession(ABC):
     session = None
 
-    def __init__(self, bot, useragent: str, cache_name: str = None):
+    def __init__(self, bot, useragent: str, cache_name: str | None = None):
         self.bot = bot
         self.upload_url = self.bot.config.ApisConfig.file_upload_url / "*"
         self.feridinha_url = self.bot.config.ApisConfig.feridinha_url / "*"
@@ -132,10 +134,10 @@ class BaseCachedSession(ABC):
             self.allowed_codes = (200, 301, 302)
         self.cache = self.create_cache_backend(cache_name or f"{self.__class__.__name__}_requests")
         if hasattr(self, "extra_headers"):
-            extra_headers = getattr(self, "extra_headers")
+            extra_headers = self.extra_headers
             self.headers |= extra_headers
         if hasattr(self, "timeout"):
-            self.timeout = getattr(self, "timeout")
+            self.timeout = self.timeout
 
         self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers, timeout=self.timeout)
 
@@ -184,7 +186,7 @@ class BaseCachedSession(ABC):
 
 class ExpiryScheduler:
     def __init__(self, on_expire: Callable[[str, str], None]):
-        self._heap: list[Tuple[float, str, str]] = []
+        self._heap: list[tuple[float, str, str]] = []
         self._wakeup = asyncio.Event()
         self._on_expire = on_expire
         self._task = asyncio.create_task(self._loop())
@@ -202,7 +204,7 @@ class ExpiryScheduler:
                 await self._wakeup.wait()
                 continue
 
-            expire_at, namespace, key = self._heap[0]
+            expire_at, _namespace, _key = self._heap[0]
             now = time.monotonic()
             delay = expire_at - now
             if delay > 0:

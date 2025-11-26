@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -11,7 +10,14 @@ from typing import TYPE_CHECKING
 from loguru import logger
 from twitchio.ext.commands import CommandErrorPayload
 
-from bot.exceptions import CommandNotFound, CommandOnCooldown, DevRequired, GuardFailure, InvalidArgument, OwnerRequired
+from bot.exceptions import (
+    CommandNotFound,
+    CommandOnCooldown,
+    DevRequiredError,
+    GuardFailure,
+    InvalidArgument,
+    OwnerRequiredError,
+)
 from bot.ext import Routine
 
 if TYPE_CHECKING:
@@ -44,9 +50,9 @@ class CommandHandler:
                 module, name = self._get_module(path=path, filename=filename)
                 if not hasattr(module, "setup"):
                     continue
-                command_name = [
+                command_name = next(
                     modulo for modulo in module.__dict__ if modulo.endswith("Cmd") or modulo.endswith("Cmds")
-                ][0]
+                )
                 if not self.bot.get_component(command_name):
                     await self.bot.load_module(name)
                 else:
@@ -66,7 +72,10 @@ class CommandHandler:
                 routine: Routine = module.routine
                 self.bot.routines.append(routine)
             except Exception as e:
-                logger.error(f"Routine '{filename.name[:-3]}' failed to load: {e}", extra={"locals": locals()})
+                logger.error(
+                    f"Routine '{filename.name[:-3]}' failed to load: {e}",
+                    extra={"locals": locals()},
+                )
 
     async def _load_all_cogs(self, *, reload: bool = False) -> None:
         if reload:
@@ -86,7 +95,10 @@ class CommandHandler:
                         self.load_routines(folder)
             self.start_routines()
         except Exception as e:
-            logger.error(f"Failed to {'reload' if reload else 'load'} cogs: {e}", extra={"locals": locals()})
+            logger.error(
+                f"Failed to {'reload' if reload else 'load'} cogs: {e}",
+                extra={"locals": locals()},
+            )
 
     async def load_cogs(self) -> None:
         await self._load_all_cogs(reload=False)
@@ -146,10 +158,10 @@ class CommandHandler:
 
         if isinstance(error, CommandNotFound):
             return None
-        if isinstance(error, DevRequired):
+        if isinstance(error, DevRequiredError):
             await ctx.simple_response(ctx, translations.Exceptions.dev_required(ctx).response_string)
             self.bot.log.warning(error)
-        if isinstance(error, OwnerRequired):
+        if isinstance(error, OwnerRequiredError):
             await ctx.simple_response(ctx, translations.Exceptions.owner_required(ctx).response_string)
         if isinstance(error, CommandOnCooldown):
             format_string = translations.SupportTools.TimeTools.Humanize(ctx).naturaltime(error.remaining, future=True)
@@ -165,5 +177,6 @@ class CommandHandler:
             return None
         self.bot.log.error(error)
         return await ctx.simple_response(
-            ctx, translations.Exceptions.error_not_registered(ctx, self.bot.dev_name).response_string
+            ctx,
+            translations.Exceptions.error_not_registered(ctx, self.bot.dev_name).response_string,
         )

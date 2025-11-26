@@ -1,12 +1,16 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
-            "en", "Get status about cookies.", "To use: +cookie count (user_name)", marks=pytest.mark.en, id="en"
+            "en",
+            "Get status about cookies.",
+            "To use: +cookie count (user_name)",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -16,7 +20,8 @@ class Params:
             id="pt_BR",
         ),
     ]
-    no_name = [
+
+    no_name: ClassVar[list] = [
         pytest.param(
             "en",
             "you have already eaten 54 cookies 🥠. Has 8534 in stock. "
@@ -33,16 +38,22 @@ class Params:
         ),
     ]
 
-    bot_name = [
+    bot_name: ClassVar[list] = [
         pytest.param(
-            "en", "I have infinite cookies, and I give away a fraction of them to you.", marks=pytest.mark.en, id="en"
+            "en",
+            "I have infinite cookies, and I give away a fraction of them to you.",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
-            "pt_BR", "Tenho cookies infinitos e dou uma fração deles para você.", marks=pytest.mark.pt_BR, id="pt_BR"
+            "pt_BR",
+            "Tenho cookies infinitos e dou uma fração deles para você.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]
 
-    other_user = [
+    other_user: ClassVar[list] = [
         pytest.param(
             "en",
             "@channelname have already eaten 54 cookies 🥠. Has 8534 in stock. "
@@ -59,7 +70,7 @@ class Params:
         ),
     ]
 
-    author_with_a_bunch_of_things = [
+    author_with_a_bunch_of_things: ClassVar[list] = [
         pytest.param(
             "en",
             "you have already eaten 54 cookies 🥠. "
@@ -78,7 +89,7 @@ class Params:
         ),
     ]
 
-    user_not_found = [
+    user_not_found: ClassVar[list] = [
         pytest.param(
             "en",
             "user @random_user has not yet been registered and has not used any cookie commands.",

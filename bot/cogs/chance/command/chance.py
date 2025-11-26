@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import random
@@ -29,7 +28,7 @@ class ChanceCmd(commands.CustomComponent):
 
     @commands.command(name="chance", aliases=["%"])
     async def chance(self, ctx: Context) -> Response:
-        chance = f'{("{:.2f}%".format(random.random() * 100))}'
+        chance = f'{(f"{random.random() * 100:.2f}%")}'
         return self.translations.Chance.response(ctx, chance)
 
 

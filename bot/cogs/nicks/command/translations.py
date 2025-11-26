@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase
+from bot.ext import Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context, commands
+    from bot.ext import Context
 
 
 class Translations(TranslationBase):
@@ -22,8 +21,14 @@ class Translations(TranslationBase):
         def not_seen(self, ctx: Context, name) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", 'I have never seen anyone with the nick "{}" in any tracked chat.')
-                self.lang_dict.add_with(["pt_br", "pt"], 'Nunca vi ninguém com o nick "{}" em nenhum chat rastreado.')
+                self.lang_dict.add_with(
+                    "en",
+                    'I have never seen anyone with the nick "{}" in any tracked chat.',
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    'Nunca vi ninguém com o nick "{}" em nenhum chat rastreado.',
+                )
             return response.format_response(self._untangle_str(ctx, self._cname), name)
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
@@ -32,7 +37,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Histórico de nicks de um usuário.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}nicks (user nick)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}nicks (nick do usuário)")

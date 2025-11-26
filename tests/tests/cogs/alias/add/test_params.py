@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "This subcommand is used to add an alias.",
@@ -21,7 +21,7 @@ class Params:
         ),
     ]
 
-    no_content = [
+    no_content: ClassVar[list] = [
         pytest.param(
             "en",
             "You didn't send a command! Usage: +alias add (name) (command) (…arguments)",
@@ -36,7 +36,7 @@ class Params:
         ),
     ]
 
-    invalid_name = [
+    invalid_name: ClassVar[list] = [
         pytest.param(
             "en",
             "Your alias name is not valid! Your alias should only contain letters, "
@@ -53,12 +53,22 @@ class Params:
         ),
     ]
 
-    valid_name = [
-        pytest.param("en", 'Your alias "{name}" has been created successfully.', marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", 'Seu alias "{name}" foi criado com sucesso.', marks=pytest.mark.pt_BR, id="pt_BR"),
+    valid_name: ClassVar[list] = [
+        pytest.param(
+            "en",
+            'Your alias "{name}" has been created successfully.',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Seu alias "{name}" foi criado com sucesso.',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    conflict = [
+    conflict: ClassVar[list] = [
         pytest.param(
             "en",
             'Cannot add alias "The_Tests_alias" - you already have one! '
@@ -75,10 +85,10 @@ class Params:
         ),
     ]
 
-    guard_caught = [
+    guard_caught: ClassVar[list] = [
         pytest.param(
             "en",
-            'You are not authorized to use the "restart" command due to "DevRequired". '
+            'You are not authorized to use the "restart" command due to "DevRequiredError". '
             "If you think this is an error, contact @dev_name.",
             marks=pytest.mark.en,
             id="en",
@@ -86,37 +96,55 @@ class Params:
         pytest.param(
             "pt_BR",
             'Você não está autorizado a usar o comando "restart" motivo: '
-            '"DevRequired". Se achar que isso é um erro, entre em contato com @dev_name.',
+            '"DevRequiredError". Se achar que isso é um erro, entre em contato com @dev_name.',
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
     ]
 
-    success = [
-        pytest.param("en", 'Your alias "The_Tests" has been created successfully.', marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", 'Seu alias "The_Tests" foi criado com sucesso.', marks=pytest.mark.pt_BR, id="pt_BR"),
-    ]
-
-    pipe_guard_caught = [
+    success: ClassVar[list] = [
         pytest.param(
             "en",
-            'You are not authorized to use the "restart" command due to "DevRequired". '
+            'Your alias "The_Tests" has been created successfully.',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Seu alias "The_Tests" foi criado com sucesso.',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
+    ]
+
+    pipe_guard_caught: ClassVar[list] = [
+        pytest.param(
+            "en",
+            'You are not authorized to use the "restart" command due to "DevRequiredError". '
             "If you think this is an error, contact @dev_name.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            'Você não está autorizado a usar o comando "restart" motivo: "DevRequired". '
+            'Você não está autorizado a usar o comando "restart" motivo: "DevRequiredError". '
             "Se achar que isso é um erro, entre em contato com @dev_name.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
     ]
 
-    pipe_success = [
-        pytest.param("en", 'Your alias "advanced_usage" has been created successfully.', marks=pytest.mark.en, id="en"),
+    pipe_success: ClassVar[list] = [
         pytest.param(
-            "pt_BR", 'Seu alias "advanced_usage" foi criado com sucesso.', marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            'Your alias "advanced_usage" has been created successfully.',
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            'Seu alias "advanced_usage" foi criado com sucesso.',
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]

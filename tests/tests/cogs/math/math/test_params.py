@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Enter the command and a mathematical operation for me to solve it.",
@@ -21,22 +21,22 @@ class Params:
         ),
     ]
 
-    simple_formula = [
+    simple_formula: ClassVar[list] = [
         pytest.param("en", "2", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "2", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    not_so_simple_formula = [
+    not_so_simple_formula: ClassVar[list] = [
         pytest.param("en", "723.4998272287285", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "723.4998272287285", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    multi_line_ish_formula = [
+    multi_line_ish_formula: ClassVar[list] = [
         pytest.param("en", "[[0, 6]]", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "[[0, 6]]", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    error = [
+    error: ClassVar[list] = [
         pytest.param(
             "en",
             "An unexpected error occurred. Please report it to @dev_name on whispers.",

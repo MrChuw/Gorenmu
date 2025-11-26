@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Sends a random color.",
@@ -21,9 +21,12 @@ class Params:
         ),
     ]
 
-    no_tipo = [
+    no_tipo: ClassVar[list] = [
         pytest.param(
-            "en", "#C53EDF is Medium Purple. https://color.mrchuw.com.br/hex/c53edf", marks=pytest.mark.en, id="en"
+            "en",
+            "#C53EDF is Medium Purple. https://color.mrchuw.com.br/hex/c53edf",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -33,9 +36,12 @@ class Params:
         ),
     ]
 
-    hex_tipo = [
+    hex_tipo: ClassVar[list] = [
         pytest.param(
-            "en", "#C53EDF is Medium Purple. https://color.mrchuw.com.br/hex/c53edf", marks=pytest.mark.en, id="en"
+            "en",
+            "#C53EDF is Medium Purple. https://color.mrchuw.com.br/hex/c53edf",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -45,7 +51,7 @@ class Params:
         ),
     ]
 
-    hex_name_api_down = [
+    hex_name_api_down: ClassVar[list] = [
         pytest.param(
             "en",
             "#C53EDF is thecolorapi.com is inaccessible. https://color.mrchuw.com.br/hex/c53edf",
@@ -60,7 +66,7 @@ class Params:
         ),
     ]
 
-    rgb_name_api_down = [
+    rgb_name_api_down: ClassVar[list] = [
         pytest.param(
             "en",
             "#C5D714 is thecolorapi.com is inaccessible. https://color.mrchuw.com.br/rgb/197,215,20",

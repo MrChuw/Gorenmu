@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -23,7 +21,12 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_ping(
-    interact, mock_context: MockContext, lang: str, expected: str = None, re_expected: str = None, success: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    expected: str | None = None,
+    re_expected: str | None = None,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     response: Response = await interact.ping._callback(interact, mock_context)  # NOQA

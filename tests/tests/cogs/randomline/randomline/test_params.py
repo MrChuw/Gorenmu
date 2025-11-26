@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Fetches a random message from the channel or from a user in the channel.",
@@ -23,9 +23,12 @@ class Params:
         ),
     ]
 
-    no_content = [
+    no_content: ClassVar[list] = [
         pytest.param(
-            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)", marks=pytest.mark.en, id="en"
+            "en",
+            r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -35,9 +38,12 @@ class Params:
         ),
     ]
 
-    random_content = [
+    random_content: ClassVar[list] = [
         pytest.param(
-            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)", marks=pytest.mark.en, id="en"
+            "en",
+            r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -47,9 +53,12 @@ class Params:
         ),
     ]
 
-    target_user = [
+    target_user: ClassVar[list] = [
         pytest.param(
-            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)", marks=pytest.mark.en, id="en"
+            "en",
+            r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -59,9 +68,12 @@ class Params:
         ),
     ]
 
-    target_channel = [
+    target_channel: ClassVar[list] = [
         pytest.param(
-            "en", r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)", marks=pytest.mark.en, id="en"
+            "en",
+            r"Some Text \(sent (\d+(?:\.\d+)?) seconds ago by @username\)",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -71,16 +83,32 @@ class Params:
         ),
     ]
 
-    target_channel_no_messages = [
-        pytest.param("en", "Couldn't find any message from channel @some_user_49.", marks=pytest.mark.en, id="en"),
+    target_channel_no_messages: ClassVar[list] = [
         pytest.param(
-            "pt_BR", "Não encontrei nenhuma mensagem do canal @some_user_49.", marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            "Couldn't find any message from channel @some_user_49.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Não encontrei nenhuma mensagem do canal @some_user_49.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]
 
-    target_user_no_messages = [
-        pytest.param("en", "I couldn't find any user named @some_user_51.", marks=pytest.mark.en, id="en"),
+    target_user_no_messages: ClassVar[list] = [
         pytest.param(
-            "pt_BR", "Não consegui encontrar nenhum usuário chamado @some_user_51.", marks=pytest.mark.pt_BR, id="pt_BR"
+            "en",
+            "I couldn't find any user named @some_user_51.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Não consegui encontrar nenhum usuário chamado @some_user_51.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
         ),
     ]

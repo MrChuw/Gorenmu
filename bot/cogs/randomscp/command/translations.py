@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -25,7 +24,7 @@ class Translations(TranslationBase):
                 self.lang_dict.add_with(["pt_br", "pt"], "Envia um SCP aleatório.")
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "To use: {}scp")
                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}scp")
@@ -50,7 +49,10 @@ class Translations(TranslationBase):
         def deco_commands(self, ctx: Context, *args, **kwargs) -> CommandExemples:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", CommandExemples([{"response": "(random SCP link)"}]))
-                self.lang_dict.add_with(["pt_br", "pt"], CommandExemples([{"response": "(link de um SCP aleatório)"}]))
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    CommandExemples([{"response": "(link de um SCP aleatório)"}]),
+                )
             return self._untangle_commands(ctx, self._cname)
 
         # endregion

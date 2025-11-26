@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -28,18 +27,21 @@ class TokensHandler:
 
             subs += [
                 eventsub.ChatMessageSubscription(
-                    broadcaster_user_id=str(user.id), user_id=str(self.config.BotConfig.bot_id)
+                    broadcaster_user_id=str(user.id),
+                    user_id=str(self.config.BotConfig.bot_id),
                 ),
                 eventsub.StreamOnlineSubscription(broadcaster_user_id=str(user.id)),
             ]
 
         subs += [
             eventsub.ChatMessageSubscription(
-                broadcaster_user_id=str(self.config.BotConfig.dev_userid), user_id=str(self.config.BotConfig.bot_id)
+                broadcaster_user_id=str(self.config.BotConfig.dev_userid),
+                user_id=str(self.config.BotConfig.bot_id),
             ),
             eventsub.StreamOnlineSubscription(broadcaster_user_id=str(self.config.BotConfig.dev_userid)),
             eventsub.WhisperReceivedSubscription(
-                broadcaster_user_id=str(self.config.BotConfig.bot_id), user_id=str(self.config.BotConfig.bot_id)
+                broadcaster_user_id=str(self.config.BotConfig.bot_id),
+                user_id=str(self.config.BotConfig.bot_id),
             ),
         ]
 
@@ -50,7 +52,7 @@ class TokensHandler:
                     continue
                 else:
                     self.bot.log.warning(
-                        f"Failed to subscribe {err.subscription.user_id}, " f"type: {err.subscription.type}"
+                        f"Failed to subscribe {err.subscription.user_id}, type: {err.subscription.type}"
                     )
 
     async def event_oauth_authorized(self, payload: twitchio.authentication.UserTokenPayload) -> None:
@@ -63,7 +65,8 @@ class TokensHandler:
 
         subs: list[eventsub.SubscriptionPayload] = [
             eventsub.ChatMessageSubscription(
-                broadcaster_user_id=payload.user_id, user_id=str(self.config.BotConfig.bot_id)
+                broadcaster_user_id=payload.user_id,
+                user_id=str(self.config.BotConfig.bot_id),
             ),
             eventsub.StreamOnlineSubscription(broadcaster_user_id=payload.user_id),
         ]
@@ -76,7 +79,9 @@ class TokensHandler:
         resp = await super(type(self.bot), self.bot).add_token(token, refresh)
 
         user = await UserModel.get_user_or_none(
-            ctx_bot=self.bot, user_id=resp.user_id if resp.user_id.isnumeric() else int(resp.user_id), translations=None
+            ctx_bot=self.bot,
+            user_id=resp.user_id if resp.user_id.isnumeric() else int(resp.user_id),
+            translations=None,
         )
         if not user:
             user = await UserModel.create(name=resp.login, id=resp.user_id)

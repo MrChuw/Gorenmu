@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -20,14 +18,17 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
     await mock_context.prepare_context(lang)
     mock_context.Asserter.assert_string(interact.translations.Suggest.deco_usage(mock_context, "+"), usage, strict=True)
     mock_context.Asserter.assert_string(
-        interact.translations.Suggest.deco_helper(mock_context, "+"), helper, strict=True
+        interact.translations.Suggest.deco_helper(mock_context, "+"),
+        helper,
+        strict=True,
     )
 
 
 # To lazy to make this tests too.
 
 # async def base_bug(
-#     interact, mock_context: MockContext, lang: str, content: str, expected: str = None, re_expected: str = None, success: bool = False
+#     interact, mock_context: MockContext, lang: str, content: str,
+#     expected: str = None, re_expected: str = None, success: bool = False
 # ):
 #     await mock_context.prepare_context(lang)
 #     response: Response = await interact.bug._callback(interact, mock_context, content=content)  # NOQA

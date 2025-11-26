@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -27,8 +25,8 @@ async def base_dicio(
     mock_context: MockContext,
     lang: str,
     content: str,
-    expected: str = None,
-    re_expected: str = None,
+    expected: str | None = None,
+    re_expected: str | None = None,
     success: bool = False,
     response_get=None,
 ):
@@ -39,7 +37,10 @@ async def base_dicio(
     async with mock_context.MockBuilder.Session.get_json(session, response_get):
         response: Response = await interact.dicio._callback(interact, mock_context, content=content)  # NOQA
     mock_context.Asserter.assert_string(
-        response.response_string, expected=expected, re_expected=re_expected, strict=True
+        response.response_string,
+        expected=expected,
+        re_expected=re_expected,
+        strict=True,
     )
     mock_context.Asserter.assert_boolean(response.success, success)
 
@@ -49,7 +50,13 @@ async def base_dicio(
 async def test_exist(interact, mock_context: MockContext, lang: str, expected: str):
     response = {"exist": True, "suggestions": ["a", "b", "c"], "stem": ["d"]}
     await base_dicio(
-        interact, mock_context, lang=lang, content="word", expected=expected, success=True, response_get=response
+        interact,
+        mock_context,
+        lang=lang,
+        content="word",
+        expected=expected,
+        success=True,
+        response_get=response,
     )
 
 
@@ -58,5 +65,11 @@ async def test_exist(interact, mock_context: MockContext, lang: str, expected: s
 async def test_not_exist(interact, mock_context: MockContext, lang: str, expected: str):
     response = {"exist": False, "suggestions": ["a", "b", "c"], "stem": []}
     await base_dicio(
-        interact, mock_context, lang=lang, content="", expected=expected, success=True, response_get=response
+        interact,
+        mock_context,
+        lang=lang,
+        content="",
+        expected=expected,
+        success=True,
+        response_get=response,
     )

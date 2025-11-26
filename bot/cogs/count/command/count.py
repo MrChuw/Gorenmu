@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import re
@@ -39,7 +38,7 @@ class CountCmd(commands.CustomComponent):
             cache_session = self.SessionsCaches.Count
             for url in urls:
                 response = await cache_session.session.get(url)
-                content += f"{await response.text()} "
+                content += f"{await response.text()}"
         uppercase_count = len(re.findall(r"[A-Z]", content))
         punctuations_count = len(re.findall(f"[{re.escape(string.punctuation)}]", content))
         special_chars_count = len([char for char in re.findall(r"[^\w\s]", content) if char not in string.punctuation])

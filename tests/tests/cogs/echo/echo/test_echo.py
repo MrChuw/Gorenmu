@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -27,8 +25,8 @@ async def base_echo(
     mock_context: MockContext,
     lang: str,
     content: str,
-    expected: str = None,
-    re_expected: str = None,
+    expected: str | None = None,
+    re_expected: str | None = None,
     success: bool = False,
 ):
     await mock_context.prepare_context(lang)
@@ -40,10 +38,24 @@ async def base_echo(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_no_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_echo(interact, mock_context, lang=lang, content="test", expected=expected, success=True)
+    await base_echo(
+        interact,
+        mock_context,
+        lang=lang,
+        content="test",
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.punctuation)
 async def test_punctuation(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_echo(interact, mock_context, lang=lang, content="@test", expected=expected, success=True)
+    await base_echo(
+        interact,
+        mock_context,
+        lang=lang,
+        content="@test",
+        expected=expected,
+        success=True,
+    )

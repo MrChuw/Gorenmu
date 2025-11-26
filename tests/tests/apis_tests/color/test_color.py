@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import time
 from unittest.mock import MagicMock
 
@@ -12,18 +11,22 @@ from tests.helpers.patches.patches import MockBuilder
 @pytest.mark.asyncio
 async def test_color_name_success():
     return_value = {"name": {"value": "Cerulean"}, "hex": {"value": "#24B1E0"}}
-    async with CachedSession() as session:
-        async with MockBuilder(None).Session.get_json(session, return_value):
-            result = await Color.name({"hex": "24B1E0"}, session, MagicMock())
-            assert result == "Cerulean", f"Expected 'Cerulean' from API, but got {result!r}"
+    async with (
+        CachedSession() as session,
+        MockBuilder(None).Session.get_json(session, return_value),
+    ):
+        result = await Color.name({"hex": "24B1E0"}, session, MagicMock())
+        assert result == "Cerulean", f"Expected 'Cerulean' from API, but got {result!r}"
 
 
 @pytest.mark.asyncio
 async def test_name_failure_returns_none():
-    async with CachedSession() as session:
-        async with MockBuilder(None).Session.get_json(session, side_effect=Exception("Error")):
-            result = await Color.name({"hex": "24B1E0"}, session, MagicMock())
-            assert result is None, f"Expected None due to API failure, but got {result!r}"
+    async with (
+        CachedSession() as session,
+        MockBuilder(None).Session.get_json(session, side_effect=Exception("Error")),
+    ):
+        result = await Color.name({"hex": "24B1E0"}, session, MagicMock())
+        assert result is None, f"Expected None due to API failure, but got {result!r}"
 
 
 @pytest.mark.network

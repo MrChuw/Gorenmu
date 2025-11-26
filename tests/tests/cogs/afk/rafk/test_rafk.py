@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 
 import pytest
@@ -26,13 +25,22 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_rafk(
-    interact, mock_context: MockContext, lang: str, content: str, expected: str, time=True, success: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    content: str,
+    expected: str,
+    time=True,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     if time:
         afk = (await Status.get_or_create(user=mock_context.user))[0]
         afk_str = RAfkNamedTuple(
-            content=content, updated_at=datetime.strptime("2025-01-01 06:00", "%Y-%m-%d %H:%M"), alias="afk", afk=afk
+            content=content,
+            updated_at=datetime.strptime("2025-01-01 06:00", "%Y-%m-%d %H:%M"),
+            alias="afk",
+            afk=afk,
         )
         await interact.bot.memcache.RAfk.set([int(mock_context.author.id), "username"], afk_str)
     response: Response = await interact.rafk._callback(self=interact, ctx=mock_context)  # NOQA
@@ -43,13 +51,28 @@ async def base_rafk(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.not_in_time)
 async def test_rafk_not_in_time(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_rafk(interact, mock_context, lang=lang, content="content", expected=expected, time=False, success=False)
+    await base_rafk(
+        interact,
+        mock_context,
+        lang=lang,
+        content="content",
+        expected=expected,
+        time=False,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.with_content)
 async def test_rafk_with_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_rafk(interact, mock_context, lang=lang, content="content", expected=expected, success=True)
+    await base_rafk(
+        interact,
+        mock_context,
+        lang=lang,
+        content="content",
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio

@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Command used to make basic pixel sorting in images.",
@@ -20,12 +20,13 @@ class Params:
             id="pt_BR",
         ),
     ]
-    no_content = [
+
+    no_content: ClassVar[list] = [
         pytest.param("en", "blablabla", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "blablabla", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    params_ = [
+    params_: ClassVar[list] = [
         pytest.param("en", "blablabla", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "blablabla", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]

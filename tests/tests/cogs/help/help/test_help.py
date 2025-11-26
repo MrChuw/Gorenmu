@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -26,8 +24,8 @@ async def base_help(
     mock_context: MockContext,
     lang: str,
     content: str,
-    expected: str = None,
-    re_expected: str = None,
+    expected: str | None = None,
+    re_expected: str | None = None,
     success: bool = False,
 ):
     await mock_context.prepare_context(lang)
@@ -45,10 +43,24 @@ async def test_no_content(interact, mock_context: MockContext, lang: str, expect
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.wrong_command)
 async def test_wrong_command(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_help(interact, mock_context, lang=lang, content="pign", expected=expected, success=False)
+    await base_help(
+        interact,
+        mock_context,
+        lang=lang,
+        content="pign",
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.right_command)
 async def test_right_command(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_help(interact, mock_context, lang=lang, content="ping", expected=expected, success=True)
+    await base_help(
+        interact,
+        mock_context,
+        lang=lang,
+        content="ping",
+        expected=expected,
+        success=True,
+    )

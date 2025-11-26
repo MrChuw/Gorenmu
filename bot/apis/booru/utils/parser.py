@@ -1,6 +1,5 @@
 import json
 import re
-from random import sample
 
 __version__ = "1.0.0"
 
@@ -193,7 +192,7 @@ def get_hostname(url: str):
     str
         The site contains protocol and hostname
     """
-    return re.sub(r"(.*://)?([^/?]+).*", "\g<1>\g<2>", url)
+    return re.sub(r"(.*://)?([^/?]+).*", "\g<1>\g<2>", url)  # NOQA
 
 
 def resolve(b_object: dict) -> dict:

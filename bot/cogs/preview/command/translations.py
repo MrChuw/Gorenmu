@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -35,12 +34,16 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "This command will send a print and timestamp of the requested live stream."
+                    "en",
+                    "This command will send a print and timestamp of the requested live stream.",
                 )
-                self.lang_dict.add_with(["pt_br", "pt"], "Este comando enviara um print e timestamp da live pedida.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Este comando enviara um print e timestamp da live pedida.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "{}preview (channel_name)")
                 self.lang_dict.add_with(["pt_br", "pt"], "{}preview (nome_do_canal)")

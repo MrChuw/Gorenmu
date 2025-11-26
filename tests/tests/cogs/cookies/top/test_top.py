@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from bot.ext import Response
@@ -18,7 +16,12 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_top(
-    interact, mock_context: MockContext, lang: str, content: list[str], expected: str, success: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    content: list[str],
+    expected: str,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     await Check.cookie_check(mock_context, interact.translations)
@@ -38,28 +41,63 @@ async def test_no_content(interact, mock_context: MockContext, lang: str, expect
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.stocked)
 async def test_stocked(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_top(interact, mock_context, lang=lang, content=["stocked"], expected=expected, success=True)
+    await base_top(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["stocked"],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.consumed)
 async def test_consumed(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_top(interact, mock_context, lang=lang, content=["consumed"], expected=expected, success=True)
+    await base_top(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["consumed"],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.donated)
 async def test_donated(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_top(interact, mock_context, lang=lang, content=["donated"], expected=expected, success=True)
+    await base_top(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["donated"],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.received)
 async def test_received(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_top(interact, mock_context, lang=lang, content=["received"], expected=expected, success=True)
+    await base_top(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["received"],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.total)
 async def test_total(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_top(interact, mock_context, lang=lang, content=["total"], expected=expected, success=True)
+    await base_top(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["total"],
+        expected=expected,
+        success=True,
+    )

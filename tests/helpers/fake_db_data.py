@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import contextlib
 from typing import TYPE_CHECKING
 
 from bot.cogs.afk.commands.translations import Translations
@@ -22,20 +20,20 @@ async def create_fake_db(bot: Gorenmu):
     await user.save()
 
     for num in range(50):
-        ctx = MockContext(f"some_user_{num+1}", num + 1, "channelname", 123456, bot)  # NOQA
+        ctx = MockContext(f"some_user_{num + 1}", num + 1, "channelname", 123456, bot)  # NOQA
         await User.create_or_update(ctx)
 
     for num in range(45, 51):
         user = await ctx.bot.memcache.User.get(user_id=num)
-        channel = await Channel.create(user=user)
+        channel = await channel.create(user=user)
         ctx.bot.channels[user.name] = channel
 
     ctx = MockContext("status_user_50", 12344321, "channelname", 123456, bot)  # NOQA
     # ctx.user.get_translation(bot, "en")
     user = await User.create_or_update(ctx)
     translations = Translations(None)  # NOQA
-    with contextlib.suppress():
-        translations.AFK.afks(None)
+    # with contextlib.suppress():
+    translations.AFK.afks(None)
     afks = translations.AFK._get_afks()  # NOQA
     ctx.user = user
     await Status.go_afk(ctx=ctx, status=afks.get("afk"), content="")

@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Set or remove a custom nickname.",
@@ -21,18 +21,48 @@ class Params:
         ),
     ]
 
-    nick_set = [
-        pytest.param("en", "xXCoolNickNameXx", "Nick changed successfully.", marks=pytest.mark.en, id="nick-en"),
-        pytest.param("pt_BR", "xXNickLegalXx", "Apelido alterado com sucesso.", marks=pytest.mark.pt_BR, id="nick-pt"),
+    nick_set: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "xXCoolNickNameXx",
+            "Nick changed successfully.",
+            marks=pytest.mark.en,
+            id="nick-en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "xXNickLegalXx",
+            "Apelido alterado com sucesso.",
+            marks=pytest.mark.pt_BR,
+            id="nick-pt",
+        ),
     ]
 
-    nick_remove = [
-        pytest.param("en", "remove", "Nick removed successfully.", marks=pytest.mark.en, id="remove-en"),
-        pytest.param("pt_BR", "remove", "Apelido removido com sucesso.", marks=pytest.mark.pt_BR, id="remove-pt"),
+    nick_remove: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "remove",
+            "Nick removed successfully.",
+            marks=pytest.mark.en,
+            id="remove-en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "remove",
+            "Apelido removido com sucesso.",
+            marks=pytest.mark.pt_BR,
+            id="remove-pt",
+        ),
     ]
 
-    nick_too_long = [
-        pytest.param("en", "x" * 33, "Nick must be max 32 characters long not 33.", marks=pytest.mark.en, id="long-en"),
+    nick_too_long: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "x" * 33,
+            "Nick must be max 32 characters long not 33.",
+            marks=pytest.mark.en,
+            id="long-en",
+        ),
         pytest.param(
             "pt_BR",
             "y" * 33,
@@ -42,9 +72,19 @@ class Params:
         ),
     ]
 
-    nick_start_punctuation = [
-        pytest.param("en", "!alert", "Nick changed successfully.", marks=pytest.mark.en, id="punctuation-en"),
+    nick_start_punctuation: ClassVar[list] = [
         pytest.param(
-            "pt_BR", "#hashtag", "Apelido alterado com sucesso.", marks=pytest.mark.pt_BR, id="punctuation-pt"
+            "en",
+            "!alert",
+            "Nick changed successfully.",
+            marks=pytest.mark.en,
+            id="punctuation-en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "#hashtag",
+            "Apelido alterado com sucesso.",
+            marks=pytest.mark.pt_BR,
+            id="punctuation-pt",
         ),
     ]

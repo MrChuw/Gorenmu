@@ -1,28 +1,26 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
 import json
 import logging
 import secrets
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from functools import partial
 from http.client import HTTPException
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     import aiohttp
     from aiohttp_client_cache import CachedSession
 
-    # from contextlib import asynccontextmanager
 
 # Original code in https://github.com/lovvskillz/python-discord-webhook/
 
 logger = logging.getLogger(__name__)
 
 
-class ColorNotInRangeException(Exception):
-    def __init__(self, color: Union[str, int], message=None) -> None:
+class ColorNotInRangeError(Exception):
+    def __init__(self, color: str | int, message=None) -> None:
         if not message:
             message = (
                 f"{color!r} is not in valid range of colors. The valid ranges of colors"
@@ -37,20 +35,20 @@ class DiscordEmbed:
     Discord Embed
     """
 
-    author: Optional[Dict[str, Optional[str]]]
-    color: Optional[int]
-    description: Optional[str]
-    fields: List[Dict[str, Optional[Any]]]
-    footer: Optional[Dict[str, Optional[str]]]
-    image: Optional[Dict[str, Optional[Union[str, int]]]]
-    provider: Optional[Dict[str, Any]]
-    thumbnail: Optional[Dict[str, Optional[Union[str, int]]]]
-    timestamp: Optional[str]
-    title: Optional[str]
-    url: Optional[str]
-    video: Optional[Dict[str, Optional[Union[str, int]]]]
+    author: dict[str, str | None] | None
+    color: int | None
+    description: str | None
+    fields: list[dict[str, Any | None]]
+    footer: dict[str, str | None] | None
+    image: dict[str, str | int | None] | None
+    provider: dict[str, Any] | None
+    thumbnail: dict[str, str | int | None] | None
+    timestamp: str | None
+    title: str | None
+    url: str | None
+    video: dict[str, str | int | None] | None
 
-    def __init__(self, title: Optional[str] = None, description: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(self, title: str | None = None, description: str | None = None, **kwargs: Any) -> None:
         """
         Init Discord Embed
         -----------
@@ -102,29 +100,28 @@ class DiscordEmbed:
         """
         self.url = url
 
-    def set_timestamp(self, timestamp: Optional[Union[float, int, str, datetime]] = None) -> None:
+    def set_timestamp(self, timestamp: float | int | str | datetime | None = None) -> None:
         """
         Set timestamp of the embed content.
         :param timestamp: optional timestamp of embed content
         """
         if timestamp is None:
-            timestamp = datetime.now(timezone.utc)
-        elif isinstance(timestamp, float) or isinstance(timestamp, int):
-            timestamp = datetime.fromtimestamp(timestamp, timezone.utc).replace(tzinfo=None)
-
+            timestamp = datetime.now(UTC)
+        elif isinstance(timestamp, (float, int)):
+            timestamp = datetime.fromtimestamp(timestamp, UTC).replace(tzinfo=None)
         if not isinstance(timestamp, str):
             timestamp = timestamp.isoformat()
 
         self.timestamp = timestamp
 
-    def set_color(self, color: Union[str, int]) -> None:
+    def set_color(self, color: str | int) -> None:
         """
         Set the color of the embed.
         :param color: color code as decimal(int) or hex(string)
         """
         self.color = int(color, 16) if isinstance(color, str) else color
         if self.color is not None and self.color not in range(16777216):
-            raise ColorNotInRangeException(color)
+            raise ColorNotInRangeError(color)
 
     def set_footer(self, text: str, **kwargs) -> None:
         """
@@ -133,9 +130,13 @@ class DiscordEmbed:
         :keyword str icon_url: url of footer icon (only http(s) and attachments)
         :keyword str proxy_icon_url: proxied url of footer icon
         """
-        self.footer = {"text": text, "icon_url": kwargs.get("icon_url"), "proxy_icon_url": kwargs.get("proxy_icon_url")}
+        self.footer = {
+            "text": text,
+            "icon_url": kwargs.get("icon_url"),
+            "proxy_icon_url": kwargs.get("proxy_icon_url"),
+        }
 
-    def set_image(self, url: str, **kwargs: Union[str, int]) -> None:
+    def set_image(self, url: str, **kwargs: str | int) -> None:
         """
         Set the image that will be displayed in the embed.
         :param str url: source url of image (only supports http(s) and attachments)
@@ -150,7 +151,7 @@ class DiscordEmbed:
             "width": kwargs.get("width"),
         }
 
-    def set_thumbnail(self, url: str, **kwargs: Union[str, int]) -> None:
+    def set_thumbnail(self, url: str, **kwargs: str | int) -> None:
         """
         Set the thumbnail that will be displayed in the embed.
         :param str url: source url of thumbnail (only supports http(s) and attachments)
@@ -165,14 +166,18 @@ class DiscordEmbed:
             "width": kwargs.get("width"),
         }
 
-    def set_video(self, **kwargs: Union[str, int]) -> None:
+    def set_video(self, **kwargs: str | int) -> None:
         """
         Set the video that will be displayed in the embed.
         :keyword str url: source url of video
         :keyword int height: height of video
         :keyword int width: width of video
         """
-        self.video = {"url": kwargs.get("url"), "height": kwargs.get("height"), "width": kwargs.get("width")}
+        self.video = {
+            "url": kwargs.get("url"),
+            "height": kwargs.get("height"),
+            "width": kwargs.get("width"),
+        }
 
     def set_provider(self, **kwargs: str) -> None:
         """
@@ -214,7 +219,7 @@ class DiscordEmbed:
         """
         self.fields.pop(index)
 
-    def get_embed_fields(self) -> List[Dict[str, Optional[Any]]]:
+    def get_embed_fields(self) -> list[dict[str, Any | None]]:
         """
         Get all stored fields of the embed as a list.
         :return: fields of the embed
@@ -248,32 +253,32 @@ class DiscordWebhook:
         self.url: str = url
         self.session: CachedSession = session
         self.flags = kwargs.get("flags")
-        self.components: Optional[list] = []
-        self.allowed_mentions: Dict[str, List[str]] = kwargs.get("allowed_mentions", {})
-        self.attachments: Optional[List[Dict[str, Any]]] = kwargs.get("attachments", [])
-        self.avatar_url: Optional[str] = kwargs.get("avatar_url")
-        self.content: Optional[Union[str, bytes]] = kwargs.get("content")
-        self.embeds: List[Dict[str, Any]] = kwargs.get("embeds", [])
-        self.files: Dict[str, Tuple[Optional[str], Union[bytes, str]]] = kwargs.get("files", {})
-        self._files: List[Dict[str, str]] = []
-        self.id: Optional[str] = kwargs.get("id")
-        self.proxies: Optional[Dict[str, str]] = kwargs.get("proxies")
+        self.components: list | None = []
+        self.allowed_mentions: dict[str, list[str]] = kwargs.get("allowed_mentions", {})
+        self.attachments: list[dict[str, Any]] | None = kwargs.get("attachments", [])
+        self.avatar_url: str | None = kwargs.get("avatar_url")
+        self.content: str | bytes | None = kwargs.get("content")
+        self.embeds: list[dict[str, Any]] = kwargs.get("embeds", [])
+        self.files: dict[str, tuple[str | None, bytes | str]] = kwargs.get("files", {})
+        self._files: list[dict[str, str]] = []
+        self.id: str | None = kwargs.get("id")
+        self.proxies: dict[str, str] | None = kwargs.get("proxies")
         self.rate_limit_retry: bool = kwargs.get("rate_limit_retry", False)
-        self.thread_id: Optional[str] = kwargs.get("thread_id")
-        self.thread_name: Optional[str] = kwargs.get("thread_name")
-        self.timeout: Optional[float] = kwargs.get("timeout")
-        self.tts: Optional[bool] = kwargs.get("tts", False)
-        self.username: Optional[str] = kwargs.get("username", None)
-        self.wait: Optional[bool] = kwargs.get("wait", True)
+        self.thread_id: str | None = kwargs.get("thread_id")
+        self.thread_name: str | None = kwargs.get("thread_name")
+        self.timeout: float | None = kwargs.get("timeout")
+        self.tts: bool | None = kwargs.get("tts", False)
+        self.username: str | None = kwargs.get("username")
+        self.wait: bool | None = kwargs.get("wait", True)
 
-    def add_embed(self, embed: Union[DiscordEmbed, Dict[str, Any]]) -> None:
+    def add_embed(self, embed: DiscordEmbed | dict[str, Any]) -> None:
         """
         Add an embedded rich content.
         :param embed: embed object or dict.
         """
         self.embeds.append(embed.__dict__ if isinstance(embed, DiscordEmbed) else embed)
 
-    def get_embeds(self) -> List[Dict[str, Any]]:
+    def get_embeds(self) -> list[dict[str, Any]]:
         """
         Get all embeds as a list.
         :return: embeds
@@ -309,7 +314,10 @@ class DiscordWebhook:
         """
         self.files.pop(f"_{filename}", None)
         if self.attachments:
-            index = next((i for i, item in enumerate(self.attachments) if item.get("filename") == filename), None)
+            index = next(
+                (i for i, item in enumerate(self.attachments) if item.get("filename") == filename),
+                None,
+            )
             if index is not None:
                 self.attachments.pop(index)
 
@@ -328,7 +336,7 @@ class DiscordWebhook:
         """
         self.attachments = []
 
-    def set_proxies(self, proxies: Dict[str, str]) -> None:
+    def set_proxies(self, proxies: dict[str, str]) -> None:
         """
         Set proxies that should be used when sending the webhook.
         :param dict proxies: dict of proxies.
@@ -350,7 +358,7 @@ class DiscordWebhook:
         self.flags = flags
 
     @property
-    def json(self) -> Dict[str, Any]:
+    def json(self) -> dict[str, Any]:
         """
         Convert data of the webhook to JSON.
         :return: webhook data as json.
@@ -363,7 +371,7 @@ class DiscordWebhook:
         data = {
             key: value
             for key, value in self.__dict__.items()
-            if value and key not in ["url", "files"] or key in ["embeds", "attachments"]
+            if (value and key not in ["url", "files"]) or key in ["embeds", "attachments"]
         }
         embeds_empty = not any(data["embeds"]) if "embeds" in data else True
         if embeds_empty and "content" not in data and bool(self.files) is False:
@@ -388,8 +396,8 @@ class DiscordWebhook:
 
     @staticmethod
     def _make_multipart(
-        files: List[Dict[str, Union[str, bytes]]], extra_headers: Dict[str, str] | None = None
-    ) -> Tuple[bytes, Dict[str, str]]:
+        files: list[dict[str, str | bytes]], extra_headers: dict[str, str] | None = None
+    ) -> tuple[bytes, dict[str, str]]:
         """
         files: list[dict[str, str]] with:
             - field_name: field name
@@ -438,13 +446,20 @@ class DiscordWebhook:
 
         if not bool(self.files):
             response = await self.session.post(
-                self.url, json=self.json, params=json.dumps(self._query_params), timeout=self.timeout
+                self.url,
+                json=self.json,
+                params=json.dumps(self._query_params),
+                timeout=self.timeout,
             )
         else:
             self.files["payload_json"] = (None, json.dumps(self.json).encode("utf-8"))
             body, headers = self._make_multipart(files=self._files)
             response = await self.session.post(
-                self.url, data=body, headers=headers, params=json.dumps(self._query_params), timeout=self.timeout
+                self.url,
+                data=body,
+                headers=headers,
+                params=json.dumps(self._query_params),
+                timeout=self.timeout,
             )
         return response
 
@@ -461,7 +476,7 @@ class DiscordWebhook:
             if not response.headers.get("Via"):
                 raise HTTPException(errors)
             wh_sleep = float(errors["retry_after"]) + 0.15
-            logger.error("Webhook rate limited: sleeping for {wh_sleep} seconds...".format(wh_sleep=round(wh_sleep, 2)))
+            logger.error(f"Webhook rate limited: sleeping for {round(wh_sleep, 2)} seconds...")
             await asyncio.sleep(wh_sleep)
             response: aiohttp.ClientResponse = await request()
             if response.status in [200, 204]:
@@ -501,9 +516,10 @@ class DiscordWebhook:
         if remove_embeds:
             self.remove_embeds()
         self.remove_files(clear_attachments=False)
-        if response.status != 204:  # don't parse if response has no content (204 response code)
-            if webhook_id := (await response.json(encoding="utf-8")).get("id"):
-                self.id = webhook_id
+        if response.status != 204 and (webhook_id := (await response.json(encoding="utf-8")).get("id")):
+            # don't parse if response has no content (204 response code)
+            # if webhook_id := (await response.json(encoding="utf-8")).get("id"):
+            self.id = webhook_id
         return response
 
     async def edit(self) -> aiohttp.ClientResponse:
@@ -515,15 +531,24 @@ class DiscordWebhook:
         assert isinstance(self.url, str), "Webhook URL needs to be set in order to edit the webhook."
         url = f"{self.url}/messages/{self.id}"
         if not bool(self.files):
-            patch_kwargs = {"json": self.json, "params": self._query_params, "timeout": self.timeout}
+            patch_kwargs = {
+                "json": self.json,
+                "params": self._query_params,
+                "timeout": self.timeout,
+            }
         else:
             self.files["payload_json"] = (None, json.dumps(self.json))
             body, headers = self._make_multipart(files=self._files)
-            patch_kwargs = {"files": body, "headers": headers, "params": self._query_params, "timeout": self.timeout}
+            patch_kwargs = {
+                "files": body,
+                "headers": headers,
+                "params": self._query_params,
+                "timeout": self.timeout,
+            }
         request = partial(self.session.patch, url, **patch_kwargs)
         response = await request()  # NOQA
         if response.status_code in [200, 204]:
-            logger.debug("Webhook with id {id} edited".format(id=self.id))
+            logger.debug(f"Webhook with id {self.id} edited")
         elif response.status_code == 429 and self.rate_limit_retry:
             response = await self.handle_rate_limit(response, request)
             logger.debug("Webhook edited")
@@ -555,7 +580,7 @@ class DiscordWebhook:
         return response
 
     @classmethod
-    def create_batch(cls, urls: List[str], **kwargs) -> Tuple["DiscordWebhook", ...]:
+    def create_batch(cls, urls: list[str], **kwargs) -> tuple[DiscordWebhook, ...]:
         """
         Create a webhook instance for each specified URL.
         :param list urls: webhook URLs to be used for the instances

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -50,7 +49,8 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
-                    "en", "Shows general bot statistics, uptime, and metadata like site and developer."
+                    "en",
+                    "Shows general bot statistics, uptime, and metadata like site and developer.",
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
@@ -58,7 +58,7 @@ class Translations(TranslationBase):
                 )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {0}botinfo | {0}site | {0}uptime")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {0}botinfo | {0}site | {0}uptime")

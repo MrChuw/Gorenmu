@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 import logging
 
 from loguru import logger
 
 
-# TODO: Maybe put a webhook to discord.
 class InterceptHandler(logging.Handler):
     def emit(self, record):
         try:

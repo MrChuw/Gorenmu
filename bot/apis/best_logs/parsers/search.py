@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import Any, TypeVar
 
 from .shared import (
-    from_bool,
     from_datetime,
     from_dict,
     from_int,
@@ -14,7 +11,6 @@ from .shared import (
     from_str,
     from_union,
     to_class,
-    to_enum,
 )
 
 T = TypeVar("T")
@@ -22,15 +18,15 @@ T = TypeVar("T")
 
 @dataclass
 class Message:
-    text: Optional[str] = None
-    display_name: Optional[str] = None
-    timestamp: Optional[datetime] = None
-    id: Optional[str] = None
-    tags: Optional[Dict[str, str]] = None
-    username: Optional[str] = None
-    channel: Optional[str] = None
-    raw: Optional[str] = None
-    type: Optional[int] = None
+    text: str | None = None
+    display_name: str | None = None
+    timestamp: datetime | None = None
+    id: str | None = None
+    tags: dict[str, str] | None = None
+    username: str | None = None
+    channel: str | None = None
+    raw: str | None = None
+    type: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Message":
@@ -71,7 +67,7 @@ class Message:
 
 @dataclass
 class Search:
-    messages: Optional[List[Message]] = None
+    messages: list[Message] | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "Search":
@@ -83,6 +79,7 @@ class Search:
         result: dict = {}
         if self.messages is not None:
             result["messages"] = from_union(
-                [lambda x: from_list(lambda x: to_class(Message, x), x), from_none], self.messages
+                [lambda x: from_list(lambda x: to_class(Message, x), x), from_none],
+                self.messages,
             )
         return result

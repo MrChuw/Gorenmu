@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Shows a user's Twitch profile image.",
@@ -21,15 +21,28 @@ class Params:
         ),
     ]
 
-    success = [
-        pytest.param("en", "https://short.url/profile  https://short.url/pic", marks=pytest.mark.en, id="success-en"),
+    success: ClassVar[list] = [
         pytest.param(
-            "pt_BR", "https://short.url/profile  https://short.url/pic", marks=pytest.mark.pt_BR, id="success-pt"
+            "en",
+            "https://short.url/profile  https://short.url/pic",
+            marks=pytest.mark.en,
+            id="success-en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "https://short.url/profile  https://short.url/pic",
+            marks=pytest.mark.pt_BR,
+            id="success-pt",
         ),
     ]
 
-    not_found = [
-        pytest.param("en", "I couldn't find any user named @unknown_user.", marks=pytest.mark.en, id="not_found-en"),
+    not_found: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "I couldn't find any user named @unknown_user.",
+            marks=pytest.mark.en,
+            id="not_found-en",
+        ),
         pytest.param(
             "pt_BR",
             "Não consegui encontrar nenhum usuário chamado @unknown_user.",

@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List, Optional, TypeVar
-
-T = TypeVar("T")
+from typing import Any, TypeVar
 
 from .shared import from_datetime, from_list, from_none, from_str, from_union, to_class
+
+T = TypeVar("T")
 
 
 @dataclass
 class NameHistory:
-    user_login: Optional[str] = None
-    last_timestamp: Optional[datetime] = None
-    first_timestamp: Optional[datetime] = None
+    user_login: str | None = None
+    last_timestamp: datetime | None = None
+    first_timestamp: datetime | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "NameHistory":
@@ -33,9 +32,9 @@ class NameHistory:
         return result
 
     @staticmethod
-    def from_dict_alt(s: Any) -> List["NameHistory"]:
+    def from_dict_alt(s: Any) -> list["NameHistory"]:
         return from_list(NameHistory.from_dict, s)
 
     @staticmethod
-    def name_history_to_dict(x: List["NameHistory"]) -> Any:
+    def name_history_to_dict(x: list["NameHistory"]) -> Any:
         return from_list(lambda x: to_class(NameHistory, x), x)

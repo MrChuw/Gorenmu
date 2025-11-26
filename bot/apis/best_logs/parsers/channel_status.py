@@ -1,12 +1,7 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, List, Optional, TypeVar
+from typing import Any, TypeVar
 
 from .shared import (
-    from_bool,
-    from_datetime,
-    from_dict,
     from_int,
     from_list,
     from_none,
@@ -21,9 +16,9 @@ T = TypeVar("T")
 
 @dataclass
 class TopChatter:
-    user_id: Optional[int] = None
-    user_login: Optional[str] = None
-    message_count: Optional[int] = None
+    user_id: int | None = None
+    user_login: str | None = None
+    message_count: int | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "TopChatter":
@@ -52,14 +47,17 @@ class TopChatter:
 
 @dataclass
 class ChannelStats:
-    message_count: Optional[int] = None
-    top_chatters: Optional[List[TopChatter]] = None
+    message_count: int | None = None
+    top_chatters: list[TopChatter] | None = None
 
     @staticmethod
     def from_dict(obj: Any) -> "ChannelStats":
         assert isinstance(obj, dict)
         message_count = from_union([from_int, from_none], obj.get("messageCount"))
-        top_chatters = from_union([lambda x: from_list(TopChatter.from_dict, x), from_none], obj.get("topChatters"))
+        top_chatters = from_union(
+            [lambda x: from_list(TopChatter.from_dict, x), from_none],
+            obj.get("topChatters"),
+        )
         return ChannelStats(message_count, top_chatters)
 
     def to_dict(self) -> dict:
@@ -68,6 +66,7 @@ class ChannelStats:
             result["messageCount"] = from_union([from_int, from_none], self.message_count)
         if self.top_chatters is not None:
             result["topChatters"] = from_union(
-                [lambda x: from_list(lambda x: to_class(TopChatter, x), x), from_none], self.top_chatters
+                [lambda x: from_list(lambda x: to_class(TopChatter, x), x), from_none],
+                self.top_chatters,
             )
         return result

@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Shows information about a channel's current or last broadcast.",
@@ -21,7 +21,7 @@ class Params:
         ),
     ]
 
-    live_on = [
+    live_on: ClassVar[list] = [
         pytest.param(
             "en",
             r"^Title: .*? \|\| Stream started: .*? ago \((?:\d+ year[s]?, )?(?:\d+ month[s]?, )?(?:\d+ day[s]?, )?\d+ "
@@ -40,7 +40,7 @@ class Params:
         ),
     ]
 
-    live_off = [
+    live_off: ClassVar[list] = [
         pytest.param(
             "en",
             r"Title: .*? \|\| Last stream: .*? ago \((?:\d+ month[s]?, )?(?:\d+ day[s]?, )?(?:\d+ hour[s]?, )?("
@@ -58,15 +58,28 @@ class Params:
         ),
     ]
 
-    live_never = [
-        pytest.param("en", "User channelname has never opened any stream.", marks=pytest.mark.en, id="last-stream-en"),
+    live_never: ClassVar[list] = [
         pytest.param(
-            "pt_BR", "Usuário channelname nunca abriu nenhuma stream.", marks=pytest.mark.pt_BR, id="last-stream-pt"
+            "en",
+            "User channelname has never opened any stream.",
+            marks=pytest.mark.en,
+            id="last-stream-en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "Usuário channelname nunca abriu nenhuma stream.",
+            marks=pytest.mark.pt_BR,
+            id="last-stream-pt",
         ),
     ]
 
-    not_found = [
-        pytest.param("en", "I couldn't find any user named @nonexistent_user.", marks=pytest.mark.en, id="notfound-en"),
+    not_found: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "I couldn't find any user named @nonexistent_user.",
+            marks=pytest.mark.en,
+            id="notfound-en",
+        ),
         pytest.param(
             "pt_BR",
             "Não consegui encontrar nenhum usuário chamado @nonexistent_user.",
@@ -75,7 +88,7 @@ class Params:
         ),
     ]
 
-    online_json = [
+    online_json: ClassVar[list] = [
         {
             "displayName": "xXCoolNickXx",
             "login": "xXCoolNickXx",
@@ -96,7 +109,7 @@ class Params:
         }
     ]
 
-    offline_json = [
+    offline_json: ClassVar[list] = [
         {
             "displayName": "xXCoolNickXx",
             "login": "xXCoolNickXx",
@@ -110,7 +123,7 @@ class Params:
         }
     ]
 
-    never_json = [
+    never_json: ClassVar[list] = [
         {
             "displayName": "xXCoolNickXx",
             "login": "xXCoolNickXx",

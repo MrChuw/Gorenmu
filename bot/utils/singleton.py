@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-
-
 class Singleton(type):
-    _instances = {}
-    _class_ids = {}
+    _instances = {}  # NOQA: RUF012
+    _class_ids = {}  # NOQA: RUF012
 
     def __call__(cls, *args, **kwargs):
         key = f"{cls.__module__}.{cls.__name__}"

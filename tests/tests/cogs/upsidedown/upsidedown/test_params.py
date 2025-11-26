@@ -1,12 +1,16 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
-            "en", "Turns the text upside down.", "To use: +upsidedown (message)", marks=pytest.mark.en, id="en"
+            "en",
+            "Turns the text upside down.",
+            "To use: +upsidedown (message)",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -17,7 +21,7 @@ class Params:
         ),
     ]
 
-    content = [
+    content: ClassVar[list] = [
         pytest.param("en", "ʇxƎ⊥ ǝɯos", marks=pytest.mark.en, id="en"),  # NOQA
         pytest.param("pt_BR", "ʇxƎ⊥ ǝɯos", marks=pytest.mark.pt_BR, id="pt_BR"),  # NOQA
     ]

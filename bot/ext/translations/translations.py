@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, List
+from typing import TYPE_CHECKING, Any
 
 from bot.ext import Command, Context, commands
 from bot.ext.translations.extras import ClassBase, OtherTools, TBase
@@ -40,15 +39,15 @@ class Response:
     def __init__(
         self,
         ctx: Context,
-        response: str = None,
+        response: str | None = None,
         success: bool = True,
-        response_list: List[str] = None,
-        handle: str = None,
+        response_list: list[str] | None = None,
+        handle: str | None = None,
     ):
         self.ctx: Context = ctx
         self.success: bool = success
         self.response: str = response
-        self.response_list: List[str] = response_list
+        self.response_list: list[str] = response_list
         self.handle: str = handle
         self.response_string: str = ""
 
@@ -125,7 +124,7 @@ class TranslationBase(ClassBase, metaclass=Singleton):
             return Response(ctx=ctx, success=success).format_response("")
 
         @staticmethod
-        def echo(ctx: Context, args: str, success: bool = True, handle: str = None) -> Response:
+        def echo(ctx: Context, args: str, success: bool = True, handle: str | None = None) -> Response:
             return Response(ctx=ctx, success=success, handle=handle).format_response(f"{args}")
 
         def user_not_found_id(self, ctx: Context, arg: str | int) -> Response:
@@ -216,9 +215,9 @@ class TranslationBase(ClassBase, metaclass=Singleton):
         def timeout(self, ctx: Context) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once("timeout"):
-                self.lang_dict.add_with("en", "It's been 30 seconds and " "I can't find any valid links.")
+                self.lang_dict.add_with("en", "It's been 30 seconds and I can't find any valid links.")
                 self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Já se passaram 30 segundos e " "não consegui encontrar nenhum link válido."
+                    ["pt_br", "pt"], "Já se passaram 30 segundos e não consegui encontrar nenhum link válido."
                 )
             return response.format_response(self._untangle_str(ctx, "timeout"))
 

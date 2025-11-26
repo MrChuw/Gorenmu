@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 import pytest_asyncio
 
@@ -19,10 +17,14 @@ async def interact(mock_bot):
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
     await mock_context.prepare_context(lang)
     mock_context.Asserter.assert_string(
-        interact.translations.FollowAge.deco_usage(mock_context, "+"), usage, strict=True
+        interact.translations.FollowAge.deco_usage(mock_context, "+"),
+        usage,
+        strict=True,
     )
     mock_context.Asserter.assert_string(
-        interact.translations.FollowAge.deco_helper(mock_context, "+"), helper, strict=True
+        interact.translations.FollowAge.deco_helper(mock_context, "+"),
+        helper,
+        strict=True,
     )
 
 
@@ -31,10 +33,10 @@ async def base_followage(
     mock_context: MockContext,
     lang: str,
     content: str,
-    expected: str = None,
-    re_expected: str = None,
+    expected: str | None = None,
+    re_expected: str | None = None,
     success: bool = False,
-    json_response: dict = None,
+    json_response: dict | None = None,
 ):
     await mock_context.prepare_context(lang)
     async with mock_context.MockBuilder.ApiIvrFi.Twitch.Channel.fetch_preview(

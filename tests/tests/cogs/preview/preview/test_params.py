@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "This command will send a print and timestamp of the requested live stream.",
@@ -21,14 +21,27 @@ class Params:
         ),
     ]
 
-    offline = [
-        pytest.param("en", "Channel channelname is not live at the moment.", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "O canal channelname não esta em live no momento.", marks=pytest.mark.pt_BR, id="pt_BR"),
+    offline: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "Channel channelname is not live at the moment.",
+            marks=pytest.mark.en,
+            id="en",
+        ),
+        pytest.param(
+            "pt_BR",
+            "O canal channelname não esta em live no momento.",
+            marks=pytest.mark.pt_BR,
+            id="pt_BR",
+        ),
     ]
 
-    online = [
+    online: ClassVar[list] = [
         pytest.param(
-            "en", r"Preview: link || VOD: https://www.twitch.tv/videos/12345?t=\d+\s", marks=pytest.mark.en, id="en"
+            "en",
+            r"Preview: link || VOD: https://www.twitch.tv/videos/12345?t=\d+\s",
+            marks=pytest.mark.en,
+            id="en",
         ),
         pytest.param(
             "pt_BR",
@@ -38,7 +51,7 @@ class Params:
         ),
     ]
 
-    online_json = [
+    online_json: ClassVar[list] = [
         {
             "displayName": "xXCoolNickXx",
             "login": "xXCoolNickXx",
@@ -59,7 +72,7 @@ class Params:
         }
     ]
 
-    offline_json = [
+    offline_json: ClassVar[list] = [
         {
             "displayName": "xXCoolNickXx",
             "login": "xXCoolNickXx",

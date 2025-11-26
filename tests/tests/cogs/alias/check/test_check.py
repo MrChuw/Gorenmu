@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from unittest.mock import patch
 
 import pytest
@@ -31,9 +29,15 @@ async def alias_check(
     await mock_context.prepare_alias(special_user)
     with (
         patch.object(
-            interact.UploadThings, "upload_alias", return_value="https://alias.mrchuw.com.br/812d49c5415f474b"
+            interact.UploadThings,
+            "upload_alias",
+            return_value="https://alias.mrchuw.com.br/812d49c5415f474b",
         ),
-        patch.object(interact.UploadThings, "shortener", return_value="https://shlink.mrchuw.com.br/uQqt5"),
+        patch.object(
+            interact.UploadThings,
+            "shortener",
+            return_value="https://shlink.mrchuw.com.br/uQqt5",
+        ),
     ):
         response: Response = await interact.check_alias._callback(interact, mock_context, *content)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected)
@@ -44,28 +48,56 @@ async def alias_check(
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_no_content(interact, mock_context: MockContext, lang: str, expected: str):
     """if not first_name and not second_name:"""
-    await alias_check(interact, mock_context, lang=lang, content=[""], expected=expected, success=False)
+    await alias_check(
+        interact,
+        mock_context,
+        lang=lang,
+        content=[""],
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_match_and_no_second_name)
 async def test_no_match_and_no_second_name(interact, mock_context: MockContext, lang: str, expected: str):
     """if not target_aliases_flat and first_name not in aliases_flat and not second_name:"""
-    await alias_check(interact, mock_context, lang=lang, content=["some_user_44"], expected=expected, success=False)
+    await alias_check(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["some_user_44"],
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.alias_match_without_second_name)
 async def test_match_without_second_name(interact, mock_context: MockContext, lang: str, expected: str):
     """elif not target_aliases_flat and first_name in aliases_flat and not second_name:"""
-    await alias_check(interact, mock_context, lang=lang, content=["The_Tests_alias"], expected=expected, success=True)
+    await alias_check(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["The_Tests_alias"],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.check_user)
 async def test_check_user(interact, mock_context: MockContext, lang: str, expected: str):
     """elif target_aliases_flat and first_name not in aliases_flat and not second_name:"""
-    await alias_check(interact, mock_context, lang=lang, content=["some_user_45"], expected=expected, success=True)
+    await alias_check(
+        interact,
+        mock_context,
+        lang=lang,
+        content=["some_user_45"],
+        expected=expected,
+        success=True,
+    )
 
 
 @pytest.mark.asyncio

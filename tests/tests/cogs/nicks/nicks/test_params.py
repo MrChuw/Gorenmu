@@ -1,11 +1,17 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
-        pytest.param("en", "User nickname history.", "To use: +nicks (user nick)", marks=pytest.mark.en, id="en"),
+    decorators: ClassVar[list] = [
+        pytest.param(
+            "en",
+            "User nickname history.",
+            "To use: +nicks (user nick)",
+            marks=pytest.mark.en,
+            id="en",
+        ),
         pytest.param(
             "pt_BR",
             "Histórico de nicks de um usuário.",
@@ -15,12 +21,12 @@ class Params:
         ),
     ]
 
-    no_content = [
+    no_content: ClassVar[list] = [
         pytest.param("en", "blablabla", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "blablabla", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
-    params_ = [
+    params_: ClassVar[list] = [
         pytest.param("en", "blablabla", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "blablabla", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]

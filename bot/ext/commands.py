@@ -1,48 +1,51 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Callable, Coroutine, Iterable
+from collections.abc import Callable, Coroutine, Iterable, Sequence
 from functools import partial
-from typing import TYPE_CHECKING, Any, Concatenate, Optional, ParamSpec, Self, Sequence, TypeAlias, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, Self, TypeVar
 
 from twitchio import ChatMessage, User
-from twitchio.ext.commands import AutoBot, Bucket, BucketType
+from twitchio.ext.commands import (
+    AutoBot,
+    Bucket,
+    BucketType,
+    CommandErrorPayload,
+    Component,
+    Cooldown,
+    cooldown,
+)
 from twitchio.ext.commands import Command as TwitchioCommand
-from twitchio.ext.commands import CommandErrorPayload, Component, Cooldown
 from twitchio.ext.commands import Group as TwitchioGroup
-from twitchio.ext.commands import cooldown
 from twitchio.ext.commands.exceptions import CommandError
 from twitchio.ext.commands.types_ import Component_T
 from twitchio.ext.routines import routine
 
 T = TypeVar("T")
-Coro: TypeAlias = Coroutine[Any, Any, None]
-CoroC: TypeAlias = Coroutine[Any, Any, bool]
+type Coro = Coroutine[Any, Any, None]
+type CoroC = Coroutine[Any, Any, bool]
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
     from bot.ext import Context, TranslationBase
 
-    PrefixT: TypeAlias = (
-        str | Iterable[str] | Callable[[Gorenmu, ChatMessage], Coroutine[Any, Any, str | Iterable[str]]]
-    )
+    type PrefixT = str | Iterable[str] | Callable[[Gorenmu, ChatMessage], Coroutine[Any, Any, str | Iterable[str]]]
 
     P = ParamSpec("P")
 
 __all__ = (
-    "ChatMessage",
+    "AutoBot",
     "Bucket",
+    "BucketType",
+    "ChatMessage",
+    "Command",
+    "CommandErrorPayload",
+    "Component",
+    "CustomComponent",
+    "Group",
     "User",
     "cooldown",
-    "routine",
-    "base_decorator",
-    "Command",
-    "Component",
-    "BucketType",
     "guard",
-    "CommandErrorPayload",
-    "CustomComponent",
-    "AutoBot",
+    "routine",
 )
 
 max_message_len = 450
@@ -132,7 +135,7 @@ def command(
     **kwargs: Any,
 ) -> Any:
     def wrapper(
-        func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
+        func: (Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro]),
     ) -> Command:
         if isinstance(func, Command):
             raise ValueError(f'Callback "{func._callback}" is already a Command.')  # NOQA
@@ -142,14 +145,22 @@ def command(
 
         func_name = func.__name__
         name_ = name.strip().replace(" ", "") or func_name if name else func_name
-        command_ = Command(name=name_, callback=func, aliases=aliases or [], extras=extras or {}, **kwargs)
+        command_ = Command(
+            name=name_,
+            callback=func,
+            aliases=aliases or [],
+            extras=extras or {},
+            **kwargs,
+        )
         command_.pipeble = pipeble
         return command_
 
     return wrapper
 
 
-def guard(predicates: Union[Callable[..., bool], Callable[..., CoroC], Sequence[Callable[..., Any]]]) -> Any:
+def guard(
+    predicates: (Callable[..., bool] | Callable[..., CoroC] | Sequence[Callable[..., Any]]),
+) -> Any:
     if not isinstance(predicates, (list, tuple)):
         predicates = [predicates]
 
@@ -178,24 +189,34 @@ class Group(TwitchioGroup):
         **kwargs: Any,
     ) -> Any:
         def wrapper(
-            func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
+            func: (Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro]),
         ) -> Command:
-            new = command(name=name, aliases=aliases, extras=extras, parent=self, pipeble=pipeble, **kwargs)(func)
+            new = command(
+                name=name,
+                aliases=aliases,
+                extras=extras,
+                parent=self,
+                pipeble=pipeble,
+                **kwargs,
+            )(func)
 
             self.add_command(new)
             return new
 
         return wrapper
 
-    def get_command(self, name: str, /) -> Optional[Command | Group]:
+    def get_command(self, name: str, /) -> Command | Group | None:
         return super().get_command(name)
 
 
 def group(
-    name: str | None = None, aliases: list[str] | None = None, extras: dict[Any, Any] | None = None, **kwargs: Any
+    name: str | None = None,
+    aliases: list[str] | None = None,
+    extras: dict[Any, Any] | None = None,
+    **kwargs: Any,
 ) -> Callable[[Command], Command]:
     def wrapper(
-        func: Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro],
+        func: (Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro]),
     ) -> Group:
         if isinstance(func, Command):
             raise ValueError(f'Callback "{func._callback.__name__}" is already a Command.')  # NOQA
@@ -206,9 +227,15 @@ def group(
         func_name = func.__name__
         name_ = name.strip().replace(" ", "") or func_name if name else func_name
 
-        return Group(name=name_, callback=func, aliases=aliases or [], extras=extras or {}, **kwargs)
+        return Group(
+            name=name_,
+            callback=func,
+            aliases=aliases or [],
+            extras=extras or {},
+            **kwargs,
+        )
 
-    return wrapper
+    return wrapper  # NOQA
 
 
 def event_handler(event_name: str):

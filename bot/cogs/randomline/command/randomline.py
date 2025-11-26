@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import datetime
 from typing import TYPE_CHECKING
 
 from bot.apis import BestLogs
 from bot.ext import Context, Response, commands
-from bot.models import MessagesLog, User
-from bot.utils import SessionsCaches, StringTools, TimeTools, UploadThings
+from bot.utils import SessionsCaches, StringTools
 
 from .translations import Translations
 

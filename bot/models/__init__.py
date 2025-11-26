@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-
-from .Channel import Channel
-from .Others.Alias import Alias
-from .User import TwitchTokens, User
-from .User_extras import (
+from .channel import Channel
+from .Others.alias import Alias
+from .user import TwitchTokens, User
+from .user_extras import (
     Annotation,
     BotsIgnore,
     Bug,
@@ -26,3 +24,31 @@ from .User_extras import (
     Suggest,
     Wedding,
 )
+
+__all__ = [
+    Channel,
+    Alias,
+    TwitchTokens,
+    User,
+    Annotation,
+    BotsIgnore,
+    Bug,
+    Cookies,
+    Copypasta,
+    Imgur,
+    ImgurAggregate,
+    Lottery,
+    LotteryBank,
+    MarkovChannels,
+    MarkovUserChannel,
+    MarkovUsers,
+    MessagesLog,
+    NickHistory,
+    Pets,
+    Player,
+    PlayerTower,
+    Reminder,
+    Status,
+    Suggest,
+    Wedding,
+]

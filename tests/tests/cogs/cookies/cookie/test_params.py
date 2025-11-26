@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+from typing import ClassVar
 
 import pytest
 
 
 class Params:
-    decorators = [
+    decorators: ClassVar[list] = [
         pytest.param(
             "en",
             "Command used to manage cookies.",
@@ -20,7 +20,8 @@ class Params:
             id="pt_BR",
         ),
     ]
-    cookie = [
+
+    cookie: ClassVar[list] = [
         pytest.param(
             "en",
             'Choose from one of the options "eat", "count", "top", "gift", "stock" or "sm"',

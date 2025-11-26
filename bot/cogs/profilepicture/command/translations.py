@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -22,10 +21,13 @@ class Translations(TranslationBase):
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "Shows a user's Twitch profile image.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Mostra a imagem de perfil de um usuário da Twitch.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Mostra a imagem de perfil de um usuário da Twitch.",
+                )
             return self._untangle_str(ctx, self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str = None, *args, **kwargs) -> str:
+        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "How to use: {}profilepicture (username)")
                 self.lang_dict.add_with(["pt_br", "pt"], "Como usar: {}profilepicture (nome_de_usuário)")

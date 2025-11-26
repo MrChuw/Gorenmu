@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 import pytest
 import pytest_asyncio
 
@@ -24,7 +21,12 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_annotations_add(
-    interact, mock_context: MockContext, lang: str, content: str, expected: str, success: bool = False
+    interact,
+    mock_context: MockContext,
+    lang: str,
+    content: str,
+    expected: str,
+    success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     response: Response = await interact.add._callback(self=interact, ctx=mock_context, content=content)  # NOQA
@@ -54,7 +56,14 @@ async def test_add_content_no_title(interact, mock_context: MockContext, lang: s
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.add_content_too_long_no_title)
 async def test_add_content_too_long_no_title(interact, mock_context: MockContext, lang: str, expected: str):
-    await base_annotations_add(interact, mock_context, lang=lang, content="a" * 451, expected=expected, success=False)
+    await base_annotations_add(
+        interact,
+        mock_context,
+        lang=lang,
+        content="a" * 451,
+        expected=expected,
+        success=False,
+    )
 
 
 @pytest.mark.asyncio
