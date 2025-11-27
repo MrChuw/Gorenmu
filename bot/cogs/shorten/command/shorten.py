@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+import asyncio
+import inspect
+import types
 from typing import TYPE_CHECKING
 
+from urlextract import URLExtract
+
 from bot.ext import Context, Response, commands
+from bot.utils import SessionsCaches, UploadThings
 
 from .translations import Translations
 
@@ -14,6 +20,8 @@ class ShortenCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
         self.translations: Translations = Translations(bot)
+        self.UploadThings: UploadThings = UploadThings(bot)
+        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -25,9 +33,38 @@ class ShortenCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
-    @commands.command(name="shorten", aliases=[])
-    async def shorten(self, ctx: Context, *, args) -> Response:
-        return self.translations.Exceptions.echo(ctx, args)
+    @commands.command(name="shorten", aliases=["short"])
+    async def shorten(self, ctx: Context, *, content) -> Response:
+        links = URLExtract().find_urls(text=content)
+        if not links:
+            ...
+        session = self.SessionsCaches.Shorten.session
+        if len(links) > 1:
+            link = ""
+            for url in links:
+                await asyncio.sleep(0.1)
+                short = await self.UploadThings.shortener(url, ["shortener"], session)
+                if not short:
+                    fake_exc = fake_stacktrace(f"External shortener API failed for: {url}")
+                    await self.bot.CommandHandler.send_bug(ctx, fake_exc)
+                    return self.translations.Shorten.api_erro(ctx)
+                link += f"{short} "
+            return self.translations.Shorten.urls(ctx, link)
+        else:
+            short = await self.UploadThings.shortener(links[0], ["shortener"], session)
+            if short:
+                return self.translations.Shorten.url(ctx, short)
+            fake_exc = fake_stacktrace(f"External shortener API failed for: {links[0]}")
+            await self.bot.CommandHandler.send_bug(ctx, fake_exc)
+            return self.translations.Shorten.api_erro(ctx)
+
+
+def fake_stacktrace(message: str) -> Exception | None:
+    exc = Exception(message)
+    tb = types.TracebackType(tb_next=None, tb_frame=inspect.currentframe().f_back, tb_lasti=0, tb_lineno=1)
+
+    exc.__traceback__ = tb
+    return exc
 
 
 async def setup(bot: Gorenmu) -> None:
