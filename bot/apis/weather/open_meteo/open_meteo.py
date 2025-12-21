@@ -5,7 +5,7 @@ import socket
 from dataclasses import dataclass
 from typing import Any
 
-import async_timeout
+from asyncio import timeout, timeout_at
 from aiohttp.client import ClientError, ClientResponseError
 from aiohttp_client_cache import CachedSession
 from yarl import URL
@@ -56,7 +56,7 @@ class OpenMeteo:
         """
 
         try:
-            async with async_timeout.timeout(self.request_timeout):
+            async with timeout(self.request_timeout):
                 response = await self.session.get(url)
         except asyncio.TimeoutError as exception:
             raise OpenMeteoConnectionError("Timeout occurred while connecting to the Open-Meteo API") from exception

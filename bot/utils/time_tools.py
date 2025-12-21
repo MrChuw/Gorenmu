@@ -23,8 +23,6 @@ __all__ = [
     "TimeTools",
 ]
 
-# tl = TimeLength("12:12:12 em 01/01/30", locale=Portuguese())
-
 
 class TimeTools(metaclass=Singleton):
     def __init__(self):
