@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import ChatMessage
 from bot.models import Channel as ChannelModel
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+    from bot.ext import ChatMessage
 
 
 class ChannelHandler:

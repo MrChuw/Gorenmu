@@ -5,9 +5,9 @@ import random
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
-from aiohttp_client_cache import CachedSession
-
 if TYPE_CHECKING:
+    from aiohttp_client_cache import CachedSession
+
     from bot.bot import Gorenmu
     from bot.ext import TranslationBase
     from bot.models import User

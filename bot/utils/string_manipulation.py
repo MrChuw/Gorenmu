@@ -8,7 +8,6 @@ import string
 from datetime import datetime
 from string import ascii_letters, digits
 
-from emoji import demojize
 from unidecode import unidecode
 from urlextract import URLExtract
 
@@ -16,7 +15,12 @@ from bot.exceptions import InvalidUsernameError
 from bot.utils.singleton import Singleton
 
 letters_and_digits = ascii_letters + digits
-url_extractor = URLExtract()
+url_extractor: URLExtract | None = None
+
+
+def start_extractor():
+    global url_extractor
+    url_extractor = URLExtract()
 
 
 class StringTools(metaclass=Singleton):
@@ -46,6 +50,8 @@ class StringTools(metaclass=Singleton):
 
     @staticmethod
     def emoji2str(target: str) -> str:
+        from emoji import demojize
+
         return demojize(target)
 
     @staticmethod
@@ -243,4 +249,10 @@ class StringTools(metaclass=Singleton):
 
     @staticmethod
     def urls_extract(text: str):
+        if not url_extractor:
+            start_extractor()
         return url_extractor.find_urls(text=text)
+
+    @staticmethod
+    def remove_numeric_underscores(text: str) -> str:
+        return re.sub(r'(?<=\d)_(?=\d)', '', text)

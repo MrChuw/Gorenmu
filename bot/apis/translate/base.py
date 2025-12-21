@@ -1,3 +1,4 @@
+from __future__ import annotations
 """base translator class"""
 
 __copyright__ = "Copyright (C) 2020 Nidhal Baccouri"  # NOQA
@@ -6,8 +7,7 @@ from abc import abstractmethod
 from typing import List, Optional, Union
 
 import aiohttp
-from aiohttp_client_cache import CachedSession
-from bs4 import BeautifulSoup
+
 
 from .constants import BASE_URLS, GOOGLE_LANGUAGES_TO_CODES
 from .exceptions import (
@@ -20,6 +20,10 @@ from .exceptions import (
     TranslationNotFound,
 )
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from aiohttp_client_cache import CachedSession
 
 class GoogleTranslator:
     """
@@ -42,6 +46,8 @@ class GoogleTranslator:
         @param source: source language to translate from
         @param target: target language to translate to
         """
+        from bs4 import BeautifulSoup
+        self.bs4 = BeautifulSoup
         if element_query is None:
             element_query = {"class": "t0"}
         self.session: aiohttp.ClientResponse | CachedSession = session
@@ -127,7 +133,7 @@ class GoogleTranslator:
             if request_failed(status_code=response.status):
                 raise RequestError()
 
-            soup = BeautifulSoup(await response.text(), "html.parser")
+            soup = self.bs4(await response.text(), "html.parser")
 
             element = soup.find(self._element_tag, self._element_query)
             response.close()

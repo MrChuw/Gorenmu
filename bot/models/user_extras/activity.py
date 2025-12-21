@@ -9,8 +9,8 @@ if TYPE_CHECKING:
     from bot.ext import Context
     from bot.models import User
 
-from bot.ext.named_tuples import RAfkNamedTuple
 from bot.models.base import Base, TimestampMixin
+from bot.types.named_tuples import RAfkNamedTuple
 
 
 class Status(Base, TimestampMixin):

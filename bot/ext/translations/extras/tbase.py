@@ -133,6 +133,9 @@ class LangDict:
     def get_namespace(self, namespace: str) -> dict[str, str]:
         return dict(self._namespaces[namespace])
 
+    def get_lang_any(self, lang: str, namespace: str, fallback: str = "en") -> Any | None:
+        return self._namespaces.get(namespace, {}).get(lang) or self._namespaces.get(namespace, {}).get(fallback)
+
     def get_lang(self, lang: str, namespace: str, fallback: str = "en") -> str | CommandExemples | Admonitions | None:
         return self._namespaces.get(namespace, {}).get(lang) or self._namespaces.get(namespace, {}).get(fallback)
 

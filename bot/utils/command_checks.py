@@ -3,8 +3,6 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 
-from tortoise.exceptions import DoesNotExist, MultipleObjectsReturned
-
 from bot.exceptions import (
     BotOfflineError,
     CommandDisabledError,
@@ -19,8 +17,6 @@ from bot.exceptions import (
     VipRequiredError,
 )
 from bot.ext import Context
-from bot.models import Cookies, LotteryBank
-from bot.models import User as UserModel
 from bot.utils.string_manipulation import StringTools
 
 
@@ -97,6 +93,11 @@ class Check:
 
     @staticmethod
     async def lottery_seed(ctx: Context) -> bool:
+        from tortoise.exceptions import DoesNotExist, MultipleObjectsReturned
+
+        from bot.models import Cookies, LotteryBank
+        from bot.models import User as UserModel
+
         try:
             await Cookies.get(id=int(ctx.author.id))
         except DoesNotExist:
@@ -114,6 +115,10 @@ class Check:
     # COOKIE
     @staticmethod
     async def cookie_check(ctx: Context, translations) -> bool:
+        from tortoise.exceptions import DoesNotExist
+
+        from bot.models import Cookies
+
         try:
             cookie = await Cookies.get_cookie(ctx=ctx, user=ctx.user, translations=translations)
         except DoesNotExist:

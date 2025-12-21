@@ -7,18 +7,21 @@ import time
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterable
 from datetime import timedelta
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import aiohttp
-from aiocache import Cache as aioCache
-from aiocache import SimpleMemoryCache
-from aiohttp_client_cache import CacheBackend, CachedResponse, CachedSession, RedisBackend, SQLiteBackend
 
 from bot.utils.config import CacheType
+
+if TYPE_CHECKING:
+    from aiocache import SimpleMemoryCache
+    from aiohttp_client_cache import CachedResponse, CachedSession
 
 
 class MemoryCacheCore:
     def __init__(self, ttl: timedelta = timedelta(hours=12)):
+        from aiocache import Cache as aioCache
+
         self.cache: SimpleMemoryCache = aioCache(aioCache.MEMORY)
         self.name_to_user_id: dict[str, int] = {}
         self.key_index: dict[str, set[str]] = {}
@@ -138,6 +141,7 @@ class BaseCachedSession(ABC):
             self.headers |= extra_headers
         if hasattr(self, "timeout"):
             self.timeout = self.timeout
+        from aiohttp_client_cache import CachedSession
 
         self.session: CachedSession = CachedSession(cache=self.cache, headers=self.headers, timeout=self.timeout)
 
@@ -149,6 +153,8 @@ class BaseCachedSession(ABC):
     def create_cache_backend(self, cache_name: str = "Default-Cache"):
         """Abstract method to create the cache backend. Can be overridden."""
         if self.bot.config.DevelopmentConfig.test:
+            from aiohttp_client_cache import CacheBackend
+
             return CacheBackend(
                 cache_name=cache_name,
                 urls_expire_after=self.get_expiry_times(),
@@ -157,6 +163,8 @@ class BaseCachedSession(ABC):
                 allowed_codes=self.allowed_codes,
             )
         if self.bot.config.CacheConfig.type in [CacheType.REDIS, CacheType.VALKEY]:
+            from aiohttp_client_cache import RedisBackend
+
             return RedisBackend(
                 cache_name=f"{self.bot.config.CacheConfig.namespace}-{cache_name}",
                 urls_expire_after=self.get_expiry_times(),
@@ -165,6 +173,8 @@ class BaseCachedSession(ABC):
                 allowed_codes=self.allowed_codes,
             )
         else:
+            from aiohttp_client_cache import SQLiteBackend
+
             return SQLiteBackend(
                 cache_name=f"./data/cache/aiohttp-{cache_name}.db",
                 urls_expire_after=self.get_expiry_times(),

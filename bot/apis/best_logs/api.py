@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import TYPE_CHECKING, TypeVar
 
 from aiohttp import ClientResponse
-from aiohttp_client_cache import CachedSession
 from yarl import URL
 
 from bot.utils.singleton import Singleton
@@ -25,6 +24,8 @@ from .parsers import (
 )
 
 if TYPE_CHECKING:
+    from aiohttp_client_cache import CachedSession
+
     from bot.bot import Context, Gorenmu
 
 T = TypeVar("T")

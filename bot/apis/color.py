@@ -1,7 +1,12 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import loguru
-from aiohttp_client_cache import CachedSession
+
+if TYPE_CHECKING:
+    from aiohttp_client_cache import CachedSession
 
 
 @dataclass

@@ -48,7 +48,7 @@ class RandomLineCmd(commands.CustomComponent):
         return translations.RandomLine.random_line(
             ctx,
             message.text,
-            humanize.created_a_time(created_at=message.timestamp, timezone=ctx.user.timezone_),
+            humanize.created_a_time(created_at=message.timestamp, timezone=ctx.user.tz),
             message.username,
         )
 

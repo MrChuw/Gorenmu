@@ -4,36 +4,39 @@ from collections.abc import Iterable
 from datetime import timedelta
 from typing import TYPE_CHECKING, Any
 
-import redis
-from aiocache import Cache as aioCache
-from aiocache.backends.memcached import MemcachedCache
-from aiocache.backends.memory import SimpleMemoryCache
-from aiocache.backends.redis import RedisCache
-from aiocache.serializers import PickleSerializer
 from twitchio import ChannelInfo as ChannelTmi
 from twitchio import User as UserTmi
 
-from bot.ext.named_tuples import AliasCached, RAfkNamedTuple
-from bot.models import Cookies as CookiesDB
-from bot.models import Status
-from bot.models import User as UserDB
-from bot.models.Others.alias import Alias
+from bot.types.named_tuples import AliasCached, RAfkNamedTuple
 from bot.utils.caches_base import MemoryCacheCore
 from bot.utils.config import CacheType
 
 if TYPE_CHECKING:
+    from aiocache.backends.memcached import MemcachedCache
+    from aiocache.backends.memory import SimpleMemoryCache
+    from aiocache.backends.redis import RedisCache
+
     from bot.bot import Gorenmu
     from bot.ext import Context
+    from bot.models import Cookies as CookiesDB
+    from bot.models import Status
+    from bot.models import User as UserDB
+    from bot.models.Others.alias import Alias
 
 CODE_LIST = (200, 201, 202, 204, 301, 302, 304, 400, 401, 403, 404, 405, 408, 409, 410, 500, 501, 502, 503, 504)
 
-__all__ = ("Cache", "MemCache", "aioCache")
+__all__ = ("Cache", "MemCache")
 
 
 class Cache:
     @staticmethod
     def cache_load(bot: Gorenmu) -> RedisCache | MemcachedCache | SimpleMemoryCache:
+        from aiocache import Cache as aioCache
+        from aiocache.serializers import PickleSerializer
+
         if bot.config.CacheConfig.type in [CacheType.REDIS, CacheType.VALKEY]:
+            import redis
+
             bot.cache = aioCache(
                 aioCache.REDIS,
                 serializer=PickleSerializer(),
@@ -58,6 +61,8 @@ class Cache:
 
     @staticmethod
     def create_cache(namespace: str = "main") -> RedisCache | MemcachedCache | SimpleMemoryCache:
+        from aiocache import Cache as aioCache
+
         return aioCache(aioCache.MEMORY, namespace=namespace)
 
 

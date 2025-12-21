@@ -5,7 +5,6 @@ from zoneinfo import ZoneInfo
 
 from tortoise import fields
 
-from bot.ext import Context
 from bot.models.base import Base, ContentMixin, TimestampMixin
 from bot.models.user_extras import MessagesLog, NickHistory
 from bot.utils.string_manipulation import StringTools
@@ -32,6 +31,13 @@ if TYPE_CHECKING:
     )
 
     GetReturnT = "User" | Response | None
+    from bot.ext import Context
+
+
+def _get_context_type():
+    from bot.ext import Context
+
+    return Context
 
 
 class User(Base, TimestampMixin, ContentMixin):
@@ -80,7 +86,7 @@ class User(Base, TimestampMixin, ContentMixin):
         return f"{self.nickname}" if self.sponsor and self.nickname else f"@{self.name}"
 
     @property
-    def timezone_(self):
+    def tz(self):
         return ZoneInfo(self.timezone)
 
     @staticmethod
@@ -158,13 +164,13 @@ class User(Base, TimestampMixin, ContentMixin):
     async def find_by_name(
         name: str, ctx_bot: Context | Gorenmu, translations: TranslationBase | None, is_none: bool = False
     ) -> GetReturnT:
-        bot = ctx_bot.bot if isinstance(ctx_bot, Context) else ctx_bot
+        bot = ctx_bot.bot if isinstance(ctx_bot, _get_context_type()) else ctx_bot
         user = await bot.memcache.User.get_by_name(name=name)
         if not user:
             user = await User.get_or_none(name=name)
             if is_none and not user:
                 return None
-            if not user and isinstance(ctx_bot, Context):
+            if not user and isinstance(ctx_bot, _get_context_type()):
                 return translations.Exceptions.user_not_found_name(ctx_bot, name)
             await bot.memcache.User.set(user=user)
         return user
@@ -173,13 +179,13 @@ class User(Base, TimestampMixin, ContentMixin):
     async def find_by_id(
         user_id: int, ctx_bot: Context, translations: TranslationBase | None, is_none: bool = False
     ) -> GetReturnT:
-        bot = ctx_bot.bot if isinstance(ctx_bot, Context) else ctx_bot
+        bot = ctx_bot.bot if isinstance(ctx_bot, _get_context_type()) else ctx_bot
         user = await bot.memcache.User.get(user_id=user_id)
         if not user:
             user = await User.get_or_none(id=user_id)
             if is_none and not user:
                 return None
-            if not user and isinstance(ctx_bot, Context):
+            if not user and isinstance(ctx_bot, _get_context_type()):
                 return translations.Exceptions.user_not_found_id(ctx_bot, user_id)
             await bot.memcache.User.set(user=user)
         return user

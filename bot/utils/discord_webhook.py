@@ -6,10 +6,11 @@ from typing import TYPE_CHECKING
 import aiohttp
 
 from bot.apis.discord_webhook.discord_webhook import DiscordEmbed, DiscordWebhook
-from bot.ext import Context
 
 if TYPE_CHECKING:
     from aiohttp_client_cache import CachedSession
+
+    from bot.ext import Context
 
 
 class DiscordWebHook:

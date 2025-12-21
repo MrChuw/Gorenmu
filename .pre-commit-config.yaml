@@ -5,6 +5,8 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
+      - id: pretty-format-json
+        args: ['--autofix', '--no-sort-keys', '--indent=4', '--top-keys=comma']
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.14.6
     hooks:

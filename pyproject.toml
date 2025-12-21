@@ -12,6 +12,7 @@ dependencies = [
     "aioresponses==0.7.8",
     "aiosqlite==0.21.0",
     "beautifulsoup4==4.13.4",
+    "dateparser>=1.2.2",
     "emoji==2.14.1",
     "fastapi==0.116.1",
     "humanize==4.12.3",
@@ -19,6 +20,7 @@ dependencies = [
     "javascript>=1!1.2.6",
     "loguru==0.7.3",
     "nltk==3.9.1",
+    "ovos-date-parser>=0.6.5",
     "pandas==2.3.1",
     "pillow==11.3.0",
     "psutil==7.0.0",
@@ -42,8 +44,11 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "freezegun>=1.5.5",
     "pre-commit>=4.3.0",
     "ruff>=0.14.6",
+    "snakeviz>=2.2.2",
+    "tuna>=0.5.11",
 ]
 
 

@@ -24,7 +24,7 @@ def create_init_file(path: Path) -> None:
     init_path = path / "__init__.py"
     if not init_path.exists():
         with open(init_path, "w", encoding="utf-8") as f:
-            f.write("# -*- coding: utf-8 -*-\n")
+            f.write("\n")
         print(f"Created: {init_path}")
 
 

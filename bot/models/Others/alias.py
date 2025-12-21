@@ -6,8 +6,8 @@ from tortoise import fields
 from tortoise.models import Model
 from twitchio.ext.commands import Command
 
-from bot.ext.named_tuples import AliasCached
 from bot.models.base import TimestampMixin
+from bot.types.named_tuples import AliasCached
 
 SET_NULL = fields.SET_NULL
 

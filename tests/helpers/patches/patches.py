@@ -8,7 +8,8 @@ from contextlib import AsyncExitStack
 from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import bot.cogs.randomscp.command.randomscp as randomscp
+from freezegun import freeze_time
+
 from bot.apis.ivrfi.parsers.subage import SubAge
 from bot.apis.ivrfi.parsers.user import UserElement
 from bot.cogs.preview.command.preview import PreviewCmd
@@ -31,6 +32,7 @@ class MockBuilder:
         self.Commands: MockBuilder._Commands = self._Commands(self)
         self.Asyncio: MockBuilder._Asyncio = self._Asyncio(self)
         self.ApiIvrFi: MockBuilder._ApiIvrFi = self._ApiIvrFi(self)
+        self.Default: MockBuilder._Default = self._Default(self)
 
     class _Errors:
         def __init__(self, builder):
@@ -217,12 +219,15 @@ class MockBuilder:
     class _Commands:
         def __init__(self, builder):
             self.builder = builder
+            import bot.cogs.randomscp.command.randomscp as randomscp
+
+            self.randomscp = randomscp
 
         def get_scp(self, return_value: str | None = None, side_effect=None, status=200) -> MockBuilder:
             mock_get = AsyncMock(side_effect=side_effect)
             mock_url = MagicMock(human_repr=MagicMock(return_value=return_value or "www.some_url.com"))
             mock_get.return_value = MagicMock(status=status, url=mock_url)
-            self.builder.patches["get_scp"].append(patch.object(randomscp, "get_scp", mock_get))
+            self.builder.patches["get_scp"].append(patch.object(self.randomscp, "get_scp", mock_get))
             return self.builder
 
         def get_preview(self, return_value: str | None = None, side_effect=None, status=200) -> MockBuilder:
@@ -289,6 +294,32 @@ class MockBuilder:
                         )
                     )
                     return self.builder
+
+    class _Default:
+        def __init__(self, builder):
+            self.builder = builder
+            self.Datetime: MockBuilder._Default.Datetime = self.Datetime(builder)
+
+        class Datetime:
+            def __init__(self, builder):
+                self.builder = builder
+
+            def now(self, time: datetime.datetime) -> MockBuilder:
+                patcher = freeze_time(time)
+                self.builder.patches["datetime_now"].append(patcher)
+                return self.builder
+
+            def now_forced(self, time: datetime.datetime) -> MockBuilder:
+                class FixedDatetime(datetime.datetime):
+                    @classmethod
+                    def now(cls, tz=None):
+                        return time
+
+                self.builder.patches["datetime_now"].append(patch.object(datetime, "datetime", FixedDatetime))
+
+                return self.builder
+
+        ...
 
     async def __aenter__(self):
         self._stack = AsyncExitStack()  # NOQA

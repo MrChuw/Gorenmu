@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from aiohttp_client_cache import CachedSession
 from loguru import logger
 
 from bot.utils.singleton import Singleton
 
 if TYPE_CHECKING:
+    from aiohttp_client_cache import CachedSession
+
     from bot.bot import Gorenmu
 
 

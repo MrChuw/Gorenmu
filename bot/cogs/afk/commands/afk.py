@@ -4,8 +4,8 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from bot.ext import Context, Response, commands
-from bot.ext.named_tuples import RAfkNamedTuple
 from bot.models import Status
+from bot.types.named_tuples import RAfkNamedTuple
 
 from .translations import Translations
 
@@ -69,7 +69,7 @@ class AFKCmd(commands.CustomComponent):
             return False
         status = translations.AFK.afks(ctx).get(user_status.alias)
         humanize = translations.SupportTools.TimeTools.Humanize(ctx)
-        a_time = humanize.created_a_time(user_status.updated_at, ctx.user.timezone_)
+        a_time = humanize.created_a_time(user_status.updated_at, ctx.user.tz)
         clock_emojis = {
             0.0: "🕛",
             0.5: "🕧",
@@ -96,7 +96,7 @@ class AFKCmd(commands.CustomComponent):
             11.0: "🕚",
             11.5: "🕦",
         }
-        delta = datetime.now(ctx.user.timezone_) - user_status.updated_at.astimezone(ctx.user.timezone_)
+        delta = datetime.now(ctx.user.tz) - user_status.updated_at.astimezone(ctx.user.tz)
         rounded_hours = round(((delta.total_seconds() / 3600) % 12) * 2) / 2
         clock_emoji = clock_emojis.get(rounded_hours, "🕛")
 

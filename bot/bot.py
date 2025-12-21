@@ -7,9 +7,6 @@ from logging import Logger
 from typing import TYPE_CHECKING
 
 import twitchio
-from aiocache.backends.memcached import MemcachedCache
-from aiocache.backends.memory import SimpleMemoryCache
-from aiocache.backends.redis import RedisCache
 from twitchio.ext import commands
 from twitchio.ext.commands import CommandErrorPayload
 
@@ -22,10 +19,14 @@ from bot.handlers import (
     LifecycleHandler,
     TokensHandler,
 )
-from bot.utils import Cache, Config, MemCache, TimeTools
+from bot.utils import Cache, Config, MemCache  # , TimeTools
 
 if TYPE_CHECKING:
     # from bot.api import api, api_start
+    from aiocache.backends.memcached import MemcachedCache
+    from aiocache.backends.memory import SimpleMemoryCache
+    from aiocache.backends.redis import RedisCache
+
     from bot.ext import Context
 
 
@@ -53,7 +54,7 @@ class Gorenmu(TypesBot):
         self.CommandHandler: CommandHandler = CommandHandler(bot=self)
         self.LifecycleHandler: LifecycleHandler = LifecycleHandler(bot=self)
         self.ContextHandler: ContextHandler = ContextHandler(bot=self)
-        self.TimeTools: TimeTools = TimeTools()
+        # self.TimeTools: TimeTools = TimeTools()
 
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
         return await self.TokensHandler.add_token(token, refresh)

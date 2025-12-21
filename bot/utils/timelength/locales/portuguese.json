@@ -1,0 +1,525 @@
+{
+    "connectors": [
+        " ",
+        "\t",
+        "-",
+        "+"
+    ],
+    "segmenters": [
+        ",",
+        "e",
+        "&"
+    ],
+    "allowed_terms": [
+        "!",
+        "?",
+        "'",
+        ".",
+        ",",
+        ":",
+        ";",
+        "o",
+        "a",
+        "os",
+        "as"
+    ],
+    "hhmmss_delimiters": [
+        ":"
+    ],
+    "decimal_delimiters": [
+        ","
+    ],
+    "thousand_delimiters": [
+        ".",
+        " "
+    ],
+    "date_delimiters": [
+        "/",
+        "\\"
+    ],
+    "date_operators": [
+        "em",
+        "Em",
+        "EM",
+        "no",
+        "No",
+        "NO"
+    ],
+    "parser_file": "parser_one.py",
+    "scales": {
+        "past": {
+            "scale": -1,
+            "singular": "passado",
+            "plural": "passado",
+            "terms": [
+                "passado",
+                "antes",
+                "anterior",
+                "anteriores"
+            ]
+        },
+        "now": {
+            "scale": -1,
+            "singular": "presente",
+            "plural": "presente",
+            "terms": [
+                "presente",
+                "agora",
+                "ja",
+                "atual",
+                "atualmente"
+            ]
+        },
+        "future": {
+            "scale": -1,
+            "singular": "futuro",
+            "plural": "futuro",
+            "terms": [
+                "futuro",
+                "porvir",
+                "em"
+            ]
+        },
+        "raw": {
+            "scale": -1,
+            "singular": "tempo",
+            "plural": "tempo",
+            "terms": [
+                "t",
+                "tempo",
+                "periodo",
+                "duracao"
+            ]
+        },
+        "microsecond": {
+            "scale": 1e-06,
+            "singular": "microssegundo",
+            "plural": "microssegundos",
+            "terms": [
+                "us",
+                "micro",
+                "microssegundo",
+                "microssegundos"
+            ]
+        },
+        "millisecond": {
+            "scale": 0.001,
+            "singular": "milissegundo",
+            "plural": "milissegundos",
+            "terms": [
+                "ms",
+                "milissegundo",
+                "milissegundos"
+            ]
+        },
+        "second": {
+            "scale": 1.0,
+            "singular": "segundo",
+            "plural": "segundos",
+            "terms": [
+                "s",
+                "seg",
+                "segs",
+                "segundo",
+                "segundos"
+            ]
+        },
+        "minute": {
+            "scale": 60.0,
+            "singular": "minuto",
+            "plural": "minutos",
+            "terms": [
+                "m",
+                "min",
+                "mins",
+                "minuto",
+                "minutos",
+                "Minutos"
+            ]
+        },
+        "hour": {
+            "scale": 3600.0,
+            "singular": "hora",
+            "plural": "horas",
+            "terms": [
+                "h",
+                "H",
+                "hr",
+                "hrs",
+                "hora",
+                "horas"
+            ]
+        },
+        "day": {
+            "scale": 86400.0,
+            "singular": "dia",
+            "plural": "dias",
+            "terms": [
+                "d",
+                "dia",
+                "dias"
+            ]
+        },
+        "week": {
+            "scale": 604800.0,
+            "singular": "semana",
+            "plural": "semanas",
+            "terms": [
+                "sem",
+                "semana",
+                "semanas"
+            ]
+        },
+        "month": {
+            "scale": 2592000.0,
+            "singular": "mes",
+            "plural": "meses",
+            "terms": [
+                "mes",
+                "meses",
+                "mo",
+                "mos"
+            ]
+        },
+        "year": {
+            "scale": 31536000.0,
+            "singular": "ano",
+            "plural": "anos",
+            "terms": [
+                "a",
+                "ano",
+                "anos"
+            ]
+        },
+        "decade": {
+            "scale": 315360000.0,
+            "singular": "decada",
+            "plural": "decadas",
+            "terms": [
+                "dec",
+                "decs",
+                "decada",
+                "decadas"
+            ]
+        },
+        "century": {
+            "scale": 3153600000.0,
+            "singular": "seculo",
+            "plural": "seculos",
+            "terms": [
+                "c",
+                "sec",
+                "seculo",
+                "seculos"
+            ]
+        }
+    },
+    "numerals": {
+        "zero": {
+            "type": "DIGIT",
+            "value": 0.0,
+            "terms": [
+                "zero",
+                "zeros"
+            ]
+        },
+        "one": {
+            "type": "DIGIT",
+            "value": 1.0,
+            "terms": [
+                "um",
+                "uns",
+                "uma"
+            ]
+        },
+        "two": {
+            "type": "DIGIT",
+            "value": 2.0,
+            "terms": [
+                "dois"
+            ]
+        },
+        "three": {
+            "type": "DIGIT",
+            "value": 3.0,
+            "terms": [
+                "tres"
+            ]
+        },
+        "four": {
+            "type": "DIGIT",
+            "value": 4.0,
+            "terms": [
+                "quatro"
+            ]
+        },
+        "five": {
+            "type": "DIGIT",
+            "value": 5.0,
+            "terms": [
+                "cinco"
+            ]
+        },
+        "six": {
+            "type": "DIGIT",
+            "value": 6.0,
+            "terms": [
+                "seis"
+            ]
+        },
+        "seven": {
+            "type": "DIGIT",
+            "value": 7.0,
+            "terms": [
+                "sete"
+            ]
+        },
+        "eight": {
+            "type": "DIGIT",
+            "value": 8.0,
+            "terms": [
+                "oito"
+            ]
+        },
+        "nine": {
+            "type": "DIGIT",
+            "value": 9.0,
+            "terms": [
+                "nove"
+            ]
+        },
+        "ten": {
+            "type": "TEEN",
+            "value": 10.0,
+            "terms": [
+                "dez"
+            ]
+        },
+        "eleven": {
+            "type": "TEEN",
+            "value": 11.0,
+            "terms": [
+                "onze"
+            ]
+        },
+        "twelve": {
+            "type": "TEEN",
+            "value": 12.0,
+            "terms": [
+                "doze"
+            ]
+        },
+        "thirteen": {
+            "type": "TEEN",
+            "value": 13.0,
+            "terms": [
+                "treze"
+            ]
+        },
+        "fourteen": {
+            "type": "TEEN",
+            "value": 14.0,
+            "terms": [
+                "quatorze",
+                "catorze"
+            ]
+        },
+        "fifteen": {
+            "type": "TEEN",
+            "value": 15.0,
+            "terms": [
+                "quinze"
+            ]
+        },
+        "sixteen": {
+            "type": "TEEN",
+            "value": 16.0,
+            "terms": [
+                "dezesseis"
+            ]
+        },
+        "seventeen": {
+            "type": "TEEN",
+            "value": 17.0,
+            "terms": [
+                "dezessete"
+            ]
+        },
+        "eighteen": {
+            "type": "TEEN",
+            "value": 18.0,
+            "terms": [
+                "dezoito"
+            ]
+        },
+        "nineteen": {
+            "type": "TEEN",
+            "value": 19.0,
+            "terms": [
+                "dezenove"
+            ]
+        },
+        "twenty": {
+            "type": "TEN",
+            "value": 20.0,
+            "terms": [
+                "vinte"
+            ]
+        },
+        "thirty": {
+            "type": "TEN",
+            "value": 30.0,
+            "terms": [
+                "trinta"
+            ]
+        },
+        "forty": {
+            "type": "TEN",
+            "value": 40.0,
+            "terms": [
+                "quarenta"
+            ]
+        },
+        "fifty": {
+            "type": "TEN",
+            "value": 50.0,
+            "terms": [
+                "cinquenta"
+            ]
+        },
+        "sixty": {
+            "type": "TEN",
+            "value": 60.0,
+            "terms": [
+                "sessenta"
+            ]
+        },
+        "seventy": {
+            "type": "TEN",
+            "value": 70.0,
+            "terms": [
+                "setenta"
+            ]
+        },
+        "eighty": {
+            "type": "TEN",
+            "value": 80.0,
+            "terms": [
+                "oitenta"
+            ]
+        },
+        "ninety": {
+            "type": "TEN",
+            "value": 90.0,
+            "terms": [
+                "noventa"
+            ]
+        },
+        "hundred": {
+            "type": "HUNDRED",
+            "value": 100.0,
+            "terms": [
+                "cem",
+                "centenas"
+            ]
+        },
+        "two_hundred": {
+            "type": "HUNDRED",
+            "value": 200.0,
+            "terms": [
+                "duzentos"
+            ]
+        },
+        "three_hundred": {
+            "type": "HUNDRED",
+            "value": 300.0,
+            "terms": [
+                "trezentos"
+            ]
+        },
+        "four_hundred": {
+            "type": "HUNDRED",
+            "value": 400.0,
+            "terms": [
+                "quatrocentos"
+            ]
+        },
+        "five_hundred": {
+            "type": "HUNDRED",
+            "value": 500.0,
+            "terms": [
+                "quinhentos"
+            ]
+        },
+        "six_hundred": {
+            "type": "HUNDRED",
+            "value": 600.0,
+            "terms": [
+                "seiscentos"
+            ]
+        },
+        "seven_hundred": {
+            "type": "HUNDRED",
+            "value": 700.0,
+            "terms": [
+                "setecentos"
+            ]
+        },
+        "eight_hundred": {
+            "type": "HUNDRED",
+            "value": 800.0,
+            "terms": [
+                "oitocentos"
+            ]
+        },
+        "nine_hundred": {
+            "type": "HUNDRED",
+            "value": 900.0,
+            "terms": [
+                "novecentos"
+            ]
+        },
+        "thousand": {
+            "type": "THOUSAND",
+            "value": 1000.0,
+            "terms": [
+                "mil",
+                "milhares"
+            ]
+        },
+        "million": {
+            "type": "THOUSAND",
+            "value": 1000000.0,
+            "terms": [
+                "milhao",
+                "milhoes"
+            ]
+        },
+        "billion": {
+            "type": "THOUSAND",
+            "value": 1000000000.0,
+            "terms": [
+                "bilhao",
+                "bilhoes"
+            ]
+        },
+        "trillion": {
+            "type": "THOUSAND",
+            "value": 1000000000000.0,
+            "terms": [
+                "trilhao",
+                "trilhoes"
+            ]
+        }
+    },
+    "flags": [],
+    "settings": {
+        "assume_scale": "SINGLE",
+        "limit_allowed_terms": true,
+        "allow_duplicate_scales": true,
+        "allow_thousands_extra_digits": false,
+        "allow_thousands_lacking_digits": false,
+        "allow_decimals_lacking_digits": true
+    },
+    "extra_data": {}
+}
