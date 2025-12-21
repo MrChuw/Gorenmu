@@ -27,13 +27,14 @@ repos:
         pass_filenames: false
         always_run: true
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.8.9
+    rev: 0.9.18
     hooks:
       - id: pip-compile
         name: pip-compile requirements.txt
-        args: [pyproject.toml, -o, requirements.txt]
+        args: [pyproject.toml, -o, requirements.txt ]
+        files: ^pyproject\.toml$
       - id: pip-compile
         name: pip-compile requirements-dev.txt
-        args: [--group, dev, -o, requirements-dev.txt]
-        files: ^requirements-dev\.(in|txt)$
+        args: [ pyproject.toml, --group, dev, -o, requirements-dev.txt ]
+        files: ^pyproject\.toml$
       - id: uv-lock
