@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Admonitions, CommandExemples, Response, TranslationBase
+from bot.ext import CommandExemples, Response, TranslationBase
 from bot.ext.translations.extras import TBase
 
 if TYPE_CHECKING:
@@ -98,11 +98,5 @@ class Translations(TranslationBase):
                     ),
                 )
             return self._untangle_commands(ctx, self._cname)
-
-        def deco_admonitions(self, ctx: Context, *args, **kwargs) -> Admonitions:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", Admonitions([]))
-                self.lang_dict.add_with(["pt_br", "pt"], Admonitions([]))
-            return self._untangle_admonitions(ctx, self._cname)
 
     AccountAge: AccountAge

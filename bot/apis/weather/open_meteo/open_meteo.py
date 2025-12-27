@@ -111,17 +111,21 @@ class OpenMeteo:
             timezone=timezone,
         )
         data = await self._request(url=url)
-        return Forecast.model_validate(data)
+        return Forecast(data)
 
     async def geocoding(self, *, name: str, language: str = "en") -> Geocoding:
         url = URL("https://nominatim.openstreetmap.org/search.php").with_query(
-            q=name,  # name=name,
+            q=name,
             # count=count,
             language=language,
             format="jsonv2",
+            addressdetails=1,
+            extratags=1,
+            namedetails=1,
+            entrances=1
         )
         data = await self._request(url=url)
-        return Geocoding.model_validate({"results": data})
+        return Geocoding({"results": data})
 
     async def close(self) -> None:
         """Close open client session."""

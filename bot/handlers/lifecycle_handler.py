@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
 import twitchio
@@ -78,7 +79,7 @@ class LifecycleHandler:
                 return None
             response: Response | None = None
             if ctx.command:
-                self.bot.log.info(f"#{ctx.channel.name}|| @{ctx.author.name}: {ctx.message.text}")
+                self.bot.log.info(f"#{ctx.channel.name} || @{ctx.author.name}: {ctx.message.text}")
 
                 has_double_prefix = f"{ctx.prefix}{ctx.prefix}" in ctx.message.text
                 message_has_pipe = " | " in ctx.message.text
@@ -107,8 +108,38 @@ class LifecycleHandler:
             self.bot.log.error(error)
             return False
 
-    async def event_message_whisper(self, payload: twitchio.Whisper):  # TODO: TODO
-        ...
+    async def event_message_whisper(self, payload: twitchio.Whisper):
+        if payload.sender.id == str(self.bot.bot_id):
+            return None
+
+        payload.user_input = payload.text
+        payload.reward = SimpleNamespace(id=None)
+        payload.user = payload.sender
+        payload.chatter = payload.sender
+        payload.broadcaster = payload.recipient
+
+        ctx: Context = await self.get_context(payload)
+        ctx.user = await UserModel.create_or_update(ctx)
+        try:
+            if ctx.command:
+                self.bot.log.info(f"Whisper || @{payload.sender.name}: {payload.text}")
+                response = await ctx.invoke()
+                await payload.recipient.send_whisper(to_user=payload.sender, message=response.response_string)
+        except InvalidArgument:
+            deco = ctx.command.component.translations.get_decorator(ctx=ctx)
+            if usage := deco.deco_usage(ctx):
+                return await payload.recipient.send_whisper(to_user=payload.sender, message=usage)
+            error_not_registered = ctx.command.component.translations.Exceptions.error_not_registered(
+                ctx, self.config.BotConfig.dev_name
+            )
+            return await payload.recipient.send_whisper(
+                to_user=payload.sender, message=error_not_registered.response_string
+            )
+
+        except Exception as error:
+            self.bot.log.error(error)
+            await self.bot.CommandHandler.send_bug(ctx, error)
+            return False
 
     async def _handle_events(self, event_name: str, ctx: Context):
         for category in self.bot.manual_events:
@@ -158,7 +189,7 @@ class LifecycleHandler:
         if "\x01ACTION " in payload.text:
             payload.text = payload.text.replace("\x01ACTION ", "").replace("\x01", "")
         invoke_by = None
-        if payload.reply:
+        if hasattr(payload, "reply") and payload.reply:
             payload.text = payload.text.removeprefix(payload.reply.parent_user.mention).lstrip()
             payload.text = f"{payload.text} {payload.reply.parent_message_body}"
 
@@ -167,11 +198,7 @@ class LifecycleHandler:
         if payload and payload.text and prefix_in:
             invoke_by = payload.text.partition(" ")[0][len(prefix) :].lower()
 
-        ctx = Context(
-            message=payload,
-            bot=self.bot,
-            prefix=prefix if prefix_in else None,
-            invoke_by=invoke_by,
-        )
+        ctx = Context(message=payload, bot=self.bot, prefix=prefix if prefix_in else None, invoke_by=invoke_by)
+
         ctx.get_command()
         return ctx

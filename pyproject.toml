@@ -4,6 +4,7 @@ version = "2.0.0"
 description = "Twitch bot build on top of twitchio."
 readme = "README.md"
 requires-python = ">=3.13"
+
 dependencies = [
     "aiocache[memcached,redis]==0.12.3",
     "aiohttp==3.12.15",
@@ -18,7 +19,6 @@ dependencies = [
     "nltk==3.9.1",
     "pillow==11.3.0",
     "psutil==7.0.0",
-    "pydantic==2.11.7",
     "python-dateutil==2.9.0.post0",
     "python-dotenv==1.1.1",
     "pytz==2025.2",

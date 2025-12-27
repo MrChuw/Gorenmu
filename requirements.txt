@@ -116,9 +116,7 @@ propcache==0.3.2
 psutil==7.0.0
     # via gorenmu (pyproject.toml)
 pydantic==2.11.7
-    # via
-    #   gorenmu (pyproject.toml)
-    #   fastapi
+    # via fastapi
 pydantic-core==2.33.2
     # via pydantic
 pymongo==4.15.4

@@ -134,7 +134,7 @@ class User(Base, TimestampMixin, ContentMixin):
             "id": ctx.author.id,
             "name": ctx.author.name,
             "channel": ctx.channel.name,
-            "saved_color": ctx.author.colour,
+            "saved_color": ctx.author.colour if hasattr(ctx.author, "colour") else "",
             "content": ctx.message.text,
             "timestamp": ctx.message.timestamp,
         }

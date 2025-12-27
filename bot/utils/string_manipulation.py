@@ -6,7 +6,9 @@ import random
 import re
 import string
 from datetime import datetime
+from functools import lru_cache
 from string import ascii_letters, digits
+from typing import TYPE_CHECKING
 
 from unidecode import unidecode
 from urlextract import URLExtract
@@ -14,8 +16,12 @@ from urlextract import URLExtract
 from bot.exceptions import InvalidUsernameError
 from bot.utils.singleton import Singleton
 
+if TYPE_CHECKING:
+    from bot.ext import Context, TranslationBase
+
 letters_and_digits = ascii_letters + digits
 url_extractor: URLExtract | None = None
+type BoolResult = tuple[str, bool | None]
 
 
 def start_extractor():
@@ -193,7 +199,9 @@ class StringTools(metaclass=Singleton):
         return text, option
 
     @staticmethod
-    def extract_and_remove_field(text: str, field: str, default: str | float | None = None) -> tuple[str, str | None]:
+    def extract_and_remove_field(
+        text: str, field: str, default: str | float | bool | None = None
+    ) -> tuple[str, str | None]:
         pattern = rf'{field}:(?:"(.*?)"|(\S+))'
         if match := re.search(pattern, text):
             value = match[1] or match[2]
@@ -256,3 +264,42 @@ class StringTools(metaclass=Singleton):
     @staticmethod
     def remove_numeric_underscores(text: str) -> str:
         return re.sub(r'(?<=\d)_(?=\d)', '', text)
+
+    @staticmethod
+    def extract_and_remove_bool_field(
+        text: str,
+        field: str,
+        translations: TranslationBase,
+        ctx: Context,
+        default: bool | None = None,
+    ) -> BoolResult:
+        verbs = translations.SupportTools.LanguageContext.Verbs
+        # asdf
+        regex, bool_map = StringTools._get_compiled_logic(
+            field, tuple(verbs.positive(ctx)), tuple(verbs.negative(ctx)), tuple(verbs.nothing(ctx))
+        )
+
+        match = regex.search(text)
+        if not match:
+            return text, default
+
+        extracted_text = match.group("v").lower()
+        value = bool_map.get(extracted_text, default)
+
+        start, end = match.span()
+        text = text[:start] + text[end:]
+
+        return text.strip(), value
+
+    @staticmethod
+    @lru_cache(maxsize=32)
+    def _get_compiled_logic(field: str, pos: tuple, neg: tuple, nth: tuple):
+        return _get_compiled(field, pos, neg, nth)
+
+
+def _get_compiled(field: str, pos: tuple, neg: tuple, nth: tuple):
+    mapping = {w.lower(): True for w in pos} | {w.lower(): False for w in neg} | {w.lower(): None for w in nth}
+    pattern = "|".join(re.escape(opt) for opt in sorted(mapping.keys(), key=len, reverse=True))  # NOQA
+    regex = re.compile(rf"{re.escape(field)}\s*:\s*(?P<q>[\"']?)(?P<v>{pattern})(?P=q)", re.I)
+
+    return regex, mapping

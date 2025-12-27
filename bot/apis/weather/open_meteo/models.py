@@ -1,41 +1,86 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from enum import auto
-from typing import List, Optional
+from enum import Enum, auto
+from typing import Any, Dict
 
-from pydantic import BaseModel, Field
-
-from .util import StrEnum
-
-estados_e_capitais = {
-    "Acre": "Rio Branco",
-    "Alagoas": "Maceió",
-    "Amapá": "Macapá",
-    "Amazonas": "Manaus",
-    "Bahia": "Salvador",
-    "Ceará": "Fortaleza",
-    "Espírito Santo": "Vitória",
-    "Goiás": "Goiânia",
-    "Maranhão": "São Luís",
-    "Mato Grosso": "Cuiabá",
-    "Mato Grosso do Sul": "Campo Grande",
-    "Minas Gerais": "Belo Horizonte",
-    "Pará": "Belém",
-    "Paraíba": "João Pessoa",
-    "Paraná": "Curitiba",
-    "Pernambuco": "Recife",
-    "Piauí": "Teresina",
-    "Rio de Janeiro": "Rio de Janeiro",
-    "Rio Grande do Norte": "Natal",
-    "Rio Grande do Sul": "Porto Alegre",
-    "Rondônia": "Porto Velho",
-    "Roraima": "Boa Vista",
-    "Santa Catarina": "Florianópolis",
-    "São Paulo": "São Paulo",
-    "Sergipe": "Aracaju",
-    "Tocantins": "Palmas",
+ISO3166_LVL_MAP: dict[str, str] = {
+    "lvl2": "country",
+    "lvl3": "region",
+    "lvl4": "state",
+    "lvl5": "state_district",
+    "lvl6": "province",
+    "lvl7": "county",
+    "lvl8": "municipality",
+    "lvl9": "city_district",
 }
+
+
+class StrEnum(str, Enum):
+    """An Enum of strings.
+
+    A backported StrEnum implementation of Python 3.11, providing roughly the
+    same implementation for our use case. The `auto()` behavior uses the
+    lowercase version of its member name for its value.
+
+        Example:
+        class Example(StrEnum):
+            UPPER_CASE = auto()
+            NOT_AUTO = "beep"
+
+            # We should not use these, but they work
+            lower_case = auto()
+            MixedCase = auto()
+
+        assert Example.UPPER_CASE == "upper_case"
+        assert Example.NOT_AUTO == "beep"
+
+        assert Example.lower_case == "lower_case"
+        assert Example.MixedCase == "MixedCase"
+    """
+
+    def __new__(cls, value: str, *args: Any, **kwargs: Any) -> StrEnum:
+        """Validate StrEnum creation.
+
+        Args:
+            value: Value of the member.
+            args: Additional arguments.
+            kwargs: Additional keyword arguments.
+
+        Returns:
+            The StrEnum instance.
+
+        Raises:
+            TypeError: If the value is not a string.
+        """
+        if not isinstance(value, (str, auto)):
+            raise TypeError(f"Values of StrEnums must be strings: {value!r} is a {type(value)}")
+        return super().__new__(cls, value, *args, **kwargs)  # type: ignore
+
+    def __str__(self) -> str:
+        """Represent as a string.
+
+        Returns:
+            Value of the member as a string.
+        """
+        return str(self.value)
+
+    @staticmethod
+    def _generate_next_value_(  # pylint: disable=arguments-differ
+        name: str, _start: Any, _count: Any, _last_values: Any
+    ) -> str:
+        """Generate the next value when not given.
+
+        Args:
+            name: the name of the member
+            _start: the initial start value or None
+            _count: the number of existing members
+            _last_values: the last value assigned or None
+
+        Returns:
+            The next value for the member.
+        """
+        return name.lower()
 
 
 class TemperatureUnit(StrEnum):
@@ -200,228 +245,430 @@ class DailyParameters(StrEnum):
     WIND_SPEED_10M_MAX = "windspeed_10m_max"
 
 
-class HourlyForecast(BaseModel):
-    """Hourly weather data."""
+class HourlyForecast:
+    def __init__(self, data: dict[str, Any]):
+        # Time markers
+        raw_time = data.get("time")
+        self.time: list[datetime] | None = [datetime.fromisoformat(t) for t in raw_time] if raw_time else None
 
-    apparent_temperature: Optional[List[float]]
-    cloud_cover_high: Optional[List[int]] = Field(None, alias="cloudcover_high")
-    cloud_cover_low: Optional[List[int]] = Field(None, alias="cloudcover_low")
-    cloud_cover_mid: Optional[List[int]] = Field(None, alias="cloudcover_mid")
-    cloud_cover: Optional[List[int]] = Field(None, alias="cloudcover")
-    dew_point_2m: Optional[List[float]] = Field(None, alias="dewpoint_2m")
-    diffuse_radiation: Optional[List[float]]
-    direct_normal_irradiance: Optional[List[float]]
-    direct_radiation: Optional[List[float]]
-    evapotranspiration: Optional[List[float]]
-    freezing_level_height: Optional[List[int]] = Field(None, alias="freezinglevel_height")
-    precipitation: Optional[List[float]]
-    pressure_msl: Optional[List[float]]
-    relative_humidity_2m: Optional[List[int]] = Field(None, alias="relativehumidity_2m")
-    shortwave_radiation: Optional[List[float]]
-    snow_depth: Optional[List[int]]
-    soil_moisture_0_1cm: Optional[List[float]]
-    soil_moisture_1_3cm: Optional[List[float]]
-    soil_moisture_27_81cm: Optional[List[float]]
-    soil_moisture_3_9cm: Optional[List[float]]
-    soil_moisture_9_27cm: Optional[List[float]]
-    soil_temperature_0cm: Optional[List[float]]
-    soil_temperature_18cm: Optional[List[float]]
-    soil_temperature_54cm: Optional[List[float]]
-    soil_temperature_6cm: Optional[List[float]]
-    temperature_2m: Optional[List[float]]
-    time: List[datetime]
-    vapor_pressure_deficit: Optional[List[float]]
-    weather_code: Optional[List[int]] = Field(None, alias="weathercode")
-    wind_direction_10m: Optional[List[int]] = Field(None, alias="winddirection_10m")
-    wind_direction_120m: Optional[List[int]] = Field(None, alias="winddirection_120m")
-    wind_direction_180m: Optional[List[int]] = Field(None, alias="winddirection_180m")
-    wind_direction_80m: Optional[List[int]] = Field(None, alias="winddirection_80m")
-    wind_gusts_10m: Optional[List[float]] = Field(None, alias="windgusts_10m")
-    wind_speed_10m: Optional[List[float]] = Field(None, alias="windspeed_10m")
-    wind_speed_120m: Optional[List[float]] = Field(None, alias="windspeed_120m")
-    wind_speed_180m: Optional[List[float]] = Field(None, alias="windspeed_180m")
-    wind_speed_80m: Optional[List[float]] = Field(None, alias="windspeed_80m")
-    is_day: Optional[List[int]] = Field(None, alias="is_day")
+        # General Atmosphere
+        self.temperature_2m: list[float] | None = data.get("temperature_2m")
+        self.apparent_temperature: list[float] | None = data.get("apparent_temperature")
+        self.pressure_msl: list[float] | None = data.get("pressure_msl")
+        self.vapor_pressure_deficit: list[float] | None = data.get("vapor_pressure_deficit")
+        self.freezing_level_height: list[int] | None = data.get("freezinglevel_height")
+        self.weather_code: list[int] | None = data.get("weathercode")
+        self.is_day: list[int] | None = data.get("is_day")
 
+        # Humidity and Clouds
+        self.relative_humidity_2m: list[int] | None = data.get("relativehumidity_2m")
+        self.dew_point_2m: list[float] | None = data.get("dewpoint_2m")
+        self.cloud_cover: list[int] | None = data.get("cloudcover")
+        self.cloud_cover_low: list[int] | None = data.get("cloudcover_low")
+        self.cloud_cover_mid: list[int] | None = data.get("cloudcover_mid")
+        self.cloud_cover_high: list[int] | None = data.get("cloudcover_high")
 
-class DailyForecast(BaseModel):
-    """Daily weather data."""
+        # Precipitation and Radiation
+        self.precipitation: list[float] | None = data.get("precipitation")
+        self.snow_depth: list[int] | None = data.get("snow_depth")
+        self.evapotranspiration: list[float] | None = data.get("evapotranspiration")
+        self.shortwave_radiation: list[float] | None = data.get("shortwave_radiation")
+        self.diffuse_radiation: list[float] | None = data.get("diffuse_radiation")
+        self.direct_radiation: list[float] | None = data.get("direct_radiation")
+        self.direct_normal_irradiance: list[float] | None = data.get("direct_normal_irradiance")
 
-    apparent_temperature_max: Optional[List[float]]
-    apparent_temperature_min: Optional[List[float]]
-    precipitation_hours: Optional[List[int]]
-    precipitation_sum: Optional[List[float]]
-    shortwave_radiation_sum: Optional[List[float]]
-    sunrise: Optional[List[datetime]]
-    sunset: Optional[List[datetime]]
-    temperature_2m_max: Optional[List[float]]
-    temperature_2m_min: Optional[List[float]]
-    time: List[date]
-    weathercode: Optional[List[int]]
-    wind_direction_10m_dominant: Optional[List[int]] = Field(None, alias="winddirection_10m_dominant")
-    wind_gusts_10m_max: Optional[List[float]] = Field(None, alias="windgusts_10m_max")
-    wind_speed_10m_max: Optional[List[float]] = Field(None, alias="windspeed_10m_max")
+        # Soil Metrics
+        self.soil_moisture_0_1cm: list[float] | None = data.get("soil_moisture_0_1cm")
+        self.soil_moisture_1_3cm: list[float] | None = data.get("soil_moisture_1_3cm")
+        self.soil_moisture_3_9cm: list[float] | None = data.get("soil_moisture_3_9cm")
+        self.soil_moisture_9_27cm: list[float] | None = data.get("soil_moisture_9_27cm")
+        self.soil_moisture_27_81cm: list[float] | None = data.get("soil_moisture_27_81cm")
+        self.soil_temperature_0cm: list[float] | None = data.get("soil_temperature_0cm")
+        self.soil_temperature_6cm: list[float] | None = data.get("soil_temperature_6cm")
+        self.soil_temperature_18cm: list[float] | None = data.get("soil_temperature_18cm")
+        self.soil_temperature_54cm: list[float] | None = data.get("soil_temperature_54cm")
+
+        # Wind Speed
+        self.wind_speed_10m: list[float] | None = data.get("windspeed_10m")
+        self.wind_speed_80m: list[float] | None = data.get("windspeed_80m")
+        self.wind_speed_120m: list[float] | None = data.get("windspeed_120m")
+        self.wind_speed_180m: list[float] | None = data.get("windspeed_180m")
+        self.wind_gusts_10m: list[float] | None = data.get("windgusts_10m")
+
+        # Wind Direction
+        self.wind_direction_10m: list[int] | None = data.get("winddirection_10m")
+        self.wind_direction_80m: list[int] | None = data.get("winddirection_80m")
+        self.wind_direction_120m: list[int] | None = data.get("winddirection_120m")
+        self.wind_direction_180m: list[int] | None = data.get("winddirection_180m")
 
 
-class HourlyForecastUnits(BaseModel):
-    """Hourly weather data units."""
+class DailyForecast:
+    def __init__(self, data: dict[str, Any]):
+        # Time identifiers (usually a list of ISO8601 strings or date objects)
+        raw_time = data.get("time")
+        self.time: list[date] | None = [date.fromisoformat(t) for t in raw_time] if raw_time else None
 
-    apparent_temperature: Optional[str]
-    cloud_cover_high: Optional[str] = Field(None, alias="cloudcover_high")
-    cloud_cover_low: Optional[str] = Field(None, alias="cloudcover_low")
-    cloud_cover_mid: Optional[str] = Field(None, alias="cloudcover_mid")
-    cloud_cover: Optional[str] = Field(None, alias="cloudcover")
-    dew_point_2m: Optional[str] = Field(None, alias="dewpoint_2m")
-    diffuse_radiation: Optional[str]
-    direct_normal_irradiance: Optional[str]
-    direct_radiation: Optional[str]
-    evapotranspiration: Optional[str]
-    freezing_level_height: Optional[str] = Field(None, alias="freezinglevel_height")
-    precipitation: Optional[str]
-    pressure_msl: Optional[str]
-    relative_humidity_2m: Optional[str] = Field(None, alias="relativehumidity_2m")
-    shortwave_radiation: Optional[str]
-    snow_depth: Optional[str]
-    soil_moisture_0_1cm: Optional[str]
-    soil_moisture_1_3cm: Optional[str]
-    soil_moisture_27_81cm: Optional[str]
-    soil_moisture_3_9cm: Optional[str]
-    soil_moisture_9_27cm: Optional[str]
-    soil_temperature_0cm: Optional[str]
-    soil_temperature_18cm: Optional[str]
-    soil_temperature_54cm: Optional[str]
-    soil_temperature_6cm: Optional[str]
-    temperature_2m: Optional[str]
-    time: Optional[TimeFormat]
-    vapor_pressure_deficit: Optional[str]
-    weather_code: Optional[str] = Field(None, alias="weathercode")
-    wind_direction_10m: Optional[str] = Field(None, alias="winddirection_10m")
-    wind_direction_120m: Optional[str] = Field(None, alias="winddirection_120m")
-    wind_direction_180m: Optional[str] = Field(None, alias="winddirection_180m")
-    wind_direction_80m: Optional[str] = Field(None, alias="winddirection_80m")
-    wind_gusts_10m: Optional[str] = Field(None, alias="windgusts_10m")
-    wind_speed_10m: Optional[str] = Field(None, alias="windspeed_10m")
-    wind_speed_120m: Optional[str] = Field(None, alias="windspeed_120m")
-    wind_speed_180m: Optional[str] = Field(None, alias="windspeed_180m")
-    wind_speed_80m: Optional[str] = Field(None, alias="windspeed_80m")
+        # Temperature lists
+        self.temperature_2m_max: list[float] | None = data.get("temperature_2m_max")
+        self.temperature_2m_min: list[float] | None = data.get("temperature_2m_min")
+        self.apparent_temperature_max: list[float] | None = data.get("apparent_temperature_max")
+        self.apparent_temperature_min: list[float] | None = data.get("apparent_temperature_min")
+
+        # Precipitation and Radiation
+        self.precipitation_hours: list[int] | None = data.get("precipitation_hours")
+        self.precipitation_sum: list[float] | None = data.get("precipitation_sum")
+        self.shortwave_radiation_sum: list[float] | None = data.get("shortwave_radiation_sum")
+
+        # Solar events
+        self.sunrise: list[datetime] | None = data.get("sunrise")
+        self.sunset: list[datetime] | None = data.get("sunset")
+
+        # Weather and Wind (Mapping Pydantic aliases)
+        self.weather_code: list[int] | None = data.get("weathercode")
+        self.wind_direction_10m_dominant: list[int] | None = data.get("winddirection_10m_dominant")
+        self.wind_gusts_10m_max: list[float] | None = data.get("windgusts_10m_max")
+        self.wind_speed_10m_max: list[float] | None = data.get("windspeed_10m_max")
 
 
-class CurrentWeather(BaseModel):
-    """Current weather data."""
+class HourlyForecastUnits:
+    def __init__(self, data: dict[str, Any]):
+        # General and Atmosphere
+        self.time: TimeFormat | None = data.get("time")
+        self.temperature_2m: str | None = data.get("temperature_2m")
+        self.apparent_temperature: str | None = data.get("apparent_temperature")
+        self.pressure_msl: str | None = data.get("pressure_msl")
+        self.vapor_pressure_deficit: str | None = data.get("vapor_pressure_deficit")
+        self.freezing_level_height: str | None = data.get("freezinglevel_height")
+        self.weather_code: str | None = data.get("weathercode")
 
-    time: datetime
-    wind_speed: float = Field(..., alias="windspeed")
-    wind_direction: int = Field(..., alias="winddirection")
-    temperature: float
-    weather_code: int = Field(..., alias="weathercode")
-    is_day: int = Field(..., alias="is_day")
+        # Humidity and Clouds (with Aliases)
+        self.relative_humidity_2m: str | None = data.get("relativehumidity_2m")
+        self.dew_point_2m: str | None = data.get("dewpoint_2m")
+        self.cloud_cover: str | None = data.get("cloudcover")
+        self.cloud_cover_low: str | None = data.get("cloudcover_low")
+        self.cloud_cover_mid: str | None = data.get("cloudcover_mid")
+        self.cloud_cover_high: str | None = data.get("cloudcover_high")
+
+        # Precipitation and Radiation
+        self.precipitation: str | None = data.get("precipitation")
+        self.snow_depth: str | None = data.get("snow_depth")
+        self.evapotranspiration: str | None = data.get("evapotranspiration")
+        self.shortwave_radiation: str | None = data.get("shortwave_radiation")
+        self.diffuse_radiation: str | None = data.get("diffuse_radiation")
+        self.direct_radiation: str | None = data.get("direct_radiation")
+        self.direct_normal_irradiance: str | None = data.get("direct_normal_irradiance")
+
+        # Soil Metrics
+        self.soil_moisture_0_1cm: str | None = data.get("soil_moisture_0_1cm")
+        self.soil_moisture_1_3cm: str | None = data.get("soil_moisture_1_3cm")
+        self.soil_moisture_3_9cm: str | None = data.get("soil_moisture_3_9cm")
+        self.soil_moisture_9_27cm: str | None = data.get("soil_moisture_9_27cm")
+        self.soil_moisture_27_81cm: str | None = data.get("soil_moisture_27_81cm")
+        self.soil_temperature_0cm: str | None = data.get("soil_temperature_0cm")
+        self.soil_temperature_6cm: str | None = data.get("soil_temperature_6cm")
+        self.soil_temperature_18cm: str | None = data.get("soil_temperature_18cm")
+        self.soil_temperature_54cm: str | None = data.get("soil_temperature_54cm")
+
+        # Wind Speed (Multiple Heights)
+        self.wind_speed_10m: str | None = data.get("windspeed_10m")
+        self.wind_speed_80m: str | None = data.get("windspeed_80m")
+        self.wind_speed_120m: str | None = data.get("windspeed_120m")
+        self.wind_speed_180m: str | None = data.get("windspeed_180m")
+        self.wind_gusts_10m: str | None = data.get("windgusts_10m")
+
+        # Wind Direction (Multiple Heights)
+        self.wind_direction_10m: str | None = data.get("winddirection_10m")
+        self.wind_direction_80m: str | None = data.get("winddirection_80m")
+        self.wind_direction_120m: str | None = data.get("winddirection_120m")
+        self.wind_direction_180m: str | None = data.get("winddirection_180m")
 
 
-class DailyForecastUnits(BaseModel):
-    """Daily weather data units."""
+class CurrentWeather:
+    def __init__(self, data: dict[str, Any]):
+        # The 'time' field is expected to be a datetime object, or a string
+        # that would be parsed. Here we represent the type hint.
+        self.time: datetime | None = datetime.fromisoformat(data["time"]) if data.get("time") else None
 
-    apparent_temperature_max: Optional[str]
-    apparent_temperature_min: Optional[str]
-    precipitation_hours: Optional[str]
-    precipitation_sum: Optional[str]
-    shortwave_radiation_sum: Optional[str]
-    sunrise: Optional[TimeFormat]
-    sunset: Optional[TimeFormat]
-    temperature_2m_max: Optional[str]
-    temperature_2m_min: Optional[str]
-    time: Optional[TimeFormat]
-    weather_code: Optional[str] = Field(None, alias="weathercode")
-    wind_direction_10m_dominant: Optional[str] = Field(None, alias="winddirection_10m_dominant")
-    wind_gusts_10m_max: Optional[str] = Field(None, alias="windgusts_10m_max")
-    wind_speed_10m_max: Optional[str] = Field(None, alias="windspeed_10m_max")
+        # Temperature and Weather status
+        self.temperature: float | None = data.get("temperature")
+        self.weather_code: int | None = data.get("weathercode")
 
+        # Wind conditions (Mapping Pydantic aliases)
+        self.wind_speed: float | None = data.get("windspeed")
+        self.wind_direction: int | None = data.get("winddirection")
 
-class Forecast(BaseModel):
-    """Weather forecast."""
-
-    current_weather: Optional[CurrentWeather]
-    daily_units: Optional[DailyForecastUnits]
-    daily: Optional[DailyForecast]
-    elevation: float
-    generation_time_ms: float = Field(..., alias="generationtime_ms")
-    hourly_units: Optional[HourlyForecastUnits]
-    hourly: Optional[HourlyForecast]
-    latitude: float
-    longitude: float
-    utc_offset_seconds: int
+        # Day/Night indicator
+        self.is_day: int | None = data.get("is_day")
 
 
-class GeocodingResult(BaseModel):
-    place_id: int = Field(None, alias="place_id")
-    licence: str = Field(None, alias="licence")
-    osm_type: str = Field(None, alias="osm_type")
-    osm_id: int = Field(None, alias="osm_id")
-    latitude: Optional[float] = Field(None, alias="lat")
-    longitude: Optional[float] = Field(None, alias="lon")
-    category: str = Field(None, alias="category")
-    type: str = Field(None, alias="type")
-    place_rank: int = Field(None, alias="place_rank")
-    importance: float = Field(None, alias="importance")
-    addresstype: str = Field(None, alias="addresstype")
-    name: str = Field(None, alias="name")
-    display_name: str = Field(None, alias="display_name")
-    boundingbox: List[float] = Field(None, alias="boundingbox")
-    # id: Optional[int]
-    # name: Optional[str]
-    # latitude: Optional[float]
-    # longitude: Optional[float]
-    # elevation: Optional[int]
-    # feature_code: Optional[str]
-    # country_code: Optional[str]
-    # admin1_id: Optional[int]
-    # admin2_id: Optional[int]
-    # admin3_id: Optional[int]
-    # admin4_id: Optional[int]
-    # timezone: Optional[str]
-    # population: Optional[int]
-    # country_id: Optional[int]
-    # country: Optional[str]
-    # admin1: Optional[str]
-    # admin2: Optional[str]
-    # admin3: Optional[str]
-    # admin4: Optional[str]
+class DailyForecastUnits:
+    def __init__(self, data: dict[str, Any]):
+        # Temperature and Precipitation units
+        self.apparent_temperature_max: str | None = data.get("apparent_temperature_max")
+        self.apparent_temperature_min: str | None = data.get("apparent_temperature_min")
+        self.precipitation_hours: str | None = data.get("precipitation_hours")
+        self.precipitation_sum: str | None = data.get("precipitation_sum")
 
-    # class Config:
-    #     alias_generator = lambda field_name: field_name
+        # Radiation and Solar events
+        self.shortwave_radiation_sum: str | None = data.get("shortwave_radiation_sum")
+        self.sunrise: TimeFormat | None = data.get("sunrise")
+        self.sunset: TimeFormat | None = data.get("sunset")
+
+        # Core metrics
+        self.temperature_2m_max: str | None = data.get("temperature_2m_max")
+        self.temperature_2m_min: str | None = data.get("temperature_2m_min")
+        self.time: TimeFormat | None = data.get("time")
+
+        # Aliased fields from Open-Meteo API
+        self.weather_code: str | None = data.get("weathercode")
+        self.wind_direction_10m_dominant: str | None = data.get("winddirection_10m_dominant")
+        self.wind_gusts_10m_max: str | None = data.get("windgusts_10m_max")
+        self.wind_speed_10m_max: str | None = data.get("windspeed_10m_max")
+
+
+# --- Classes Principais ---
+
+
+class Forecast:
+    def __init__(self, data: dict[str, Any]):
+        self.current_weather: CurrentWeather | None = (
+            CurrentWeather(data.get("current_weather")) if data.get("current_weather") else None
+        )
+        self.daily_units: DailyForecastUnits | None = (
+            DailyForecastUnits(data.get("daily_units")) if data.get("daily_units") else None
+        )
+        self.daily: DailyForecast | None = DailyForecast(data.get("daily")) if data.get("daily") else None
+        self.hourly_units: HourlyForecastUnits | None = (
+            HourlyForecastUnits(data.get("hourly_units")) if data.get("hourly_units") else None
+        )
+        self.hourly: HourlyForecast | None = HourlyForecast(data.get("hourly")) if data.get("hourly") else None
+
+        # Geographic Data and Metadata
+        self.elevation: float = data.get("elevation")
+        self.generation_time_ms: float = data.get("generationtime_ms")
+        self.latitude: float = data.get("latitude")
+        self.longitude: float = data.get("longitude")
+        self.utc_offset_seconds: int = data.get("utc_offset_seconds")
+
+
+class Entrance:
+    def __init__(self, data: dict[str, Any]):
+        self.osm_id: int | None = data.get("osm_id")
+        self.type: str | None = data.get("type")
+        self.latitude: float | None = float(data["lat"]) if data.get("lat") else None
+        self.longitude: float | None = float(data["lon"]) if data.get("lon") else None
+        self.extratags: dict[str, Any] = data.get("extratags") or {}
+        self.raw: dict[str, Any] = data
+
+
+class ExtraTags:
+    def __init__(self, data: dict[str, Any]):
+        # General and OSM specific
+        self.wikidata: str | None = data.get("wikidata")
+        self.wikipedia: str | None = data.get("wikipedia")
+        self.website: str | None = data.get("website")
+        self.phone: str | None = data.get("phone")
+        self.email: str | None = data.get("email")
+        self.sqkm: str | None = data.get("sqkm")
+
+        # Classification & Stats
+        self.place: str | None = data.get("place")
+        self.linked_place: str | None = data.get("linked_place")
+        self.population: str | None = data.get("population")
+        self.population_date: str | None = data.get("population:date")
+        self.ibge_code: str | None = data.get("IBGE:GEOCODIGO")
+
+        self.capacity: str | None = data.get("capacity")
+        self.network: str | None = data.get("network")
+        self.operator_type: str | None = data.get("operator:type")
+        self.description: str | None = data.get("description")
+
+        # Physical and Operational
+        self.building: str | None = data.get("building")
+        self.operator: str | None = data.get("operator")
+        self.access: str | None = data.get("access")
+        self.surface: str | None = data.get("surface")
+        self.tracktype: str | None = data.get("tracktype")
+        self.opening_hours: str | None = data.get("opening_hours")
+        self.opendata_type: str | None = data.get("opendata:type")
+
+        self.raw: dict[str, Any] = data
+
+
+class NameDetails:
+    def __init__(self, data: dict[str, Any]):
+        self.name: str | None = data.get("name")
+        self.loc_name: str | None = data.get("loc_name")
+        self.official_name: str | None = data.get("official_name")
+        self.ref: str | None = data.get("ref")
+        self.brand: str | None = data.get("brand")
+        self.old_name: str | None = data.get("old_name")
+
+        self.names_by_language: dict[str, str] = {
+            key.split(":", 1)[1]: value for key, value in data.items() if key.startswith("name:")
+        }
+
+        # Mantém o dicionário original
+        self.raw: dict[str, Any] = data
+
+
+class Address:
+    def __init__(self, data: dict[str, Any]):
+        # Hierarchical display
+        self.display: str | None = (
+            data.get("city")
+            or data.get("town")
+            or data.get("village")
+            or data.get("municipality")
+            or data.get("city_district")
+            or data.get("hamlet")
+            or data.get("suburb")
+            or data.get("city_block")
+            or data.get("continent")
+        )
+
+        # Street / place
+        self.road: str | None = data.get("road")
+        self.house_number: str | None = data.get("house_number")
+        self.neighbourhood: str | None = data.get("neighbourhood")
+        self.suburb: str | None = data.get("suburb")
+        self.city_district: str | None = data.get("city_district")
+        self.city_block: str | None = data.get("city_block")
+        self.quarter: str | None = data.get("quarter")
+
+        # Settlement
+        self.city: str | None = data.get("city")
+        self.town: str | None = data.get("town")
+        self.village: str | None = data.get("village")
+        self.municipality: str | None = data.get("municipality")
+        self.hamlet: str | None = data.get("hamlet")
+
+        # Administrative
+        self.county: str | None = data.get("county")
+        self.state_district: str | None = data.get("state_district")
+        self.state: str | None = data.get("state")
+        self.region: str | None = data.get("region")
+        self.postcode: str | None = data.get("postcode")
+        self.country: str | None = data.get("country")
+        self.country_code: str | None = data.get("country_code")
+        self.continent: str | None = data.get("continent")
+
+        # POI
+        self.shop: str | None = data.get("shop")
+        self.military: str | None = data.get("military")
+        self.tourism: str | None = data.get("tourism")
+        self.amenity: str | None = data.get("amenity")
+        self.office: str | None = data.get("office")
+        self.highway: str | None = data.get("highway")
+        self.association: str | None = data.get("association")
+
+        # ISO 3166-2 raw (ex: {"lvl4": "BR-CE"})
+        self.iso3166_2_raw: dict[str, str] = {
+            key.replace("ISO3166-2-", ""): value for key, value in data.items() if key.startswith("ISO3166-2-")
+        }
+
+        # ISO 3166-2 normalized (ex: {"state": "BR-CE"})
+        self.iso3166_2_normalized: dict[str, str] = {
+            ISO3166_LVL_MAP.get(level, level): code for level, code in self.iso3166_2_raw.items()
+        }
+
+        self.raw: dict[str, Any] = data
+
+    def get_iso(self, level: str) -> str | None:
+        return self.iso3166_2_normalized.get(level) or self.iso3166_2_raw.get(level)
+
+    def __str__(self) -> str:
+        """Returns a clean 'Display Location, State, Country' format."""
+        parts = [self.display, self.state, self.country]
+        return ", ".join(p for p in parts if p)
+
+
+class GeocodingResult:
+    def __init__(self, data: dict[str, Any]):
+        # Identifiers
+        self.place_id: int | None = data.get("place_id")
+        self.licence: str | None = data.get("licence")
+        self.osm_type: str | None = data.get("osm_type")
+        self.osm_id: int | None = data.get("osm_id")
+
+        # Coordinates
+        self.latitude: float | None = float(data["lat"]) if data.get("lat") else None
+        self.longitude: float | None = float(data["lon"]) if data.get("lon") else None
+
+        # Classification
+        self.category: str | None = data.get("category")
+        self.type: str | None = data.get("type")
+        self.place_rank: int | None = data.get("place_rank")
+        self.importance: float | None = data.get("importance")
+        self.address_type: str | None = data.get("addresstype")
+        self.admin_level: int | None = data.get("admin_level")
+
+        # Display Information
+        self.name: str | None = data.get("name")
+        self.display_name: str | None = data.get("display_name")
+
+        # Sub-Objects
+        addr_data = data.get("address")
+        self.address: Address | None = Address(addr_data) if addr_data else None
+
+        tags_data = data.get("extratags")
+        self.extra_tags: ExtraTags | None = ExtraTags(tags_data) if tags_data else None
+
+        names_data = data.get("namedetails")
+        self.name_details: NameDetails | None = NameDetails(names_data) if names_data else None
+
+        # Geometry
+        raw_bbox = data.get("boundingbox")
+        self.bounding_box: list[float] | None = [float(val) for val in raw_bbox] if raw_bbox else None
+
+        # Entrances
+        entrances_data = data.get("entrances")
+        if entrances_data:
+            self.entrances: list[Entrance] = [Entrance(item) for item in entrances_data]
+        else:
+            self.entrances = []
+
+        self.icon: str | None = data.get("icon")
+
+        self.raw: dict[str, Any] = data
 
     @property
-    def display(self):
-        # Split the original display_name by comma
-        parts = self.__dict__.get("display_name", "").split(", ")
-        display_names = self.__dict__.get("display_name", "")
+    def display(self) -> str:
+        if not self.display_name:
+            return ""
 
-        for estado, capital in estados_e_capitais.items():
-            if capital in parts or estado in parts:
-                return f"{parts[0]}, {estado}".strip()
+        name = self.name
+        city = self.address.display
+        parts: list[str] = []
+        if name and name != city:
+            parts.append(name)
 
-        if len(parts) == 1 and len(parts) < 25:
-            return self.__dict__.get("display_name", "")
+        if city:
+            parts.append(city)
 
-        if len(parts) <= 2 and len(parts[1]) < 25:
-            return self.__dict__.get("display_name", "")  # Return the full display_name if there's no second comma
+        # if (state := self.address.state) and state != city:
+        if state := self.address.state:
+            parts.append(state)
 
-        # Get the first two parts
-        first_part = parts[0].strip()
-        second_part = parts[1].strip()
+        if country := self.address.country:
+            parts.append(country)
 
-        # Limit the second part to 25 characters and add ellipsis if needed
-        if len(second_part) > 25:
-            second_part = f"{second_part[:22]}..."
-
-        # Join the first two parts with a comma
-        modified_display_name = f"{first_part}, {second_part}"
-
-        for estado, capital in estados_e_capitais.items():
-            if estado in display_names and capital in display_names:
-                modified_display_name = f"{first_part}, {estado}"
-
-        return modified_display_name.strip()  # Remove leading/trailing spaces
+        return ", ".join(parts)
 
 
-class Geocoding(BaseModel):
-    results: List[GeocodingResult]
+    @property
+    def short_display(self) -> str:
+        """Helper to get a clean location string."""
+        if self.address:
+            addr_str = str(self.address)
+            # If it's a specific place (like a shop), include its name
+            if self.name and self.name not in addr_str:
+                return f"{self.name}, {addr_str}"
+            return addr_str
+        return self.name or ""
+
+
+class Geocoding:
+    def __init__(self, data: Dict[str, Any]):
+        results_data = data.get("results", [])
+        self.results: list[GeocodingResult] = [GeocodingResult(item) for item in results_data]

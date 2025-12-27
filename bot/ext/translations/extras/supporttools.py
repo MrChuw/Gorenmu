@@ -22,24 +22,42 @@ class OtherTools(ClassBase):
                 self.populate_subclasses()
 
             def mention(self, ctx: Context, author_name: str, target_name: str) -> str:
-                with self.lang_dict.once("mention"):
+                with self.lang_dict.once(self._cname):
                     self.lang_dict.add_with("en", "you")
                     self.lang_dict.add_with(["pt_br", "pt"], "você")
-                mention = self._untangle_str(ctx, "mention")
+                mention = self._untangle_str(ctx, self._cname)
                 return mention if target_name == author_name else f"@{target_name}"
 
             class Verbs(TBase):
                 def cookies_second_person(self, ctx: Context) -> str:
-                    with self.lang_dict.once("second_person"):
+                    with self.lang_dict.once(self._cname):
                         self.lang_dict.add_with("en", "have")
                         self.lang_dict.add_with(["pt_br", "pt"], "já comeu")
-                    return self._untangle_str(ctx, "second_person")
+                    return self._untangle_str(ctx, self._cname)
 
                 def cookies_third_person(self, ctx: Context) -> str:
-                    with self.lang_dict.once("third_person"):
+                    with self.lang_dict.once(self._cname):
                         self.lang_dict.add_with("en", "has")
                         self.lang_dict.add_with(["pt_br", "pt"], "já comeu")
-                    return self._untangle_str(ctx, "third_person")
+                    return self._untangle_str(ctx, self._cname)
+
+                def positive(self, ctx: Context) -> list[str]:
+                    with self.lang_dict.once(self._cname):
+                        self.lang_dict.add_with("en", ["True"])
+                        self.lang_dict.add_with(["pt_br", "pt"], ["Sim"])
+                    return self._untangle_any(ctx, self._cname) + self._untangle_any_lang("en", self._cname)
+
+                def negative(self, ctx: Context) -> list[str]:
+                    with self.lang_dict.once(self._cname):
+                        self.lang_dict.add_with("en", ["False"])
+                        self.lang_dict.add_with(["pt_br", "pt"], ["Não"])
+                    return self._untangle_any(ctx, self._cname) + self._untangle_any_lang("en", self._cname)
+
+                def nothing(self, ctx: Context) -> list[str]:
+                    with self.lang_dict.once(self._cname):
+                        self.lang_dict.add_with("en", ["None"])
+                        self.lang_dict.add_with(["pt_br", "pt"], ["Nenhum"])
+                    return self._untangle_any(ctx, self._cname) + self._untangle_any_lang("en", self._cname)
 
             Verbs: Verbs
 
@@ -47,44 +65,32 @@ class OtherTools(ClassBase):
 
         class TimeTools(TBase):
             def strftime(self, ctx: Context) -> str:
-                with self.lang_dict.once("strftime"):
+                with self.lang_dict.once(self._cname):
                     self.lang_dict.add_with("en", "%m/%d/%Y at %I:%M %p")
                     self.lang_dict.add_with(["pt_br", "pt"], "%d/%m/%Y às %H:%M:%S")
-                return self._untangle_str(ctx, "strftime")
+                return self._untangle_str(ctx, self._cname)
 
-            strftime: str = strftime
+            strftime: str
 
             def Humanize(self, ctx: Context) -> ExtrasHumanize:  # NOQA
-                with self.lang_dict.once("humanize"):
-                    self.lang_dict.add_with(
+                cname = self._cname.lower()
+                with self.lang_dict.once(cname):
+                    en_pattern = ExtrasHumanize(
+                        {
+                            "years": ["years", "year", "y"],
+                            "months": ["months", "month", "mo"],
+                            "weeks": ["weeks", "week", "w"],
+                            "days": ["days", "day", "d"],
+                            "hours": ["hours", "hour", "h"],
+                            "minutes": ["minutes", "minute", "min", "m"],
+                            "seconds": ["seconds", "second", "secs", "sec", "s"],
+                            "milliseconds": ["milliseconds", "millisecond", "millisecs", "millisec", "milli"],
+                            "microseconds": ["microseconds", "microsecond", "micro", "us"],
+                            "time": ["time", "t"],
+                        },
                         "en",
-                        ExtrasHumanize(
-                            {
-                                "years": ["years", "year", "y"],
-                                "months": ["months", "month", "mo"],
-                                "weeks": ["weeks", "week", "w"],
-                                "days": ["days", "day", "d"],
-                                "hours": ["hours", "hour", "h"],
-                                "minutes": ["minutes", "minute", "min", "m"],
-                                "seconds": ["seconds", "second", "secs", "sec", "s"],
-                                "milliseconds": [
-                                    "milliseconds",
-                                    "millisecond",
-                                    "millisecs",
-                                    "millisec",
-                                    "milli",
-                                ],
-                                "microseconds": [
-                                    "microseconds",
-                                    "microsecond",
-                                    "micro",
-                                    "us",
-                                ],
-                                "time": ["time", "t"],
-                            },
-                            "en",
-                        ),
                     )
+                    self.lang_dict.add_with("en", en_pattern)
                     self.lang_dict.add_with(
                         ["pt_br", "pt"],
                         ExtrasHumanize(
@@ -96,47 +102,36 @@ class OtherTools(ClassBase):
                                 "hours": ["horas", "hora", "h"],
                                 "minutes": ["minutos", "minuto", "min", "m"],
                                 "seconds": ["segundos", "segundo", "segs", "seg", "s"],
-                                "milliseconds": [
-                                    "milissegundos",
-                                    "milissegundo",
-                                    "milisecs",
-                                    "milisec",
-                                    "mili",
-                                ],
-                                "microseconds": [
-                                    "microssegundos",
-                                    "microssegundo",
-                                    "micro",
-                                    "us",
-                                ],
+                                "milliseconds": ["milissegundos", "milissegundo", "milisecs", "milisec", "mili"],
+                                "microseconds": ["microssegundos", "microssegundo", "micro", "us"],
                                 "time": ["tempo", "t"],
                             },
                             "pt_BR",
-                            self.lang_dict.get_lang("en", "humanize").pattern,  # NOQA
+                            en_pattern.pattern,
                         ),
                     )
 
-                return self._untangle_any(ctx, "humanize")
+                return self._untangle_any(ctx, cname)
 
-            Humanize: ExtrasHumanize = Humanize
+            Humanize: ExtrasHumanize
 
         TimeTools: TimeTools
 
         class Emotes(TBase):
             def happy(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once("strftime"):
+                with self.lang_dict.once(self._cname):
                     self.lang_dict.add_with(["en", "pt_br", "pt"], ["happy"])
-                return self._untangle_any(ctx, "strftime")
+                return self._untangle_any(ctx, self._cname)
 
             def pog(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once("strftime"):
+                with self.lang_dict.once(self._cname):
                     self.lang_dict.add_with(["en", "pt_br", "pt"], ["pog"])
-                return self._untangle_any(ctx, "strftime")
+                return self._untangle_any(ctx, self._cname)
 
             def sad(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once("strftime"):
+                with self.lang_dict.once(self._cname):
                     self.lang_dict.add_with(["en", "pt_br", "pt"], ["sad"])
-                return self._untangle_any(ctx, "strftime")
+                return self._untangle_any(ctx, self._cname)
 
         Emotes: Emotes
 

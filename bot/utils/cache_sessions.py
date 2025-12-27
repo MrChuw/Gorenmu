@@ -15,6 +15,25 @@ if TYPE_CHECKING:
 class SessionsCaches(metaclass=Singleton):
     def __init__(self, bot: Gorenmu):
         self.UserAgent: str = "Mozilla/5.0 (compatible; Gorenmu/2.0; +https://github.com/MrChuw/Gorenmu)"
+        self.Alias: SessionsCaches.Alias
+        self.Color: SessionsCaches.Color
+        self.Scp: SessionsCaches.Scp
+        self.Wikihow: SessionsCaches.Wikihow
+        self.Wikipedia: SessionsCaches.Wikipedia
+        self.Safebooru: SessionsCaches.Safebooru
+        self.Emotes: SessionsCaches.Emotes
+        self.Translate: SessionsCaches.Translate
+        self.Count: SessionsCaches.Count
+        self.PixelSorting: SessionsCaches.PixelSorting
+        self.ProfilePicture: SessionsCaches.ProfilePicture
+        self.IvrFi: SessionsCaches.IvrFi
+        self.Bug: SessionsCaches.Bug
+        self.Suggest: SessionsCaches.Suggest
+        self.Dicio: SessionsCaches.Dicio
+        self.Clips: SessionsCaches.Clips
+        self.RandomLine: SessionsCaches.RandomLine
+        self.Nicks: SessionsCaches.Nicks
+        self.Shorten: SessionsCaches.Shorten
         for name, cls in vars(self.__class__).items():
             if isinstance(cls, type) and issubclass(cls, BaseCachedSession):
                 setattr(self, name, cls(bot, useragent=self.UserAgent))  # NOQA
@@ -69,12 +88,7 @@ class SessionsCaches(metaclass=Singleton):
             super().__init__(bot=bot, cache_name="Tools_requests", useragent=useragent)
 
         def get_expiry_times(self) -> dict:
-            return {
-                "*.mrchuw.com.br/": timedelta(days=100),
-                "nominatim.openstreetmap.org/*": timedelta(days=7),
-                "api.open-meteo.com/v1/forecast": timedelta(minutes=5),
-                "https://api.mathjs.org": timedelta(days=100),
-            }
+            return {"*.mrchuw.com.br/": timedelta(days=100), "https://api.mathjs.org": timedelta(days=100)}
 
     ToolsCachedSession: ToolsCachedSession
 
@@ -88,7 +102,6 @@ class SessionsCaches(metaclass=Singleton):
 
     ImgurCachedSession: ImgurCachedSession
 
-    # New
     # region Hide.
 
     class Alias(BaseCachedSession):
@@ -99,8 +112,6 @@ class SessionsCaches(metaclass=Singleton):
         def get_expiry_times(self) -> dict:
             return {self.alias_url: timedelta(days=100)}
 
-    Alias: Alias
-
     class Color(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -108,8 +119,6 @@ class SessionsCaches(metaclass=Singleton):
 
         def get_expiry_times(self) -> dict:
             return {"thecolorapi.com/*": timedelta(days=30)}
-
-    Color: Color
 
     class Scp(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -119,8 +128,6 @@ class SessionsCaches(metaclass=Singleton):
         def get_expiry_times(self) -> dict:
             return {"scp-wiki.wikidot.com/*": timedelta(weeks=4)}
 
-    Scp: Scp
-
     class Wikihow(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -129,8 +136,6 @@ class SessionsCaches(metaclass=Singleton):
         def get_expiry_times(self) -> dict:
             return {"*.wikihow.com/*": timedelta(weeks=4)}
 
-    Wikihow: Wikihow
-
     class Wikipedia(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -138,8 +143,6 @@ class SessionsCaches(metaclass=Singleton):
 
         def get_expiry_times(self) -> dict:
             return {"*.wikipedia.com/*": timedelta(weeks=4)}
-
-    Wikipedia: Wikipedia
 
     class Safebooru(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -154,8 +157,6 @@ class SessionsCaches(metaclass=Singleton):
                 "https://safebooru.org/": timedelta(hours=1),
             }
 
-    Safebooru: Safebooru
-
     class Emotes(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             super().__init__(bot=bot, useragent=useragent)
@@ -167,8 +168,6 @@ class SessionsCaches(metaclass=Singleton):
                 "*api.frankerfacez.com/v1/*": timedelta(minutes=15),
             }
 
-    Emotes: Emotes
-
     class Translate(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -176,8 +175,6 @@ class SessionsCaches(metaclass=Singleton):
 
         def get_expiry_times(self) -> dict:
             return {"https://translate.google.com/*": timedelta(weeks=4 * 6)}
-
-    Translate: Translate
 
     class Count(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -187,8 +184,6 @@ class SessionsCaches(metaclass=Singleton):
         def get_expiry_times(self) -> dict:
             return {"*/*": timedelta(minutes=30)}
 
-    Count: Count
-
     class PixelSorting(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -196,8 +191,6 @@ class SessionsCaches(metaclass=Singleton):
 
         def get_expiry_times(self) -> dict:
             return {"*/*": timedelta(hours=6)}
-
-    PixelSorting: PixelSorting
 
     class ProfilePicture(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -212,8 +205,6 @@ class SessionsCaches(metaclass=Singleton):
                 self.feridinha_url: timedelta(hours=12),
             }
 
-    ProfilePicture: ProfilePicture
-
     class IvrFi(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -221,8 +212,6 @@ class SessionsCaches(metaclass=Singleton):
 
         def get_expiry_times(self) -> dict:
             return {"https://*.ivr.fi/*": timedelta(minutes=10)}
-
-    IvrFi: IvrFi
 
     class Bug(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -232,8 +221,6 @@ class SessionsCaches(metaclass=Singleton):
         def get_expiry_times(self) -> dict:
             return {}
 
-    Bug: Bug
-
     class Suggest(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -242,8 +229,6 @@ class SessionsCaches(metaclass=Singleton):
         def get_expiry_times(self) -> dict:
             return {}
 
-    Suggest: Suggest
-
     class Dicio(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -251,8 +236,6 @@ class SessionsCaches(metaclass=Singleton):
 
         def get_expiry_times(self) -> dict:
             return {self.bot.config.ApisConfig.dicio_url / "*": timedelta(hours=12)}
-
-    Dicio: Dicio
 
     class Clips(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -265,8 +248,6 @@ class SessionsCaches(metaclass=Singleton):
                 self.feridinha_url: timedelta(hours=12),
             }
 
-    Clips: Clips
-
     class RandomLine(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -274,10 +255,6 @@ class SessionsCaches(metaclass=Singleton):
 
         def get_expiry_times(self) -> dict:
             return {self.bot.config.ApisConfig.best_logs / "*": timedelta(microseconds=250)}
-
-    RandomLine: RandomLine
-
-    # endregion
 
     class Nicks(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
@@ -287,8 +264,6 @@ class SessionsCaches(metaclass=Singleton):
         def get_expiry_times(self) -> dict:
             return {self.bot.config.ApisConfig.best_logs / "*": timedelta(microseconds=250)}
 
-    Nicks: Nicks
-
     class Shorten(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
@@ -297,4 +272,15 @@ class SessionsCaches(metaclass=Singleton):
         def get_expiry_times(self) -> dict:
             return {self.bot.config.ApisConfig.best_logs / "*": timedelta(microseconds=250)}
 
-    Shorten: Shorten
+    # endregion
+
+    class Weather(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {
+                "nominatim.openstreetmap.org/*": timedelta(days=7),
+                "api.open-meteo.com/v1/forecast": timedelta(minutes=10),
+            }

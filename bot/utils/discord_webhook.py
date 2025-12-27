@@ -48,7 +48,7 @@ class DiscordWebHook:
         embed.set_title(title2 or title)
         embed.set_description(f"{content}\n\n{log_url1}\n{log_url2}\n{log_url3}")
         embed.set_timestamp(ctx.message.timestamp)
-        embed.set_color(ctx.author.color.hex or "03b2f8")
+        embed.set_color(ctx.author.color.hex if hasattr(ctx.author, "color") else "03b2f8")
         if to_mark and ping:
             webhook.set_content(" ".join([f"<@{mark}>" for mark in to_mark]) + f" {title}")
         webhook.add_embed(embed)

@@ -43,13 +43,14 @@ class Response:
         success: bool = True,
         response_list: list[str] | None = None,
         handle: str | None = None,
+        response_string: str | None = None,
     ):
         self.ctx: Context = ctx
         self.success: bool = success
         self.response: str = response
         self.response_list: list[str] = response_list
         self.handle: str = handle
-        self.response_string: str = ""
+        self.response_string: str = response_string
 
     def format_response(self, response: str, *args: Any, **kwargs: Any) -> Response:
         self.response = response

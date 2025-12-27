@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import inspect
+import sys
 from collections import defaultdict
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any
@@ -21,11 +21,14 @@ class TBase:
         return ctx if type(ctx) is str and ctx in self.lang_dict else None
 
     @property
-    def _cname(self, depth=1):
-        return inspect.stack()[depth].function
+    def _cname(self):
+        return sys._getframe(1).f_code.co_name
 
     def _untangle_any(self, ctx: Context, namespace: str) -> Any:
         return self.lang_dict.get_lang(self.get_language(ctx) or "en", namespace)
+
+    def _untangle_any_lang(self, lang: str, namespace: str) -> Any:
+        return self.lang_dict.get_lang(lang or "en", namespace)
 
     def _untangle_str(self, ctx: Context, namespace: str) -> str:
         return self.lang_dict.get_lang(self.get_language(ctx) or "en", namespace)
@@ -114,14 +117,15 @@ class LangDict:
         if isinstance(lang, str):
             lang = [lang]
         for k in lang:
-            self._namespaces[namespace.lower()][k.lower()] = value
+            self._namespaces[namespace][k.lower()] = value
 
     def add_with(self, lang: str | list[str], value: Any):
         if not self._current_namespace:
             raise RuntimeError("No active namespace. Use with 'with self.lang_dict.namespace(...)'")
         if self._skip_mode:
-            return
+            return self.get_lang_any(lang[0] if isinstance(lang, list) else lang, self._current_namespace)
         self.add(lang, value, self._current_namespace)
+        return value
 
     def get(self, namespace_or_lang: str, namespace: str | None = None):
         if namespace is None and namespace_or_lang in self._namespaces:

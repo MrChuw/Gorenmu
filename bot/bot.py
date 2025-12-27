@@ -29,6 +29,8 @@ if TYPE_CHECKING:
 
     from bot.ext import Context
 
+# quit(0)
+
 
 class Gorenmu(TypesBot):
     def __init__(self, configs: Config, case_insensitive: bool, log: Logger, adapter) -> None:
@@ -73,7 +75,7 @@ class Gorenmu(TypesBot):
 
     @commands.Component.listener("Whisper")
     async def event_message_whisper(self, payload: twitchio.Whisper):
-        return await self.event_message_whisper(payload)
+        return await self.LifecycleHandler.event_message_whisper(payload)
 
     async def global_guard(self, ctx: Context) -> bool:
         return await self.LifecycleHandler.global_guard(ctx)

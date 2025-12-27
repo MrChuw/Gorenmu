@@ -45,10 +45,11 @@ class SetCmd(commands.CustomComponent):
     @set.command(name="city", aliases=["savecity", "savelocation", "location"])
     async def set_city(self, ctx: Context, *, args: str) -> Response:
         translations = self.translations.City
-        args, hidden = self.StringTools.extract_and_remove_field(args, "hidden")
+        args, hidden = self.StringTools.extract_and_remove_bool_field(args, "hidden", self.translations, ctx)
         city = args.lower()
-        if hidden:
-            ctx.user.city_hidden = True
+        ctx.user.city_hidden = True
+        if hidden is False:
+            ctx.user.city_hidden = False
         if city == "remove":
             ctx.user.city = None
             await ctx.user.save()

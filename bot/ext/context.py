@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import twitchio
 from twitchio.ext.commands import Context as TwitchioContext
 
 if TYPE_CHECKING:
@@ -26,7 +27,10 @@ class Context(TwitchioContext):
         super().__init__(message, bot=bot)
         self._prefix: str | None = prefix
         self.invoke_by: str | None = invoke_by
-        self.reply_to: ChatMessageReply = message.reply
+        if isinstance(self._payload, twitchio.Whisper):
+            self.reply_to: None = None
+        else:
+            self.reply_to: ChatMessageReply = message.reply
 
     @property
     def passed_guards(self) -> bool:
@@ -47,3 +51,10 @@ class Context(TwitchioContext):
 
     async def invoke(self) -> Response | bool:
         return await self.bot.ContextHandler.invoke(self)
+
+    @property
+    def message(self) -> ChatMessage | None:
+        """Property returning the :class:`~twitchio.ChatMessage` that this :class:`~.commands.Context` was
+        created from. This could be ``None`` if :attr:`~.commands.Context.type` is :attr:`~.commands.ContextType.REWARD`
+        """
+        return self._payload  # if isinstance(self._payload, ChatMessage) else None

@@ -12,6 +12,7 @@ from freezegun import freeze_time
 
 from bot.apis.ivrfi.parsers.subage import SubAge
 from bot.apis.ivrfi.parsers.user import UserElement
+from bot.apis.weather import Forecast, Geocoding
 from bot.cogs.preview.command.preview import PreviewCmd
 
 if TYPE_CHECKING:
@@ -32,6 +33,7 @@ class MockBuilder:
         self.Commands: MockBuilder._Commands = self._Commands(self)
         self.Asyncio: MockBuilder._Asyncio = self._Asyncio(self)
         self.ApiIvrFi: MockBuilder._ApiIvrFi = self._ApiIvrFi(self)
+        self.Apis: MockBuilder._Apis = self._Apis(self)
         self.Default: MockBuilder._Default = self._Default(self)
 
     class _Errors:
@@ -256,6 +258,35 @@ class MockBuilder:
             self.builder.patches["get_event_loop"].append(patch("asyncio.get_event_loop", return_value=mock_loop))
             return self.builder
 
+    class _Apis:
+        def __init__(self, builder):
+            self.builder = builder
+            self.OpenMeteo: MockBuilder._Apis._OpenMeteo = self._OpenMeteo(builder)
+
+        class _OpenMeteo:
+            def __init__(self, builder):
+                self.builder = builder
+
+            def geocoding(self, response: list[dict[str, int]]) -> MockBuilder:
+                mock_response = AsyncMock()
+                mock_response.results = Geocoding({"results": response}).results
+                self.builder.patches["apis_open_meteo_geocoding"].append(
+                    patch(
+                        "bot.apis.weather.open_meteo.OpenMeteo.geocoding",
+                        AsyncMock(return_value=mock_response),
+                    )
+                )
+                return self.builder
+
+            def forecast(self, data: dict[str, str | int]) -> MockBuilder:
+                self.builder.patches["apis_open_meteo_forecast"].append(
+                    patch(
+                        "bot.apis.weather.open_meteo.OpenMeteo.forecast",
+                        AsyncMock(return_value=Forecast(data)),
+                    )
+                )
+                return self.builder
+
     class _ApiIvrFi:
         def __init__(self, builder):
             self.builder = builder
@@ -298,9 +329,9 @@ class MockBuilder:
     class _Default:
         def __init__(self, builder):
             self.builder = builder
-            self.Datetime: MockBuilder._Default.Datetime = self.Datetime(builder)
+            self.Datetime: MockBuilder._Default._Datetime = self._Datetime(builder)
 
-        class Datetime:
+        class _Datetime:
             def __init__(self, builder):
                 self.builder = builder
 
