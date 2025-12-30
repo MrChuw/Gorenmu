@@ -57,6 +57,7 @@ class Command(TwitchioCommand):
     docs: Callable[[], dict[str, dict[str, str]]]
     template: bool
     pipeble: bool
+    whispable: bool
     component: CustomComponent
 
     def __init__(self, **kwargs: Any) -> None:
@@ -68,9 +69,12 @@ class Command(TwitchioCommand):
         aliases: list[str] | None = None,
         extras: dict[Any, Any] | None = None,
         pipeble: bool = True,
+        whispable: bool = False,
         **kwargs: Any,
     ):
-        return super().command(name=name, aliases=aliases, extras=extras, pipeble=pipeble, **kwargs)  # NOQA
+        return super().command(
+            name=name, aliases=aliases, extras=extras, pipeble=pipeble, whispable=whispable, **kwargs
+        )  # NOQA
 
     @property
     def all_guards(self):
@@ -132,6 +136,7 @@ def command(
     aliases: list[str] | None = None,
     extras: dict[Any, Any] | None = None,
     pipeble: bool = True,
+    whispable: bool = False,
     **kwargs: Any,
 ) -> Any:
     def wrapper(
@@ -153,6 +158,7 @@ def command(
             **kwargs,
         )
         command_.pipeble = pipeble
+        command_.whispable = whispable
         return command_
 
     return wrapper
@@ -185,7 +191,8 @@ class Group(TwitchioGroup):
         name: str | None = None,
         aliases: list[str] | None = None,
         extras: dict[Any, Any] | None = None,
-        pipeble: bool = True,  # NOQA
+        pipeble: bool = True,
+        whispable: bool = False,
         **kwargs: Any,
     ) -> Any:
         def wrapper(
@@ -197,6 +204,7 @@ class Group(TwitchioGroup):
                 extras=extras,
                 parent=self,
                 pipeble=pipeble,
+                whispable=whispable,
                 **kwargs,
             )(func)
 
@@ -207,6 +215,11 @@ class Group(TwitchioGroup):
 
     def get_command(self, name: str, /) -> Command | Group | None:
         return super().get_command(name)
+
+    @staticmethod
+    def get_subcommand(ctx: Context):
+        view = ctx.view_skip
+        return ctx.command.commands.get(view.get_word())
 
 
 def group(

@@ -47,8 +47,9 @@ class RandomSCPCmd(commands.CustomComponent):
 
             return self.translations.Exceptions.echo(ctx, scp.url.human_repr())
         except Exception as e:
-            ctx.bot.log.error(e, exc_info=e)
-            return self.translations.Exceptions.unexpected_error(ctx, e)
+            ctx.bot.log.warning(e, exc_info=e)
+            await ctx.bot.CommandHandler.send_bug(ctx, e, ping=False)
+            return self.translations.Exceptions.error(ctx)
 
 
 async def get_scp(session: CachedSession) -> ClientResponse:

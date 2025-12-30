@@ -49,5 +49,7 @@ async def test_timeout(interact, mock_context: MockContext, lang: str, expected:
 @pytest.mark.parametrize("lang, expected", Params.exception)
 async def test_unexpected_exception(interact, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang)
-    async with mock_context.MockBuilder.Commands.get_scp(side_effect=Exception("fail")).Bot.silence_errors():
+    async with (
+        mock_context.MockBuilder.Commands.get_scp(side_effect=Exception("fail")).Bot.silence_errors().Errors.send_bug()
+    ):
         await base_randomscp(interact, mock_context, expected=expected, success=False)

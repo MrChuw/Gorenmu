@@ -70,6 +70,12 @@ class MockBuilder:
             self.builder = builder
             self.bot = builder.mock_context.bot if hasattr(builder.mock_context, "bot") else builder.mock_context
 
+        def fetch_user_error(self, side_effect: Any = None) -> MockBuilder:
+            self.builder.patches["fetch_user_error"].append(
+                patch.object(self.bot, "fetch_user", side_effect=side_effect)
+            )
+            return self.builder
+
         def fetch_user(self, name="mock_user", user_id=1234, created_at=None, stream=False) -> MockBuilder:
             if name is None:
                 mock_fetch = AsyncMock(return_value=None)
@@ -94,7 +100,7 @@ class MockBuilder:
             )
             return self.builder
 
-        def silence_errors(self):
+        def silence_errors(self) -> MockBuilder:
             self.builder.patches["silence_errors"].append(patch.object(self.bot.log, "error"))
             return self.builder
 

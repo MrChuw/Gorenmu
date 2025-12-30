@@ -9,6 +9,7 @@ import twitchio
 
 from bot.exceptions import InvalidArgument
 from bot.ext import ChatMessage, Context
+from bot.ext.commands import Group
 from bot.models import User as UserModel
 from bot.models.user_extras import BotsIgnore
 from bot.utils import Check, MarkovProcessor, SessionsCaches
@@ -121,10 +122,15 @@ class LifecycleHandler:
         ctx: Context = await self.get_context(payload)
         ctx.user = await UserModel.create_or_update(ctx)
         try:
-            if ctx.command:
+            command = ctx.command
+            if not command:
+                return None
+            target_command = command.get_subcommand(ctx) if isinstance(command, Group) else command
+            if target_command and target_command.whispable:
                 self.bot.log.info(f"Whisper || @{payload.sender.name}: {payload.text}")
                 response = await ctx.invoke()
                 await payload.recipient.send_whisper(to_user=payload.sender, message=response.response_string)
+
         except InvalidArgument:
             deco = ctx.command.component.translations.get_decorator(ctx=ctx)
             if usage := deco.deco_usage(ctx):

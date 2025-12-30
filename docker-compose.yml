@@ -1,21 +1,30 @@
 services:
   Gorenmu_bot:
-    image: python:3.13.1
+    build:
+      context: .
+    image: gorenmu-bot:latest
     container_name: Gorenmu
+    tty: true
     working_dir: /app
     network_mode: host
-    command: >
-      /bin/bash -c "pip install -q -r requirements.txt && python __main__.py"
+    environment:
+      - UV_PYTHON_PREFERENCE=only-managed
+      - UV_CACHE_DIR=/uv-cache
+      - UV_PYTHON_INSTALL_DIR=/uv-python
+      - UV_COMPILE_BYTECODE=1
     volumes:
       - .:/app
-    depends_on:
-      - Gorenmu_db
-      - Gorenmu_cache
-    restart: unless-stopped
+      - venv_data:/app/.venv
+      - uv_cache_data:/uv-cache
+      - uv_python:/uv-python
+    command:
+      bash -c "uv sync && uv run python __main__.py"
+#    restart: unless-stopped
 
   Gorenmu_db:
     image: mariadb
     container_name: Mariadb
+    tty: true
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -30,8 +39,9 @@ services:
   Gorenmu_cache:
     image: valkey/valkey:unstable
     container_name: Valkey
+    tty: true
     volumes:
-      - ./.data/redis:/data
+      - ./.data/.redis:/data
     ports:
       - "6379:6379"
     command: "valkey-server --save 60 1 --loglevel warning"
@@ -39,14 +49,17 @@ services:
 
   Gorenmu_cache2:
     container_name: Pogocache
-    build:
-      context: .redis_data
-      dockerfile: Dockerfile
     image: pogocache/pogocache
+    tty: true
     volumes:
       - ./.data/.redis:/data
     ports:
       - "9401:9401"
-#    entrypoint: bash -c "sleep 100000"
-#    command: "-h 0.0.0.0 --persist=/data/data.db --evict=no"
+    entrypoint: bash -c "sleep 100000"
+    command: "-h 0.0.0.0 --persist=/data/data.db --evict=no"
     restart: unless-stopped
+
+volumes:
+  venv_data:
+  uv_cache_data:
+  uv_python:

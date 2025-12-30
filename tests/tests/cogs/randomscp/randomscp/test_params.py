@@ -38,13 +38,13 @@ class Params:
     exception: ClassVar[list] = [
         pytest.param(
             "en",
-            "An error occurred, please try again: fail",
+            "An unexpected error occurred. Please report it to @dev_name on whispers.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            "Ocorreu um erro. Tente novamente: fail",
+            "Ocorreu um erro inesperado. Por favor, reporte-o para @dev_name nos whispers.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

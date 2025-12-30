@@ -19,14 +19,35 @@ class Translations(TranslationBase):
         def __init__(self):
             super().__init__()
 
-        def placeholder(self, ctx: Context, *args) -> Response:
+        def placeholder(self, ctx: Context, args) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "")
                 self.lang_dict.add_with(["pt_br", "pt"], "")
             return response.format_response(self._untangle_str(ctx, self._cname), args)
 
-        def placeholder2(self, ctx: Context, *args) -> Response:
+        def placeholder2(self, ctx: Context, args) -> Response:
+            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "")
+                self.lang_dict.add_with(["pt_br", "pt"], "")
+            return response.format_response(self._untangle_str(ctx, self._cname), args)
+
+        def placeholder3(self, ctx: Context, args) -> Response:
+            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "")
+                self.lang_dict.add_with(["pt_br", "pt"], "")
+            return response.format_response(self._untangle_str(ctx, self._cname), args)
+
+        def placeholder4(self, ctx: Context, args) -> Response:
+            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "")
+                self.lang_dict.add_with(["pt_br", "pt"], "")
+            return response.format_response(self._untangle_str(ctx, self._cname), args)
+
+        def placeholder5(self, ctx: Context, args) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with("en", "")
@@ -41,8 +62,8 @@ class Translations(TranslationBase):
 
         def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "")
-                self.lang_dict.add_with(["pt_br", "pt"], "")
+                self.lang_dict.add_with("en", "To use: {}userid (username/id)")
+                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}userid (username/id)")
             return self._untangle_str(ctx, self._cname).format(prefix)
 
         # region Hide.

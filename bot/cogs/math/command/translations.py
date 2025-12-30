@@ -18,19 +18,6 @@ class Translations(TranslationBase):
         def __init__(self):
             super().__init__()
 
-        def error(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(
-                    "en",
-                    "An unexpected error occurred. Please report it to @{} on whispers.",
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    "Ocorreu um erro inesperado. Por favor, reporte-o para @{} nos whispers.",
-                )
-            return response.format_response(self._untangle_str(ctx, self._cname), ctx.bot.dev_name)
-
         def not_supported(self, ctx: Context) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):

@@ -64,7 +64,7 @@ class TimeCmd(commands.CustomComponent):
         except Exception as error:
             await self.bot.CommandHandler.send_bug(ctx, error)
             ctx.bot.log.warning(error)
-            return self.translations.Exceptions.unexpected_error(ctx, error)
+            return self.translations.Exceptions.error(ctx)
 
         if mode in tl.locale.past.terms:
             return self.translations.Time.past(ctx, precisedelta)

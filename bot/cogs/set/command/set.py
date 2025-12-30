@@ -42,7 +42,7 @@ class SetCmd(commands.CustomComponent):
         await ctx.user.save()
         return translations.mention_on(ctx) if args == "on" else translations.mention_off(ctx)
 
-    @set.command(name="city", aliases=["savecity", "savelocation", "location"])
+    @set.command(name="city", aliases=["savecity", "savelocation", "location"], whispable=True)
     async def set_city(self, ctx: Context, *, args: str) -> Response:
         translations = self.translations.City
         args, hidden = self.StringTools.extract_and_remove_bool_field(args, "hidden", self.translations, ctx)

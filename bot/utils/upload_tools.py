@@ -36,7 +36,10 @@ class UploadThings(metaclass=Singleton):
         return await response.json() if response else None
 
     async def pastebin_upload(self, text: str, session: CachedSession):
-        return await self._bytes_post(session, self.bot.config.BotConfig.pastbin_url, data=text.encode("utf-8"))
+        response = await self._json_post(session, self.bot.config.ApisConfig.pastebin_url, data=text.encode("utf-8"))
+        if "key" in response:
+            return self.bot.config.ApisConfig.pastebin_url.parent / response["key"]
+        return None
 
     async def send_imgur(self, links: list[str], session: CachedSession):
         url = self.bot.config.ApisConfig.image_carousel

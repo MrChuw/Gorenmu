@@ -52,7 +52,9 @@ async def test_timeout(interact, mock_context: MockContext, lang: str, expected:
 async def test_unexpected_exception(interact, mock_context: MockContext, lang: str, expected: str):
     session = interact.SessionsCaches.Wikipedia
     await mock_context.prepare_context(lang)
-    async with mock_context.MockBuilder.Session.get_not_cached(
-        session, side_effect=Exception("fail")
-    ).Bot.silence_errors():
+    async with (
+        mock_context.MockBuilder.Session.get_not_cached(session, side_effect=Exception("fail"))
+        .Bot.silence_errors()
+        .Errors.send_bug(None)
+    ):
         await base_wikipedia(interact, mock_context, expected=expected, success=False)

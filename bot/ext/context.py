@@ -7,17 +7,18 @@ from twitchio.ext.commands import Context as TwitchioContext
 
 if TYPE_CHECKING:
     from twitchio import ChatMessage, ChatMessageReply
+    from twitchio.ext.commands.view import StringView
 
     from bot.bot import Gorenmu
     from bot.ext import Command, Response
-    from bot.ext.commands import CustomComponent
+    from bot.ext.commands import CustomComponent, Group
     from bot.models import User as UserModel
 
 
 class Context(TwitchioContext):
     user: UserModel
     bot: Gorenmu
-    command: Command
+    command: Command | Group
     component: CustomComponent
     _command: Command
     invoke_by: str | None = None
@@ -58,3 +59,13 @@ class Context(TwitchioContext):
         created from. This could be ``None`` if :attr:`~.commands.Context.type` is :attr:`~.commands.ContextType.REWARD`
         """
         return self._payload  # if isinstance(self._payload, ChatMessage) else None
+
+    @property
+    def view(self) -> StringView:
+        return self._view
+
+    @property
+    def view_skip(self) -> StringView:
+        view = self._view
+        view.skip_ws()
+        return view

@@ -85,8 +85,6 @@ itsdangerous==2.2.0
     # via aiohttp-client-cache
 janus==2.0.0
     # via gorenmu (pyproject.toml)
-javascript==1!1.2.6
-    # via gorenmu (pyproject.toml)
 jmespath==1.0.1
     # via
     #   aiobotocore
@@ -134,6 +132,8 @@ pytz==2025.2
     # via
     #   gorenmu (pyproject.toml)
     #   tortoise-orm
+quickjs==1.19.4
+    # via gorenmu (pyproject.toml)
 redis==6.4.0
     # via
     #   gorenmu (pyproject.toml)

@@ -3,7 +3,7 @@ name = "gorenmu"
 version = "2.0.0"
 description = "Twitch bot build on top of twitchio."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = "==3.13.1"
 
 dependencies = [
     "aiocache[memcached,redis]==0.12.3",
@@ -14,7 +14,6 @@ dependencies = [
     "fastapi==0.116.1",
     "humanize==4.12.3",
     "janus==2.0.0",
-    "javascript==1!1.2.6",
     "loguru==0.7.3",
     "nltk==3.9.1",
     "pillow==11.3.0",
@@ -22,6 +21,7 @@ dependencies = [
     "python-dateutil==2.9.0.post0",
     "python-dotenv==1.1.1",
     "pytz==2025.2",
+    "quickjs==1.19.4",
     "redis==6.4.0",
     "toml==0.10.2",
     "tortoise-orm[asyncmy,asyncpg]==0.25.1",

@@ -34,6 +34,8 @@ class SessionsCaches(metaclass=Singleton):
         self.RandomLine: SessionsCaches.RandomLine
         self.Nicks: SessionsCaches.Nicks
         self.Shorten: SessionsCaches.Shorten
+        self.UserId: SessionsCaches.UserId
+        self.Math: SessionsCaches.Math
         for name, cls in vars(self.__class__).items():
             if isinstance(cls, type) and issubclass(cls, BaseCachedSession):
                 setattr(self, name, cls(bot, useragent=self.UserAgent))  # NOQA
@@ -284,3 +286,19 @@ class SessionsCaches(metaclass=Singleton):
                 "nominatim.openstreetmap.org/*": timedelta(days=7),
                 "api.open-meteo.com/v1/forecast": timedelta(minutes=10),
             }
+
+    class UserId(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {self.bot.config.ApisConfig.best_logs / "*": timedelta(minutes=2)}
+
+    class Math(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {self.bot.config.ApisConfig.pastebin_url / "*": timedelta(weeks=4)}
