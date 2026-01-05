@@ -7,19 +7,19 @@ from bot.ext.translations.extras import Humanize as ExtrasHumanize
 from . import ClassBase, TBase
 
 if TYPE_CHECKING:
-    from bot.ext import Context
+    from bot.ext import Context, TranslationBase
 
 
 class OtherTools(ClassBase):
     class SupportTools(ClassBase, TBase):
-        def __init__(self):
-            super().__init__()
-            self.populate_subclasses()
+        def __init__(self, parent: TranslationBase | None = None):
+            super().__init__(parent)
+            self.populate_subclasses(parent)
 
         class LanguageContext(ClassBase, TBase):
-            def __init__(self):
-                super().__init__()
-                self.populate_subclasses()
+            def __init__(self, parent: TranslationBase | None = None):
+                super().__init__(parent)
+                self.populate_subclasses(parent)
 
             def mention(self, ctx: Context, author_name: str, target_name: str) -> str:
                 with self.lang_dict.once(self._cname):
@@ -29,6 +29,9 @@ class OtherTools(ClassBase):
                 return mention if target_name == author_name else f"@{target_name}"
 
             class Verbs(TBase):
+                def __init__(self, parent: TranslationBase | None = None):
+                    super().__init__(parent)
+
                 def cookies_second_person(self, ctx: Context) -> str:
                     with self.lang_dict.once(self._cname):
                         self.lang_dict.add_with("en", "have")
@@ -64,6 +67,9 @@ class OtherTools(ClassBase):
         LanguageContext: LanguageContext
 
         class TimeTools(TBase):
+            def __init__(self, parent: TranslationBase | None = None):
+                super().__init__(parent)
+
             def strftime(self, ctx: Context) -> str:
                 with self.lang_dict.once(self._cname):
                     self.lang_dict.add_with("en", "%m/%d/%Y at %I:%M %p")
@@ -118,6 +124,9 @@ class OtherTools(ClassBase):
         TimeTools: TimeTools
 
         class Emotes(TBase):
+            def __init__(self, parent: TranslationBase | None = None):
+                super().__init__(parent)
+
             def happy(self, ctx: Context) -> list[str]:
                 with self.lang_dict.once(self._cname):
                     self.lang_dict.add_with(["en", "pt_br", "pt"], ["happy"])

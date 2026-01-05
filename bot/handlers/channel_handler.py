@@ -15,10 +15,15 @@ class ChannelHandler:
 
     async def load_channels(self) -> None:
         for channel in await ChannelModel.filter(removed=False):
-            self.bot.channels[(await channel.user).name] = channel
+            self.bot.channels[(await channel.user).name.lower()] = channel
+        ...
 
     async def is_online(self, message: ChatMessage) -> bool:
         return (
             message.text.startswith(f"{self.bot.channels[message.broadcaster.name].prefix}start")
             or self.bot.channels[message.broadcaster.name].online
         )
+
+    async def setup(self): ...
+
+    async def teardown(self) -> None: ...

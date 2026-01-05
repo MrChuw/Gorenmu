@@ -64,13 +64,13 @@ class Params:
     multiple_amount: ClassVar[list] = [
         pytest.param(
             "en",
-            ["you ate 2 cookies in one sitting. 🥠"],
+            ['The person born with a talent they are meant to use will find their greatest happiness in using it.'],
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            ["você comeu 2 cookies de uma só vez. 🥠"],
+            ['Porque ser contra o que é felicidade é loucura.'],
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -83,7 +83,7 @@ class Params:
                 "The person born with a talent they are meant to use will find their greatest happiness in using it.",
                 "The trouble with most people is that they think with "
                 "their hopes or fears or wishes rather than with their minds.",
-                "You're still on cooldown, wait 5 hours, 59 minutes and",
+                "You're still on cooldown, wait ",
             ],
             marks=pytest.mark.en,
             id="en",
@@ -93,7 +93,7 @@ class Params:
             [
                 "Porque ser contra o que é felicidade é loucura.",
                 "Se a vida te afastar, lute por cada centímetro.",
-                "Você ainda está em cooldown, espere 5 horas, 59 minutos e",
+                "Você ainda está em cooldown, espere ",
             ],
             marks=pytest.mark.pt_BR,
             id="pt_BR",

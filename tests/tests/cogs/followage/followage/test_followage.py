@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 import pytest_asyncio
 
@@ -5,6 +7,13 @@ from bot.cogs.followage.command.followage import FollowAgeCmd
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def lock_time(mock_context: MockContext):
+    time = datetime.datetime(2025, 8, 8, 17, 5, 55, tzinfo=datetime.UTC)
+    async with mock_context.MockBuilder.Default.Datetime.now(time):
+        yield
 
 
 @pytest_asyncio.fixture
@@ -45,7 +54,9 @@ async def base_followage(
         response = await interact.followage._callback(
             interact, mock_context, name=content.split()[0], channel=content.split()[1]
         )  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    mock_context.Asserter.assert_string(
+        response.response_string, expected=expected, re_expected=re_expected, strict=True
+    )
     mock_context.Asserter.assert_boolean(response.success, success)
 
 
@@ -71,7 +82,7 @@ async def test_not_follow(interact, mock_context: MockContext, lang: str, expect
         mock_context,
         lang=lang,
         content="xXCoolNickXx xXCoolChannelXx",
-        re_expected=expected,
+        expected=expected,
         success=False,
         json_response=Params.not_follow_json,
     )

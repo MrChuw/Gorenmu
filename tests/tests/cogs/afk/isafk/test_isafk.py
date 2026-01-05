@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 import pytest_asyncio
 
@@ -5,6 +7,13 @@ from bot.cogs.afk.commands.isafk import IsAfkCmd
 from bot.ext import Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.afk.isafk.test_params import Params
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def lock_time(mock_context: MockContext):
+    time = datetime.datetime(2025, 8, 8, 17, 5, 55, tzinfo=datetime.UTC)
+    async with mock_context.MockBuilder.Default.Datetime.now(time):
+        yield
 
 
 @pytest_asyncio.fixture
@@ -15,7 +24,7 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     mock_context.Asserter.assert_string(interact.translations.IsAFK.deco_usage(mock_context, "+"), usage)
     mock_context.Asserter.assert_string(interact.translations.IsAFK.deco_helper(mock_context, "+"), helper)
 
@@ -29,7 +38,7 @@ async def base_isafk(
     re_expected: str | None = None,
     success: bool = False,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact, afk_data=True)
     response: Response = await interact.isafk._callback(self=interact, ctx=mock_context, content=content)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
@@ -69,7 +78,7 @@ async def test_isafk_no_content(interact, mock_context: MockContext, lang: str, 
         mock_context,
         lang=lang,
         content="status_user_50",
-        re_expected=expected,
+        expected=expected,
         success=True,
     )
 
@@ -82,7 +91,7 @@ async def test_isafk_content(interact, mock_context: MockContext, lang: str, exp
         mock_context,
         lang=lang,
         content="status_user_51",
-        re_expected=expected,
+        expected=expected,
         success=True,
     )
 

@@ -117,6 +117,7 @@ class ApisConfig:
         self.bot_logs: URL = URL(data.get("bot_logs", "https://bot_logs.exemple.org"))
         self.bot_logs_key: str = data.get("bot_logs_key", "api_exemple")
         self.best_logs: URL = URL(data.get("best_logs", "https://bot_logs.exemple.org"))
+        self.join_url: URL = URL(data.get("join_url", "https://join.exemple.org"))
 
 
 class DatabaseConfig:
@@ -183,7 +184,6 @@ class DiscordConfig:
 class Config:
     def __init__(self, config, mock: bool = False) -> None:
         config = load_config(config)
-        self.stage = config.get("stage", "dev")
         self.version = config.get("version", "1.0.0")
         self.BotConfig = BotConfig(config["bot"])
         self.DatabaseConfig = DatabaseConfig(config["database"], mock)

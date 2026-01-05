@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 import pytest_asyncio
 
@@ -5,6 +7,14 @@ from bot.cogs.lastseen.command.lastseen import LastSeenCmd
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def lock_time(mock_context: MockContext):
+    time = datetime.datetime(2025, 8, 8, 17, 5, 55, tzinfo=datetime.UTC)
+    updated = datetime.datetime(2025, 8, 7, 17, 5, 55, tzinfo=datetime.UTC)
+    async with mock_context.MockBuilder.Default.Datetime.now(time).Db.TimestampMixin.updated_at(updated):
+        yield
 
 
 @pytest_asyncio.fixture
@@ -95,7 +105,7 @@ async def test_lastseen_not_authorized(
         mock_context=mock_context,
         lang=lang,
         content="no_mention_user",
-        re_expected=expected,
+        expected=expected,
         success=True,
     )
 
@@ -108,6 +118,6 @@ async def test_lastseen_success(interact: LastSeenCmd, mock_context: MockContext
         mock_context=mock_context,
         lang=lang,
         content="status_user_50",
-        re_expected=expected,
+        expected=expected,
         success=True,
     )

@@ -39,13 +39,13 @@ class Params:
     online: ClassVar[list] = [
         pytest.param(
             "en",
-            r"Preview: link || VOD: https://www.twitch.tv/videos/12345?t=\d+\s",
+            r"Preview: link || VOD: https://www.twitch.tv/videos/12345?t=95566s",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            r"Preview: link || VOD: https://www.twitch.tv/videos/12345?t=\d+\s",
+            r"Preview: link || VOD: https://www.twitch.tv/videos/12345?t=95566s",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

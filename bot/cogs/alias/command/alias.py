@@ -71,15 +71,13 @@ class AliasCmd(commands.CustomComponent):
             return translations.Add.command_dont_exist(ctx, command_string)
 
         if result.guard_result:
-            return translations.Exceptions.guard_caught(ctx, result.trigger_name, result.guard_result, ctx.bot.dev_name)
+            return translations.Exceptions.guard_caught(
+                ctx, result.trigger_name, result.guard_result, ctx.bot.dev_user.display_name
+            )
 
         rest = [arg for arg in rest if arg]
         alias = await Alias.create_cached(
-            ctx=ctx,
-            name=name,
-            command=result.command,
-            invocation=command_string,
-            arguments=rest,
+            ctx=ctx, name=name, command=result.command, invocation=command_string, arguments=rest
         )
         return translations.Add.alias_created(ctx, alias.name)
 
@@ -114,15 +112,7 @@ class AliasCmd(commands.CustomComponent):
         elif target_aliases_flat and first_name not in aliases_flat and not second_name:
             return await handle_target_list(ctx, target_user, translations, self)
         elif target_aliases_flat and first_name in aliases_flat and not second_name:
-            return await handle_special_case(
-                ctx,
-                translations,
-                aliases,
-                target_aliases,
-                first_name,
-                target_user,
-                self,
-            )
+            return await handle_special_case(ctx, translations, aliases, target_aliases, first_name, target_user, self)
 
         # second name provided: lookup specific
         if second_name:
@@ -211,10 +201,7 @@ class AliasCmd(commands.CustomComponent):
             return translations.Edit.command_dont_exist(ctx, command_)
         if command_check.guard_result:
             return self.translations.Exceptions.guard_caught(
-                ctx,
-                command_check.trigger_name,
-                command_check.guard_result,
-                ctx.bot.dev_name,
+                ctx, command_check.trigger_name, command_check.guard_result, ctx.bot.dev_user.display_name
             )
 
         alias = await Alias.filter_cached(ctx=ctx, alias_name=name)
@@ -430,12 +417,7 @@ async def upload_alias(ctx: Context, aliases: list[Alias], table_name: str, comm
 async def handle_list_all(ctx: Context, translations: Translations, command):
     aliases = await Alias.all_prefetch(ctx=ctx, user=ctx.user)
     names = flatten_alias_names(aliases)
-    url = await upload_alias(
-        ctx,
-        aliases,
-        translations.Table.alias_table_name(ctx, ctx.author.display_name),
-        command,
-    )
+    url = await upload_alias(ctx, aliases, translations.Table.alias_table_name(ctx, ctx.author.display_name), command)
     return translations.Check.user_alias_list(ctx, ", ".join(names), url)
 
 
@@ -451,26 +433,10 @@ async def handle_target_list(ctx: Context, target_user, translations: Translatio
 
 
 async def handle_special_case(
-    ctx: Context,
-    translations: Translations,
-    aliases,
-    target_aliases,
-    first_name: str,
-    target_user,
-    command,
+    ctx: Context, translations: Translations, aliases, target_aliases, first_name: str, target_user, command
 ):
-    url1 = await upload_alias(
-        ctx,
-        aliases,
-        translations.Table.alias_table_name(ctx, ctx.author.display_name),
-        command,
-    )
-    url2 = await upload_alias(
-        ctx,
-        target_aliases,
-        translations.Table.alias_table_name(ctx, target_user.name),
-        command,
-    )
+    url1 = await upload_alias(ctx, aliases, translations.Table.alias_table_name(ctx, ctx.author.display_name), command)
+    url2 = await upload_alias(ctx, target_aliases, translations.Table.alias_table_name(ctx, target_user.name), command)
     return translations.Check.list_of_special_case(ctx, first_name, url1, url2)
 
 

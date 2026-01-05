@@ -237,6 +237,10 @@ class ContextHandler:
 
         return command_result
 
+    async def setup(self): ...
+
+    async def teardown(self) -> None: ...
+
 
 def format_content(content: str, values: list[str]) -> str:
     def replace_match(match):

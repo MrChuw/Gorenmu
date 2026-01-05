@@ -41,7 +41,7 @@ class DicioCmd(commands.CustomComponent):
             return translations.error(
                 ctx,
                 self.bot.config.ApisConfig.dicio_url / "languages",
-                self.bot.dev_name,
+                self.bot.dev_user.display_name,
             )
 
         if json_response["exist"]:

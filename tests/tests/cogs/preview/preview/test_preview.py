@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 import pytest_asyncio
 
@@ -5,6 +7,13 @@ from bot.cogs.preview.command.preview import PreviewCmd
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def lock_time(mock_context: MockContext):
+    time = datetime.datetime(2025, 8, 8, 17, 5, 55, tzinfo=datetime.UTC)
+    async with mock_context.MockBuilder.Default.Datetime.now(time):
+        yield
 
 
 @pytest_asyncio.fixture
@@ -72,6 +81,6 @@ async def test_online(interact, mock_context: MockContext, lang: str, expected: 
             mock_context,
             lang=lang,
             content="channelname",
-            re_expected=expected,
+            expected=expected,
             success=True,
         )

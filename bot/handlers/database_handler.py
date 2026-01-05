@@ -34,3 +34,7 @@ class DatabaseHandler:
     @staticmethod
     async def close_db() -> None:
         await Tortoise.close_connections()
+
+    async def setup(self): ...
+
+    async def teardown(self) -> None: ...

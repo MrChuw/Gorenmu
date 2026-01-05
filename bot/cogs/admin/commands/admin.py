@@ -174,7 +174,11 @@ async def reload_component(bot_obj, attr_name: str, module_name: str, class_name
                     await close_attr()
             else:
                 close_attr()
+        if teardown_attr := getattr(old_instance, "teardown", None):
+            await teardown_attr()
         setattr(bot_obj, attr_name, instance)
+        if start_attr := getattr(instance, "setup", None):
+            await start_attr()
         bot_obj.log.info(f"Reloaded {attr_name} from {module_name}.{class_name}")
     except Exception as e:
         bot_obj.log.error(f"Error reloading {attr_name}: {e}")

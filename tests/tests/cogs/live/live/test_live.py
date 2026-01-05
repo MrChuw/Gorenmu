@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 import pytest_asyncio
 
@@ -9,6 +11,13 @@ from tests.tests.cogs.live.live.test_params import Params
 @pytest_asyncio.fixture
 async def interact(mock_bot):
     return LiveCmd(bot=mock_bot)
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def lock_time(mock_context: MockContext):
+    time = datetime.datetime(2025, 8, 8, 17, 5, 55, tzinfo=datetime.UTC)
+    async with mock_context.MockBuilder.Default.Datetime.now(time):
+        yield
 
 
 @pytest.mark.asyncio
@@ -44,7 +53,7 @@ async def test_live_on(interact, mock_context: MockContext, lang: str, expected:
         mock_context=mock_context,
         lang=lang,
         content="",
-        re_expected=expected,
+        expected=expected,
         json_response=Params.online_json,
         success=True,
     )
@@ -58,7 +67,7 @@ async def test_live_off(interact, mock_context: MockContext, lang: str, expected
         mock_context=mock_context,
         lang=lang,
         content="",
-        re_expected=expected,
+        expected=expected,
         json_response=Params.offline_json,
         success=True,
     )
@@ -72,7 +81,7 @@ async def test_live_never(interact, mock_context: MockContext, lang: str, expect
         mock_context=mock_context,
         lang=lang,
         content="",
-        re_expected=expected,
+        expected=expected,
         json_response=Params.never_json,
         success=False,
     )

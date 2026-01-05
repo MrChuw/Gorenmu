@@ -27,17 +27,15 @@ class Params:
     yourself: ClassVar[list] = [
         pytest.param(
             "en",
-            r"you created the account on \d{2}/\d{2}/\d{4} at \d{2}:\d{2} (AM|PM) "
-            r"\(\d+ year[s]?, \d+ month[s]?, \d+ day[s]?(, \d+ hour[s]?)?(, "
-            r"\d+ minute[s]?)? and \d+\.\d+ second[s]? ago\)",
+            'you created the account on 01/20/2019 at 07:34 PM '
+            '(6 years, 6 months, 18 days, 21 hours, 31 minutes and 10 seconds ago)',
             marks=pytest.mark.en,
             id="yourself-en",
         ),
         pytest.param(
             "pt_BR",
-            r"você criou a conta em \d{2}/\d{2}/\d{4} às \d{2}:\d{2}:\d{2} "
-            r"\(há \d+ ano[s]?, \d+ mese[s]?, \d+ dia[s]?(, \d+ hora[s]?)?(, "
-            r"\d+ minuto[s]?)? e \d+\.\d+ segundo[s]?\)",
+            'você criou a conta em 20/01/2019 às 19:34:45 '
+            '(há 6 anos, 6 meses, 18 dias, 21 horas, 31 minutos e 10 segundos)',
             marks=pytest.mark.pt_BR,
             id="yourself-pt",
         ),
@@ -46,17 +44,15 @@ class Params:
     other: ClassVar[list] = [
         pytest.param(
             "en",
-            r"@mr_chuw created the account on \d{2}/\d{2}/\d{4} at \d{2}:\d{2} (AM|PM) "
-            r"\(\d+ year[s]?, \d+ month[s]?, \d+ day[s]?(, \d+ hour[s]?)?(, "
-            r"\d+ minute[s]?)? and \d+\.\d+ second[s]? ago\)",
+            '@mr_chuw created the account on 01/20/2019 at 07:34 PM '
+            '(6 years, 6 months, 18 days, 21 hours, 31 minutes and 10 seconds ago)',
             marks=pytest.mark.en,
             id="other-en",
         ),
         pytest.param(
             "pt_BR",
-            r"@mr_chuw criou a conta em \d{2}/\d{2}/\d{4} às \d{2}:\d{2}:\d{2} "
-            r"\(há \d+ ano[s]?, \d+ mese[s]?, \d+ dia[s]?(, \d+ hora[s]?)?(, "
-            r"\d+ minuto[s]?)? e \d+\.\d+ segundo[s]?\)",
+            '@mr_chuw criou a conta em 20/01/2019 às 19:34:45 '
+            '(há 6 anos, 6 meses, 18 dias, 21 horas, 31 minutos e 10 segundos)',
             marks=pytest.mark.pt_BR,
             id="other-pt",
         ),

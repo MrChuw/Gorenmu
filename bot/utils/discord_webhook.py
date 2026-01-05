@@ -33,7 +33,7 @@ class DiscordWebHook:
         profile_image = user.profile_image.url
         webhook = DiscordWebhook(
             url=url,
-            username=ctx.bot.bot_nick.title(),
+            username=ctx.bot.bot_user.display_name.title(),
             session=session,
             avatar_url=avatar_webhook,
         )

@@ -72,9 +72,9 @@ class Command(TwitchioCommand):
         whispable: bool = False,
         **kwargs: Any,
     ):
-        return super().command(
+        return super().command(  # NOQA
             name=name, aliases=aliases, extras=extras, pipeble=pipeble, whispable=whispable, **kwargs
-        )  # NOQA
+        )
 
     @property
     def all_guards(self):

@@ -33,11 +33,12 @@ if __name__ == "__main__":
     log.info("Ligando bot", exc_info=True)
 
     async def runner() -> None:
-        adapter: StarletteAdapter = StarletteAdapter(host="localhost")
+        adapter: StarletteAdapter = StarletteAdapter(host="localhost", domain=Configs.ApisConfig.join_url.human_repr())
         bot: Gorenmu = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
         # bot.site = api
         # bot.api_start = api_start
         await bot.DatabaseHandler.setup_database()
+        await bot.LifecycleHandler.setup_internal()
         await bot.LifecycleHandler.setup()
         await bot.start()
 

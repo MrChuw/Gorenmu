@@ -27,21 +27,18 @@ class TokensHandler:
 
             subs += [
                 eventsub.ChatMessageSubscription(
-                    broadcaster_user_id=str(user.id),
-                    user_id=str(self.config.BotConfig.bot_id),
+                    broadcaster_user_id=str(user.id), user_id=str(self.config.BotConfig.bot_id)
                 ),
                 eventsub.StreamOnlineSubscription(broadcaster_user_id=str(user.id)),
             ]
 
         subs += [
             eventsub.ChatMessageSubscription(
-                broadcaster_user_id=str(self.config.BotConfig.dev_userid),
-                user_id=str(self.config.BotConfig.bot_id),
+                broadcaster_user_id=str(self.config.BotConfig.dev_userid), user_id=str(self.config.BotConfig.bot_id)
             ),
             eventsub.StreamOnlineSubscription(broadcaster_user_id=str(self.config.BotConfig.dev_userid)),
             eventsub.WhisperReceivedSubscription(
-                broadcaster_user_id=str(self.config.BotConfig.bot_id),
-                user_id=str(self.config.BotConfig.bot_id),
+                broadcaster_user_id=str(self.config.BotConfig.bot_id), user_id=str(self.config.BotConfig.bot_id)
             ),
         ]
 
@@ -65,34 +62,41 @@ class TokensHandler:
 
         subs: list[eventsub.SubscriptionPayload] = [
             eventsub.ChatMessageSubscription(
-                broadcaster_user_id=payload.user_id,
-                user_id=str(self.config.BotConfig.bot_id),
+                broadcaster_user_id=payload.user_id, user_id=str(self.config.BotConfig.bot_id)
             ),
             eventsub.StreamOnlineSubscription(broadcaster_user_id=payload.user_id),
         ]
 
-        resp: twitchio.MultiSubscribePayload = await self.bot.multi_subscribe(subs)
-        if resp.errors:
-            self.bot.log.warning("Failed to subscribe to: %r, for user: %s", resp.errors, payload.user_id)
+        responses: twitchio.MultiSubscribePayload = await self.bot.multi_subscribe(subs)
+        channel = await Channel.get_or_none(user_id=payload.user_id)
+        for response in responses.success:
+            event_type = response.response["data"][0]["type"]
+            event_id = response.response["data"][0]["id"]
+            channel.event_subs[event_type] = event_id
+        await channel.save()
+
+        if responses.errors:
+            self.bot.log.warning("Failed to subscribe to: %r, for user: %s", responses.errors, payload.user_id)
 
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
         resp = await super(type(self.bot), self.bot).add_token(token, refresh)
+        user_id = resp.user_id if resp.user_id.isnumeric() else int(resp.user_id)
 
         user = await UserModel.get_user_or_none(
-            ctx_bot=self.bot,
-            user_id=resp.user_id if resp.user_id.isnumeric() else int(resp.user_id),
-            translations=None,
-        )
-        if not user:
-            user = await UserModel.create(name=resp.login, id=resp.user_id)
-            await Channel.get_or_create(user=user)
-            await self.bot.ChannelHandler.load_channels()
+            ctx_bot=self.bot, user_id=user_id, translations=None
+        ) or await UserModel.create(name=resp.login, id=resp.user_id)
+        channel, _ = await Channel.get_or_create(user=user)
+        channel.online = True
+        channel.removed = False
+        await channel.save()
+        await self.bot.ChannelHandler.load_channels()
 
         token_db = await TwitchTokens.get_or_none(user=user)
         if (token and token_db) and (token_db.token != token or token_db.refresh != refresh):
             token_db.token = token
             token_db.refresh = refresh
             await token_db.save()
+
         if not token_db:
             token_db = await TwitchTokens.create(user=user, token=token, refresh=refresh)  # NOQA
 
@@ -100,6 +104,29 @@ class TokensHandler:
         return resp
 
     async def load_tokens(self, path: str | None = None) -> None:  # NOQA
-        tokens = await TwitchTokens.all()
+        tokens = await TwitchTokens.all().filter(removed=False)
         for token in tokens:
             await self.add_token(token=token.token, refresh=token.refresh)
+
+    async def get_event_sub_subscriptions(self):
+        subs = await self.bot.fetch_eventsub_subscriptions()
+        async for sub in subs.subscriptions:
+            try:
+                user_id_str = sub.condition.get("broadcaster_user_id") or sub.condition.get("user_id")
+                if not user_id_str:
+                    continue
+                user_id = int(user_id_str)
+                user = await UserModel.get_user_or_none(self.bot, None, user_id=user_id)
+                channel, created = await Channel.get_or_create(user=user)
+                if created:
+                    channel.removed = True
+                    channel.online = True
+                channel.event_subs[sub.type] = sub.id
+                await channel.save()
+
+            except Exception as e:
+                self.bot.log.error(e)
+
+    async def setup(self): ...
+
+    async def teardown(self) -> None: ...

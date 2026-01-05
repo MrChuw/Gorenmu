@@ -78,10 +78,10 @@ class Humanize:
                 options[alias] = [] if unit == "time" else list(target_units)
         self.units = options
 
-    @staticmethod
-    def created_a_time(created_at: datetime, timezone=UTC):
-        return humanize.precisedelta(datetime.now(timezone) - created_at.astimezone(timezone))
+    def created_a_time(self, created_at: datetime, timezone=UTC):
+        with HumanizeContext(self.lang):
+            return humanize.precisedelta(datetime.now(timezone) - created_at.astimezone(timezone))
 
-    @staticmethod
-    def updated_a_time(updated_at: datetime, timezone=UTC):
-        return humanize.precisedelta(datetime.now(timezone) - updated_at.astimezone(timezone))
+    def updated_a_time(self, updated_at: datetime, timezone=UTC):
+        with HumanizeContext(self.lang):
+            return humanize.precisedelta(datetime.now(timezone) - updated_at.astimezone(timezone))

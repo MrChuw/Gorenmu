@@ -3,22 +3,30 @@ from __future__ import annotations
 import sys
 from collections import defaultdict
 from contextlib import contextmanager
+from contextvars import Token
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from bot.ext import Admonitions, CommandExemples, Context
+    from bot.ext import Admonitions, CommandExemples, Context, TranslationBase
 
 
 class TBase:
     _is_tbase = True
 
-    def __init__(self):
+    def __init__(self, parent: TranslationBase = None):
         self.lang_dict: LangDict = LangDict()
+        self.parent: TranslationBase | None = parent
 
     def get_language(self, ctx: Context | str) -> str | None:
         if ctx:
             return ctx.user.language.lower() if ctx.user.language else None
         return ctx if type(ctx) is str and ctx in self.lang_dict else None
+
+    def ctx_get(self) -> Context | None:
+        return self.parent.ctx_get() if self.parent else None
+
+    def ctx_set(self, ctx) -> Token | None:
+        return self.parent.ctx_set(ctx) if self.parent else None
 
     @property
     def _cname(self):
@@ -72,12 +80,14 @@ class TBase:
 
 
 class ClassBase:
-    def populate_subclasses(self, other_self: object = None) -> None:
-        right_self = other_self or self
-        for base_cls in right_self.__class__.__mro__:
-            for name, cls in vars(base_cls).items():
-                if isinstance(cls, type) and getattr(cls, "_is_tbase", False):
-                    setattr(right_self, name, cls())
+    def populate_subclasses(self, parent: object = None) -> None:
+        try:
+            for base_cls in self.__class__.__mro__:
+                for name, cls in vars(base_cls).items():
+                    if isinstance(cls, type) and getattr(cls, "_is_tbase", False):
+                        setattr(self, name, cls(parent) if parent else cls())
+        except Exception as e:
+            print(e)
 
 
 class LangDict:

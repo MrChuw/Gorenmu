@@ -17,9 +17,10 @@ from bot.handlers import (
     ContextHandler,
     DatabaseHandler,
     LifecycleHandler,
+    RoutineHandler,
     TokensHandler,
 )
-from bot.utils import Cache, Config, MemCache  # , TimeTools
+from bot.utils import Cache, Config, MemCache
 
 if TYPE_CHECKING:
     # from bot.api import api, api_start
@@ -56,7 +57,7 @@ class Gorenmu(TypesBot):
         self.CommandHandler: CommandHandler = CommandHandler(bot=self)
         self.LifecycleHandler: LifecycleHandler = LifecycleHandler(bot=self)
         self.ContextHandler: ContextHandler = ContextHandler(bot=self)
-        # self.TimeTools: TimeTools = TimeTools()
+        self.RoutineHandler: RoutineHandler = RoutineHandler(bot=self)
 
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
         return await self.TokensHandler.add_token(token, refresh)

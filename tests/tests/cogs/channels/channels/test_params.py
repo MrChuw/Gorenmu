@@ -24,14 +24,14 @@ class Params:
     no_content: ClassVar[list] = [
         pytest.param(
             "en",
-            "@MrChuw️, @channelname️, @some_user_45️, @some_user_46️, "
+            "@mrchuw️, @channelname️, @some_user_45️, @some_user_46️, "
             "@some_user_47️, @some_user_48️, @some_user_49️, @some_user_50️",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            "@MrChuw️, @channelname️, @some_user_45️, @some_user_46️, "
+            "@mrchuw️, @channelname️, @some_user_45️, @some_user_46️, "
             "@some_user_47️, @some_user_48️, @some_user_49️, @some_user_50️",
             marks=pytest.mark.pt_BR,
             id="pt_BR",

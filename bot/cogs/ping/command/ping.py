@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+import datetime
 import os
-from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 import psutil
@@ -33,10 +33,10 @@ class PingCmd(commands.CustomComponent):
     async def ping(self, ctx: Context) -> Response:
         translations = self.translations.Ping
         humanize = self.translations.SupportTools.TimeTools.Humanize(ctx)
-        delta = datetime.now(UTC) - ctx.message.timestamp
+        delta = datetime.datetime.now(datetime.UTC) - ctx.message.timestamp
         tmi = f"{humanize.precisedelta(delta, suppress=['seconds'], minimum_unit='milliseconds').split(' ')[0]} ms"
         mem = humanize.naturalsize(psutil.Process(os.getpid()).memory_info()[0])
-        started = humanize.precisedelta(ctx.bot.boot - datetime.now(UTC))
+        started = humanize.precisedelta(ctx.bot.boot - datetime.datetime.now(datetime.UTC))
         return translations.ping(ctx, "ping 🏓" if ctx.invoke_by == "pong" else "pong 🏓", tmi, mem, started)
 
 

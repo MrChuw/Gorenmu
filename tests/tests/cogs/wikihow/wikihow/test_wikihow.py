@@ -1,9 +1,16 @@
+import logging
+
 import pytest
 import pytest_asyncio
 
 from bot.cogs.wikihow.command.wikihow import WikiHowCmd
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.wikihow.wikihow.test_params import Params
+
+
+@pytest.fixture(autouse=True)
+def silence_tortoise_logs():
+    logging.getLogger().setLevel(logging.ERROR)
 
 
 @pytest_asyncio.fixture

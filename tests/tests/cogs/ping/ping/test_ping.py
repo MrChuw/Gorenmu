@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 import pytest_asyncio
 
@@ -5,6 +7,13 @@ from bot.cogs.ping.command.ping import PingCmd
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def lock_time(mock_context: MockContext):
+    time = datetime.datetime(2025, 8, 8, 17, 5, 55, tzinfo=datetime.UTC)
+    async with mock_context.MockBuilder.Default.Datetime.now(time):
+        yield
 
 
 @pytest_asyncio.fixture
@@ -24,13 +33,12 @@ async def base_ping(
     interact,
     mock_context: MockContext,
     lang: str,
-    expected: str | None = None,
     re_expected: str | None = None,
     success: bool = False,
 ):
     await mock_context.prepare_context(lang)
     response: Response = await interact.ping._callback(interact, mock_context)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    mock_context.Asserter.assert_string(response.response_string, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

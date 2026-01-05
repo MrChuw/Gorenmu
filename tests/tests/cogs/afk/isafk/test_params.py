@@ -44,13 +44,13 @@ class Params:
     no_content: ClassVar[list] = [
         pytest.param(
             "en",
-            r"it's afk 🏃⌨ \(for \d+\.\d{2} seconds\)",
+            "@status_user_50 it's afk 🏃⌨ (for 1 day)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            r"@status_user_50 está ausente 🏃⌨ \(há \d+\.\d{2} seconds\)",
+            '@status_user_50 está ausente 🏃⌨ (há 1 dia)',
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -59,13 +59,13 @@ class Params:
     content: ClassVar[list] = [
         pytest.param(
             "en",
-            r"@status_user_51 it's afk 🏃⌨ and left a note: content \(for \d+\.\d{2} seconds\)",
+            "@status_user_51 it's afk 🏃⌨ and left a note: content (for 1 day)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            r"@status_user_51 está ausente 🏃⌨ e deixou uma nota: content \(há \d+\.\d{2} seconds\)",
+            '@status_user_51 está ausente 🏃⌨ e deixou uma nota: content (há 1 dia)',
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

@@ -1,7 +1,9 @@
 import asyncio
 import contextlib
+import datetime
 import logging
 import os
+from unittest.mock import MagicMock
 
 import pytest
 import pytest_asyncio
@@ -53,11 +55,15 @@ async def mock_bot():
         twitchio.utils.setup_logging(handler=InterceptHandler(), level=logging.INFO)
     bot = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
     bot.mock = True
-    bot.bot_nick = "bot_name"
-    bot.dev_name = "dev_name"
+    bot.bot_user = MagicMock()
+    bot.bot_user.display_name = "bot_name"
+    bot.dev_user = MagicMock()
+    bot.dev_user.display_name = "dev_name"
     bot.tests_sessions = SessionsCaches(bot)
+    bot.boot = datetime.datetime(2025, 8, 7, 17, 5, 55, tzinfo=datetime.UTC)
     await bot.DatabaseHandler.setup_database()
     await bot.LifecycleHandler.setup()
+    await bot.LifecycleHandler.setup_internal()
     await create_fake_db(bot)
 
     yield bot

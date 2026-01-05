@@ -67,7 +67,7 @@ class CookieCmd(commands.CustomComponent):
         translations = self.translations
         name, *_rest = chain(args, repeat(None, 1))
         name = self.StringTools.str2name(name) or ctx.author.name
-        if name == ctx.bot.bot_nick:
+        if name.lower() == ctx.bot.bot_user.display_name.lower():
             return translations.Count.cc_bot_nick(ctx)
 
         support_tools = self.translations.SupportTools
@@ -95,7 +95,7 @@ class CookieCmd(commands.CustomComponent):
         all_options = self.translations.Cookies.all_string(ctx)
         name, amount, *_rest = chain(args, repeat(None, 2))
         name = self.StringTools.str2name(name) or ctx.author.name
-        if name == ctx.bot.bot_nick:
+        if name.lower() == ctx.bot.bot_user.display_name.lower():
             return translations.gift_bot_nick(ctx)
         elif name == ctx.author.name:
             return translations.gift_user_himself(ctx)

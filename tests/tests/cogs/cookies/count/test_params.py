@@ -25,14 +25,14 @@ class Params:
         pytest.param(
             "en",
             "you have already eaten 54 cookies 🥠. Has 8534 in stock. "
-            "Was presented with 25. Gifted 93. And has a total of 2 unredeemed.",
+            "Was presented with 25. Gifted 93. And has a total of 1 unredeemed.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "você já comeu já comeu 54 biscoitos 🥠. Tem 8534 em estoque. "
-            "Foi apresentado com 25. Presenteou 93. E tem um total de 2 não resgatados.",
+            "Foi apresentado com 25. Presenteou 93. E tem um total de 1 não resgatados.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -57,14 +57,14 @@ class Params:
         pytest.param(
             "en",
             "@channelname have already eaten 54 cookies 🥠. Has 8534 in stock. "
-            "Was presented with 25. Gifted 93. And has a total of 2 unredeemed.",
+            "Was presented with 25. Gifted 93. And has a total of 1 unredeemed.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "@channelname já comeu já comeu 54 biscoitos 🥠. Tem 8534 em estoque. "
-            "Foi apresentado com 25. Presenteou 93. E tem um total de 2 não resgatados.",
+            "Foi apresentado com 25. Presenteou 93. E tem um total de 1 não resgatados.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -75,7 +75,7 @@ class Params:
             "en",
             "you have already eaten 54 cookies 🥠. "
             "Has 8534 in stock. Was presented with 25. Gifted 93. "
-            "And has a total of 2 unredeemed.",
+            "And has a total of 1 unredeemed.",
             marks=pytest.mark.en,
             id="en",
         ),
@@ -83,7 +83,7 @@ class Params:
             "pt_BR",
             "você já comeu já comeu 54 biscoitos 🥠. "
             "Tem 8534 em estoque. Foi apresentado com 25. "
-            "Presenteou 93. E tem um total de 2 não resgatados.",
+            "Presenteou 93. E tem um total de 1 não resgatados.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

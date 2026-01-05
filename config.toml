@@ -38,6 +38,7 @@ feridinha_key = "${API_KEY}"
 bot_logs = "https://logs.mrchuw.com.br/"
 bot_logs_key = "${BOT_LOGS_KEY}"
 best_logs = "https://logs.zonian.dev/"
+join_url = "https://siteteste.mrchuw.com.br"
 
 
 [discord]

@@ -31,12 +31,13 @@ class Translations(TranslationBase):
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
                     "en",
-                    f"Number/date too large to convert, if you think this is wrong, please contact: {ctx.bot.dev_name}",
+                    "Number/date too large to convert, "
+                    f"if you think this is wrong, please contact: {ctx.bot.dev_user.display_name}",
                 )
                 self.lang_dict.add_with(
                     ["pt_br", "pt"],
                     "Número/data muito grande para converter. "
-                    f"Se você acha que isso está errado, entre em contato com: {ctx.bot.dev_name}",
+                    f"Se você acha que isso está errado, entre em contato com: {ctx.bot.dev_user.display_name}",
                 )
             return response.format_response(self._untangle_str(ctx, self._cname))
 

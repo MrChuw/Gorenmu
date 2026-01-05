@@ -33,6 +33,10 @@ class ShortenCmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
+
+    # TODO: Fix crash on no-https on url(s)
     @commands.command(name="shorten", aliases=["short"])
     async def shorten(self, ctx: Context, *, content) -> Response:
         links = URLExtract().find_urls(text=content)
@@ -47,16 +51,16 @@ class ShortenCmd(commands.CustomComponent):
                 if not short:
                     fake_exc = fake_stacktrace(f"External shortener API failed for: {url}")
                     await self.bot.CommandHandler.send_bug(ctx, fake_exc)
-                    return self.translations.Shorten.api_erro(ctx)
+                    return self.translations.Shorten.api_erro()
                 link += f"{short} "
-            return self.translations.Shorten.urls(ctx, link)
+            return self.translations.Shorten.urls(link)
         else:
             short = await self.UploadThings.shortener(links[0], ["shortener"], session)
             if short:
-                return self.translations.Shorten.url(ctx, short)
+                return self.translations.Shorten.url(short)
             fake_exc = fake_stacktrace(f"External shortener API failed for: {links[0]}")
             await self.bot.CommandHandler.send_bug(ctx, fake_exc)
-            return self.translations.Shorten.api_erro(ctx)
+            return self.translations.Shorten.api_erro()
 
 
 def fake_stacktrace(message: str) -> Exception | None:

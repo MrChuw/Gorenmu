@@ -6,7 +6,7 @@ import types
 from collections import defaultdict
 from contextlib import AsyncExitStack
 from typing import TYPE_CHECKING, Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
 
 from freezegun import freeze_time
 
@@ -14,6 +14,8 @@ from bot.apis.ivrfi.parsers.subage import SubAge
 from bot.apis.ivrfi.parsers.user import UserElement
 from bot.apis.weather import Forecast, Geocoding
 from bot.cogs.preview.command.preview import PreviewCmd
+from bot.handlers import TokensHandler
+from bot.models.base import TimestampMixin
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -35,6 +37,8 @@ class MockBuilder:
         self.ApiIvrFi: MockBuilder._ApiIvrFi = self._ApiIvrFi(self)
         self.Apis: MockBuilder._Apis = self._Apis(self)
         self.Default: MockBuilder._Default = self._Default(self)
+        self.Handlers: MockBuilder._Handlers = self._Handlers(self)
+        self.Db: MockBuilder._Db = self._Db(self)
 
     class _Errors:
         def __init__(self, builder):
@@ -111,6 +115,13 @@ class MockBuilder:
             self.builder.patches["fetch_videos"].append(patch.object(self.bot, "fetch_videos", mock_fetch))
             return self.builder
 
+        def delete_eventsub_subscription(self) -> MockBuilder:
+            mock_delete = AsyncMock(return_value=True)
+            self.builder.patches["delete_eventsub_subscription"].append(
+                patch.object(self.bot, "delete_eventsub_subscription", mock_delete)
+            )
+            return self.builder
+
     class _Session:
         def __init__(self, builder):
             self.builder = builder
@@ -123,13 +134,7 @@ class MockBuilder:
             self.builder.patches["session_get_json"].append(patch.object(session, "get", mock_get))
             return self.builder
 
-        def get(
-            self,
-            session,
-            return_value: str | None = None,
-            side_effect=None,
-            status: int = 200,
-        ) -> MockBuilder:
+        def get(self, session, return_value: str | None = None, side_effect=None, status: int = 200) -> MockBuilder:
             mock_response = AsyncMock()
             mock_response.text = AsyncMock(return_value=return_value or "")
             mock_response.status = status
@@ -145,13 +150,7 @@ class MockBuilder:
             self.builder.patches["session_get_json"].append(patch.object(session, "post", mock_get))
             return self.builder
 
-        def post(
-            self,
-            session,
-            return_value: str | None = None,
-            side_effect=None,
-            status: int = 200,
-        ) -> MockBuilder:
+        def post(self, session, return_value: str | None = None, side_effect=None, status: int = 200) -> MockBuilder:
             mock_response = AsyncMock()
             mock_response.text = AsyncMock(return_value=return_value or "")
             mock_response.status = status
@@ -160,11 +159,7 @@ class MockBuilder:
             return self.builder
 
         def get_not_cached(
-            self,
-            target,
-            return_value: str | None = None,
-            side_effect=None,
-            status: int = 200,
+            self, target, return_value: str | None = None, side_effect=None, status: int = 200
         ) -> MockBuilder:
             mock_url = MagicMock()
             mock_url.human_repr = MagicMock(return_value=return_value)
@@ -181,46 +176,31 @@ class MockBuilder:
 
         def get_7tv(self, return_value: Any = None) -> MockBuilder:
             self.builder.patches["get_7tv"].append(
-                patch(
-                    "bot.apis.emotes.Emotes.get_7tv",
-                    AsyncMock(return_value=return_value),
-                )
+                patch("bot.apis.emotes.Emotes.get_7tv", AsyncMock(return_value=return_value))
             )
             return self.builder
 
         def get_bttv(self, return_value: Any = None) -> MockBuilder:
             self.builder.patches["get_bttv"].append(
-                patch(
-                    "bot.apis.emotes.Emotes.get_bttv",
-                    AsyncMock(return_value=return_value),
-                )
+                patch("bot.apis.emotes.Emotes.get_bttv", AsyncMock(return_value=return_value))
             )
             return self.builder
 
         def get_ffz(self, return_value: Any = None) -> MockBuilder:
             self.builder.patches["get_ffz"].append(
-                patch(
-                    "bot.apis.emotes.Emotes.get_ffz",
-                    AsyncMock(return_value=return_value),
-                )
+                patch("bot.apis.emotes.Emotes.get_ffz", AsyncMock(return_value=return_value))
             )
             return self.builder
 
         def get_emotes(self, return_value: Any = None) -> MockBuilder:
             self.builder.patches["get_emotes"].append(
-                patch(
-                    "bot.apis.emotes.Emotes.get_emotes",
-                    AsyncMock(return_value=return_value),
-                )
+                patch("bot.apis.emotes.Emotes.get_emotes", AsyncMock(return_value=return_value))
             )
             return self.builder
 
         def get_random_by_amount(self, return_value: Any = None) -> MockBuilder:
             self.builder.patches["get_random_by_amount"].append(
-                patch(
-                    "bot.apis.emotes.Emotes.get_random_by_amount",
-                    AsyncMock(return_value=return_value),
-                )
+                patch("bot.apis.emotes.Emotes.get_random_by_amount", AsyncMock(return_value=return_value))
             )
             return self.builder
 
@@ -277,19 +257,13 @@ class MockBuilder:
                 mock_response = AsyncMock()
                 mock_response.results = Geocoding({"results": response}).results
                 self.builder.patches["apis_open_meteo_geocoding"].append(
-                    patch(
-                        "bot.apis.weather.open_meteo.OpenMeteo.geocoding",
-                        AsyncMock(return_value=mock_response),
-                    )
+                    patch("bot.apis.weather.open_meteo.OpenMeteo.geocoding", AsyncMock(return_value=mock_response))
                 )
                 return self.builder
 
             def forecast(self, data: dict[str, str | int]) -> MockBuilder:
                 self.builder.patches["apis_open_meteo_forecast"].append(
-                    patch(
-                        "bot.apis.weather.open_meteo.OpenMeteo.forecast",
-                        AsyncMock(return_value=Forecast(data)),
-                    )
+                    patch("bot.apis.weather.open_meteo.OpenMeteo.forecast", AsyncMock(return_value=Forecast(data)))
                 )
                 return self.builder
 
@@ -356,7 +330,36 @@ class MockBuilder:
 
                 return self.builder
 
-        ...
+    class _Handlers:
+        def __init__(self, builder):
+            self.builder = builder
+            self.TwitchTokens: MockBuilder._Handlers._TwitchTokens = self._TwitchTokens(builder)
+
+        class _TwitchTokens:
+            def __init__(self, builder):
+                self.builder = builder
+
+            def get_event_sub_subscriptions(self) -> MockBuilder:
+                mock_sub = AsyncMock(return_value=True)
+                self.builder.patches["get_event_sub_subscriptions"].append(
+                    patch.object(TokensHandler, "get_event_sub_subscriptions", mock_sub)
+                )
+
+                return self.builder
+
+    class _Db:
+        def __init__(self, builder):
+            self.builder = builder
+            self.TimestampMixin: MockBuilder._Db._TimestampMixin = self._TimestampMixin(builder)
+
+        class _TimestampMixin:
+            def __init__(self, builder):
+                self.builder = builder
+
+            def updated_at(self, time) -> MockBuilder:
+                p = patch.object(TimestampMixin, "updated_at", new_callable=PropertyMock, return_value=time)
+                self.builder.patches["updated_at"].append(p)
+                return self.builder
 
     async def __aenter__(self):
         self._stack = AsyncExitStack()  # NOQA

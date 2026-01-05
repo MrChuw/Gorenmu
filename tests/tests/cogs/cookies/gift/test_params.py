@@ -94,13 +94,13 @@ class Params:
     cooldown_no_stock: ClassVar[list] = [
         pytest.param(
             "en",
-            ["You don`t have any cookies 🍪 stored or waiting to be redeemed. The next one arrives in 59"],
+            ["You don`t have any cookies 🍪 stored or waiting to be redeemed. The next one arrives in 1"],
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            ["Você não tem nenhum cookie 🍪 armazenado ou aguardando para ser resgatado. O próximo chega em 59"],
+            ["Você não tem nenhum cookie 🍪 armazenado ou aguardando para ser resgatado. O próximo chega em 1"],
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -109,13 +109,13 @@ class Params:
     other_user_all: ClassVar[list] = [
         pytest.param(
             "en",
-            ["you gifted @channelname with 12 cookie 🎁"],
+            ["you gifted @channelname with 11 cookie 🎁"],
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            ["você presenteou @channelname com 12 cookie 🎁"],
+            ["você presenteou @channelname com 11 cookie 🎁"],
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -162,7 +162,7 @@ class Params:
             [
                 "you gifted @channelname with 5 cookie 🎁",
                 "you gifted @channelname with 5 cookie 🎁",
-                "To gift, you must first redeem the 2 cookies you have available.",
+                "To gift, you must first redeem the 1 cookies you have available.",
             ],
             marks=pytest.mark.en,
             id="en",
@@ -172,7 +172,7 @@ class Params:
             [
                 "você presenteou @channelname com 5 cookie 🎁",
                 "você presenteou @channelname com 5 cookie 🎁",
-                "Para presentear, você deve primeiro resgatar os 2 cookies que você tem disponíveis.",
+                "Para presentear, você deve primeiro resgatar os 1 cookies que você tem disponíveis.",
             ],
             marks=pytest.mark.pt_BR,
             id="pt_BR",

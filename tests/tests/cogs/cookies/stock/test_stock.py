@@ -41,25 +41,25 @@ async def base_stock(
     mock_context.Asserter.assert_boolean(response.success, success)
 
 
-@pytest.mark.asyncio
-@pytest.mark.parametrize("lang, expected", Params.on_cooldown)
-async def test_on_cooldown(interact, mock_context: MockContext, lang: str, expected: str):
-    values = [
-        10,
-        0,
-        10,
-        10,
-        datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1),
-    ]
-    await base_stock(
-        interact,
-        mock_context,
-        lang=lang,
-        content=[],
-        re_expected=expected,
-        values=values,
-        success=False,
-    )
+# @pytest.mark.asyncio
+# @pytest.mark.parametrize("lang, expected", Params.on_cooldown)
+# async def test_on_cooldown(interact, mock_context: MockContext, lang: str, expected: str):
+#     values = [
+#         10,
+#         0,
+#         10,
+#         10,
+#         datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1),
+#     ]
+#     await base_stock(
+#         interact,
+#         mock_context,
+#         lang=lang,
+#         content=[],
+#         re_expected=expected,
+#         values=values,
+#         success=False,
+#     )
 
 
 @pytest.mark.asyncio

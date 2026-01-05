@@ -44,10 +44,10 @@ class Params:
     ]
 
     uptime: ClassVar[list] = [
-        pytest.param("en", r"I woke up \d+\.\d{2} seconds ago.", marks=pytest.mark.en, id="en"),
+        pytest.param("en", 'I woke up 1 day ago.', marks=pytest.mark.en, id="en"),
         pytest.param(
             "pt_BR",
-            r"Eu acordei há \d+\.\d{2} segundo",
+            "Eu acordei há 1 dia",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

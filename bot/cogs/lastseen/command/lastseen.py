@@ -35,7 +35,7 @@ class LastSeenCmd(commands.CustomComponent):
         if not args:
             args = ctx.channel.name
         name = self.StringTools.str2name(args)
-        if name == ctx.bot.bot_nick.lower():
+        if name == ctx.bot.bot_user.display_name.lower():
             return self.translations.LastSeen.bot(ctx)
         elif name == ctx.author.name.lower():
             return self.translations.LastSeen.author(ctx)

@@ -26,6 +26,8 @@ class {command_title}Cmd(commands.CustomComponent):
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.command(name='{command_name}', aliases=[])
     async def {command_name}(self, ctx: Context, *, args, ) -> Response:

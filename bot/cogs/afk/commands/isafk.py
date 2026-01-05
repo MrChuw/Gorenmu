@@ -34,11 +34,11 @@ class IsAfkCmd(commands.CustomComponent):
     async def isafk(self, ctx: Context, *, content: str) -> Response:
         name = self.StringTools.str2name(content.split()[0])
         actions = {
-            ctx.bot.bot_nick: self.translations.IsAFK.bot(ctx),
-            ctx.author.name: self.translations.IsAFK.author(ctx),
+            ctx.bot.bot_user.display_name.lower(): self.translations.IsAFK.bot(ctx),
+            ctx.author.name.lower(): self.translations.IsAFK.author(ctx),
         }
-        if name in actions:
-            return actions[name]
+        if name.lower() in actions:
+            return actions[name.lower()]
         user = (
             await User.get_user(ctx_bot=ctx, translations=self.translations, name=name, is_none=True)
             if name != ctx.author.name.lower()

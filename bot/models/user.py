@@ -43,7 +43,7 @@ def _get_context_type():
 class User(Base, TimestampMixin, ContentMixin):
     name: str = fields.CharField(unique=True, db_index=True, max_length=64, description="Twitch username")
     channel = fields.CharField(max_length=64, null=True, description="Twitch channel")
-    saved_color = fields.CharField(max_length=7, null=True, description="Twitch color")
+    saved_color = fields.CharField(max_length=8, null=True, description="Twitch color")
     city = fields.CharField(max_length=100, null=True)
     city_hidden = fields.BooleanField(default=True)
     ping = fields.BooleanField(default=True)
@@ -134,7 +134,7 @@ class User(Base, TimestampMixin, ContentMixin):
             "id": ctx.author.id,
             "name": ctx.author.name,
             "channel": ctx.channel.name,
-            "saved_color": ctx.author.colour if hasattr(ctx.author, "colour") else "",
+            "saved_color": ctx.author.colour.hex_clean if hasattr(ctx.author, "colour") else "",
             "content": ctx.message.text,
             "timestamp": ctx.message.timestamp,
         }
@@ -219,8 +219,9 @@ class User(Base, TimestampMixin, ContentMixin):
 
 class TwitchTokens(Base, TimestampMixin):
     user = fields.ForeignKeyField("models.User", related_name="TwitchTokens", unique=True)
-    token = fields.CharField(max_length=255)
-    refresh = fields.CharField(max_length=255)
+    token = fields.CharField(max_length=255, null=True)
+    refresh = fields.CharField(max_length=255, null=True)
+    removed = fields.BooleanField(default=False)
 
     class Meta:
         table = "twitch_tokens"

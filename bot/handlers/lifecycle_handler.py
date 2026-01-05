@@ -2,10 +2,14 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import datetime
 from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
+import humanize
+import janus
 import twitchio
+from twitchio.ext import routines
 
 from bot.exceptions import InvalidArgument
 from bot.ext import ChatMessage, Context
@@ -25,14 +29,18 @@ class LifecycleHandler:
         self.bot = bot
         self.config: Config = bot.config
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
+        self.routine_queue = janus.Queue()
+        self.running_tasks: dict[str, asyncio.Task] = {}
+        self._loop_task: asyncio.Task | None = None
+        self.bot_user = None
 
-    async def setup(self):
+    async def setup_internal(self):
         bot_list = await BotsIgnore.filter(active=True).all()
         self.bot.bots_ids = [bot_id.user_id for bot_id in bot_list]
         self.bot.MarkovProcessor = MarkovProcessor(self.bot)
         await self.bot.ChannelHandler.load_channels()
         self.bot.MarkovTask = asyncio.create_task(self.bot.MarkovProcessor.process_message(), name="process_message")
-        await self.bot.CommandHandler.load_cogs()
+        await asyncio.create_task(self.bot.CommandHandler.load_cogs())
         # if self.config.ApisConfig.enable_site_endpoints:
         #     asyncio.create_task(self.bot.api_start(self.bot))
 
@@ -40,7 +48,7 @@ class LifecycleHandler:
         await self.bot.DatabaseHandler.close_db()
         await self.SessionsCaches.close_all_sessions()
         await self.bot.memcache.close_all_caches()
-        self.bot.CommandHandler.stop_routines()
+        await self.bot.RoutineHandler.stop_routines_all()
         self.bot.MarkovTask.cancel()
         with contextlib.suppress(asyncio.CancelledError):
             await self.bot.MarkovTask
@@ -50,18 +58,22 @@ class LifecycleHandler:
     async def event_ready(self):
         if not self.bot.mock:
             await self.bot.TokensHandler.setup_conduit()
-        self.bot.dev_name = (await self.bot.fetch_users(ids=[self.config.BotConfig.dev_userid]))[0].display_name
-        self.config.BotConfig.dev_name = self.bot.dev_name
+
+        self.bot.dev_user = await self.bot.fetch_user(id=self.config.BotConfig.dev_userid)
+        self.config.BotConfig.dev_name = self.bot.dev_user.display_name
 
         self.bot.log.info(
             f"{self.bot.bot_id} | {len(self.bot.channels)} Channels | "
             f"{len(self.bot._get_prefix)} prefix's, {len(self.bot.commands)} commands."  # NOQA
         )
-        self.bot.bot_nick = (await self.bot.fetch_users(ids=[self.bot.bot_id]))[0].display_name
-        await UserModel.get_or_create(id=self.bot.bot_id, name=self.bot.bot_nick)
+        self.bot.bot_user = await self.bot.fetch_user(id=self.bot.bot_id)
+        await UserModel.get_or_create(id=self.bot.bot_id, name=self.bot.bot_user.display_name)
+        await self.bot.bot_user.send_message("Stare SteerR Bot online.", self.bot.bot_user)
 
     async def event_message(self, payload: ChatMessage):
         if payload.chatter.id == str(self.bot.bot_id) or payload.source_broadcaster is not None:
+            return None
+        if payload.broadcaster.name not in self.bot.channels:
             return None
         ctx: Context = await self.get_context(payload)
         ctx.user, is_online = await asyncio.gather(
@@ -208,3 +220,26 @@ class LifecycleHandler:
 
         ctx.get_command()
         return ctx
+
+    @routines.routine(delta=datetime.timedelta(minutes=15), wait_first=True)
+    async def health_ping(self):
+        if self.config.DevelopmentConfig.development:
+            return None
+        now = datetime.datetime.now(datetime.UTC)
+        uptime_seconds = (now - self.bot.boot).total_seconds()
+        remainder = uptime_seconds % 3600
+        time_to_wait = 3600 - remainder
+        await asyncio.sleep(time_to_wait)
+        current_uptime = datetime.datetime.now(datetime.UTC) - self.bot.boot
+        if not self.bot_user and not self.bot.bot_user:
+            self.bot.bot_user = await self.bot.fetch_user(id=self.bot.bot_id)
+            self.bot_user = self.bot.bot_user
+        await self.bot_user.send_message(f"Online for: {humanize.precisedelta(current_uptime)}", self.bot_user)
+        return None
+
+    async def setup(self):
+        if not self.bot.mock:
+            await self.bot.RoutineHandler.add_routine("health_ping", self.health_ping)
+
+    async def teardown(self) -> None:
+        await self.bot.RoutineHandler.stop_routine("health_ping")

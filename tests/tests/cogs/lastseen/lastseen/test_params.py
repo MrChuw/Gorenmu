@@ -59,13 +59,13 @@ class Params:
     not_authorized: ClassVar[list] = [
         pytest.param(
             "en",
-            r"@no_mention_user️ was last seen \d+\ minutes ago",
+            "@no_mention_user️ was last seen a day ago",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            r"@no_mention_user️ foi visto ultima vez há \d+\ minutos",
+            "@no_mention_user️ foi visto ultima vez há um dia",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -74,13 +74,13 @@ class Params:
     last_seen: ClassVar[list] = [
         pytest.param(
             "en",
-            r"@status_user_50 was last seen in @channelname: Some Text \(0\.\d+ seconds\)",
+            "@status_user_50 was last seen in @channelname: Some Text (1 day)",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            r"@status_user_50 foi visto em @channelname pela última vez: Some Text \(0\.\d+ seconds\)",
+            "@status_user_50 foi visto em @channelname pela última vez: Some Text (1 dia)",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

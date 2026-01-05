@@ -44,9 +44,9 @@ class Channel(Base, TimestampMixin):
     prefix = fields.CharField(max_length=2, default="+")
     removed = fields.BooleanField(default=False)
     language: CharFieldStr = fields.CharField(max_length=32, null=True)
+    event_subs: dict[str, str] = fields.JSONField(default={})
 
     messages = fields.ReverseRelation["MessagesLog"]
-
     markov = fields.ReverseRelation["MarkovUsers"]
     markov_channels = fields.ReverseRelation["MarkovChannels"]
 

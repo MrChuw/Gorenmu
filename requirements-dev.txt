@@ -62,8 +62,11 @@ pytest==8.4.1
     # via
     #   gorenmu (pyproject.toml:dev)
     #   pytest-asyncio
+    #   pytest-timeout
     #   pytest-xdist
 pytest-asyncio==1.1.0
+    # via gorenmu (pyproject.toml:dev)
+pytest-timeout==2.4.0
     # via gorenmu (pyproject.toml:dev)
 pytest-xdist==3.8.0
     # via gorenmu (pyproject.toml:dev)

@@ -29,7 +29,7 @@ class Translations(TranslationBase):
                     ["pt_br", "pt"],
                     'Uso de "math." ou "mathjs." não é suportado, use somente "pi" ou "e" ao em vez de math.pi/math.e',
                 )
-            return response.format_response(self._untangle_str(ctx, self._cname), ctx.bot.dev_name)
+            return response.format_response(self._untangle_str(ctx, self._cname), ctx.bot.dev_user.display_name)
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):

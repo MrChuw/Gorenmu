@@ -12,13 +12,13 @@ class Params:
     pong: ClassVar[list] = [
         pytest.param(
             "en",
-            r"^pong 🏓 \|\| TMI: \d+\.\d+ ms \|\| RAM: \d+\.\d+ MB \|\| \d+\.\d+ seconds?$",
+            r"^pong 🏓 \|\| TMI: \d+(\.\d+)? ms \|\| RAM: \d+(\.\d+)? MB \|\| \d+ days?$",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            r"^pong 🏓 \|\| TMI: \d+\.\d+ ms \|\| RAM: \d+\.\d+ MB \|\| \d+\.\d+ segundo[s]?$",
+            r"^pong 🏓 \|\| TMI: \d+(\.\d+)? ms \|\| RAM: \d+(\.\d+)? MB \|\| \d+ dia[s]?$",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -27,13 +27,13 @@ class Params:
     ping: ClassVar[list] = [
         pytest.param(
             "en",
-            r"^ping 🏓 \|\| TMI: \d+\.\d+ ms \|\| RAM: \d+\.\d+ MB \|\| \d+\.\d+ seconds?$",
+            r"^ping 🏓 \|\| TMI: \d+(\.\d+)? ms \|\| RAM: \d+(\.\d+)? MB \|\| \d+ days?$",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            r"^ping 🏓 \|\| TMI: \d+\.\d+ ms \|\| RAM: \d+\.\d+ MB \|\| \d+\.\d+ segundo[s]?$",
+            r"^ping 🏓 \|\| TMI: \d+(\.\d+)? ms \|\| RAM: \d+(\.\d+)? MB \|\| \d+ dia[s]?$",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

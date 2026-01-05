@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextvars import ContextVar
 from typing import TYPE_CHECKING, Any
 
 from bot.ext import Command, Context, commands
@@ -11,6 +12,7 @@ if TYPE_CHECKING:
 
     from bot.bot import Gorenmu
 
+current_ctx: ContextVar[Context] = ContextVar("current_ctx")
 
 """
 Criar uma forma de dumpar todas as traducoes para um json/xml/txt em ingles, onde esse json seria usado como base para
@@ -102,6 +104,14 @@ class TranslationBase(ClassBase, metaclass=Singleton):
     def __init__(self, bot: Gorenmu):
         self.bot = bot
 
+    @classmethod
+    def ctx_get(cls):
+        return current_ctx.get()
+
+    @staticmethod
+    def ctx_set(ctx: Context):
+        return current_ctx.set(ctx)
+
     def get_decorator(self, ctx: Context | Command) -> TBase | None:
         decorators = None
         command_name = ctx.command.name if isinstance(ctx, Context) else ctx.name
@@ -111,14 +121,14 @@ class TranslationBase(ClassBase, metaclass=Singleton):
         return decorators
 
     class SupportTools(OtherTools.SupportTools):
-        def __init__(self) -> None:
-            super().__init__()
+        def __init__(self, parent: TranslationBase | None = None) -> None:
+            super().__init__(parent)
 
     SupportTools: OtherTools.SupportTools
 
     class Exceptions(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: TranslationBase | None = None):
+            super().__init__(parent)
 
         @staticmethod
         def empty(ctx: commands.Context, success: bool = True) -> Response:
@@ -224,7 +234,7 @@ class TranslationBase(ClassBase, metaclass=Singleton):
                     ["pt_br", "pt"],
                     "Ocorreu um erro inesperado. Por favor, reporte-o para @{} nos whispers.",
                 )
-            return response.format_response(self._untangle_str(ctx, self._cname), ctx.bot.dev_name)
+            return response.format_response(self._untangle_str(ctx, self._cname), ctx.bot.dev_user.display_name)
 
         def timeout(self, ctx: Context) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)

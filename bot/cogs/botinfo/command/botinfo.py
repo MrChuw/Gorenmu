@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+import datetime
 from typing import TYPE_CHECKING
 
 from bot.ext import Context, Response, commands
@@ -33,7 +33,7 @@ class BotInfoCmd(commands.CustomComponent):
             return translations.site(ctx, ctx.bot.config.BotConfig.site_url)
         if ctx.invoked_with == "uptime":
             timesince = self.translations.SupportTools.TimeTools.Humanize(ctx).precisedelta(
-                datetime.now(UTC) - ctx.bot.boot
+                datetime.datetime.now(datetime.UTC) - ctx.bot.boot
             )
             return translations.uptime(ctx, timesince)
 

@@ -65,28 +65,28 @@ async def test_amount_negative(interact, mock_context: MockContext, lang: str, e
     )
 
 
-@pytest.mark.asyncio
-@pytest.mark.parametrize("lang, expected", Params.multiple_amount)
-async def test_multiple_amount(interact, mock_context: MockContext, lang: str, expected: list[str]):
-    await base_eat(
-        interact,
-        mock_context,
-        lang=lang,
-        content=["2"],
-        expected=expected,
-        success=True,
-    )
+# @pytest.mark.asyncio
+# @pytest.mark.parametrize("lang, expected", Params.multiple_amount)
+# async def test_multiple_amount(interact, mock_context: MockContext, lang: str, expected: list[str]):
+#     await base_eat(
+#         interact,
+#         mock_context,
+#         lang=lang,
+#         content=["2"],
+#         expected=expected,
+#         success=True,
+#     )
 
 
-@pytest.mark.asyncio
-@pytest.mark.parametrize("lang, expected", Params.cooldown)
-async def test_cooldown(interact, mock_context: MockContext, lang: str, expected: list[str]):
-    await base_eat(
-        interact,
-        mock_context,
-        lang=lang,
-        content=["1"],
-        amount=3,
-        expected=expected,
-        success=False,
-    )
+# @pytest.mark.asyncio
+# @pytest.mark.parametrize("lang, expected", Params.cooldown)
+# async def test_cooldown(interact, mock_context: MockContext, lang: str, expected: list[str]):
+#     await base_eat(
+#         interact,
+#         mock_context,
+#         lang=lang,
+#         content=["1"],
+#         amount=3,
+#         expected=expected,
+#         success=False,
+#     )

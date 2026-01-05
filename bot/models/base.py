@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from datetime import datetime
+import datetime
 
-import pytz
 from tortoise import Model, fields
 
 CharFieldStr = str | fields.CharField
 IntFieldInt = int | fields.IntField
-DatetimeTzField = datetime | fields.DatetimeField
+DatetimeTzField = datetime.datetime | fields.DatetimeField
 
 
 class Base(Model):
@@ -26,11 +25,11 @@ class TimestampMixin:
 
     @property
     def created_ago(self):
-        return datetime.now(pytz.utc) - self.created_at
+        return datetime.datetime.now(datetime.UTC) - self.created_at
 
     @property
     def updated_ago(self):
-        return datetime.now(pytz.utc) - self.updated_at
+        return datetime.datetime.now(datetime.UTC) - self.updated_at
 
     @property
     def created_em(self):

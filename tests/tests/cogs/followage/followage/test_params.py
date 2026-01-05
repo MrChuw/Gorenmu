@@ -23,8 +23,8 @@ class Params:
     ]
 
     follow: ClassVar[list] = [
-        pytest.param("en", r"@username follows @username for ", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", r"@username segue @username ", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param("en", "@username follows @username for 1 day", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", "@username segue @username 1 dia", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
     not_follow: ClassVar[list] = [
@@ -54,7 +54,7 @@ class Params:
             "displayName": "xXCoolChannelXx",
         },
         "statusHidden": False,
-        "followedAt": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "followedAt": datetime.datetime(2025, 8, 7, 17, 5, 55, tzinfo=datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "streak": {
             "elapsedDays": 27,
             "daysRemaining": 3,

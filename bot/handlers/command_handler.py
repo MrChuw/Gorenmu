@@ -30,17 +30,6 @@ class CommandHandler:
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
 
-    def start_routines(self) -> None:
-        for routine in self.bot.routines:
-            routine.start(self.bot)
-
-    def stop_routines(self) -> None:
-        try:
-            for routine in self.bot.routines:
-                routine.cancel()
-        except Exception as e:
-            logger.error(e)
-
     async def load_command_module(self, path: pathlib.Path) -> None:
         for filename in path.iterdir():
             if filename.suffix != ".py" or filename.name.startswith("__"):
@@ -70,7 +59,8 @@ class CommandHandler:
             try:
                 module, name = self._get_module(path=path, filename=filename)
                 routine: Routine = module.routine
-                self.bot.routines.append(routine)
+                # TODO: To test.
+                self.bot.RoutineHandler.add_routine(str(path), routine)
             except Exception as e:
                 logger.error(
                     f"Routine '{filename.name[:-3]}' failed to load: {e}",
@@ -78,9 +68,6 @@ class CommandHandler:
                 )
 
     async def _load_all_cogs(self, *, reload: bool = False) -> None:
-        if reload:
-            self.stop_routines()
-
         cogs = pathlib.Path(__file__).parent.parent / "cogs"
         try:
             for cog in cogs.iterdir():
@@ -93,7 +80,6 @@ class CommandHandler:
                         await self.load_command_module(folder)
                     elif "routines" in folder.name:
                         self.load_routines(folder)
-            self.start_routines()
         except Exception as e:
             logger.error(
                 f"Failed to {'reload' if reload else 'load'} cogs: {e}",
@@ -178,5 +164,9 @@ class CommandHandler:
         self.bot.log.error(error)
         return await ctx.simple_response(
             ctx,
-            translations.Exceptions.error_not_registered(ctx, self.bot.dev_name).response_string,
+            translations.Exceptions.error_not_registered(ctx, self.bot.dev_user.display_name).response_string,
         )
+
+    async def setup(self): ...
+
+    async def teardown(self) -> None: ...

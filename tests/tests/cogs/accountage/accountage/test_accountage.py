@@ -1,9 +1,18 @@
+import datetime
+
 import pytest
 import pytest_asyncio
 
 from bot.cogs.accountage.command.accountage import AccountAgeCmd
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.accountage.accountage.test_params import Params
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def lock_time(mock_context: MockContext):
+    time = datetime.datetime(2025, 8, 8, 17, 5, 55, tzinfo=datetime.UTC)
+    async with mock_context.MockBuilder.Default.Datetime.now(time):
+        yield
 
 
 @pytest_asyncio.fixture
@@ -49,7 +58,7 @@ async def test_yourself(interact, mock_context: MockContext, lang: str, expected
             mock_context,
             lang=lang,
             content=mock_context.user.name,
-            re_expected=expected,
+            expected=expected,
             success=True,
         )
 
@@ -63,7 +72,7 @@ async def test_other(interact, mock_context: MockContext, lang: str, expected: s
             mock_context,
             lang=lang,
             content="mr_chuw",
-            re_expected=expected,
+            expected=expected,
             success=True,
         )
 

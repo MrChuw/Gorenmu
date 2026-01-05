@@ -67,10 +67,10 @@ class SetCmd(commands.CustomComponent):
         if nickname[0] in string.punctuation:
             nickname = f"️{args}"
         if nickname.lower() == "remove":
-            ctx.user.nick = None
+            ctx.user.nickname = None
             await ctx.user.save()
             return translations.nick_removed(ctx)
-        ctx.user.nick = nickname
+        ctx.user.nickname = nickname
         await ctx.user.save()
         return translations.nick_changed(ctx)
 

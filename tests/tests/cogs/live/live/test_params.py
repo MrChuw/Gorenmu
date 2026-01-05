@@ -24,17 +24,17 @@ class Params:
     live_on: ClassVar[list] = [
         pytest.param(
             "en",
-            r"^Title: .*? \|\| Stream started: .*? ago \((?:\d+ year[s]?, )?(?:\d+ month[s]?, )?(?:\d+ day[s]?, )?\d+ "
-            r"hour[s]?, \d+ minute[s]? and \d+\.\d+ second[s]?\)\. \|\| Views: \d+\. \|\| Playing: .*?\. \|\| "
-            r"https://www\.twitch\.tv/xXCoolNickXx https://www\.twitch\.tv/videos/\d+\?t=\d+s$",
+            'Title: Live?! | !discord | !reddit | !roblox. || Stream started: a day ago '
+            '(1 day, 2 hours, 34 minutes and 16 seconds). || Views: 42069. || Playing: Coolest Game. '
+            '|| https://www.twitch.tv/xXCoolNickXx https://www.twitch.tv/videos/12345?t=95566s',
             marks=pytest.mark.en,
             id="live-on-en",
         ),
         pytest.param(
             "pt_BR",
-            r"Título:\s*(?P<title>.+?)\s*\|.*?\|\|\s*Transmissão iniciada:\s*há\s*\d+\s*\w+.*?\|\|\s*Visualizações:"
-            r"\s*(?P<views>\d+).*?\|\|\s*Jogando:\s*(?P<game>.+?)\s*\|\|\s*(?P<url1>https?://[^\s\?]+)(?:\s*"
-            r"(?P<url2>https?://[^\s\?]+))?",
+            'Título: Live?! | !discord | !reddit | !roblox. || Transmissão iniciada: há um dia '
+            '(1 dia, 2 horas, 34 minutos e 16 segundos). || Visualizações: 42069. || Jogando: Coolest Game. '
+            '|| https://www.twitch.tv/xXCoolNickXx https://www.twitch.tv/videos/12345?t=95566s',
             marks=pytest.mark.pt_BR,
             id="live-on-pt",
         ),
@@ -43,16 +43,17 @@ class Params:
     live_off: ClassVar[list] = [
         pytest.param(
             "en",
-            r"Title: .*? \|\| Last stream: .*? ago \((?:\d+ month[s]?, )?(?:\d+ day[s]?, )?(?:\d+ hour[s]?, )?("
-            r"?:\d+ minute[s]? and )?\d+\.\d+ second[s]?\)\. \|\| https://www\.twitch\.tv/xXCoolNickXx "
-            r"https://www\.twitch\.tv/videos/\d+",
+            'Title: Live?! | !discord | !reddit | !roblox. || Last stream: a day ago '
+            '(1 day, 20 hours, 46 minutes and 28.07 seconds). || https://www.twitch.tv/xXCoolNickXx '
+            'https://www.twitch.tv/videos/12345',
             marks=pytest.mark.en,
             id="last-stream-en",
         ),
         pytest.param(
             "pt_BR",
-            r"Título:\s*(?P<title>.+?)\s*\|.*?\|\|\s*Última transmissão:\s*há\s*\d+\s*\w+.*?\|\|\s*(?P<url1>https?:"
-            r"//[^\s\?]+)(?:\s*(?P<url2>https?://[^\s\?]+))?",
+            'Título: Live?! | !discord | !reddit | !roblox. || Última transmissão: há um dia '
+            '(1 dia, 20 horas, 46 minutos e 28.07 segundos). || https://www.twitch.tv/xXCoolNickXx '
+            'https://www.twitch.tv/videos/12345',
             marks=pytest.mark.pt_BR,
             id="last-stream-pt",
         ),

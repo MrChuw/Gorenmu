@@ -26,7 +26,8 @@ class MockAuthor:
         self.id = user_id
         self.is_mod = True
         self.is_subscriber = False
-        self.colour = "#393993"
+        self.colour = MagicMock()
+        self.colour.hex_clean = "393993"
 
 
 class MockMessage(MagicMock):
@@ -41,14 +42,7 @@ class MockMessage(MagicMock):
 
 
 class MockContext(AsyncMock):
-    def __init__(
-        self,
-        user_name: str,
-        user_id: int,
-        channel_name: str,
-        channel_id: int,
-        bot: Gorenmu,
-    ):
+    def __init__(self, user_name: str, user_id: int, channel_name: str, channel_id: int, bot: Gorenmu):
         super().__init__(spec=Context)
         self.bot = bot
         self.user = MockUser(user_id, user_name)  # NOQA
@@ -63,11 +57,23 @@ class MockContext(AsyncMock):
         self.Asserter: Asserter = Asserter()
         self.MockBuilder: MockBuilder = MockBuilder(self)
 
-    async def prepare_context(self, translation: str = "en", seed: int = 0):
+    async def prepare_context(
+        self, translation: str = "en", seed: int = 0, interact=None, afk_data=None, cookie_data=None
+    ):
         random.seed(seed)
         self.user = await User.create_or_update(self)
-        # self.user.translations = self.bot.TranslationManager.get_translations(language=translation)
         self.user.language = translation
+
+        if interact:
+            interact.translations.ctx_set(self)
+        if afk_data:
+            from tests.helpers.fake_db_data import create_afk_data
+
+            await create_afk_data(self.bot)
+        if cookie_data:
+            from tests.helpers.fake_db_data import create_cookie_db
+
+            await create_cookie_db(self.bot)
 
     async def prepare_alias(self, special_user):
         command_check = self.bot.get_command("chance")
@@ -77,16 +83,8 @@ class MockContext(AsyncMock):
             user = await self.bot.memcache.User.get(user_id=num)
             aliases_data = [
                 (f"The_Tests_alias{num}", "chance", [""]),
-                (
-                    f"The_Tests_alias{num + 1}",
-                    "choice",
-                    ["1234", "123456", "|", "count", "{0}"],
-                ),
-                (
-                    f"The_Tests_alias{num + 2}",
-                    "upsidedown",
-                    ["upsidedown", "|", "count", "{0}"],
-                ),
+                (f"The_Tests_alias{num + 1}", "choice", ["1234", "123456", "|", "count", "{0}"]),
+                (f"The_Tests_alias{num + 2}", "upsidedown", ["upsidedown", "|", "count", "{0}"]),
             ]
             for name, invocation, arguments in aliases_data:
                 alias = Alias(
@@ -101,19 +99,9 @@ class MockContext(AsyncMock):
                 await Alias.get_alias(ctx=self, user=user, name=name)
 
         if special_user:
-            await Alias.create_cached(
-                ctx=self,
-                name="The_Tests_user",
-                command=command_check,
-                invocation="chance",
-            )
+            await Alias.create_cached(ctx=self, name="The_Tests_user", command=command_check, invocation="chance")
 
-            user = User(
-                name="The_Tests_user",
-                display_name="The_Tests_user",
-                language="en",
-                id=54321,
-            )
+            user = User(name="The_Tests_user", display_name="The_Tests_user", language="en", id=54321)
             await user.save()
 
             alias = Alias(
@@ -127,12 +115,7 @@ class MockContext(AsyncMock):
             await alias.save()
             await Alias.get_alias(ctx=self, user=user, name="The_Alias_test")
             alias1 = Alias(
-                user_id=user.id,
-                channel_id=None,
-                name="The_Alias_link",
-                invocation="",
-                arguments=[""],
-                parent=alias,
+                user_id=user.id, channel_id=None, name="The_Alias_link", invocation="", arguments=[""], parent=alias
             )
             await alias1.save()
             await Alias.get_alias(ctx=self, user=user, name="The_Alias_link")
@@ -147,12 +130,7 @@ class MockContext(AsyncMock):
             await alias2.save()
             await Alias.get_alias(ctx=self, user=user, name="The_Deleted_Alias_test")
             alias2 = Alias(
-                user_id=user.id,
-                name="The_Alias_link_link",
-                command=None,
-                invocation=None,
-                arguments=[],
-                parent=alias1,
+                user_id=user.id, name="The_Alias_link_link", command=None, invocation=None, arguments=[], parent=alias1
             )
             await alias2.save()
             await Alias.get_alias(ctx=self, user=user, name="The_Alias_link_link")
@@ -179,12 +157,7 @@ class MockContext(AsyncMock):
     async def fake_messages():
         channel_user = await User.get(id=123456, name="channelname")
         channel = await Channel.get(user=channel_user)
-        await MessagesLog.create(
-            user=channel_user,
-            content="Some Random Text",
-            type="message",
-            channel=channel,
-        )
+        await MessagesLog.create(user=channel_user, content="Some Random Text", type="message", channel=channel)
 
         other_user = await User.get_or_none(id=12345)
 
