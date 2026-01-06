@@ -51,12 +51,13 @@ async def test_no_content(interact, mock_context: MockContext, lang: str, expect
             side_effect=shortener_response,
         ),
     ):
-        mock_booru.return_value = response
-        await base_safebooru(
-            interact,
-            mock_context,
-            lang=lang,
-            content="",
-            expected=expected,
-            success=True,
-        )
+        async with mock_context.MockBuilder.Asyncio.sleep_skip():
+            mock_booru.return_value = response
+            await base_safebooru(
+                interact,
+                mock_context,
+                lang=lang,
+                content="",
+                expected=expected,
+                success=True,
+            )

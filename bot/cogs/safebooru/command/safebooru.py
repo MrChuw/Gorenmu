@@ -82,8 +82,9 @@ async def choices(args: str, timeout: TimeTools.Timeout, ctx: Context, command: 
     session = command.SessionsCaches.Safebooru.session
     instance = booru.Booru().Safebooru(session=session)
     while timeout.still_valid():
+        # while True:
         try:
-            await asyncio.sleep(0.2)
+            await asyncio.sleep(2)
             image, preview = await instance.random(query=args, page=randint(0, 100))
             return await shortener(image, preview, ctx, command)
         except Exception as e:
