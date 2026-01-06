@@ -45,19 +45,19 @@ async def test_one_link(interact, mock_context: MockContext, lang: str, expected
         )
 
 
-# @pytest.mark.asyncio
-# @pytest.mark.parametrize("lang, expected", Params.multiple_links)
-# async def test_multiple_links(interact, mock_context: MockContext, lang: str, expected: str):
-#     session = interact.SessionsCaches.Shorten.session
-#     async with mock_context.MockBuilder.Session.post_json(session, Params.json_success):
-#         await base_shorten(
-#             interact,
-#             mock_context,
-#             lang=lang,
-#             content="https://someurl.org/url, https://someurl.org/url2, https://someurl.org/url3",
-#             expected=expected,
-#             success=True,
-#         )
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lang, expected", Params.multiple_links)
+async def test_multiple_links(interact, mock_context: MockContext, lang: str, expected: str):
+    session = interact.SessionsCaches.Shorten.session
+    async with mock_context.MockBuilder.Session.post_json(session, Params.json_success).Asyncio.sleep_skip():
+        await base_shorten(
+            interact,
+            mock_context,
+            lang=lang,
+            content="https://someurl.org/url, https://someurl.org/url2, https://someurl.org/url3",
+            expected=expected,
+            success=True,
+        )
 
 
 @pytest.mark.asyncio

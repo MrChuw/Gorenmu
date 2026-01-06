@@ -53,8 +53,7 @@ async def mock_bot():
         from bot.logger import InterceptHandler
 
         twitchio.utils.setup_logging(handler=InterceptHandler(), level=logging.INFO)
-    bot = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
-    bot.mock = True
+    bot = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter, mock=True)
     bot.bot_user = MagicMock()
     bot.bot_user.display_name = "bot_name"
     bot.dev_user = MagicMock()
@@ -73,4 +72,16 @@ async def mock_bot():
     bot.MarkovTask.cancel()
     with contextlib.suppress(asyncio.CancelledError):
         await bot.MarkovTask
+
+    from tortoise import Tortoise
+
+    if Tortoise._inited:
+        await Tortoise.close_connections()
+    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+    for task in tasks:
+        task.cancel()
+
+    if tasks:
+        await asyncio.gather(*tasks, return_exceptions=True)
+
     ...

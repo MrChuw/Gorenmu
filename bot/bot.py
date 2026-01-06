@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
 
 class Gorenmu(TypesBot):
-    def __init__(self, configs: Config, case_insensitive: bool, log: Logger, adapter) -> None:
+    def __init__(self, configs: Config, case_insensitive: bool, log: Logger, adapter, **kwargs) -> None:
         super().__init__(
             client_id=configs.ApisConfig.api_client_id,
             client_secret=configs.ApisConfig.api_client_secret,
@@ -42,6 +42,7 @@ class Gorenmu(TypesBot):
             case_insensitive=case_insensitive,
             bot_id=configs.BotConfig.bot_id,
             adapter=adapter,
+            **kwargs,
         )
         self.boot: datetime.datetime = datetime.datetime.now(datetime.UTC)
         self.manual_events: defaultdict[str, dict[str, dict[str, Callable]]] = defaultdict(lambda: defaultdict(dict))

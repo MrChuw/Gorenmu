@@ -8,11 +8,6 @@ from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.wikihow.wikihow.test_params import Params
 
 
-@pytest.fixture(autouse=True)
-def silence_tortoise_logs():
-    logging.getLogger().setLevel(logging.ERROR)
-
-
 @pytest_asyncio.fixture
 async def interact(mock_bot):
     return WikiHowCmd(bot=mock_bot)
@@ -48,7 +43,7 @@ async def test_timeout(interact, mock_context: MockContext, lang: str, expected:
     await mock_context.prepare_context(lang)
     async with (
         mock_context.MockBuilder.Session.get_not_cached(session, status=404)
-        .Asyncio.sleep()
+        .Asyncio.sleep_skip()
         .Asyncio.get_event_loop_time([0, *list(range(1, 35))])
     ):
         await base_wikihow(interact, mock_context, expected=expected, success=False)
@@ -56,12 +51,14 @@ async def test_timeout(interact, mock_context: MockContext, lang: str, expected:
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.exception)
-async def test_unexpected_exception(interact, mock_context: MockContext, lang: str, expected: str):
+async def test_unexpected_exception(interact, mock_context: MockContext, lang: str, expected: str, caplog):
     session = interact.SessionsCaches.Wikihow
     await mock_context.prepare_context(lang)
-    async with (
-        mock_context.MockBuilder.Session.get_not_cached(session, side_effect=Exception("fail"))
-        .Bot.silence_errors()
-        .Errors.send_bug()
-    ):
-        await base_wikihow(interact, mock_context, expected=expected, success=False)
+
+    with caplog.at_level(logging.ERROR):
+        async with (
+            mock_context.MockBuilder.Session.get_not_cached(session, side_effect=Exception("fail"))
+            .Bot.silence_errors()
+            .Errors.send_bug()
+        ):
+            await base_wikihow(interact, mock_context, expected=expected, success=False)

@@ -28,4 +28,4 @@ jobs:
 
       - name: Run tests with pytest
         run: |
-          pytest -n auto --disable-warnings -v
+          pytest -n auto --disable-warnings -v --dist=loadfile --timeout=5

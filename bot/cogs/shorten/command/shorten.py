@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import inspect
 import types
 from typing import TYPE_CHECKING
@@ -46,7 +45,6 @@ class ShortenCmd(commands.CustomComponent):
         if len(links) > 1:
             link = ""
             for url in links:
-                await asyncio.sleep(0.1)
                 short = await self.UploadThings.shortener(url, ["shortener"], session)
                 if not short:
                     fake_exc = fake_stacktrace(f"External shortener API failed for: {url}")
@@ -66,7 +64,6 @@ class ShortenCmd(commands.CustomComponent):
 def fake_stacktrace(message: str) -> Exception | None:
     exc = Exception(message)
     tb = types.TracebackType(tb_next=None, tb_frame=inspect.currentframe().f_back, tb_lasti=0, tb_lineno=1)
-
     exc.__traceback__ = tb
     return exc
 

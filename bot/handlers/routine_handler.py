@@ -47,5 +47,5 @@ class RoutineHandler:
         for name in names:
             await self.stop_routine(name)
 
-        if self._loop_task:
+        if hasattr(self, "_loop_task"):
             self._loop_task.cancel()

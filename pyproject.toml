@@ -87,5 +87,5 @@ markers = ["network: tests that make real requests", "disabled: Tests that have 
     "pt_BR: Test for Portuguse language.", "en: Test for English language."]
 #addopts = "-m 'not disabled'"
 #addopts = "-n auto -m 'not disabled'"
-#addopts = "-m 'not network and not disabled'"
-addopts = "-n auto -m 'not network and not disabled'"
+addopts = "-m 'not network and not disabled'"
+#addopts = "-n auto -m 'not network and not disabled'"

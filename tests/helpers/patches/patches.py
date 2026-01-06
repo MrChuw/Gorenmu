@@ -20,6 +20,8 @@ from bot.models.base import TimestampMixin
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
+_real_sleep = asyncio.sleep
+
 
 class MockBuilder:
     def __init__(self, mock_context):
@@ -56,7 +58,7 @@ class MockBuilder:
             return self.builder
 
         def send_bug(self, side_effect: Any = None) -> MockBuilder:
-            self.builder.patches["execv"].append(
+            self.builder.patches["send_bug"].append(
                 patch.object(self.bot.CommandHandler, "send_bug", side_effect=side_effect)
             )
             return self.builder
@@ -228,10 +230,16 @@ class MockBuilder:
         def __init__(self, builder):
             self.builder = builder
 
-        def sleep(self, seconds: float = 0) -> MockBuilder:
-            async def fixed_sleep(_):
+        def sleep_skip(self) -> MockBuilder:
+            """Faz o asyncio.sleep retornar instantaneamente."""
+            self.builder.patches["sleep"].append(patch("asyncio.sleep", AsyncMock(return_value=None)))
+            return self.builder
+
+        def sleep_controlled(self, seconds: float = 0) -> MockBuilder:
+            async def fixed_sleep(duration):
+                # Se seconds for 0, pula. Se não, usa a referência REAL
                 if seconds > 0:
-                    await asyncio.sleep(seconds)
+                    await _real_sleep(seconds)
                 return None
 
             self.builder.patches["sleep"].append(patch("asyncio.sleep", AsyncMock(side_effect=fixed_sleep)))

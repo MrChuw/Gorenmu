@@ -21,7 +21,7 @@ class TypesBot(commands.AutoBot):
         self.MarkovTask: Task[None] | None = None
         self.dev_user: User | None = None
         self.bot_user: User | None = None
-        self.mock: bool = False
+        self.mock: bool = kwargs.get("mock", False)
         self.lottery_lock: asyncio.Lock = asyncio.Lock()
         self.channels: dict[str, ChannelModel] = {}
         self.bots_ids: list[int] = []
