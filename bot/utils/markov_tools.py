@@ -48,29 +48,37 @@ class MarkovEntry:
 
 class MarkovORM:
     def __init__(
-        self, host="localhost", port=15342, username="user", password="SuperSecretPassword", database="default"
+        self,
+        bot: Gorenmu,
+        host="localhost",
+        port=15342,
+        username="user",
+        password="SuperSecretPassword",
+        database="default",
     ):
+        self.bot = bot
         self.config = {"host": host, "port": port, "username": username, "password": password, "database": database}
         self.client = None
         self.table = "markov_data"
 
     async def setup_database(self):
-        if not self.client:
+        if not self.client and not self.bot.mock:
             self.client = await create_async_client(**self.config)
 
-        await self.client.command(f"""
-        CREATE TABLE IF NOT EXISTS {self.table} (
-            scope LowCardinality(String) CODEC(ZSTD(3)),
-            user_id UInt64 CODEC(ZSTD(1)),
-            channel_id UInt64 CODEC(ZSTD(1)),
-            ngram_size UInt8 CODEC(ZSTD(1)),
-            prefix String CODEC(ZSTD(8)),
-            next_word String CODEC(ZSTD(8)),
-            count UInt64 CODEC(ZSTD(1)),
-            created_at DateTime DEFAULT now() CODEC(DoubleDelta, ZSTD(1))
-        ) ENGINE = SummingMergeTree(count)
-        ORDER BY (scope, ngram_size, prefix, next_word);
-        """)
+        if not self.bot.mock:
+            await self.client.command(f"""
+            CREATE TABLE IF NOT EXISTS {self.table} (
+                scope LowCardinality(String) CODEC(ZSTD(3)),
+                user_id UInt64 CODEC(ZSTD(1)),
+                channel_id UInt64 CODEC(ZSTD(1)),
+                ngram_size UInt8 CODEC(ZSTD(1)),
+                prefix String CODEC(ZSTD(8)),
+                next_word String CODEC(ZSTD(8)),
+                count UInt64 CODEC(ZSTD(1)),
+                created_at DateTime DEFAULT now() CODEC(DoubleDelta, ZSTD(1))
+            ) ENGINE = SummingMergeTree(count)
+            ORDER BY (scope, ngram_size, prefix, next_word);
+            """)
 
     async def insert_batch(self, entries: list[MarkovEntry]):
         if not entries:
@@ -213,7 +221,7 @@ class MarkovProcessor:
 
     async def markov_worker(self):
         self.queue = Queue()
-        self.orm = MarkovORM()
+        self.orm = MarkovORM(self.bot)
         await self.orm.setup_database()
 
         while True:
