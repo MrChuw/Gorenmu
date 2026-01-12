@@ -274,7 +274,6 @@ class StringTools(metaclass=Singleton):
         default: bool | None = None,
     ) -> BoolResult:
         verbs = translations.SupportTools.LanguageContext.Verbs
-        # asdf
         regex, bool_map = StringTools._get_compiled_logic(
             field, tuple(verbs.positive(ctx)), tuple(verbs.negative(ctx)), tuple(verbs.nothing(ctx))
         )
@@ -295,6 +294,11 @@ class StringTools(metaclass=Singleton):
     @lru_cache(maxsize=32)
     def _get_compiled_logic(field: str, pos: tuple, neg: tuple, nth: tuple):
         return _get_compiled(field, pos, neg, nth)
+
+    @staticmethod
+    def extract_words_simple(text: str) -> list[str]:
+        table = str.maketrans('', '', string.punctuation)
+        return text.translate(table).split()
 
 
 def _get_compiled(field: str, pos: tuple, neg: tuple, nth: tuple):

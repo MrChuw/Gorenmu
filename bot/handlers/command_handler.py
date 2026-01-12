@@ -11,6 +11,7 @@ from loguru import logger
 from twitchio.ext.commands import CommandErrorPayload
 
 from bot.exceptions import (
+    CommandDisabledError,
     CommandNotFound,
     CommandOnCooldown,
     DevRequiredError,
@@ -62,10 +63,7 @@ class CommandHandler:
                 # TODO: To test.
                 self.bot.RoutineHandler.add_routine(str(path), routine)
             except Exception as e:
-                logger.error(
-                    f"Routine '{filename.name[:-3]}' failed to load: {e}",
-                    extra={"locals": locals()},
-                )
+                logger.error(f"Routine '{filename.name[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     async def _load_all_cogs(self, *, reload: bool = False) -> None:
         cogs = pathlib.Path(__file__).parent.parent / "cogs"
@@ -81,10 +79,7 @@ class CommandHandler:
                     elif "routines" in folder.name:
                         self.load_routines(folder)
         except Exception as e:
-            logger.error(
-                f"Failed to {'reload' if reload else 'load'} cogs: {e}",
-                extra={"locals": locals()},
-            )
+            logger.error(f"Failed to {'reload' if reload else 'load'} cogs: {e}", extra={"locals": locals()})
 
     async def load_cogs(self) -> None:
         await self._load_all_cogs(reload=False)
@@ -139,10 +134,11 @@ class CommandHandler:
         if ctx.prefix != self.bot.channels[ctx.channel.name].prefix:
             return None
         translations = ctx.command.component.translations
-        if not isinstance(error, (InvalidArgument, CommandOnCooldown)):
+        translations.ctx_set(ctx)
+        if not isinstance(error, (InvalidArgument, CommandOnCooldown, CommandDisabledError, CommandNotFound)):
             await self.send_bug(ctx, error)
 
-        if isinstance(error, CommandNotFound):
+        if isinstance(error, (CommandNotFound, CommandDisabledError)):
             return None
         if isinstance(error, DevRequiredError):
             await ctx.simple_response(ctx, translations.Exceptions.dev_required(ctx).response_string)
@@ -156,15 +152,14 @@ class CommandHandler:
         if isinstance(error, NotImplementedError):
             return await ctx.simple_response(ctx, translations.Exceptions.not_implemented(ctx).response_string)
         if isinstance(error, InvalidArgument) and ctx.command:
-            deco = ctx.command.component.translations.get_decorator(ctx=ctx)
-            await ctx.reply(deco.deco_usage(ctx, prefix=ctx.prefix))
+            deco = translations.get_decorator(ctx=ctx)
+            await ctx.reply(deco.deco_usage(ctx=ctx, prefix=ctx.prefix))
             return None
         if isinstance(error, GuardFailure):
             return None
         self.bot.log.error(error)
         return await ctx.simple_response(
-            ctx,
-            translations.Exceptions.error_not_registered(ctx, self.bot.dev_user.display_name).response_string,
+            ctx, translations.Exceptions.error_not_registered(ctx, self.bot.dev_user.display_name).response_string
         )
 
     async def setup(self): ...

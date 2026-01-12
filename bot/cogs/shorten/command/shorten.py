@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import inspect
-import types
 from typing import TYPE_CHECKING
 
 from urlextract import URLExtract
@@ -47,7 +45,9 @@ class ShortenCmd(commands.CustomComponent):
             for url in links:
                 short = await self.UploadThings.shortener(url, ["shortener"], session)
                 if not short:
-                    fake_exc = fake_stacktrace(f"External shortener API failed for: {url}")
+                    fake_exc = self.translations.SupportTools.fake_stacktrace(
+                        f"External shortener API failed for: {url}"
+                    )
                     await self.bot.CommandHandler.send_bug(ctx, fake_exc)
                     return self.translations.Shorten.api_erro()
                 link += f"{short} "
@@ -56,16 +56,9 @@ class ShortenCmd(commands.CustomComponent):
             short = await self.UploadThings.shortener(links[0], ["shortener"], session)
             if short:
                 return self.translations.Shorten.url(short)
-            fake_exc = fake_stacktrace(f"External shortener API failed for: {links[0]}")
+            fake_exc = self.translations.SupportTools.fake_stacktrace(f"External shortener API failed for: {links[0]}")
             await self.bot.CommandHandler.send_bug(ctx, fake_exc)
             return self.translations.Shorten.api_erro()
-
-
-def fake_stacktrace(message: str) -> Exception | None:
-    exc = Exception(message)
-    tb = types.TracebackType(tb_next=None, tb_frame=inspect.currentframe().f_back, tb_lasti=0, tb_lineno=1)
-    exc.__traceback__ = tb
-    return exc
 
 
 async def setup(bot: Gorenmu) -> None:

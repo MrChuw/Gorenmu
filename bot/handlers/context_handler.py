@@ -62,8 +62,8 @@ class ContextHandler:
             await ctx.reply(chunk)
             await asyncio.sleep(minimum_delay_messages)
 
-    @staticmethod
-    async def handle_echo(ctx: Context, response_str: str):
+    async def handle_echo(self, ctx: Context, response_str: str):
+        response_str, _ = await self.handle_banwords(ctx=ctx, response_str=response_str)
         if len(response_str) < max_message_len:
             return await ctx.send(f"{response_str}")
         part1 = response_str[:max_message_len]
@@ -75,16 +75,14 @@ class ContextHandler:
 
     @staticmethod
     async def handle_banwords(ctx: Context, response_str: str):
-        banwords = ctx.bot.channels[ctx.channel.name].banwords
-        user_handler = ctx.user.nickname or ctx.author.name
-        for word in banwords:  # TODO: verificar se vai quebrar
-            if word in response_str:
-                tamanho = len(word)
-                asteriscos = "".join("*" for _ in range(tamanho))
-                response_str = response_str.replace(word, asteriscos)
-            if word in ctx.user.nickname:
-                user_handler = ctx.author.name
-        return response_str, user_handler
+        banned_words = ctx.bot.channels[ctx.channel.name].banwords
+        user_display_name = ctx.user.nickname or ctx.author.name
+        for word in banned_words:
+            pattern = re.compile(re.escape(word), re.IGNORECASE)
+            response_str = pattern.sub("*" * len(word), response_str)
+            if word.lower() in (ctx.user.nickname or "").lower():
+                user_display_name = ctx.author.name
+        return response_str, user_display_name
 
     async def handle_response_list(self, ctx: Context, response_list: list[str], handle: str | None):
         for response in response_list:

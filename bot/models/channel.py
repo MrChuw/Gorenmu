@@ -38,8 +38,8 @@ class TimestampMixin:
 class Channel(Base, TimestampMixin):
     user = fields.ForeignKeyField("models.User", unique=True)
     followers = fields.IntField(null=True, description="Twitch followers")
-    banwords = fields.JSONField(default={})
-    disabled: dict[str, str] = fields.JSONField(default={})  # TODO: Remake disabled commands.
+    banwords: dict[str, int] = fields.JSONField(default={})
+    disabled: dict[str, int] = fields.JSONField(default={})
     online = fields.BooleanField(default=True)
     prefix = fields.CharField(max_length=2, default="+")
     removed = fields.BooleanField(default=False)

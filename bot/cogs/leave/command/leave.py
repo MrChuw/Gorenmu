@@ -29,23 +29,24 @@ class LeaveCmd(commands.CustomComponent):
     async def component_before_invoke(self, ctx: Context) -> None:
         self.translations.ctx_set(ctx)
 
-    @commands.command(name="leave", aliases=[])
+    @commands.command(name="leave", aliases=[], whispable=True)
     async def leave(self, ctx: Context) -> Response:
         if not (channel := await Channel.get_or_none(user=ctx.user)):
             return self.translations.Leave.not_on_channel()
         if channel.removed:
             return self.translations.Leave.not_on_channel()
         await self.bot.TokensHandler.get_event_sub_subscriptions()
-        user_token = await TwitchTokens.get(user=ctx.user)
-        user_token.token = None
-        user_token.refresh = None
-        user_token.removed = True
-        await user_token.save()
+        user_token = await TwitchTokens.get_or_none(user=ctx.user)
+        if user_token:
+            user_token.token = None
+            user_token.refresh = None
+            user_token.removed = True
+            await user_token.save()
         channel.removed = True
         channel.online = False
         await channel.save()
         for sub in channel.event_subs:
-            await self.bot.delete_eventsub_subscription(sub)
+            await self.bot.delete_eventsub_subscription(channel.event_subs[sub])
         await self.bot.ChannelHandler.load_channels()
         return self.translations.Leave.channel_removed(ctx.author.name)
 

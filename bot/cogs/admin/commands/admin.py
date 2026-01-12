@@ -4,14 +4,22 @@ import asyncio
 import importlib.util
 import os
 import sys
+from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from bot.ext import Context, Response, commands
+from bot.models import Channel as ChannelBot
 from bot.utils import Role, SessionsCaches, StringTools
 from bot.utils.singleton import Singleton
 
 from .translations import Translations
+
+# from bot.models import User as UserBot
+# import asyncio
+# import asyncmy
+# from asyncmy.cursors import DictCursor
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -35,8 +43,8 @@ class AdminSmallCmds(commands.CustomComponent):
     def is_dev(self, ctx: Context) -> bool:
         return Role.dev(ctx)
 
-    @commands.command(name="nada", aliases=["bonjour", "hello"])
-    async def nada(self, ctx: Context, *, args: str) -> Response:
+    @commands.command(name="nada", aliases=[])
+    async def nada(self, ctx: Context, *, args: str = "") -> Response:
         # if " " in args:
         #     command, subcommand = args.split()
         #     command = ctx.bot.get_command(command)
@@ -48,8 +56,39 @@ class AdminSmallCmds(commands.CustomComponent):
         #     teste = command.component.translations.get_decorator(ctx=command)
         #     teste2 = teste.deco_usage(ctx, prefix=ctx.prefix)
         #     await ctx.reply(teste2)
-        return self.translations.Nada.nada(ctx, args + self.StringTools.inv_char())
-        # return self.translations.Exceptions.empty(ctx, args)
+        # channel = self.bot.channels[ctx.channel.name.lower()]
+        channel = await ChannelBot.get(user_id=192923262)
+        markov = await self.bot.MarkovProcessor.generate(args, channel=channel, max_length=25)
+        await self.bot.ContextHandler.simple_response(ctx, str(self.bot.MarkovProcessor.queue.async_q.qsize()))
+
+        # return self.translations.Nada.nada(ctx, args + self.StringTools.inv_char())
+        return self.translations.Exceptions.echo(ctx, markov)
+
+    # @commands.command(name="nada2", aliases=[])
+    # async def nada2(self, ctx: Context, *, args: str) -> Response:
+    #     channel = self.bot.channels[ctx.channel.name.lower()]
+    #     user = ctx.user
+    #     rows = await fetch_message_logs(ctx)
+    #     # with open("texts.txt") as text:
+    #     #     mensagens = text.readlines()
+    #     # for msg in mensagens:
+    #     #     await self.bot.MarkovProcessor.queue.async_q.put((msg, channel, user))
+    #     for row in rows:
+    #         try:
+    #             user, success = await UserBot.get_or_create(id=row["user"].id, name=row["user"].name)
+    #             if row['channel'].id not in [411010313, 926706091, 707980467, 54966942, 744028864, ]:
+    #                 channel, success = await ChannelBot.get_or_create(user_id=row['channel'].id)
+    #                 if channel not in self.bot.channels and not channel.removed:
+    #                     channel.removed = True
+    #                     await channel.save()
+    #             else:
+    #                 channel = await ChannelBot.get(user_id=row['channel'].id)
+    #
+    #             await self.bot.MarkovProcessor.queue.async_q.put((row['message_row'].content, channel, user))
+    #         except Exception as e:
+    #             print(e)
+    #     markov = await self.bot.MarkovProcessor.generate(args, channel=channel)
+    #     return self.translations.Exceptions.echo(ctx, markov)
 
     @commands.command(name="restart", aliases=[])
     async def restart(self, ctx: Context) -> Response:
@@ -92,6 +131,18 @@ class AdminSmallCmds(commands.CustomComponent):
                 "attr": "CommandHandler",
                 "module": "bot.handlers.command_handler",
                 "class": "CommandHandler",
+                "args": [self.bot],
+            },
+            "context_handler": {
+                "attr": "ContextHandler",
+                "module": "bot.handlers.context_handler",
+                "class": "ContextHandler",
+                "args": [self.bot],
+            },
+            "markov_handler": {
+                "attr": "MarkovProcessor",
+                "module": "bot.utils.markov_tools",
+                "class": "MarkovProcessor",
                 "args": [self.bot],
             },
         }
@@ -161,6 +212,27 @@ async def setup(bot: Gorenmu) -> None:
 async def teardown(bot: Gorenmu) -> None: ...  # NOQA
 
 
+@dataclass
+class User:
+    id: int
+    name: str
+
+
+@dataclass
+class Channel:
+    id: int
+
+
+@dataclass
+class MessageLog:
+    id: int
+    content: str
+    type: str
+    created_at: datetime
+    channel_id: int | None
+    user_id: int
+
+
 async def reload_component(bot_obj, attr_name: str, module_name: str, class_name: str, args: list | None = None):
     from bot.utils.reload_util import reload_and_get_authorized
 
@@ -183,3 +255,50 @@ async def reload_component(bot_obj, attr_name: str, module_name: str, class_name
     except Exception as e:
         bot_obj.log.error(f"Error reloading {attr_name}: {e}")
         raise
+
+
+#
+# async def fetch_message_logs(ctx: Context):
+#     connection_config = {
+#         "host": "127.0.0.1",
+#         "port": 12398,
+#         "user": ctx.bot.config.DatabaseConfig.login,
+#         "password": ctx.bot.config.DatabaseConfig.password,
+#         "database": ctx.bot.config.DatabaseConfig.database_uri,
+#     }
+#     conn = await asyncmy.connect(**connection_config)  # NOQA
+#     try:
+#         async with conn.cursor(DictCursor) as cursor:
+#             query = """
+#                 SELECT
+#                     m.id AS m_id, m.content, m.type, m.created_at, m.channel_id, m.user_id,
+#                     u.id AS u_id, u.name AS u_name,
+#                     c.id AS c_id
+#                 FROM mensage_logs m
+#                 INNER JOIN user u ON m.user_id = u.id
+#                 LEFT JOIN channel c ON m.channel_id = c.id
+#                 ORDER BY m.id DESC
+#                 LIMIT 100000;
+#                 """
+#
+#             await cursor.execute(query)
+#             results = await cursor.fetchall()
+#
+#             rows = []
+#             for r in results:
+#                 user_obj = User(id=r["u_id"], name=r["u_name"])
+#                 channel_obj = Channel(id=r["c_id"]) if r["c_id"] else None
+#                 msg_obj = MessageLog(
+#                     id=r["m_id"],
+#                     content=r["content"],
+#                     type=r["type"],
+#                     created_at=r["created_at"],
+#                     channel_id=r["channel_id"],
+#                     user_id=r["user_id"],
+#                 )
+#                 rows.append({"message_row": msg_obj, "user": user_obj, "channel": channel_obj})
+#             return rows
+#
+#     finally:
+#         await conn.ensure_closed()
+#

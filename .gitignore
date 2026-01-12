@@ -164,11 +164,12 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 
 /.data
+!/.data/z_log_queries.xml
+!/.data/z_clickhouse.xml
+
 dev.txt
 .db_data
 .redis_data
 /.idea
 /.vscode
 TODOS.md
-
-*/static/node_modules/*

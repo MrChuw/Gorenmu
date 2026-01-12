@@ -39,7 +39,7 @@ class LifecycleHandler:
         self.bot.bots_ids = [bot_id.user_id for bot_id in bot_list]
         self.bot.MarkovProcessor = MarkovProcessor(self.bot)
         await self.bot.ChannelHandler.load_channels()
-        self.bot.MarkovTask = asyncio.create_task(self.bot.MarkovProcessor.process_message(), name="process_message")
+        self.bot.MarkovTask = asyncio.create_task(self.bot.MarkovProcessor.markov_worker(), name="markov_worker")
         await asyncio.create_task(self.bot.CommandHandler.load_cogs())
         # if self.config.ApisConfig.enable_site_endpoints:
         #     asyncio.create_task(self.bot.api_start(self.bot))
@@ -85,6 +85,7 @@ class LifecycleHandler:
         ctx.message.text = ctx.message.text.replace("\U000e0000", "")
         if not ctx.command:
             await self.bot.MarkovProcessor.put_markov_queue(ctx)
+            # await self.bot.MarkovProcessor.put_message(ctx.message.text)
 
         try:
             channel = self.bot.channels[payload.broadcaster.name]

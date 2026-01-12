@@ -20,40 +20,78 @@ from bot.ext import Context
 from bot.utils.string_manipulation import StringTools
 
 
-class Role:
-    @staticmethod
-    def dev(ctx: Context) -> bool:
-        if int(ctx.author.id) == ctx.bot.config.BotConfig.dev_userid:
-            return True
-        raise DevRequiredError
-
+class RoleCheck:
     @staticmethod
     def owner(ctx: Context) -> bool:
-        if ctx.author.name == ctx.channel.name:
+        return ctx.author.name == ctx.channel.name
+
+    @staticmethod
+    def dev(ctx: Context) -> bool:
+        return int(ctx.author.id) == ctx.bot.config.BotConfig.dev_userid
+
+    @staticmethod
+    def admin(ctx: Context) -> bool:
+        return RoleCheck.broadcaster(ctx) or RoleCheck.mod(ctx) or RoleCheck.owner(ctx) or RoleCheck.dev(ctx)
+
+    @staticmethod
+    def broadcaster(ctx: Context) -> bool:
+        return ctx.author.broadcaster
+
+    @staticmethod
+    def lead_mod(ctx: Context) -> bool:
+        return ctx.author.lead_moderator
+
+    @staticmethod
+    def mod(ctx: Context) -> bool:
+        return ctx.author.moderator or RoleCheck.lead_mod(ctx)
+
+    @staticmethod
+    def vip(ctx: Context) -> bool:
+        return ctx.author.vip
+
+    @staticmethod
+    def sub(ctx: Context) -> bool:
+        return ctx.author.subscriber
+
+    @staticmethod
+    def sponsor(ctx: Context) -> bool:
+        return bool(ctx.user and ctx.user.sponsor)
+
+
+class Role:
+    @staticmethod
+    def owner(ctx: Context) -> bool:
+        if RoleCheck.owner(ctx):
             return True
         raise OwnerRequiredError
 
     @staticmethod
+    def dev(ctx: Context) -> bool:
+        if RoleCheck.dev(ctx):
+            return True
+        raise DevRequiredError
+
+    @staticmethod
     def admin(ctx: Context) -> bool:
-        if ctx.author.moderator or Role.owner(ctx) or Role.dev(ctx):
+        if RoleCheck.admin(ctx):
             return True
         raise ModRequiredError
 
     @staticmethod
     def vip(ctx: Context) -> bool:
-        if ctx.author.vip:
+        if RoleCheck.vip(ctx):
             return True
         raise VipRequiredError
 
     @staticmethod
     def sub(ctx: Context) -> bool:
-        if ctx.author.subscriber:
+        if RoleCheck.sub(ctx):
             return True
         raise SubRequiredError
 
     @staticmethod
     def sponsor(ctx: Context) -> bool:
-        return ctx.user and ctx.user.sponsor
+        return RoleCheck.sponsor(ctx)
 
     @staticmethod
     def any(ctx: Context) -> bool:  # NOQA

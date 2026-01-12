@@ -33,7 +33,7 @@ class JoinCmd(commands.CustomComponent):
 
     # TODO: add more scopes later, fix get_or_none to user_id
     # TODO: also add explanations for scopes
-    @commands.command(name='join', aliases=[])
+    @commands.command(name='join', aliases=[], whispable=True)
     async def join(self, ctx: Context, args: str = "") -> Response:
         channel = await Channel.get_or_none(user_id=ctx.user.id)
         args, lang = self.StringTools.remove_prefixed_option(args, "lang")

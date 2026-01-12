@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import inspect
+import types
 from contextvars import ContextVar
 from typing import TYPE_CHECKING, Any
 
@@ -13,6 +15,7 @@ if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 current_ctx: ContextVar[Context] = ContextVar("current_ctx")
+
 
 """
 Criar uma forma de dumpar todas as traducoes para um json/xml/txt em ingles, onde esse json seria usado como base para
@@ -123,6 +126,13 @@ class TranslationBase(ClassBase, metaclass=Singleton):
     class SupportTools(OtherTools.SupportTools):
         def __init__(self, parent: TranslationBase | None = None) -> None:
             super().__init__(parent)
+
+        @staticmethod
+        def fake_stacktrace(message: str) -> Exception | None:
+            exc = Exception(message)
+            tb = types.TracebackType(tb_next=None, tb_frame=inspect.currentframe().f_back, tb_lasti=0, tb_lineno=1)
+            exc.__traceback__ = tb
+            return exc
 
     SupportTools: OtherTools.SupportTools
 

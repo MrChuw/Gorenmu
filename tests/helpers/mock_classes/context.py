@@ -56,6 +56,7 @@ class MockContext(AsyncMock):
         self.prefix = "+"
         self.Asserter: Asserter = Asserter()
         self.MockBuilder: MockBuilder = MockBuilder(self)
+        self.invoked_with: str = ""
 
     async def prepare_context(
         self, translation: str = "en", seed: int = 0, interact=None, afk_data=None, cookie_data=None

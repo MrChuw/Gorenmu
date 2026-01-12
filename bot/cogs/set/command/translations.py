@@ -12,11 +12,11 @@ if TYPE_CHECKING:
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu) -> None:
         super().__init__(bot)
-        self.populate_subclasses()
+        self.populate_subclasses(parent=self)
 
     class Set(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
 
         def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
             with self.lang_dict.once(self._cname):
@@ -47,8 +47,8 @@ class Translations(TranslationBase):
     Set: Set
 
     class Mention(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
 
         def on_off_wrong_option(self, ctx: Context, args) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
@@ -149,8 +149,8 @@ class Translations(TranslationBase):
     Mention: Mention
 
     class City(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
 
         def city_added(self, ctx: Context) -> Response:
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)
@@ -290,8 +290,8 @@ class Translations(TranslationBase):
     City: City
 
     class Nick(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
 
         def nick_too_large(self, ctx: Context, args) -> Response:
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
@@ -413,8 +413,8 @@ class Translations(TranslationBase):
     Nick: Nick
 
     class Color(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
 
         def color_removed(self, ctx: Context) -> Response:
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)
@@ -500,8 +500,8 @@ class Translations(TranslationBase):
     Color: Color
 
     class Reminder(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
 
         def reminder_on(self, ctx: Context, *args) -> Response:
             response = Response(ctx=ctx, success=True, handle=None, response_list=None)
@@ -586,3 +586,335 @@ class Translations(TranslationBase):
         # endregion
 
     Reminder: Reminder
+
+    class Banword(TBase):
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
+
+        def add_remove(self, args) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "Chose one of the valid options: add, remove or clean. Not {}.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"], "Escolha uma das opções válidas: adicionar, remover ou limpar. Não {}."
+                )
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+
+        def add_remove_lang(self) -> dict[str, list[str]]:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", {"add": ["add"], "remove": ["remove"], "clean": ["clean"]})
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"], {"add": ["adicionar"], "remove": ["remover"], "clean": ["limpar"]}
+                )
+            return self._untangle_any(self.ctx_get(), self._cname)
+
+        def who(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "How the hell did you make this happen? I'm reporting you now.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"], "Como diabos você conseguiu fazer isso? Vou te denunciar agora."
+                )
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def added(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "Banword(s) added. I will now censor any command that contains it.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Palavra(s) proibida adicionada. Agora irei censurar qualquer comando que a contenha.",
+                )
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def removed(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "Banword(s) removed.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Palavra(s) proibida removida.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def cleaned(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "I removed all the banwords words.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Removi todas as palavras proibidas.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def what(self, option: str) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "I didn't understand this option {}")
+                self.lang_dict.add_with(["pt_br", "pt"], "Não entendi essa opção {}")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), option)
+
+        def deco_helper(self, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "Command used to add ban words that the bot cannot send in the chat.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Comando usado para adicionar palavras proibidas que o bot não pode enviar no chat.",
+                )
+            return self._untangle_str(self.ctx_get(), self._cname)
+
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "To use: {}set banword (add|remove|clean) (words)")
+                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}set banword (add|remove|clean) (palavras)")
+            return self._untangle_str(self.ctx_get(), self._cname).format(prefix)
+
+        # region Hide.
+
+        def deco_description(self, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "Command used to add ban words that the bot cannot send in the chat.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Comando usado para adicionar palavras proibidas que o bot não pode enviar no chat.",
+                )
+            return self._untangle_str(self.ctx_get(), self._cname)
+
+        def deco_commands(self, *args, **kwargs) -> CommandExemples:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with(
+                    "en",
+                    CommandExemples(
+                        [
+                            {
+                                "args": "add blablabla",
+                                "response": "Banword(s) added. I will now censor any command that contains it.",
+                            },
+                            {"args": "remove blablabla", "response": "Banword(s) removed."},
+                        ]
+                    ),
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    CommandExemples(
+                        [
+                            {
+                                "args": "add blablabla",
+                                "response": "Palavra(s) proibida adicionada. Agora irei censurar "
+                                "qualquer comando que a contenha.",
+                            },
+                            {"args": "remove blablabla", "response": "Palavra(s) proibida removida."},
+                        ]
+                    ),
+                )
+            return self._untangle_commands(self.ctx_get(), self._cname)
+
+        # endregion
+
+    Banword: Banword
+
+    class Enable(TBase):
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
+
+        def why(self, args) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "Why are you trying to enable/disable {}?")
+                self.lang_dict.add_with(["pt_br", "pt"], "Por que você esta tentando ativar/desativar {}?")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+
+        def no_command(self, args) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "I don't have any command called {}.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Não tenho nenhum comando chamado {}.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+
+        def command_already_enabled(self, args) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "The command {} is already activated.")
+                self.lang_dict.add_with(["pt_br", "pt"], "O comando {} já está ativado.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+
+        def command_enabled(self, args) -> Response:
+            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "The command {} was activated.")
+                self.lang_dict.add_with(["pt_br", "pt"], "O comando {} foi ativado.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+
+        def command_disabled(self, args) -> Response:
+            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "The command {} was disabled.")
+                self.lang_dict.add_with(["pt_br", "pt"], "O comando {} foi desativado.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+
+        def command_already_disabled(self, args) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "The command {} is already disabled.")
+                self.lang_dict.add_with(["pt_br", "pt"], "O comando {} já está desativado.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+
+        def options(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "If you want to enable/disable all, you can use enable/disable all.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"], "Se você quiser ativar/desativar tudo, pode usar ativar/desativar tudo."
+                )
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def all_enabled(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "All commands have been activated.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Todos os comandos foram ativados.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def all_disabled(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "All commands have been disabled.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Todos os comandos foram desativados.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def deco_helper(self, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "A command used to activate or deactivate other commands.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Um comando usado para ativar ou desativar outros comandos.")
+            return self._untangle_str(self.ctx_get(), self._cname)
+
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "To use: {}set enable/disable (command name or all)")
+                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}set enable/disable (nome do comando or all)")
+            return self._untangle_str(self.ctx_get(), self._cname).format(prefix)
+
+        # region Hide.
+
+        def deco_description(self, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "A command used to activate or deactivate other commands.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Um comando usado para ativar ou desativar outros comandos.")
+            return self._untangle_str(self.ctx_get(), self._cname)
+
+        # endregion
+
+    Enable: Enable
+
+    class Prefix(TBase):
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
+
+        def too_long(self, arg, size) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "The prefix {} is too long, please keep it shorter than {}.")
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"], "O prefixo {} é muito longo, por favor, mantenha-o mais curto que {}."
+                )
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), arg, size)
+
+        def prefix_changed(self, args) -> Response:
+            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "Prefix changed to {}")
+                self.lang_dict.add_with(["pt_br", "pt"], "Prefixo alterado para {}")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+
+        def deco_helper(self, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with(
+                    "en", "Command used to change the channel prefix, anything with 2 characters will work."
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Comando usado para alterar o prefixo do canal, qualquer comando com 2 caracteres funcionará.",
+                )
+            return self._untangle_str(self.ctx_get(), self._cname)
+
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "To use: {}set prefix (anything)")
+                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}set prefix (qualquer coisa)")
+            return self._untangle_str(self.ctx_get(), self._cname).format(prefix)
+
+        # region Hide.
+
+        def deco_description(self, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with(
+                    "en", "Command used to change the channel prefix, anything with 2 characters will work."
+                )
+                self.lang_dict.add_with(
+                    ["pt_br", "pt"],
+                    "Comando usado para alterar o prefixo do canal, qualquer comando com 2 caracteres funcionará.",
+                )
+            return self._untangle_str(self.ctx_get(), self._cname)
+
+        # endregion
+
+    Prefix: Prefix
+
+    class StartStop(TBase):
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
+
+        def started(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "The bot was successfully turned on.")
+                self.lang_dict.add_with(["pt_br", "pt"], "O bot foi ligado com sucesso.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def already_on(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "The bot is already on.")
+                self.lang_dict.add_with(["pt_br", "pt"], "O bot já está ligado.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def stopped(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "The bot was successfully turned off.")
+                self.lang_dict.add_with(["pt_br", "pt"], "O bot foi desligado com sucesso.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def already_off(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "The bot is already off.")
+                self.lang_dict.add_with(["pt_br", "pt"], "O bot já está desligado.")
+            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+
+        def shrug(self) -> Response:
+            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "Don't know how you get here. Maybe a bug.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Não sei como você chegou aqui. Talvez seja um bug.")
+            return response.format_response(
+                self._untangle_str(self.ctx_get(), self._cname),
+            )
+
+        def deco_helper(self, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "Command used to turn the bot on or off in the chat.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Comando usado para ativar ou desativar o bot no chat.")
+            return self._untangle_str(self.ctx_get(), self._cname)
+
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "To use: {}set start(or on)/stop(or off)")
+                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}set start(ou on)/stop(ou off)")
+            return self._untangle_str(self.ctx_get(), self._cname).format(prefix)
+
+        # region Hide.
+
+        def deco_description(self, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "Command used to turn the bot on or off in the chat.")
+                self.lang_dict.add_with(["pt_br", "pt"], "Comando usado para ativar ou desativar o bot no chat.")
+            return self._untangle_str(self.ctx_get(), self._cname)
+
+        # endregion
+
+    StartStop: StartStop

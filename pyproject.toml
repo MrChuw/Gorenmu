@@ -10,6 +10,7 @@ dependencies = [
     "aiohttp==3.12.15",
     "aiohttp-client-cache[all]==0.13.0",
     "beautifulsoup4==4.13.4",
+    "clickhouse-connect>=0.10.0",
     "emoji==2.14.1",
     "fastapi==0.116.1",
     "humanize==4.12.3",
@@ -24,7 +25,7 @@ dependencies = [
     "quickjs==1.19.4",
     "redis==6.4.0",
     "toml==0.10.2",
-    "tortoise-orm[asyncmy,asyncpg]==0.25.1",
+    "tortoise-orm[asyncmy,asyncpg]==0.25.3",
     "twitchio[starlette]==3.1.0",
     "unidecode==1.4.0",
     "urlextract==1.9.0",
@@ -89,3 +90,6 @@ markers = ["network: tests that make real requests", "disabled: Tests that have 
 #addopts = "-n auto -m 'not disabled'"
 addopts = "-m 'not network and not disabled'"
 #addopts = "-n auto -m 'not network and not disabled'"
+
+[tool.uv.sources]
+twitchio = { git = "https://github.com/PythonistaGuild/TwitchIO.git" }
