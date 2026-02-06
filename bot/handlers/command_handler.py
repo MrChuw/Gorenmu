@@ -5,7 +5,7 @@ import pathlib
 import traceback
 import types
 from importlib import import_module
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from loguru import logger
 from twitchio.ext.commands import CommandErrorPayload
@@ -22,6 +22,8 @@ from bot.exceptions import (
 from bot.ext import Routine
 
 if TYPE_CHECKING:
+    from twitchio import ChatMessage
+
     from bot.bot import Gorenmu
     from bot.cogs.bug.command.bug import BugCmd
     from bot.ext import Context
@@ -161,6 +163,28 @@ class CommandHandler:
         return await ctx.simple_response(
             ctx, translations.Exceptions.error_not_registered(ctx, self.bot.dev_user.display_name).response_string
         )
+
+    async def wait_for(self, event: str, *, timeout: float | None = None, predicate=None, **kwargs) -> Any:
+        if predicate and kwargs:
+            original_predicate = predicate
+
+            async def injected_predicate(payload):
+                return await original_predicate(payload, **kwargs)
+
+            predicate = injected_predicate
+
+        return await self.bot.wait_for(event, timeout=timeout, predicate=predicate)
+
+    async def wait_for_message(self, *, timeout: float | None = None, predicate=None, **kwargs) -> ChatMessage:
+        if predicate and kwargs:
+            original_predicate = predicate
+
+            async def injected_predicate(payload):
+                return await original_predicate(payload, **kwargs)
+
+            predicate = injected_predicate
+
+        return await self.bot.wait_for("message", timeout=timeout, predicate=predicate)
 
     async def setup(self): ...
 

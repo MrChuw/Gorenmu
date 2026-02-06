@@ -40,10 +40,10 @@ class Context(TwitchioContext):
     def get_command(self):
         self._get_command()
 
-    async def simple_response(self, ctx: Context, response: str, handle: str | None = None) -> None | bool:
+    async def simple_response(self, ctx: Context, response: str | Response, handle: str | None = None) -> None | bool:
         if ctx.bot.channels[ctx.channel.name].online is False:
             return False
-        response_str = response
+        response_str = response if type(response) is str else response.response_string
         response_str, user_handler = await self.bot.ContextHandler.handle_banwords(ctx, response_str)
 
         if handle == "echo":

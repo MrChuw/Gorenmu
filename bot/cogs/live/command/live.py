@@ -54,8 +54,11 @@ class LiveCmd(commands.CustomComponent):
             last_stream_natural = humanize.naturaltime(user_tmi.last_broadcast.started_at)
             last_stream_precise = humanize.precisedelta(user_tmi.last_broadcast.started_at)
             broadcast_time = translations.last_stream(ctx, last_stream_natural, last_stream_precise)
-            stream2 = (await ctx.bot.fetch_videos(user_id=user_tmi.id))[0]
-            vod_url = twitch_url / "videos" / stream2.id
+            if stream2 := await ctx.bot.fetch_videos(user_id=user_tmi.id):
+                stream2 = stream2[0]
+                vod_url = twitch_url / "videos" / stream2.id
+            else:
+                vod_url = ""
         else:
             stream_started = user_tmi.stream.created_at
             current_stream_natural = humanize.naturaltime(stream_started)

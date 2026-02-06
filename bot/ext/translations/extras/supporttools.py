@@ -142,6 +142,76 @@ class OtherTools(ClassBase):
                     self.lang_dict.add_with(["en", "pt_br", "pt"], ["sad"])
                 return self._untangle_any(ctx, self._cname)
 
+            def love(self, ctx: Context) -> list[str]:
+                with self.lang_dict.once(self._cname):
+                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["love"])
+                return self._untangle_any(ctx, self._cname)
+
+            def hug(self, ctx: Context) -> list[str]:
+                with self.lang_dict.once(self._cname):
+                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["hug"])
+                return self._untangle_any(ctx, self._cname)
+
+            def pat(self, ctx: Context) -> list[str]:
+                with self.lang_dict.once(self._cname):
+                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["pat"])
+                return self._untangle_any(ctx, self._cname)
+
+            def hit(self, ctx: Context) -> list[str]:
+                with self.lang_dict.once(self._cname):
+                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["hit"])
+                return self._untangle_any(ctx, self._cname)
+
+            def okay(self, ctx: Context) -> list[str]:
+                with self.lang_dict.once(self._cname):
+                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["okay"])
+                return self._untangle_any(ctx, self._cname)
+
+            def bed(self, ctx: Context) -> list[str]:
+                with self.lang_dict.once(self._cname):
+                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["bed"])
+                return self._untangle_any(ctx, self._cname)
+
         Emotes: Emotes
 
     SupportTools: SupportTools
+
+    class GenericWait(TBase):
+        def __init__(self, parent: TranslationBase | None = None):
+            super().__init__(parent)
+
+        def already_in_action(self, action: str, user1: str, user2: str) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "A {} is already happening between @{} and @{}")
+                self.lang_dict.add_with(["pt_br", "pt"], "Um(a) {} já está ocorrendo entre @{} e @{}")
+            return self._untangle_str(self.ctx_get(), self._cname).format(action, user1, user2)
+
+        def accept(self) -> list[str]:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", ["yes", "y"])
+                self.lang_dict.add_with(["pt_br", "pt"], ["sim", "s"])
+            return self.lang_dict.get_lang_any(lang="en", namespace=self._cname) + self._untangle_any(
+                self.ctx_get(), self._cname
+            )
+
+        def reject(self) -> list[str]:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", ["no", "n"])
+                self.lang_dict.add_with(["pt_br", "pt"], ["não", "nao", "n"])
+            return self.lang_dict.get_lang_any(lang="en", namespace=self._cname) + self._untangle_any(
+                self.ctx_get(), self._cname
+            )
+
+        def deco_helper(self, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "4")
+                self.lang_dict.add_with(["pt_br", "pt"], "")
+            return self._untangle_str(self.ctx_get(), self._cname)
+
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            with self.lang_dict.once(self._cname):
+                self.lang_dict.add_with("en", "To use: {}")
+                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}")
+            return self._untangle_str(self.ctx_get(), self._cname).format(prefix)
+
+    GenericWait: GenericWait

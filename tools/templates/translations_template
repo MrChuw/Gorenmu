@@ -7,11 +7,13 @@ from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBa
 if TYPE_CHECKING:
     from bot.ext import Context, commands
     from bot.bot import Gorenmu
+    from .{command_name} import {command_title}Cmd
 
 
 class Translations(TranslationBase):
-    def __init__(self, bot: Gorenmu) -> None:
+    def __init__(self, bot: Gorenmu, parent: {command_title}Cmd) -> None:
         super().__init__(bot)
+        self.parent: {command_title}Cmd = parent
         self.populate_subclasses(parent=self)
 
     class {command_title}(TBase):

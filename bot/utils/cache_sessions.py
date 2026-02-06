@@ -36,6 +36,7 @@ class SessionsCaches(metaclass=Singleton):
         self.Shorten: SessionsCaches.Shorten
         self.UserId: SessionsCaches.UserId
         self.Math: SessionsCaches.Math
+        self.Interactive: SessionsCaches.Interactive
         for name, cls in vars(self.__class__).items():
             if isinstance(cls, type) and issubclass(cls, BaseCachedSession):
                 setattr(self, name, cls(bot, useragent=self.UserAgent))  # NOQA
@@ -302,3 +303,11 @@ class SessionsCaches(metaclass=Singleton):
 
         def get_expiry_times(self) -> dict:
             return {self.bot.config.ApisConfig.pastebin_url / "*": timedelta(weeks=4)}
+
+    class Interactive(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200,)
+            super().__init__(bot=bot, useragent=useragent)
+
+        def get_expiry_times(self) -> dict:
+            return {"*": timedelta(minutes=10)}

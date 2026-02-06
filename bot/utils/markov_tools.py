@@ -222,7 +222,7 @@ class MarkovProcessor:
     async def markov_worker(self):
         self.queue = Queue()
         self.orm = MarkovORM(self.bot)
-        await self.orm.setup_database()
+        # await self.orm.setup_database()
 
         while True:
             try:

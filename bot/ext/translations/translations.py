@@ -106,6 +106,7 @@ class CommandExemples:
 class TranslationBase(ClassBase, metaclass=Singleton):
     def __init__(self, bot: Gorenmu):
         self.bot = bot
+        self.command = None
 
     @classmethod
     def ctx_get(cls):
@@ -122,19 +123,6 @@ class TranslationBase(ClassBase, metaclass=Singleton):
             if name.lower() == command_name:
                 decorators = getattr(self, name)
         return decorators
-
-    class SupportTools(OtherTools.SupportTools):
-        def __init__(self, parent: TranslationBase | None = None) -> None:
-            super().__init__(parent)
-
-        @staticmethod
-        def fake_stacktrace(message: str) -> Exception | None:
-            exc = Exception(message)
-            tb = types.TracebackType(tb_next=None, tb_frame=inspect.currentframe().f_back, tb_lasti=0, tb_lineno=1)
-            exc.__traceback__ = tb
-            return exc
-
-    SupportTools: OtherTools.SupportTools
 
     class Exceptions(TBase):
         def __init__(self, parent: TranslationBase | None = None):
@@ -233,7 +221,8 @@ class TranslationBase(ClassBase, metaclass=Singleton):
                 self.lang_dict.add_with(["pt_br", "pt"], "Ocorreu um erro. Tente novamente: {}")
             return response.format_response(self._untangle_str(ctx, "unexpected_error"), exception)
 
-        def error(self, ctx: Context) -> Response:
+        def error(self, ctx: Context = None) -> Response:
+            ctx = ctx or self.ctx_get()
             response = Response(ctx=ctx, success=False, handle=None, response_list=None)
             with self.lang_dict.once(self._cname):
                 self.lang_dict.add_with(
@@ -339,3 +328,22 @@ class TranslationBase(ClassBase, metaclass=Singleton):
             return response.format_response(self._untangle_str(ctx, self._cname), arg)
 
     Exceptions: Exceptions
+
+    class SupportTools(OtherTools.SupportTools):
+        def __init__(self, parent: TranslationBase | None = None) -> None:
+            super().__init__(parent)
+
+        @staticmethod
+        def fake_stacktrace(message: str) -> Exception | None:
+            exc = Exception(message)
+            tb = types.TracebackType(tb_next=None, tb_frame=inspect.currentframe().f_back, tb_lasti=0, tb_lineno=1)
+            exc.__traceback__ = tb
+            return exc
+
+    SupportTools: OtherTools.SupportTools
+
+    class GenericWait(OtherTools.GenericWait):
+        def __init__(self, parent: TranslationBase | None = None) -> None:
+            super().__init__(parent)
+
+    GenericWait: GenericWait

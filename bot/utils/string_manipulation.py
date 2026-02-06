@@ -8,7 +8,7 @@ import string
 from datetime import datetime
 from functools import lru_cache
 from string import ascii_letters, digits
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypeVar
 
 from unidecode import unidecode
 from urlextract import URLExtract
@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 
 letters_and_digits = ascii_letters + digits
 url_extractor: URLExtract | None = None
+T = TypeVar("T")
 type BoolResult = tuple[str, bool | None]
 
 
@@ -263,15 +264,11 @@ class StringTools(metaclass=Singleton):
 
     @staticmethod
     def remove_numeric_underscores(text: str) -> str:
-        return re.sub(r'(?<=\d)_(?=\d)', '', text)
+        return re.sub(r"(?<=\d)_(?=\d)", "", text)
 
     @staticmethod
     def extract_and_remove_bool_field(
-        text: str,
-        field: str,
-        translations: TranslationBase,
-        ctx: Context,
-        default: bool | None = None,
+        text: str, field: str, translations: TranslationBase, ctx: Context, default: bool | None = None
     ) -> BoolResult:
         verbs = translations.SupportTools.LanguageContext.Verbs
         regex, bool_map = StringTools._get_compiled_logic(
@@ -297,8 +294,25 @@ class StringTools(metaclass=Singleton):
 
     @staticmethod
     def extract_words_simple(text: str) -> list[str]:
-        table = str.maketrans('', '', string.punctuation)
+        table = str.maketrans("", "", string.punctuation)
         return text.translate(table).split()
+
+    @staticmethod
+    def safe_split(
+        texto: str, max_parts: int, *, sep: str | None = None, fill: T | None = None
+    ) -> list[str | T | None]:
+        if texto is None:
+            return [fill] * max_parts
+        parts = texto.split(sep, max_parts - 1)
+        if len(parts) < max_parts:
+            parts.extend([fill] * (max_parts - len(parts)))
+        return parts
+
+    @staticmethod
+    def safe_split_iter(texto: str, max_parts: int, sep=None, fill=None):
+        it = iter(texto.split(sep))
+        for _ in range(max_parts):
+            yield next(it, fill)
 
 
 def _get_compiled(field: str, pos: tuple, neg: tuple, nth: tuple):
