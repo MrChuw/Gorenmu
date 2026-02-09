@@ -1,0 +1,44 @@
+#
+# from __future__ import annotations
+# from typing import TYPE_CHECKING
+#
+# from bot.ext import Context, Response, commands
+# from bot.utils import Role, Check
+# from .translations import Translations
+#
+# if TYPE_CHECKING:
+#     from bot.bot import Gorenmu
+#
+#
+# class GamesCmd(commands.CustomComponent):
+#     def __init__(self, bot: Gorenmu) -> None:
+#         self.bot = bot
+#         self.translations: Translations = Translations(bot, parent=self)
+#
+#     cooldown_rate = 3
+#     cooldown_per = 10
+#     cooldown_key = commands.BucketType.user
+#
+#     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
+#         ...
+#
+#     @commands.Component.guard()
+#     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
+#         return True
+#
+#     async def component_before_invoke(self, ctx: Context) -> None:
+#         self.translations.ctx_set(ctx)
+#
+#     @commands.command(name='games', aliases=[])
+#     async def games(self, ctx: Context, *, args, ) -> Response:
+#         return self.translations.Exceptions.echo(ctx, args)
+#
+#
+#
+#
+#
+# async def setup(bot: Gorenmu) -> None:
+#     await bot.add_component(GamesCmd(bot))
+#
+#
+# async def teardown(bot: Gorenmu) -> None: ...  # NOQA

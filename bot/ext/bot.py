@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 from asyncio import Task
+from collections import defaultdict
+from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from twitchio.ext import commands
@@ -25,6 +28,9 @@ class TypesBot(commands.AutoBot):
         self.lottery_lock: asyncio.Lock = asyncio.Lock()
         self.channels: dict[str, ChannelModel] = {}
         self.bots_ids: list[int] = []
+        self.boot: datetime.datetime = datetime.datetime.now(datetime.UTC)
+        self.manual_events: defaultdict[str, dict[str, dict[str, Callable]]] = defaultdict(lambda: defaultdict(dict))
+        self.disable_default: list[str] = []
 
     def get_command(self, name: str, /) -> Command | Group | None:
         return super().get_command(name)

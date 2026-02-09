@@ -61,7 +61,7 @@ class PixelSortCmd(commands.CustomComponent):
         if mask_image != "none":
             url = self.StringTools.urls_extract(mask_image[0])
             mask_image = await request_images(urls=url, session=session) if url else images
-        timeout = self.TimeTools.Timeout(300)
+        timeout = self.TimeTools.Timeout.timeout(300)
         try:
             async with timeout:
                 manipulated = await manipulate(

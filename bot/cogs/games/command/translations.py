@@ -1,0 +1,92 @@
+# from __future__ import annotations
+#
+# from typing import TYPE_CHECKING
+#
+# from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase
+#
+# if TYPE_CHECKING:
+#     from bot.ext import Context, commands
+#     from bot.bot import Gorenmu
+#     from .games import GamesCmd
+#
+#
+# class Translations(TranslationBase):
+#     def __init__(self, bot: Gorenmu, parent: GamesCmd) -> None:
+#         super().__init__(bot)
+#         self.parent: GamesCmd = parent
+#         self.populate_subclasses(parent=self)
+#
+#     class Games(TBase):
+#         def __init__(self, parent: Translations):
+#             super().__init__(parent)
+#
+#         def placeholder(self, args) -> Response:
+#             response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+#             with self.lang_dict.once(self._cname):
+#                 self.lang_dict.add_with("en", "")
+#                 self.lang_dict.add_with(["pt_br", "pt"], "")
+#             return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+#
+#         def placeholder2(self, args) -> Response:
+#             response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+#             with self.lang_dict.once(self._cname):
+#                 self.lang_dict.add_with("en", "")
+#                 self.lang_dict.add_with(["pt_br", "pt"], "")
+#             return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+#
+#         def placeholder3(self, args) -> Response:
+#             response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+#             with self.lang_dict.once(self._cname):
+#                 self.lang_dict.add_with("en", "")
+#                 self.lang_dict.add_with(["pt_br", "pt"], "")
+#             return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+#
+#         def placeholder4(self, args) -> Response:
+#             response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+#             with self.lang_dict.once(self._cname):
+#                 self.lang_dict.add_with("en", "")
+#                 self.lang_dict.add_with(["pt_br", "pt"], "")
+#             return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+#
+#         def placeholder5(self, args) -> Response:
+#             response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
+#             with self.lang_dict.once(self._cname):
+#                 self.lang_dict.add_with("en", "")
+#                 self.lang_dict.add_with(["pt_br", "pt"], "")
+#             return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+#
+#         def deco_helper(self, *args, **kwargs) -> str:
+#             with self.lang_dict.once(self._cname):
+#                 self.lang_dict.add_with("en", "")
+#                 self.lang_dict.add_with(["pt_br", "pt"], "")
+#             return self._untangle_str(self.ctx_get(), self._cname)
+#
+#         def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+#             with self.lang_dict.once(self._cname):
+#                 self.lang_dict.add_with("en", "To use: {}")
+#                 self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}")
+#             return self._untangle_str(self.ctx_get(), self._cname).format(prefix)
+#
+#         # region Hide.
+#
+#         def deco_description(self, *args, **kwargs) -> str:
+#             with self.lang_dict.once(self._cname):
+#                 self.lang_dict.add_with("en", "")
+#                 self.lang_dict.add_with(["pt_br", "pt"], "")
+#             return self._untangle_str(self.ctx_get(), self._cname)
+#
+#         def deco_commands(self, *args, **kwargs) -> CommandExemples:
+#             with self.lang_dict.once(self._cname):
+#                 self.lang_dict.add_with("en", CommandExemples([]))
+#                 self.lang_dict.add_with(["pt_br", "pt"], CommandExemples([]))
+#             return self._untangle_commands(self.ctx_get(), self._cname)
+#
+#         def deco_admonitions(self, *args, **kwargs) -> Admonitions:
+#             with self.lang_dict.once(self._cname):
+#                 self.lang_dict.add_with("en", Admonitions([]))
+#                 self.lang_dict.add_with(["pt_br", "pt"], Admonitions([]))
+#             return self._untangle_admonitions(self.ctx_get(), self._cname)
+#
+#         # endregion
+#
+#     Games: Games

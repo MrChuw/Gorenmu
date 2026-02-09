@@ -121,6 +121,8 @@ class TokensHandler:
                 if created:
                     channel.removed = True
                     channel.online = True
+                    for command in self.bot.disable_default:
+                        channel.disabled[command] = self.bot.config.BotConfig.dev_userid
                 channel.event_subs[sub.type] = sub.id
                 await channel.save()
 

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import asyncio
+import enum
 from datetime import UTC, datetime, timedelta
+from types import TracebackType
 from typing import TYPE_CHECKING
 
 from bot.utils.singleton import Singleton
@@ -22,6 +24,14 @@ __all__ = [
     Portuguese,
     "TimeTools",
 ]
+
+
+class _State(enum.Enum):
+    CREATED = "created"
+    ENTERED = "active"
+    EXPIRING = "expiring"
+    EXPIRED = "expired"
+    EXITED = "finished"
 
 
 class TimeTools(metaclass=Singleton):
@@ -79,9 +89,7 @@ class TimeTools(metaclass=Singleton):
         @staticmethod
         def get_key(term: str, lang: Locale):
             scale = lang.get_scale(term)
-            if not scale:
-                return "minute"
-            return scale.key
+            return scale.key if scale else "minute"
 
         def get_real_unit(self, term: str, lang: Locale):
             key = self.get_key(term=term, lang=lang)
@@ -163,41 +171,178 @@ class TimeTools(metaclass=Singleton):
     TimeConvert: TimeConvert
 
     class Timeout:
-        def __init__(self, timeout: float):
-            self.timeout = timeout
-            self.start_time = None
-            self._task = None
-            self._timeout_handle = None
-            self.error = asyncio.CancelledError
+        """Asynchronous context manager for cancelling overdue coroutines.
 
-        def still_valid(self) -> bool:
-            if not self.start_time:
-                self.start_time = asyncio.get_event_loop().time()
-            return not self.expired()
+        Use `timeout()` or `timeout_at()` rather than instantiating this class directly.
+        """
+
+        def __init__(self, when: float | None, delay: float | None) -> None:
+            """Schedule a timeout that will trigger at a given loop time.
+
+            - If `when` is `None`, the timeout will never trigger.
+            - If `when < loop.time()`, the timeout will trigger on the next
+              iteration of the event loop.
+            """
+            self._state = _State.CREATED
+
+            self._timeout_handler: asyncio.events.TimerHandle | None = None
+            self._task: asyncio.tasks.Task | None = None
+            self._when = when
+            self.time = delay if when else when
+            self._start_time: float | None = None
+            self._end_time: float | None = None
+
+        def when(self) -> float | None:
+            """Return the current deadline."""
+            return self._when
+
+        def reschedule(self, when: float | None) -> None:
+            """Reschedule the timeout."""
+            if self._state is not _State.ENTERED:
+                if self._state is _State.CREATED:
+                    raise RuntimeError("Timeout has not been entered")
+                raise RuntimeError(
+                    f"Cannot change state of {self._state.value} Timeout",
+                )
+
+            self._when = when
+
+            if self._timeout_handler is not None:
+                self._timeout_handler.cancel()
+
+            if when is None:
+                self._timeout_handler = None
+            else:
+                loop = asyncio.events.get_running_loop()
+                if when <= loop.time():
+                    self._timeout_handler = loop.call_soon(self._on_timeout)  # NOQA
+                else:
+                    self._timeout_handler = loop.call_at(when, self._on_timeout)  # NOQA
 
         def expired(self) -> bool:
-            return self.elapsed() >= self.timeout
+            """Is timeout expired during execution?"""
+            return self._state in (_State.EXPIRING, _State.EXPIRED)
 
-        def elapsed(self) -> float:
-            return asyncio.get_event_loop().time() - self.start_time
+        def __repr__(self) -> str:
+            info = ['']
+            if self._state is _State.ENTERED:
+                when = round(self._when, 3) if self._when is not None else None
+                info.append(f"when={when}")
+            info_str = ' '.join(info)
+            return f"<Timeout [{self._state.value}]{info_str}>"
 
-        def remaining(self) -> float:
-            return max(0, self.timeout - self.elapsed())  # NOQA
-
-        def reset(self):
-            self.start_time = asyncio.get_event_loop().time()
-
-        async def __aenter__(self):
-            self.start_time = asyncio.get_event_loop().time()
-            self._task = asyncio.current_task()
-            self._timeout_handle = asyncio.get_event_loop().call_later(self.timeout, self._cancel_task)  # NOQA
+        async def __aenter__(self) -> TimeTools.Timeout:
+            if self._state is not _State.CREATED:
+                raise RuntimeError("Timeout has already been entered")
+            task = asyncio.tasks.current_task()
+            if task is None:
+                raise RuntimeError("Timeout should be used inside a task")
+            self._state = _State.ENTERED
+            self._task = task
+            self._start_time = asyncio.get_running_loop().time()
+            self._cancelling = self._task.cancelling()
+            self.reschedule(self._when)
             return self
 
-        async def __aexit__(self, exc_type, exc, tb):
-            if self._timeout_handle:
-                self._timeout_handle.cancel()
-            return isinstance(exc, asyncio.CancelledError)
+        async def __aexit__(
+            self,
+            exc_type: type[BaseException] | None,
+            exc_val: BaseException | None,
+            exc_tb: TracebackType | None,
+        ) -> bool | None:
+            assert self._state in (_State.ENTERED, _State.EXPIRING)
 
-        def _cancel_task(self):
-            if self._task:
-                self._task.cancel()
+            if self._timeout_handler is not None:
+                self._timeout_handler.cancel()
+                self._timeout_handler = None
+
+            if self._state is _State.EXPIRING:
+                self._state = _State.EXPIRED
+
+                if self._task.uncancel() <= self._cancelling and exc_type is not None:
+                    # Since there are no new cancel requests, we're
+                    # handling this.
+                    if issubclass(exc_type, asyncio.exceptions.CancelledError):
+                        raise TimeoutError from exc_val
+                    elif exc_val is not None:
+                        self._insert_timeout_error(exc_val)
+                        if isinstance(exc_val, ExceptionGroup):
+                            for exc in exc_val.exceptions:
+                                self._insert_timeout_error(exc)
+            elif self._state is _State.ENTERED:
+                self._state = _State.EXITED
+
+            return None
+
+        def _on_timeout(self) -> None:
+            assert self._state is _State.ENTERED
+            self._task.cancel()
+            self._end_time = asyncio.get_running_loop().time()
+            self._state = _State.EXPIRING
+            self._timeout_handler = None
+
+        @staticmethod
+        def _insert_timeout_error(exc_val: BaseException) -> None:
+            while exc_val.__context__ is not None:
+                if isinstance(exc_val.__context__, asyncio.exceptions.CancelledError):
+                    te = TimeoutError()
+                    te.__context__ = te.__cause__ = exc_val.__context__
+                    exc_val.__context__ = te
+                    break
+                exc_val = exc_val.__context__
+
+        def cancel(self) -> None:
+            """Schedule the cancellation for the next iteration of the event loop."""
+            if self._state is not _State.ENTERED:
+                return
+
+            loop = asyncio.events.get_running_loop()
+            if self._timeout_handler is not None:
+                self._timeout_handler.cancel()
+
+            self._timeout_handler = loop.call_soon(self._on_timeout)  # NOQA
+
+        @staticmethod
+        def timeout(delay: float | None) -> TimeTools.Timeout:
+            loop = asyncio.events.get_running_loop()
+            return TimeTools.Timeout(loop.time() + delay if delay is not None else None, delay=delay)
+
+        @staticmethod
+        def timeout_at(when: float | None) -> TimeTools.Timeout:
+            return TimeTools.Timeout(when, delay=when)
+
+        def cancel_now(self) -> None:
+            """Executes the cancellation immediately in the current frame."""
+            if self._state is not _State.ENTERED:
+                return
+
+            if self._timeout_handler is not None:
+                self._timeout_handler.cancel()
+                self._timeout_handler = None
+
+            self._on_timeout()
+
+        def duration(self) -> float | None:
+            """Returns the actual elapsed time in seconds (float)."""
+            if self._start_time is None:
+                return None
+            end = self._end_time or asyncio.get_running_loop().time()
+            return end - self._start_time
+
+        def remaining(self) -> timedelta:
+            """Returns the amount of time remaining until the timeout, expressed as timedelta."""
+            if self._when is None:
+                return timedelta.max
+
+            loop = asyncio.get_running_loop()
+            rem = max(0, self._when - loop.time())  # NOQA
+            return timedelta(seconds=rem)
+
+        def deadline(self) -> datetime | None:
+            """Returns the exact timeout time in UTC datetime."""
+            if self._when is None:
+                return None
+
+            loop = asyncio.get_running_loop()
+            offset = datetime.now(UTC).timestamp() - loop.time()
+            return datetime.fromtimestamp(self._when + offset, tz=UTC)

@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import datetime
-from collections import defaultdict
-from collections.abc import Callable
 from logging import Logger
 from typing import TYPE_CHECKING
 
@@ -44,8 +41,6 @@ class Gorenmu(TypesBot):
             adapter=adapter,
             **kwargs,
         )
-        self.boot: datetime.datetime = datetime.datetime.now(datetime.UTC)
-        self.manual_events: defaultdict[str, dict[str, dict[str, Callable]]] = defaultdict(lambda: defaultdict(dict))
         # self.api: api | None = None
         # self.api_start: api_start = None
         self.log: Logger = log

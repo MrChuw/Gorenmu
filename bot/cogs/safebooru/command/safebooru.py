@@ -41,7 +41,7 @@ class SafeBooruCmd(commands.CustomComponent):
 
         if len(tags) > 10:
             return translations.too_much_tags(ctx, 10)
-        timeout = self.TimeTools.Timeout(15)
+        timeout = self.TimeTools.Timeout.timeout(15)
 
         while True:
             _img, img_preview, response_final = await response(ctx, " ".join(tags), timeout, self)
@@ -81,16 +81,16 @@ async def response(ctx: Context, args: str, timeout, command: SafeBooruCmd):
 async def choices(args: str, timeout: TimeTools.Timeout, ctx: Context, command: SafeBooruCmd):
     session = command.SessionsCaches.Safebooru.session
     instance = booru.Booru().Safebooru(session=session)
-    while timeout.still_valid():
-        # while True:
-        try:
-            await asyncio.sleep(2)
-            image, preview = await instance.random(query=args, page=randint(0, 100))
-            return await shortener(image, preview, ctx, command)
-        except Exception as e:
-            ctx.bot.log.error(e)
+    async with timeout:
+        while not timeout.expired():
+            try:
+                await asyncio.sleep(2)
+                image, preview = await instance.random(query=args, page=randint(0, 100))
+                return await shortener(image, preview, ctx, command)
+            except Exception as e:
+                ctx.bot.log.error(e)
     return (
-        command.translations.SupportTools.TimeTools.Humanize.precisedelta(timeout.elapsed()),
+        command.translations.SupportTools.TimeTools.Humanize.precisedelta(round(timeout.duration(), 2)),
         "error",
     )
 

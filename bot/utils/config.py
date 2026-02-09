@@ -83,7 +83,7 @@ class BotConfig:
         self.prefix: list[str] = [data.get("default_prefix", "+")]
         if allowed_prefix := data.get("allowed_prefix_list"):
             self.prefix = prefix_generator(f"{self.prefix}{allowed_prefix}")
-        self.allowed_prefix_size: int = data.get("allowed_prefix_size", 1)
+        self.allowed_prefix_size: int = data.get("allowed_prefix_size", 2)
         self.site_url: URL = URL(data.get("site_url", "https://exemple.org"))
 
 

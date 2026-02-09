@@ -20,7 +20,7 @@ class UploadThings(metaclass=Singleton):
     async def _safe_post(session: CachedSession, url: str, **kwargs):
         try:
             response = await session.post(url, **kwargs)
-            if response.status == 200:
+            if response.status in [200, 201]:
                 return response
             logger.warning(f"Request to {url} failed with status {response.status}")
         except Exception as e:

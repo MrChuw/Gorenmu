@@ -102,8 +102,9 @@ async def test_ship_bot(interact, mock_context, lang, expected):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.Ship.another_name)
 async def test_ship_another(interact, mock_context, lang, expected):
-    # Testando com dois nomes no argumento
-    await run_interactive_test(interact, mock_context, "ship", lang, "another_name user2", expected, True)
+    now = datetime.datetime(year=2222, month=11, day=11)
+    async with mock_context.MockBuilder.Default.Datetime.now(now):
+        await run_interactive_test(interact, mock_context, "ship", lang, "another_name user2", expected, True)
 
 
 # --- PAT TESTS ---

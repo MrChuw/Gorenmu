@@ -105,7 +105,7 @@ class MemoryCacheCore:
 class BaseCachedSession(ABC):
     session = None
 
-    def __init__(self, bot, useragent: str, cache_name: str | None = None):
+    def __init__(self, bot, useragent: str, cache_name: str | None = None, headers: dict[str, str] | None = None):
         self.bot = bot
         self.upload_url = self.bot.config.ApisConfig.file_upload_url / "*"
         self.feridinha_url = self.bot.config.ApisConfig.feridinha_url / "*"
@@ -130,6 +130,8 @@ class BaseCachedSession(ABC):
             "Pragma": "no-cache",
             "Cache-Control": "no-cache",
         }
+        if headers:
+            self.headers = headers
         self.urls_expire_after = self.get_expiry_times()
         if not hasattr(self, "allowed_methods"):
             self.allowed_methods = ("GET", "HEAD", "POST")

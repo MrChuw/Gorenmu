@@ -95,16 +95,6 @@ class SessionsCaches(metaclass=Singleton):
 
     ToolsCachedSession: ToolsCachedSession
 
-    class ImgurCachedSession(BaseCachedSession):
-        def __init__(self, bot: Gorenmu, useragent: str):
-            self.allowed_codes = (200,)
-            super().__init__(bot=bot, cache_name="Imgur_requests", useragent=useragent)
-
-        def get_expiry_times(self) -> dict:
-            return {"*/*": timedelta(weeks=4 * 6)}
-
-    ImgurCachedSession: ImgurCachedSession
-
     # region Hide.
 
     class Alias(BaseCachedSession):
@@ -311,3 +301,19 @@ class SessionsCaches(metaclass=Singleton):
 
         def get_expiry_times(self) -> dict:
             return {"*": timedelta(minutes=10)}
+
+    class Imgur(BaseCachedSession):
+        def __init__(self, bot: Gorenmu, useragent: str):
+            self.allowed_codes = (200, 202)
+            headers = {
+                "User-Agent": useragent,
+                "Priority": "u=0, i",
+                "Pragma": "no-cache",
+                "Cache-Control": "no-cache",
+            }
+            super().__init__(bot=bot, useragent=useragent, headers=headers)
+
+        def get_expiry_times(self) -> dict:
+            return {"*/*": timedelta(weeks=4 * 6)}
+
+    Imgur: Imgur

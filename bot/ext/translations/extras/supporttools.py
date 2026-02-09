@@ -78,7 +78,9 @@ class OtherTools(ClassBase):
 
             strftime: str
 
-            def Humanize(self, ctx: Context) -> ExtrasHumanize:  # NOQA
+            def Humanize(self, ctx: Context = None) -> ExtrasHumanize:  # NOQA
+                if not ctx:
+                    ctx = self.ctx_get()
                 cname = self._cname.lower()
                 with self.lang_dict.once(cname):
                     en_pattern = ExtrasHumanize(

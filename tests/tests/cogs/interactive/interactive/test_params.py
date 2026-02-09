@@ -65,10 +65,8 @@ class Params:
             pytest.param("pt_BR", "😳", id="pt_BR"),
         ]
         another_name: ClassVar[list] = [
-            pytest.param(
-                "en", '@another_name & @user2: anotherr2 with 90% love 😍', id="en"
-            ),  # Validação parcial (contains)
-            pytest.param("pt_BR", '@another_name & @user2: anotherr2 com 90% de amor 😍', id="pt_BR"),
+            pytest.param("en", '@another_name & @user2: anotherr2 with 29% love 😢', id="en"),
+            pytest.param("pt_BR", '@another_name & @user2: anotherr2 com 29% de amor 😢', id="pt_BR"),
         ]
 
     class Pat:
