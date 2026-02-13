@@ -31,12 +31,12 @@ class ImgurCmd(commands.CustomComponent):
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
+
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
 
     @commands.command(name="imgur", aliases=["imgur7"])
     async def imgur(self, ctx: Context, *, args: str = "") -> Response:

@@ -24,14 +24,14 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     mock_context.Asserter.assert_string(
-        interact.translations.FollowAge.deco_usage(mock_context, "+"),
+        interact.translations.FollowAge.deco_usage("+"),
         usage,
         strict=True,
     )
     mock_context.Asserter.assert_string(
-        interact.translations.FollowAge.deco_helper(mock_context, "+"),
+        interact.translations.FollowAge.deco_helper("+"),
         helper,
         strict=True,
     )
@@ -47,7 +47,7 @@ async def base_followage(
     success: bool = False,
     json_response: dict | None = None,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     async with mock_context.MockBuilder.ApiIvrFi.Twitch.Channel.fetch_preview(
         dict_to_parse=json_response
     ).Bot.fetch_user("xXCoolNickXx"):

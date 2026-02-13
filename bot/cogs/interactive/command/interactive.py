@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class InteractiveCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot, command=self)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.Emotes: Emotes = Emotes(bot, self.SessionsCaches.Emotes.session)

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class NicksCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
@@ -28,6 +28,9 @@ class NicksCmd(commands.CustomComponent):
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
+
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
@@ -37,11 +40,11 @@ class NicksCmd(commands.CustomComponent):
         name = self.StringTools.str2name(name)
         nicks = await self.BestLogs.ZonianLogs.name_history(ctx, user=name)
         if not nicks:
-            return self.translations.Nicks.not_seen(ctx, name)
+            return self.translations.Nicks.not_seen(name)
         ordered = [h for h in nicks if h.first_timestamp is not None]
         ordered.sort(key=lambda h: (h.first_timestamp, h.last_timestamp or datetime.max))
         sequence = [h.user_login for h in ordered]
-        return self.translations.Exceptions.echo(ctx, " → ".join(sequence))
+        return self.translations.Exceptions.echo(" → ".join(sequence))
 
 
 async def setup(bot: Gorenmu) -> None:

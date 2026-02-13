@@ -31,7 +31,7 @@ class Params:
         ),
         pytest.param(
             "pt_BR",
-            r"Estou conectado a canais 8, com comandos (7[0-9]|[89][0-9]|\d{3,}), "
+            r"Estou conectado a 8 canais, com (7[0-9]|[89][0-9]|\d{3,}) comandos, "
             r"criados por @mr_chuw em Python \(Twitchio\)\. Site do bot: https://gorenmu\.vercel\.app/",
             marks=pytest.mark.pt_BR,
             id="pt_BR",

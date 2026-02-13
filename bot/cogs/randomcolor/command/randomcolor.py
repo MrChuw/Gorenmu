@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class RandomColorCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
     cooldown_rate = 3
@@ -25,6 +25,9 @@ class RandomColorCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
@@ -47,8 +50,8 @@ class RandomColorCmd(commands.CustomComponent):
             params["rgb"] = str(rgb)
             url = url.with_path("/rgb/{},{},{}".format(*rgb))
             hex_code = "#{:02X}{:02X}{:02X}".format(*rgb)
-        name = await Color.name(params, session, self.bot.log) or translations.api_down(ctx)
-        return translations.response_url(ctx, hex_code, name, url)
+        name = await Color.name(params, session, self.bot.log) or translations.api_down()
+        return translations.response_url(str(hex_code), name, url)
 
 
 async def setup(bot: Gorenmu) -> None:

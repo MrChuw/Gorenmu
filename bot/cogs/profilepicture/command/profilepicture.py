@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ProfilePictureCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.UploadThings: UploadThings = UploadThings(bot)
@@ -24,6 +24,9 @@ class ProfilePictureCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -35,7 +38,7 @@ class ProfilePictureCmd(commands.CustomComponent):
         name = self.StringTools.str2name_or(name or ctx.author.name)
         user_tmi = await ctx.bot.fetch_user(login=name)
         if not user_tmi:
-            return translations.Exceptions.user_not_found_name(ctx, name)
+            return translations.Exceptions.user_not_found_name(name)
         profile_url = user_tmi.profile_image.url.replace("300x300", "600x600")
         session = self.SessionsCaches.ProfilePicture.session
         image_tmi = await session.get(profile_url)
@@ -66,7 +69,7 @@ class ProfilePictureCmd(commands.CustomComponent):
         else:
             response += f"{profile_url} " if type(profile_url) is str else ""
 
-        return translations.Exceptions.echo(ctx, response)
+        return translations.Exceptions.echo(response)
 
 
 async def setup(bot: Gorenmu) -> None:

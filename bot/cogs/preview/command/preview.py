@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class PreviewCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.ApiIvrFi = ApiIvrFi(bot, self.SessionsCaches.IvrFi.session)
@@ -30,6 +30,9 @@ class PreviewCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -43,13 +46,13 @@ class PreviewCmd(commands.CustomComponent):
             return translations.Exceptions.user_not_provided(ctx)
         user_tmi = await self.bot.fetch_user(login=name)
         if not user_tmi:
-            return translations.Exceptions.user_not_found_name(ctx, name)
+            return translations.Exceptions.user_not_found_name(name)
 
         user_tmi = await self.ApiIvrFi.Twitch.User.fetch_user(user_id=int(user_tmi.id))
         if not user_tmi:
-            return translations.Exceptions.user_not_found_name(ctx, name)
+            return translations.Exceptions.user_not_found_name(name)
         if not user_tmi.stream:
-            return translations.Preview.not_live(ctx, name)
+            return translations.Preview.not_live(name)
 
         twitch_url = URL("https://www.twitch.tv/")
         stream_started = user_tmi.stream.created_at
@@ -59,7 +62,7 @@ class PreviewCmd(commands.CustomComponent):
         vod_offset = max(0, int(vod_offset))
         vod_url = (twitch_url / "videos" / stream2.id).update_query(t=f"{vod_offset}s")
         preview_img = await self.get_preview(name)
-        return self.translations.Preview.preview(ctx, preview_img, vod_url)
+        return self.translations.Preview.preview(preview_img, vod_url)
 
     async def get_preview(self, name: str, tries=0) -> str:
         preview_url = self.bot.config.ApisConfig.clips_url / "preview" / name

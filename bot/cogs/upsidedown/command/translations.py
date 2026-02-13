@@ -2,68 +2,42 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase
+from bot.ext import CommandExemples, Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context
+
+    from .upsidedown import UpSideDownCmd
 
 
 class Translations(TranslationBase):
-    def __init__(self, bot: Gorenmu) -> None:
-        super().__init__(bot)
-        self.populate_subclasses()
+    def __init__(self, bot: Gorenmu, parent: UpSideDownCmd) -> None:
+        super().__init__(bot, __file__)
+        self.parent: UpSideDownCmd = parent
+        self.populate_subclasses(parent=self)
 
     class UpSideDown(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
+            self.prefix = "UpSideDown"
 
-        def upsidedown(self, ctx: Context, text) -> Response:
-            response = Response(ctx=ctx, success=True, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(["pt_br", "pt", "en"], "{}")
-            return response.format_response(self._untangle_str(ctx, self._cname), text)
+        def upsidedown(self, text: str) -> Response:
+            res_text = self.get_text(self._cname, text=text)
+            return Response(ctx=self.ctx_get(), success=True, response_string=res_text)
 
-        def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Turns the text upside down.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Vira o texto de cabeça para baixo.")
-            return self._untangle_str(ctx, self._cname)
+        def deco_helper(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To use: {}upsidedown (message)")
-                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}upsidedown <texto>")
-            return self._untangle_str(ctx, self._cname).format(prefix)
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            return self.get_text(self._cname, prefix=prefix)
 
         # region Hide.
 
-        def deco_description(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(
-                    "en",
-                    "This command reverses and turns the provided text upside down.",
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    "Este comando inverte e vira o texto fornecido de cabeça para baixo.",
-                )
-            return self._untangle_str(ctx, self._cname)
+        def deco_description(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
-        def deco_commands(self, ctx: Context, *args, **kwargs) -> CommandExemples:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", CommandExemples([{"args": "tests", "response": "sʇsǝʇ"}]))
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    CommandExemples([{"args": "tests", "response": "sʇsǝʇ"}]),
-                )
-            return self._untangle_commands(ctx, self._cname)
-
-        def deco_admonitions(self, ctx: Context, *args, **kwargs) -> Admonitions:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", Admonitions([]))
-                self.lang_dict.add_with(["pt_br", "pt"], Admonitions([]))
-            return self._untangle_admonitions(ctx, self._cname)
+        def deco_commands(self, *args, **kwargs) -> CommandExemples:
+            return CommandExemples([{"args": "tests", "response": self.get_text("cmd_res")}])
 
         # endregion
 

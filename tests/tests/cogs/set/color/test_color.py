@@ -7,9 +7,9 @@ from tests.tests.cogs.set.color.test_params import Params
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Color.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Color.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Color.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Color.deco_helper("+"), helper)
 
 
 async def base_color(
@@ -20,7 +20,7 @@ async def base_color(
     expected: str,
     success: bool = False,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     mock_context.author.color = "#abc123"  # fallback color in case of invalid input
     response = await interact.set_color._callback(self=interact, ctx=mock_context, args=args)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected, strict=True)

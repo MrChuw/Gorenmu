@@ -34,13 +34,16 @@ rafk_alias = [
 class RAfkCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
 
     cooldown_rate = 3
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
@@ -50,16 +53,16 @@ class RAfkCmd(commands.CustomComponent):
     async def rafk(self, ctx: Context, *, content: str = "") -> Response:
         rafk = await self.bot.memcache.RAfk.get(user_id=ctx.author.id)
         if rafk is None:
-            return self.translations.Exceptions.time_expired(ctx, self.translations.RAFK.return_expired(ctx))
+            return self.translations.Exceptions.time_expired(self.translations.RAFK.return_expired())
 
-        status = self.translations.AFK.afks(ctx)[rafk.alias]
+        status = self.translations.AFK.afks()[rafk.alias]
         if content:
             rafk.content = content
         await Status.go_rafk(ctx, rafk)
         if rafk.content == "":
-            return self.translations.AFK.afk(ctx, status.leave_again, status.emoji)
+            return self.translations.AFK.afk(status.leave_again, status.emoji)
         else:
-            return self.translations.RAFK.content(ctx, status.leave_again, status.emoji, rafk.content)
+            return self.translations.RAFK.content(status.leave_again, status.emoji, rafk.content)
 
 
 async def setup(bot: Gorenmu) -> None:

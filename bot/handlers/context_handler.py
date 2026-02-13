@@ -146,12 +146,12 @@ class ContextHandler:
             if not ctx.command.pipeble:
                 await self.simple_response(
                     ctx,
-                    translation.command_not_pipeble(ctx, ctx.command.name).response_string,
+                    translation.command_not_pipeble(ctx.command.name).response_string,
                 )
                 if response_str:
                     await self.simple_response(
                         ctx,
-                        translation.pipe_response(ctx, response_str).response_string,
+                        translation.pipe_response(response_str).response_string,
                     )
                 break
 
@@ -161,12 +161,12 @@ class ContextHandler:
             if not response.success:
                 await self.simple_response(
                     ctx,
-                    translation.pipe_response_error(ctx, ctx.command.name).response_string,
+                    translation.pipe_response_error(ctx.command.name).response_string,
                 )
                 if response_str:
                     await self.simple_response(
                         ctx,
-                        translation.pipe_response(ctx, response_str).response_string,
+                        translation.pipe_response(response_str).response_string,
                     )
                 if response:
                     response.response_string = f"{translation.pipe_response} {response.response_string}"

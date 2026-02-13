@@ -14,7 +14,7 @@ async def reload_commands(
     re_expected: str | None = None,
     success: bool = False,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.reload._callback(self=interact, ctx=mock_context, command=command)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected, re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
@@ -23,9 +23,9 @@ async def reload_commands(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Reload.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Reload.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Reload.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Reload.deco_helper("+"), helper)
 
 
 @pytest.mark.asyncio

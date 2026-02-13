@@ -20,7 +20,7 @@ class LiveCmd(commands.CustomComponent):
         self.bot = bot
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.ApiIvrFi = ApiIvrFi(bot, self.SessionsCaches.IvrFi.session)
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
 
     cooldown_rate = 3
@@ -28,6 +28,9 @@ class LiveCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -41,19 +44,19 @@ class LiveCmd(commands.CustomComponent):
         else:
             user_tmi = await self.ApiIvrFi.Twitch.User.fetch_user(user_id=int(channel) or ctx.channel.id)
         if not user_tmi:
-            return self.translations.Exceptions.user_not_found_name(ctx, channel)
+            return self.translations.Exceptions.user_not_found_name(channel)
 
         translations = self.translations.Live
         stream = user_tmi.stream or user_tmi.last_broadcast
-        humanize = self.translations.SupportTools.TimeTools.Humanize(ctx)
-        title = translations.title(ctx, stream.title)
+        humanize = self.translations.SupportTools.TimeTools.Humanize(ctx.user.language)
+        title = translations.title(stream.title)
         twitch_url = URL("https://www.twitch.tv/")
         if not hasattr(stream, "id") and not stream.started_at:
-            return self.translations.Live.never_streamed(ctx, name=channel)
+            return self.translations.Live.never_streamed(name=channel)
         elif not hasattr(stream, "id"):
             last_stream_natural = humanize.naturaltime(user_tmi.last_broadcast.started_at)
             last_stream_precise = humanize.precisedelta(user_tmi.last_broadcast.started_at)
-            broadcast_time = translations.last_stream(ctx, last_stream_natural, last_stream_precise)
+            broadcast_time = translations.last_stream(last_stream_natural, last_stream_precise)
             if stream2 := await ctx.bot.fetch_videos(user_id=user_tmi.id):
                 stream2 = stream2[0]
                 vod_url = twitch_url / "videos" / stream2.id
@@ -63,7 +66,7 @@ class LiveCmd(commands.CustomComponent):
             stream_started = user_tmi.stream.created_at
             current_stream_natural = humanize.naturaltime(stream_started)
             current_stream_precise = humanize.precisedelta(stream_started)
-            broadcast_time = translations.stream_started(ctx, current_stream_natural, current_stream_precise)
+            broadcast_time = translations.stream_started(current_stream_natural, current_stream_precise)
             stream2 = (await ctx.bot.fetch_videos(user_id=user_tmi.id))[0]
             now_adjusted = datetime.datetime.now().replace(tzinfo=None) - datetime.timedelta(seconds=90)
             vod_offset = (now_adjusted - stream_started).total_seconds()
@@ -73,10 +76,10 @@ class LiveCmd(commands.CustomComponent):
         channel_link = twitch_url / user_tmi.display_name
         if ctx.invoke_by == "title":
             response = f"{title} || {broadcast_time} {channel_link}"
-            return translations.response(ctx, response)
+            return translations.response(response)
 
-        views = translations.views(ctx, stream.viewers_count) if hasattr(stream, "viewers_count") else ""
-        game = translations.playing(ctx, stream.game.display_name) if hasattr(stream, "game") else ""
+        views = translations.views(stream.viewers_count) if hasattr(stream, "viewers_count") else ""
+        game = translations.playing(stream.game.display_name) if hasattr(stream, "game") else ""
         response = " || ".join(
             part
             for part in [
@@ -88,7 +91,7 @@ class LiveCmd(commands.CustomComponent):
             ]
             if part
         )
-        return translations.response(ctx, response)
+        return translations.response(response)
 
 
 async def setup(bot: Gorenmu) -> None:

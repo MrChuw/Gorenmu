@@ -5,7 +5,7 @@ import socket
 from dataclasses import dataclass
 from typing import Any
 
-from asyncio import timeout, timeout_at
+from asyncio import timeout
 from aiohttp.client import ClientError, ClientResponseError
 from aiohttp_client_cache import CachedSession
 from yarl import URL
@@ -21,6 +21,7 @@ from .models import (
     TimeFormat,
     WindSpeedUnit,
 )
+from aiohttp import ClientSession
 
 
 @dataclass
@@ -54,7 +55,6 @@ class OpenMeteo:
             OpenMeteoError: Received an unexpected response from the Open-Meteo
                 API.
         """
-
         try:
             async with timeout(self.request_timeout):
                 response = await self.session.get(url)
@@ -122,7 +122,7 @@ class OpenMeteo:
             addressdetails=1,
             extratags=1,
             namedetails=1,
-            entrances=1
+            entrances=1,
         )
         data = await self._request(url=url)
         return Geocoding({"results": data})

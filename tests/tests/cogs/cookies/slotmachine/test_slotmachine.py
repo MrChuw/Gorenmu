@@ -48,7 +48,7 @@ async def prepare_cookie_context(
     values: list[int | datetime.datetime] | None = None,
     interact=None,
 ):
-    await mock_context.prepare_context(lang, seed)
+    await mock_context.prepare_context(lang, seed, interact=interact)
     await Check.cookie_check(mock_context, interact.translations)
     if values:
         cookie = await Cookies.get_cookie(mock_context, interact.translations)
@@ -59,9 +59,9 @@ async def prepare_cookie_context(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.SlotMachine.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.SlotMachine.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.SlotMachine.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.SlotMachine.deco_helper("+"), helper)
 
 
 async def base_slotmachine(

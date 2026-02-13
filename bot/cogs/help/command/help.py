@@ -16,13 +16,16 @@ if TYPE_CHECKING:
 class HelpCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
 
     cooldown_rate = 3
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -35,7 +38,7 @@ class HelpCmd(commands.CustomComponent):
         parts = content.split(" ")
         if not content:
             # TODO: upload to bin.mrchuw
-            return translations.command_site(ctx, site_url)
+            return translations.command_site(site_url)
         command = ctx.bot.get_command(parts[0])
 
         if len(parts) != 1 and isinstance(command, twitchio_commands.Group):
@@ -44,17 +47,18 @@ class HelpCmd(commands.CustomComponent):
         if not command:
             commands_list = ctx.bot.commands.keys()
             suggested_command = difflib.get_close_matches(content, commands_list, n=1, cutoff=0.6)
-            return translations.suggested_command(ctx, content, suggested_command[0])
+            return translations.suggested_command(content, suggested_command[0])
 
         aliases = ", ".join(command.aliases) if command.aliases else ""
         decorator = command.component.translations.get_decorator(command)
         url = site_url / "commands" / command.qualified_name  # TODO: Change.
         if hasattr(command, "per"):
-            cooldown = self.translations.SupportTools.TimeTools.Humanize(ctx).naturaldelta(command.per / command.rate)
+            cooldown = self.translations.SupportTools.TimeTools.Humanize(ctx.user.language).naturaldelta(
+                command.per / command.rate
+            )
         else:
             cooldown = "None"
         return translations.help(
-            ctx,
             ctx.prefix,
             command.name,
             decorator.deco_helper(ctx),

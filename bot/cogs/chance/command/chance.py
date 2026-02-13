@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ChanceCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -22,14 +22,17 @@ class ChanceCmd(commands.CustomComponent):
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
+
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.command(name="chance", aliases=["%"])
-    async def chance(self, ctx: Context) -> Response:
-        chance = f'{(f"{random.random() * 100:.2f}%")}'
-        return self.translations.Chance.response(ctx, chance)
+    async def chance(self, ctx: Context) -> Response:  # NOQA
+        chance = f"{random.random() * 100:.2f}%"
+        return self.translations.Chance.response(chance)
 
 
 async def setup(bot: Gorenmu) -> None:

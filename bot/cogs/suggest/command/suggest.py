@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class SuggestCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.DiscordWebHook: DiscordWebHook = DiscordWebHook()
 
@@ -24,6 +24,9 @@ class SuggestCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -38,7 +41,7 @@ class SuggestCmd(commands.CustomComponent):
         author_url = f"https://twitch.tv/{ctx.author.name}"
         await self.DiscordWebHook.send_discord_webhook(session, url, ctx, content, title, author_url)
         bug = await Suggest.create(user=ctx.user, content=content)
-        return self.translations.Suggest.suggest(ctx, bug.id)
+        return self.translations.Suggest.suggest(bug.id)
 
 
 async def setup(bot: Gorenmu) -> None:

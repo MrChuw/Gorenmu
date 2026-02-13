@@ -15,15 +15,15 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Annotations.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Annotations.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Annotations.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Annotations.deco_helper("+"), helper)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.annotations)
 async def test_annotations(interact, mock_context: MockContext, lang: str, expected: list[str | int]):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.annotations._callback(self=interact, ctx=mock_context)
 
     mock_context.Asserter.assert_string(response.response_string, expected[0])

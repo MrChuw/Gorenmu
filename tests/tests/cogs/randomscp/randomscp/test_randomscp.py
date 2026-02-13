@@ -21,9 +21,9 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.RandomScp.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.RandomScp.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.RandomScp.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.RandomScp.deco_helper("+"), helper)
 
 
 async def base_randomscp(interact, mock_context: MockContext, expected, success: bool = False):
@@ -35,7 +35,7 @@ async def base_randomscp(interact, mock_context: MockContext, expected, success:
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.two_hundred)
 async def test_two_hundred(interact, mock_context: MockContext, lang: str, expected: str):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     async with mock_context.MockBuilder.Commands.get_scp("www.some_url.com"):
         await base_randomscp(interact, mock_context, expected=expected, success=True)
 
@@ -43,7 +43,7 @@ async def test_two_hundred(interact, mock_context: MockContext, lang: str, expec
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.timeout)
 async def test_timeout(interact, mock_context: MockContext, lang: str, expected: str):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     async with (
         mock_context.MockBuilder.Commands.get_scp(status=404)
         .Asyncio.sleep_skip()
@@ -55,7 +55,7 @@ async def test_timeout(interact, mock_context: MockContext, lang: str, expected:
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.exception)
 async def test_unexpected_exception(interact, mock_context: MockContext, lang: str, expected: str, caplog):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
 
     with caplog.at_level(logging.ERROR):
         async with (

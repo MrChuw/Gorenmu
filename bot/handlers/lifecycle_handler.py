@@ -115,7 +115,7 @@ class LifecycleHandler:
                 return await ctx.reply(usage)
 
             error_not_registered = ctx.command.component.translations.Exceptions.error_not_registered(
-                ctx, self.config.BotConfig.dev_name
+                self.config.BotConfig.dev_name
             )
             return await ctx.simple_response(ctx, error_not_registered.response_string)
         except Exception as error:
@@ -149,7 +149,7 @@ class LifecycleHandler:
             if usage := deco.deco_usage(ctx):
                 return await payload.recipient.send_whisper(to_user=payload.sender, message=usage)
             error_not_registered = ctx.command.component.translations.Exceptions.error_not_registered(
-                ctx, self.config.BotConfig.dev_name
+                self.config.BotConfig.dev_name
             )
             return await payload.recipient.send_whisper(
                 to_user=payload.sender, message=error_not_registered.response_string

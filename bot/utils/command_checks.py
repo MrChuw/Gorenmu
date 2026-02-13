@@ -144,7 +144,7 @@ class Check:
         except MultipleObjectsReturned as e:
             logging.error(e)
             await ctx.reply(
-                ctx.component.translations.Exceptions.lottery_seed(ctx, ctx.bot.dev_user.display_name).response_string
+                ctx.component.translations.Exceptions.lottery_seed(ctx.bot.dev_user.display_name).response_string
             )
             raise UnknownErrorError from e
         if not await LotteryBank.get_or_none(closed=False, accumulated=True):

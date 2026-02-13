@@ -8,7 +8,7 @@ class Params:
         pytest.param(
             "en",
             "Command used to manage cookies.",
-            "To use: +alias Eat|Count|Gift|Stock|Top|SlotMachine (options)",
+            "To use: +cookie Eat|Count|Gift|Stock|Top|SlotMachine (options)",
             marks=pytest.mark.en,
             id="en",
         ),

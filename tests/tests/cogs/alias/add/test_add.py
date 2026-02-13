@@ -15,7 +15,7 @@ async def alias_add(
     expected: str,
     success: bool = False,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     command_ = mock_context.bot.get_command("chance")
     await Alias.save_alias(mock_context, "The_Tests_alias", command_, "chance", None)
     response: Response = await interact.add_command._callback(interact, mock_context, *content)  # NOQA
@@ -26,9 +26,9 @@ async def alias_add(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Add.deco_helper(mock_context, "+"), helper)
-    mock_context.Asserter.assert_string(interact.translations.Add.deco_usage(mock_context, "+"), usage)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Add.deco_helper("+"), helper)
+    mock_context.Asserter.assert_string(interact.translations.Add.deco_usage("+"), usage)
 
 
 @pytest.mark.asyncio

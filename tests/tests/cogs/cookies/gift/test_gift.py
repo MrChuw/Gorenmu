@@ -11,13 +11,13 @@ from tests.tests.cogs.cookies.gift.test_params import Params
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Gift.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Gift.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Gift.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Gift.deco_helper("+"), helper)
 
 
 async def prepare_and_create_cookie(mock_context: MockContext, lang, content, cookie_data=None, interact=None):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     await Check.cookie_check(mock_context, interact.translations)
 
     if cookie_data:

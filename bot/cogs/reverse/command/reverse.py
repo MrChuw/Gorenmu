@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class ReverseCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -21,13 +21,16 @@ class ReverseCmd(commands.CustomComponent):
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
+
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.command(name="reverse", aliases=["invert"])
-    async def reverse(self, ctx: Context, *, content) -> Response:
-        return self.translations.Exceptions.echo(ctx, content[::-1])
+    async def reverse(self, ctx: Context, *, content) -> Response:  # NOQA
+        return self.translations.Exceptions.echo(content[::-1])
 
 
 async def setup(bot: Gorenmu) -> None:

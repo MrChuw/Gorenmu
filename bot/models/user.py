@@ -171,7 +171,7 @@ class User(Base, TimestampMixin, ContentMixin):
             if is_none and not user:
                 return None
             if not user and isinstance(ctx_bot, _get_context_type()):
-                return translations.Exceptions.user_not_found_name(ctx_bot, name)
+                return translations.Exceptions.user_not_found_name(name, ctx_bot)
             await bot.memcache.User.set(user=user)
         return user
 
@@ -186,7 +186,7 @@ class User(Base, TimestampMixin, ContentMixin):
             if is_none and not user:
                 return None
             if not user and isinstance(ctx_bot, _get_context_type()):
-                return translations.Exceptions.user_not_found_id(ctx_bot, user_id)
+                return translations.Exceptions.user_not_found_id(user_id, ctx_bot)
             await bot.memcache.User.set(user=user)
         return user
 
@@ -215,6 +215,9 @@ class User(Base, TimestampMixin, ContentMixin):
         user_id: int | None = None,
     ) -> GetReturnT:
         return await User.get_user(ctx_bot, translations, name, user_id, is_none=True)
+
+    def get_lang(self) -> str:
+        return self.language.lower() if self.language else ""
 
 
 class TwitchTokens(Base, TimestampMixin):

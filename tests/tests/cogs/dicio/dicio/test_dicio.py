@@ -15,9 +15,9 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Dicio.deco_usage(mock_context, "+"), usage, strict=True)
-    mock_context.Asserter.assert_string(interact.translations.Dicio.deco_helper(mock_context, "+"), helper, strict=True)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Dicio.deco_usage("+"), usage, strict=True)
+    mock_context.Asserter.assert_string(interact.translations.Dicio.deco_helper("+"), helper, strict=True)
 
 
 async def base_dicio(
@@ -32,7 +32,7 @@ async def base_dicio(
 ):
     if response_get is None:
         response_get = {}
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     session = interact.SessionsCaches.Dicio.session
     async with mock_context.MockBuilder.Session.get_json(session, response_get):
         response: Response = await interact.dicio._callback(interact, mock_context, content=content)  # NOQA

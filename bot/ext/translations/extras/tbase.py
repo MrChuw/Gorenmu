@@ -2,20 +2,48 @@ from __future__ import annotations
 
 import sys
 from collections import defaultdict
-from contextlib import contextmanager
 from contextvars import Token
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
+
+from fluent.runtime import FluentBundle, FluentResource
+from fluent.runtime.bundle import Message
 
 if TYPE_CHECKING:
     from bot.ext import Admonitions, CommandExemples, Context, TranslationBase
 
 
+class TranslationEntry:
+    __slots__ = ("bundle", "msg_id")
+
+    def __init__(self, bundle: FluentBundle, msg_id: str) -> None:
+        self.bundle: FluentBundle = bundle
+        self.msg_id: str = msg_id
+
+    def format(self, **kwargs: Any) -> str:
+        msg = self.bundle.get_message(self.msg_id)
+        if not msg or not msg.value:
+            return f"{{missing_key: {self.msg_id}}}"
+        text, _ = self.bundle.format_pattern(msg.value, kwargs)
+        return text
+
+    def get_message(self) -> Message:
+        return self.bundle.get_message(self.msg_id)
+
+    def __repr__(self) -> str:
+        return f"TranslationEntry(id='{self.msg_id}')"
+
+
 class TBase:
     _is_tbase = True
+    _started = False
+    prefix: str
 
-    def __init__(self, parent: TranslationBase = None):
-        self.lang_dict: LangDict = LangDict()
+    def __init__(self, parent: TranslationBase = None, file=None):
         self.parent: TranslationBase | None = parent
+        self.lang_dict: LangDict = self.parent.lang_dict
+        if file:
+            self.lang_dict.load_fluent_locales(Path(file).parent / "locales")
 
     def get_language(self, ctx: Context | str) -> str | None:
         if ctx:
@@ -47,24 +75,21 @@ class TBase:
     def _untangle_admonitions(self, ctx: Context, namespace: str) -> Admonitions:
         return self.lang_dict.get_lang(self.get_language(ctx) or "en", namespace)
 
-    def _not_implemented(self, ctx: Context, namespace: str) -> str:
-        with self.lang_dict.once(self._cname):
-            self.lang_dict.add_with("en", "Not implemented.")
-            self.lang_dict.add_with(["pt_br", "pt"], "Não implementado.")
-        return self._untangle_str(ctx, namespace=namespace)
+    def _not_implemented(self) -> str:
+        return self.parent.Exceptions.not_implemented().response_string
 
     def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
-        return self._not_implemented(ctx, namespace="not_implemented")
+        return self._not_implemented()
 
     deco_helper: str = deco_helper
 
     def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
-        return self._not_implemented(ctx, namespace="not_implemented")
+        return self._not_implemented()
 
     deco_usage: str = deco_usage
 
     def deco_description(self, ctx: Context, *args, **kwargs) -> str:
-        return self._not_implemented(ctx, namespace="not_implemented")
+        return self._not_implemented()
 
     deco_description: str = deco_description
 
@@ -77,6 +102,38 @@ class TBase:
         return Admonitions([])
 
     deco_admonitions: Admonitions = deco_admonitions
+
+    def get_text(self, key: str, **kwargs) -> str:
+        prefix = kwargs.pop("entry_prefix", self.prefix)
+        return self.lang_dict.get_text(self.ctx_get(), key, prefix, **kwargs)
+
+    def get_entry(self, key: str, **kwargs) -> TranslationEntry | None:
+        prefix = kwargs.pop("entry_prefix", self.prefix)
+        return self.lang_dict.get_entry(self.ctx_get(), key, prefix)
+
+    def get_list(self, key: str, **kwargs) -> list[str]:
+        raw = self.get_text(key, **kwargs)
+        return [s.strip() for s in raw.split(",")]
+
+    def get_text_by_lang(self, lang: str, key: str, **kwargs) -> str:
+        prefix = kwargs.pop("entry_prefix", self.prefix)
+        return self.lang_dict.get_text_by_lang(lang=lang, key=key, entry_prefix=prefix, **kwargs)
+
+    def get_entry_by_lang(self, lang: str, key: str, **kwargs) -> TranslationEntry | None:
+        prefix = kwargs.pop("entry_prefix", self.prefix)
+        return self.lang_dict.get_entry_by_lang(lang=lang, key=key, entry_prefix=prefix)
+
+    def get_list_by_lang(self, lang: str, key: str, include_en: bool = True, **kwargs) -> list[str]:
+        prefix = kwargs.pop("entry_prefix", self.prefix)
+        return self.lang_dict.get_list_by_lang(lang=lang, key=key, entry_prefix=prefix, include_en=include_en)
+
+    def get_attributes_list(self, key: str, **kwargs) -> dict[str, list[str]]:
+        prefix = kwargs.pop("entry_prefix", self.prefix)
+        return self.lang_dict.get_attributes_list(self.ctx_get(), key, prefix)
+
+    def get_attributes(self, key: str, **kwargs) -> dict[str, list[str]]:
+        prefix = kwargs.pop("entry_prefix", self.prefix)
+        return self.lang_dict.get_attributes(self.ctx_get(), key, prefix)
 
 
 class ClassBase:
@@ -92,50 +149,27 @@ class ClassBase:
 
 class LangDict:
     def __init__(self):
-        self._namespaces: dict[str, dict[str, str]] = defaultdict(dict)
         self._current_namespace: str | None = None
-        self._initialized: dict[str, bool] = defaultdict(bool)
         self._skip_mode = False
+        self._namespaces = defaultdict(dict)
+        self._initialized = defaultdict(dict)
 
-    @contextmanager
-    def namespace(self, name: str):
-        prev_namespace = self._current_namespace
-        self._current_namespace = name
-        try:
-            yield self
-        finally:
-            self._current_namespace = prev_namespace
+    def define(self, lang: str | list[str], value: Any, namespace: str, msg_id: str):
+        langs = [lang] if isinstance(lang, str) else lang
 
-    @contextmanager
-    def once(self, namespace: str):
-        if not self._initialized[namespace]:
-            self._skip_mode = False
-            with self.namespace(namespace):
-                yield
-            self._initialized[namespace] = True
-        else:
-            self._skip_mode = True
-            prev = self._current_namespace
-            self._current_namespace = namespace
-            try:
-                yield
-            finally:
-                self._current_namespace = prev
-            self._skip_mode = False
+        for _lang in langs:
+            l_lower = _lang.lower()
+            if not isinstance(self._namespaces[namespace].get(l_lower), dict):
+                self._namespaces[namespace][l_lower] = {}
+            self._namespaces[namespace][l_lower][msg_id] = value
+            self._initialized[namespace][l_lower] = True
+        self._initialized[namespace]["__init__"] = True
 
-    def add(self, lang: str | list[str], value: str, namespace: str):
-        if isinstance(lang, str):
-            lang = [lang]
-        for k in lang:
-            self._namespaces[namespace][k.lower()] = value
+    def is_initialized(self, namespace: str, lang: str | None = None) -> bool:
+        if lang is None:
+            return "__init__" in self._initialized[namespace]
 
-    def add_with(self, lang: str | list[str], value: Any):
-        if not self._current_namespace:
-            raise RuntimeError("No active namespace. Use with 'with self.lang_dict.namespace(...)'")
-        if self._skip_mode:
-            return self.get_lang_any(lang[0] if isinstance(lang, list) else lang, self._current_namespace)
-        self.add(lang, value, self._current_namespace)
-        return value
+        return self._initialized[namespace].get(lang.lower(), False)
 
     def get(self, namespace_or_lang: str, namespace: str | None = None):
         if namespace is None and namespace_or_lang in self._namespaces:
@@ -147,9 +181,6 @@ class LangDict:
     def get_namespace(self, namespace: str) -> dict[str, str]:
         return dict(self._namespaces[namespace])
 
-    def get_lang_any(self, lang: str, namespace: str, fallback: str = "en") -> Any | None:
-        return self._namespaces.get(namespace, {}).get(lang) or self._namespaces.get(namespace, {}).get(fallback)
-
     def get_lang(self, lang: str, namespace: str, fallback: str = "en") -> str | CommandExemples | Admonitions | None:
         return self._namespaces.get(namespace, {}).get(lang) or self._namespaces.get(namespace, {}).get(fallback)
 
@@ -158,3 +189,94 @@ class LangDict:
 
     def __getitem__(self, item):
         raise KeyError("Direct access disabled — use get(lang, namespace) or get(namespace)")
+
+    def get_lang_any(self, lang: str, namespace: str, key: str, fallback: str = "en") -> Any | None:
+        messages = self._namespaces.get(namespace, {}).get(lang) or self._namespaces.get(namespace, {}).get(fallback)
+        return messages.get(key) if isinstance(messages, dict) else None
+
+    def load_fluent_locales(self, locales_path: Path):
+        bundles: dict[str, FluentBundle] = {}
+        for ftl_file in locales_path.glob("*.ftl"):
+            lang = ftl_file.stem.lower()
+            with open(ftl_file, encoding="utf-8") as f:
+                resource = FluentResource(f.read())
+
+            bundle = FluentBundle([lang], use_isolating=False)
+            bundle.add_resource(resource)
+            bundles[lang] = bundle
+        if "pt_br" in bundles and "pt" not in bundles:
+            bundles["pt"] = bundles["pt_br"]
+        elif "pt" in bundles and "pt_br" not in bundles:
+            bundles["pt_br"] = bundles["pt"]
+
+        for lang, bundle in bundles.items():
+            for msg_id in bundle._messages:  # NOQA
+                if "-" in msg_id:
+                    prefix, internal_key = msg_id.split("-", 1)
+                else:
+                    prefix = "default"
+                    internal_key = msg_id
+                entry = TranslationEntry(bundle, msg_id)
+                self.define(lang, entry, prefix, internal_key)
+
+    def get_text(self, ctx: Context, key: str, entry_prefix: str = "default", **kwargs) -> str:
+        lang = ctx.user.language or "en"
+        entry: TranslationEntry | None = self.get_lang_any(lang.lower(), entry_prefix, key)
+        return entry.format(**kwargs) if entry else f"{{missing: {key}}}"
+
+    def get_entry(self, ctx, key: str, entry_prefix: str = "default") -> TranslationEntry | None:
+        lang = ctx.user.language or "en"
+        return self.get_lang_any(lang.lower(), entry_prefix, key)
+
+    def get_list(self, ctx: Context, key: str) -> list[str]:
+        raw = self.get_text(ctx, key)
+        return [s.strip() for s in raw.split(",")]
+
+    def get_text_by_lang(self, lang: str, key: str, entry_prefix: str = "default", **kwargs) -> str:
+        entry: TranslationEntry | None = self.get_lang_any(lang.lower(), entry_prefix, key)
+        if not entry:
+            return f"{{missing: {entry_prefix}-{key}}}"
+        return entry.format(**kwargs)
+
+    def get_entry_by_lang(self, lang: str, key: str, entry_prefix: str = "default") -> TranslationEntry | None:
+        return self.get_lang_any(lang.lower(), entry_prefix, key)
+
+    def get_list_by_lang(
+        self, lang: str, key: str, entry_prefix: str = "default", include_en: bool = True
+    ) -> list[str]:
+        raw = self.get_text_by_lang(lang.lower(), key, entry_prefix)
+        current_list = [s.strip() for s in raw.split(",")] if "missing:" not in raw else []
+
+        if include_en and lang.lower() != "en":
+            raw_en = self.get_text_by_lang("en", key, entry_prefix)
+            if "missing:" not in raw_en:
+                en_list = [s.strip() for s in raw_en.split(",")]
+                return list(dict.fromkeys(current_list + en_list))
+
+        return current_list
+
+    def get_attributes_list(self, ctx: Context, key: str, entry_prefix: str = "default") -> dict[str, list[str]]:
+        entry = self.get_entry(ctx, key, entry_prefix)
+
+        if not entry:
+            return {}
+        formatted = entry.get_message()
+        if not formatted.attributes:
+            return {}
+
+        result = {}
+        for attr_name, attr_value in formatted.attributes.items():
+            items = [s.strip() for s in attr_value.value.split(",")]  # NOQA
+            result[attr_name] = items
+        return result
+
+    def get_attributes(self, ctx: Context, key: str, entry_prefix: str = "default") -> dict[str, list[str]]:
+        entry = self.get_entry(ctx, key, entry_prefix)
+
+        if not entry:
+            return {}
+        formatted = entry.get_message()
+        if not formatted.attributes:
+            return {}
+
+        return {attr_name: attr_value.value for attr_name, attr_value in formatted.attributes.items()}  # NOQA

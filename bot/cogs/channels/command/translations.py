@@ -6,56 +6,36 @@ from bot.ext import Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context
+
+    from .channels import ChannelsCmd
 
 
 class Translations(TranslationBase):
-    def __init__(self, bot: Gorenmu) -> None:
-        super().__init__(bot)
-        self.populate_subclasses()
+    def __init__(self, bot: Gorenmu, parent: ChannelsCmd) -> None:
+        super().__init__(bot, __file__)
+        self.parent: ChannelsCmd = parent
+        self.populate_subclasses(parent=self)
 
     class Channels(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
+            self.prefix = "Channels"
 
-        def quantity(self, ctx: Context, args) -> Response:
-            response = Response(ctx=ctx, success=True, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "I'm logged in {} channels.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Estou logado em {} canais.")
-            return response.format_response(self._untangle_str(ctx, self._cname), args)
+        def quantity(self, count: int | str) -> Response:
+            text = self.get_text(self._cname, count=count)
+            return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
-        def names(self, ctx: Context, args) -> Response:
-            response = Response(ctx=ctx, success=True, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(["pt_br", "pt", "en"], "{}")
-            return response.format_response(self._untangle_str(ctx, self._cname), args)
+        def names(self, list_str: str) -> Response:
+            text = self.get_text(self._cname, list=list_str)
+            return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
-        def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once("helper"):
-                self.lang_dict.add_with("en", "Shows the list of channels where the bot is present.")
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    "Mostra a lista de canais em que o bot está presente.",
-                )
-            return self._untangle_str(ctx, "helper")
+        def deco_helper(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
-            with self.lang_dict.once("usage"):
-                self.lang_dict.add_with("en", "To use: {}channels [quantity|ping]")
-                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}channels [quantity|ping]")
-            return self._untangle_str(ctx, "usage").format(prefix)
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            return self.get_text(self._cname, prefix=prefix)
 
-        def deco_description(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once("description"):
-                self.lang_dict.add_with(
-                    "en",
-                    "Displays the channels where the bot is connected or their quantity.",
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    "Exibe os canais em que o bot está conectado ou a quantidade deles.",
-                )
-            return self._untangle_str(ctx, "description")
+        def deco_description(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
     Channels: Channels

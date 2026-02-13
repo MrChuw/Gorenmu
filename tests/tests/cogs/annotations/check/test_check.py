@@ -16,9 +16,9 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Check.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Check.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Check.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Check.deco_helper("+"), helper)
 
 
 async def base_annotations_check(
@@ -30,7 +30,7 @@ async def base_annotations_check(
     amount: int = 0,
     success: bool = False,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     for value in range(amount):
         content_note = f"a note about something I want to be able to check forever. {value}"
         title = "a" * 32

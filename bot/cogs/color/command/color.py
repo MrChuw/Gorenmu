@@ -8,7 +8,7 @@ from bot.ext import Context, Response, commands
 from bot.models import User
 from bot.utils import SessionsCaches, StringTools
 
-from .translations import Translations
+from .translations import TranslationEntry, Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -17,8 +17,8 @@ if TYPE_CHECKING:
 class ColorCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
-        self.color_cache: SessionsCaches.Color = SessionsCaches(bot).Color
+        self.translations: Translations = Translations(bot, self)
+        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.StringTools: StringTools = StringTools()
 
     cooldown_rate = 3
@@ -26,6 +26,9 @@ class ColorCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -41,37 +44,34 @@ class ColorCmd(commands.CustomComponent):
         responses = []
         name = self.StringTools.str2name_or(name)
 
-        async def get_color_info(hex_code: str, response_template: str):
+        async def get_color_info(hex_code: str, response_template: TranslationEntry, **extra_args):
             params = {"hex": hex_code}
-            hex_name = await Color.name(params=params, session=self.color_cache.session, log=ctx.bot.log)
+            hex_name = await Color.name(params=params, session=self.SessionsCaches.Color.session, log=ctx.bot.log)
             url_preview = color_url.with_path(f"/hex/{hex_code.upper()}").human_repr()
-            response = response_template.format(hex_code.upper(), hex_name)
+            response = response_template.format(hex_value=hex_code.upper(), hex_name=hex_name, **extra_args)
             urls.append(url_preview)
             responses.append(response)
 
         if "#" not in name and (user := await ctx.bot.fetch_user(login=name)):  # NOQA: SIM102
             if tmi_color := (await ctx.bot.fetch_chatters_color([user.id]))[0].color:  # NOQA: SIM102
-                await get_color_info(
-                    tmi_color.hex_clean,
-                    translations.user_color(ctx).replace("{}", name, 1),
-                )
+                await get_color_info(tmi_color.hex_clean, translations.user_color(), name=name)
 
         if color_hex := re.match(r"^#?[0-9a-fA-F]{6}$", name):
             color_hex = color_hex[0].replace("#", "")
-            await get_color_info(color_hex, translations.hex_color(ctx))
+            await get_color_info(color_hex, translations.hex_color())
 
         if user:
             user_db = await User.get_user(ctx, translations=self.translations, user_id=user.id, is_none=True)
             if user_db and user_db.saved_color:
-                await get_color_info(user_db.saved_color, translations.saved_color(ctx))
+                await get_color_info(user_db.saved_color, translations.saved_color())
 
         if not tmi_color and not color_hex:
             if not user:
-                return translations.no_user_hex(ctx)
-            return translations.user_not_color(ctx)
+                return translations.no_user_hex()
+            return translations.user_not_color()
 
         url_previews = list(dict.fromkeys(urls))
-        return translations.color(ctx, " || ".join(responses), " || ".join(url_previews))
+        return translations.color(" || ".join(responses), " || ".join(url_previews))
 
 
 async def setup(bot: Gorenmu) -> None:

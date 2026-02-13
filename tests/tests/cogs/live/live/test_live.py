@@ -23,9 +23,9 @@ async def lock_time(mock_context: MockContext):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Live.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Live.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Live.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Live.deco_helper("+"), helper)
 
 
 async def base_live(
@@ -38,7 +38,7 @@ async def base_live(
     json_response: dict | None = None,
     success: bool = False,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     async with mock_context.MockBuilder.ApiIvrFi.Twitch.User.fetch_user(dict_to_parse=json_response).Bot.fetch_videos():
         response = await interact.live._callback(self=interact, ctx=mock_context, channel=content)  # NOQA
         mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class UpSideDownCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -22,13 +22,16 @@ class UpSideDownCmd(commands.CustomComponent):
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
+
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.command(name="upsidedown", aliases=["updown"])
     async def upsidedown(self, ctx: Context, *, content) -> Response:
-        return self.translations.UpSideDown.upsidedown(ctx, transform(content))
+        return self.translations.UpSideDown.upsidedown(transform(content))
 
 
 async def setup(bot: Gorenmu) -> None:

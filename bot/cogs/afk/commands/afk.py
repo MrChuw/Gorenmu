@@ -33,13 +33,16 @@ afk_alias = [
 class AFKCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
 
     cooldown_rate = 3
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
@@ -49,11 +52,11 @@ class AFKCmd(commands.CustomComponent):
     async def afk(self, ctx: Context, *, content: str = "") -> Response:
         if len(content) >= 450:
             return self.translations.Exceptions.too_much_characters(ctx)
-        afk = self.translations.AFK.afks(ctx).get(ctx.invoke_by)  # NOQA
+        afk = self.translations.AFK.afks().get(ctx.invoke_by)
         await Status.go_afk(ctx=ctx, status=afk, content=content)
         if not content:
-            return self.translations.AFK.afk(ctx, afk.leave, afk.emoji)
-        return self.translations.AFK.content(ctx, afk.leave, afk.emoji, content)
+            return self.translations.AFK.afk(afk.leave, afk.emoji)
+        return self.translations.AFK.content(afk.leave, afk.emoji, content)
 
     @commands.event_handler("event_message")
     async def return_from_afk(self, ctx: Context) -> Response | bool:
@@ -67,8 +70,8 @@ class AFKCmd(commands.CustomComponent):
         user_status: Status = await Status.get_afk(ctx)
         if not ctx.user or user_status.online:
             return False
-        status = translations.AFK.afks(ctx).get(user_status.alias)
-        humanize = translations.SupportTools.TimeTools.Humanize(ctx)
+        status = translations.AFK.afks().get(user_status.alias)
+        humanize = translations.SupportTools.TimeTools.Humanize(ctx.user.language)
         a_time = humanize.created_a_time(user_status.updated_at, ctx.user.tz)
         clock_emojis = {
             0.0: "🕛",
@@ -101,10 +104,9 @@ class AFKCmd(commands.CustomComponent):
         clock_emoji = clock_emojis.get(rounded_hours, "🕛")
 
         if user_status.message is None or user_status.message == "":
-            response = translations.AFKReturn.afk(ctx, status.returned, status.emoji, a_time, clock_emoji)
+            response = translations.AFKReturn.afk(status.returned, status.emoji, a_time, clock_emoji)
         else:
             response = translations.AFKReturn.content(
-                ctx,
                 status.returned,
                 status.emoji,
                 user_status.message,

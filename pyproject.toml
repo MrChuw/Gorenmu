@@ -13,6 +13,7 @@ dependencies = [
     "clickhouse-connect>=0.10.0",
     "emoji==2.14.1",
     "fastapi==0.116.1",
+    "fluent-runtime>=0.4.0",
     "humanize==4.12.3",
     "janus==2.0.0",
     "loguru==0.7.3",

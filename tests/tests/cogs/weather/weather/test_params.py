@@ -25,14 +25,14 @@ class Params:
         pytest.param(
             "en",
             "Fortaleza, Ceará, Brazil. Clear 🌙, temperature of 24.1 °C, maximum of 35.3 °C and "
-            "apparent temperature of 15.0 °C,  1012.0 hPa, 62%, 3.4km/h north",
+            "apparent temperature of 15 °C, 1,012 hPa, 62%, 3.4km/h north",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            "Fortaleza, Ceará, Brazil. Céu limpo 🌙, temperatura de 24.1 °C, máxima de 35.3 °C e "
-            "aparente de 15.0 °C,  1012.0 hPa, 62%, 3.4km/h norte",
+            "Fortaleza, Ceará, Brazil. Céu limpo 🌙, temperatura de 24,1 °C, máxima de 35,3 °C e "
+            "aparente de 15 °C, 1.012 hPa, 62%, 3,4km/h norte",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

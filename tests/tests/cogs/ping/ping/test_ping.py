@@ -24,9 +24,9 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Ping.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Ping.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Ping.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Ping.deco_helper("+"), helper)
 
 
 async def base_ping(
@@ -36,7 +36,7 @@ async def base_ping(
     re_expected: str | None = None,
     success: bool = False,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.ping._callback(interact, mock_context)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)

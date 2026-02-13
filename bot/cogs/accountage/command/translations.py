@@ -2,101 +2,46 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import CommandExemples, Response, TranslationBase
-from bot.ext.translations.extras import TBase
+from bot.ext import CommandExemples, Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context
+
+    from .accountage import AccountAgeCmd
 
 
 class Translations(TranslationBase):
-    def __init__(self, bot: Gorenmu) -> None:
-        super().__init__(bot)
-        self.populate_subclasses()
+    def __init__(self, bot: Gorenmu, parent: AccountAgeCmd) -> None:
+        super().__init__(bot, __file__)
+        self.parent: AccountAgeCmd = parent
+        self.populate_subclasses(parent=self)
 
     class AccountAge(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent):
+            super().__init__(parent)
+            self.prefix = "AccountAge"
 
-        def accountage(
-            self,
-            ctx: Context,
-            mention: str,
-            date: str,
-            delta: str,
-            success: bool = True,
-            handle: str | None = None,
-        ):
-            response = Response(ctx=ctx, success=success, handle=handle, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "{} created the account on {} ({} ago)")
-                self.lang_dict.add_with(["pt_br", "pt"], "{} criou a conta em {} (há {})")
-            return response.format_response(self._untangle_str(ctx, self._cname), mention, date, delta)
+        def accountage(self, mention: str, date: str, delta: str):
+            text = self.get_text(self._cname, mention=mention, date=date, delta=delta)
+            return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
         accountage: Response = accountage
 
-        def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Check the Twitch account creation date.")
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    "Verifica a data de criação de uma conta da Twitch.",
-                )
-            return self._untangle_str(ctx, self._cname)
+        def deco_helper(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Usage: {}accountage (username)")
-                self.lang_dict.add_with(["pt_br", "pt"], "Uso: {}accountage (nome_de_usuário)")
-            return self._untangle_str(ctx, self._cname).format(prefix)
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            return self.get_text(self._cname, prefix=prefix)
 
-        def deco_description(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(
-                    "en",
-                    "Returns the creation date of a Twitch account and how long ago it was created. "
-                    "If no username is given, it checks your own account.",
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    "Retorna a data em que uma conta da Twitch foi criada e há quanto tempo isso aconteceu. "
-                    "Se nenhum nome for fornecido, verifica sua própria conta.",
-                )
-            return self._untangle_str(ctx, self._cname)
+        def deco_description(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
-        def deco_commands(self, ctx: Context, *args, **kwargs) -> CommandExemples:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(
-                    "en",
-                    CommandExemples(
-                        [
-                            {
-                                "args": "accountage mr_chuw",
-                                "response": "@mr_chuw created the account on 20/01/2019 19:34:45 (6 year ago).",
-                            },
-                            {
-                                "args": "accountage",
-                                "response": "@your_name created the account on 20/01/2019 19:34:45 (6 year ago).",
-                            },
-                        ]
-                    ),
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    CommandExemples(
-                        [
-                            {
-                                "args": "accountage mr_chuw",
-                                "response": "@mr_chuw criou a conta em 20/01/2019 19:34:45 (há 6 anos)",
-                            },
-                            {
-                                "args": "accountage",
-                                "response": "@seu_nome criou a conta em 20/01/2019 19:34:45 (há 6 anos).",
-                            },
-                        ]
-                    ),
-                )
-            return self._untangle_commands(ctx, self._cname)
+        def deco_commands(self, *args, **kwargs) -> CommandExemples:
+            return CommandExemples(
+                [
+                    {"args": self.get_text("cmd_ex1_args"), "response": self.get_text("cmd_ex1_res")},
+                    {"args": self.get_text("cmd_ex2_args"), "response": self.get_text("cmd_ex2_res")},
+                ]
+            )
 
     AccountAge: AccountAge

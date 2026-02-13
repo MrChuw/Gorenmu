@@ -15,9 +15,9 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.RandomLine.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.RandomLine.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.RandomLine.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.RandomLine.deco_helper("+"), helper)
 
 
 async def base_randomline(
@@ -29,7 +29,7 @@ async def base_randomline(
     re_expected: str | None = None,
     success: bool = False,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     await mock_context.fake_messages()
     response: Response = await interact.randomline._callback(interact, mock_context, options=content)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)

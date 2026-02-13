@@ -17,7 +17,7 @@ from bot.exceptions import InvalidUsernameError
 from bot.utils.singleton import Singleton
 
 if TYPE_CHECKING:
-    from bot.ext import Context, TranslationBase
+    from bot.ext import TranslationBase
 
 letters_and_digits = ascii_letters + digits
 url_extractor: URLExtract | None = None
@@ -148,7 +148,7 @@ class StringTools(metaclass=Singleton):
             return ""
 
     @staticmethod
-    def remove_emoji(string: str) -> str:
+    def remove_emoji(text: str) -> str:
         emoji_pattern = re.compile(
             "["
             "😀-🙏"  # emoticons
@@ -175,7 +175,7 @@ class StringTools(metaclass=Singleton):
             "]+",
             flags=re.UNICODE,
         )
-        return emoji_pattern.sub(r"", string)
+        return emoji_pattern.sub(r"", text)
 
     @staticmethod
     def str_to_hex(value: str) -> str:
@@ -268,11 +268,11 @@ class StringTools(metaclass=Singleton):
 
     @staticmethod
     def extract_and_remove_bool_field(
-        text: str, field: str, translations: TranslationBase, ctx: Context, default: bool | None = None
+        text: str, field: str, translations: TranslationBase, default: bool | None = None
     ) -> BoolResult:
         verbs = translations.SupportTools.LanguageContext.Verbs
         regex, bool_map = StringTools._get_compiled_logic(
-            field, tuple(verbs.positive(ctx)), tuple(verbs.negative(ctx)), tuple(verbs.nothing(ctx))
+            field, tuple(verbs.positive()), tuple(verbs.negative()), tuple(verbs.nothing())
         )
 
         match = regex.search(text)

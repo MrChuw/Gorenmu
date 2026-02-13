@@ -108,7 +108,7 @@ class Params:
     total: ClassVar[list] = [
         pytest.param(
             "en",
-            "top 2 total: 🏆 @username: (0) 🥈 @channelname: (0) || You are in the 1th position in the ranking with 0.",
+            "top 2 total: 🏆 @username: (0) 🥈 @channelname: (0) || You are in the 1st position in the ranking with 0.",
             marks=pytest.mark.en,
             id="en",
         ),

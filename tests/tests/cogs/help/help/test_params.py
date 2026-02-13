@@ -39,7 +39,7 @@ class Params:
     wrong_command: ClassVar[list] = [
         pytest.param(
             "en",
-            'I dont have command with name "pign", maybe you meant "ping".',
+            'I don\'t have a command named "pign", maybe you meant "ping".',
             marks=pytest.mark.en,
             id="en",
         ),

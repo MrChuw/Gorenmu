@@ -16,8 +16,8 @@ class Params:
         pytest.param(
             "pt_BR",
             "Pega uma mensagem aleatória do canal ou de um usuário em um canal.",
-            "Para usar: `+rl channel:<nome do canal>` or `+rl user:<nome do usuário>` or `+rl` or`+rl "
-            'channel:<nome do canal> user:<nome do usuário> "',
+            'Para usar: `+rl channel:<nome do canal>` ou `+rl user:<nome do usuário>` ou `+rl` '
+            'ou `+rl channel:<nome do canal> user:<nome do usuário>`',
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class SafeBooruCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.TimeTools: TimeTools = TimeTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.UploadThings: UploadThings = UploadThings(bot)
@@ -29,6 +29,9 @@ class SafeBooruCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
@@ -40,15 +43,15 @@ class SafeBooruCmd(commands.CustomComponent):
         tags = args.split(" ")
 
         if len(tags) > 10:
-            return translations.too_much_tags(ctx, 10)
+            return translations.too_much_tags(10)
         timeout = self.TimeTools.Timeout.timeout(15)
 
         while True:
             _img, img_preview, response_final = await response(ctx, " ".join(tags), timeout, self)
             if not img_preview:
-                return self.translations.Exceptions.unexpected_error(ctx, response_final)
+                return self.translations.Exceptions.unexpected_error(response_final)
             if response_final:
-                return translations.success(ctx, response_final)
+                return translations.success(response_final)
 
 
 async def setup(bot: Gorenmu) -> None:
@@ -69,9 +72,9 @@ async def response(ctx: Context, args: str, timeout, command: SafeBooruCmd):
 
     response_final = " ".join(
         (
-            f"{translation.original(ctx)}: {img[i]} || {translation.preview(ctx)}: {img_preview[i]}"
+            f"{translation.original()}: {img[i]} || {translation.preview()}: {img_preview[i]}"
             if img_preview[i]
-            else f"{translation.original(ctx)}: {img[i]}"
+            else f"{translation.original()}: {img[i]}"
         )
         for i in range(len(img))
     )

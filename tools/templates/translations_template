@@ -2,90 +2,79 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase
+from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase, TranslationEntry
+
 
 if TYPE_CHECKING:
-    from bot.ext import Context, commands
     from bot.bot import Gorenmu
     from .{command_name} import {command_title}Cmd
 
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: {command_title}Cmd) -> None:
-        super().__init__(bot)
+        super().__init__(bot, __file__)
         self.parent: {command_title}Cmd = parent
         self.populate_subclasses(parent=self)
 
     class {command_title}(TBase):
         def __init__(self, parent: Translations):
             super().__init__(parent)
+            self.prefix = "{command_title}"
 
-        def placeholder(self, args) -> Response:
-            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "")
-                self.lang_dict.add_with(["pt_br", "pt"], "")
-            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+        def placeholder(self, **kwargs) -> Response:
+            text = self.get_text(self._cname, **kwargs)
+            return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
-        def placeholder2(self, args) -> Response:
-            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "")
-                self.lang_dict.add_with(["pt_br", "pt"], "")
-            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+        def placeholder_error(self, **kwargs) -> Response:
+            text = self.get_text(self._cname, **kwargs)
+            return Response(ctx=self.ctx_get(), success=False, response_string=text)
 
-        def placeholder3(self, args) -> Response:
-            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "")
-                self.lang_dict.add_with(["pt_br", "pt"], "")
-            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+        def placeholder_entry(self, **kwargs) -> str | TranslationEntry:
+            if not kwargs:
+                return self.get_entry(self._cname)
+            return self.get_text(self._cname, **kwargs)
 
-        def placeholder4(self, args) -> Response:
-            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "")
-                self.lang_dict.add_with(["pt_br", "pt"], "")
-            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+        def placeholder_list(self, **kwargs) -> list[str]:
+            return self.get_list(self._cname, **kwargs)
 
-        def placeholder5(self, args) -> Response:
-            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "")
-                self.lang_dict.add_with(["pt_br", "pt"], "")
-            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), args)
+        def placeholder_attributes_list(self, **kwargs) -> list[str]:
+            return self.get_attributes_list(self._cname)
+
+        # --- Help Methods ---
 
         def deco_helper(self, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "")
-                self.lang_dict.add_with(["pt_br", "pt"], "")
-            return self._untangle_str(self.ctx_get(), self._cname)
+            return self.get_text(self._cname)
 
         def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To use: {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}")
-            return self._untangle_str(self.ctx_get(), self._cname).format(prefix)
+            return self.get_text(self._cname, prefix=prefix)
 
         # region Hide.
 
         def deco_description(self, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "")
-                self.lang_dict.add_with(["pt_br", "pt"], "")
-            return self._untangle_str(self.ctx_get(), self._cname)
+            return self.get_text(self._cname)
 
         def deco_commands(self, *args, **kwargs) -> CommandExemples:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", CommandExemples([]))
-                self.lang_dict.add_with(["pt_br", "pt"], CommandExemples([]))
-            return self._untangle_commands(self.ctx_get(), self._cname)
+            return CommandExemples(
+                [
+                    {
+                        "prefix": self.get_text("cmd_ex1_prefix"),
+                        "args": "exemplo_arg",
+                        "response": self.get_text("cmd_ex1_res"),
+                    },
+                ]
+            )
 
         def deco_admonitions(self, *args, **kwargs) -> Admonitions:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", Admonitions([]))
-                self.lang_dict.add_with(["pt_br", "pt"], Admonitions([]))
-            return self._untangle_admonitions(self.ctx_get(), self._cname)
+            return Admonitions(
+                [
+                    {
+                        "admonition_type": "info",
+                        "position": "top",
+                        "title": self.get_text("adm_title"),
+                        "message": self.get_text("adm_msg"),
+                    }
+                ]
+            )
 
         # endregion
 

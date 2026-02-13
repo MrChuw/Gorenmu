@@ -92,17 +92,17 @@ class Params:
     big_site_one_url: ClassVar[list] = [
         pytest.param(
             "en",
-            "There is a total of 100000 characters. Of these, "
-            "24506 are punctuation marks, 19775 are uppercase letters, "
-            "and 17474 are special characters.",
+            "There is a total of 100,000 characters. Of these, "
+            "24,506 are punctuation marks, 19,775 are uppercase letters, "
+            "and 17,474 are special characters.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            "Há um total de caracteres 100000. Destes, "
-            "24506 são sinais de pontuação, 19775 são letras maiúsculas, "
-            "e 17474 são caracteres especiais.",
+            "Há um total de caracteres 100.000. Destes, "
+            "24.506 são sinais de pontuação, 19.775 são letras maiúsculas, "
+            "e 17.474 são caracteres especiais.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),
@@ -111,14 +111,14 @@ class Params:
     small_site_four_url: ClassVar[list] = [
         pytest.param(
             "en",
-            "There is a total of 2000 characters. Of these, 460 are punctuation marks, "
+            "There is a total of 2,000 characters. Of these, 460 are punctuation marks, "
             "428 are uppercase letters, and 304 are special characters.",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            "Há um total de caracteres 2000. Destes, 460 são sinais de pontuação, "
+            "Há um total de caracteres 2.000. Destes, 460 são sinais de pontuação, "
             "428 são letras maiúsculas, e 304 são caracteres especiais.",
             marks=pytest.mark.pt_BR,
             id="pt_BR",

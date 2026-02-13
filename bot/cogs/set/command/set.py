@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class SetCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
 
     cooldown_rate = 3
@@ -33,22 +33,22 @@ class SetCmd(commands.CustomComponent):
         self.translations.ctx_set(ctx)
 
     @commands.group(name="set", aliases=[], invoke_fallback=True)
-    async def set(self, ctx: Context, *, args) -> Response:
-        return self.translations.Exceptions.echo(ctx, args)
+    async def set(self, ctx: Context, *, args) -> Response:  # NOQA
+        return self.translations.Exceptions.echo(args)
 
     @set.command(name="mention", aliases=[], pipeble=False)
     async def set_mention(self, ctx: Context, *, args: str) -> Response:
         translations = self.translations.Mention
         if args.lower() not in ["on", "off"]:
-            return translations.on_off_wrong_option(ctx, args)
+            return translations.on_off_wrong_option(args)
         ctx.user.mention = args.lower() == "on"
         await ctx.user.save()
-        return translations.mention_on(ctx) if args == "on" else translations.mention_off(ctx)
+        return translations.mention_on() if args == "on" else translations.mention_off()
 
     @set.command(name="city", aliases=["savecity", "savelocation", "location"], whispable=True)
     async def set_city(self, ctx: Context, *, args: str) -> Response:
         translations = self.translations.City
-        args, hidden = self.StringTools.extract_and_remove_bool_field(args, "hidden", self.translations, ctx)
+        args, hidden = self.StringTools.extract_and_remove_bool_field(args, "hidden", self.translations)
         city = args.lower()
         ctx.user.city_hidden = True
         if hidden is False:
@@ -56,26 +56,26 @@ class SetCmd(commands.CustomComponent):
         if city == "remove":
             ctx.user.city = None
             await ctx.user.save()
-            return translations.city_removed(ctx)
+            return translations.city_removed()
         ctx.user.city = city
         await ctx.user.save()
-        return translations.city_added(ctx)
+        return translations.city_added()
 
     @set.command(name="nick", aliases=["nickname"], pipeble=False)
     async def set_nick(self, ctx: Context, *, args: str) -> Response:
         translations = self.translations.Nick
         nickname = args
         if len(nickname) > 32:
-            return translations.nick_too_large(ctx, len(nickname))
+            return translations.nick_too_large(len(nickname))
         if nickname[0] in string.punctuation:
             nickname = f"️{args}"
         if nickname.lower() == "remove":
             ctx.user.nickname = None
             await ctx.user.save()
-            return translations.nick_removed(ctx)
+            return translations.nick_removed()
         ctx.user.nickname = nickname
         await ctx.user.save()
-        return translations.nick_changed(ctx)
+        return translations.nick_changed()
 
     @set.command(name="color", aliases=[], pipeble=False)
     async def set_color(self, ctx: Context, *, args: str) -> Response:
@@ -83,26 +83,26 @@ class SetCmd(commands.CustomComponent):
         if args.lower() == "remove":
             ctx.user.color = None
             await ctx.user.save()
-            return translations.color_removed(ctx)
+            return translations.color_removed()
         match = re.match(r"^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", args)
         color = f"#{match[1].lower()}" if match else ctx.author.color
         ctx.user.color = color
         await ctx.user.save()
-        return translations.color_changed(ctx, color)
+        return translations.color_changed(color)
 
     @set.command(name="reminder", aliases=[], pipeble=False)
     async def set_reminder(self, ctx: Context, *, args: str) -> Response:
         translations = self.translations.Reminder
         if args.lower() not in ["on", "off"]:
-            return self.translations.Mention.on_off_wrong_option(ctx, args)
+            return self.translations.Mention.on_off_wrong_option(args)
         if args.lower() == "on":
             ctx.user.block = True
             await ctx.user.save()
-            return translations.reminder_on(ctx)
+            return translations.reminder_on()
         else:
             ctx.user.block = False
             await ctx.user.save()
-            return translations.reminder_off(ctx)
+            return translations.reminder_off()
 
     @commands.guard([Role.admin])
     @set.command(name="banword", aliases=[])

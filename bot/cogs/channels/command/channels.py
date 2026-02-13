@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ChannelsCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
 
     cooldown_rate = 3
@@ -22,6 +22,9 @@ class ChannelsCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -31,13 +34,13 @@ class ChannelsCmd(commands.CustomComponent):
     async def channels(self, ctx: Context, extras=None) -> Response:
         translations = self.translations.Channels
         if extras == "quantity":
-            return translations.quantity(ctx, len(ctx.bot.channels))
+            return translations.quantity(len(ctx.bot.channels))
         if extras == "ping":
             channels = ", ".join(f"@{channel}" for channel in ctx.bot.channels)
-            return translations.names(ctx, channels)
+            return translations.names(channels)
         inv = self.StringTools.inv_char()
         channels = ", ".join(f"@{channel}{inv}" for channel in ctx.bot.channels)
-        return translations.names(ctx, channels)
+        return translations.names(channels)
 
 
 async def setup(bot: Gorenmu) -> None:

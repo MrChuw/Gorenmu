@@ -1,4 +1,4 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 import sys
 from pathlib import Path
 
@@ -43,33 +43,40 @@ def main() -> None:
 
     command_name = sys.argv[1]
     command_title = sys.argv[2]
+
     root = Path(__file__).resolve().parent.parent
     tools_dir = Path(__file__).resolve().parent
     templates_dir = tools_dir / "templates"
 
-    # Target directories
-    bot_dir = root / f"bot/cogs/{command_name}/command"
+    # Diretórios de Destino
+    cog_dir = root / f"bot/cogs/{command_name}"
+    bot_dir = cog_dir / "command"
+    locales_dir = cog_dir / "locales"
     tests_dir = root / f"tests/tests/cogs/{command_name}/{command_name}"
 
-    # Template to output mapping
+    # Lista de arquivos a criar
     files_to_create = [
+        # Código e Traduções Python
         (templates_dir / "command_template", bot_dir / f"{command_name}.py"),
         (templates_dir / "translations_template", bot_dir / "translations.py"),
-        (
-            templates_dir / "test_command_template",
-            tests_dir / f"test_{command_name}.py",
-        ),
+        # Novos arquivos de tradução Fluent (.ftl)
+        (templates_dir / "translations_ftl_template", locales_dir / "en.ftl"),
+        (templates_dir / "translations_ftl_template", locales_dir / "pt_BR.ftl"),
+        # Testes
+        (templates_dir / "test_command_template", tests_dir / f"test_{command_name}.py"),
         (templates_dir / "test_params_template", tests_dir / "test_params.py"),
     ]
+
     for template_path, output_path in files_to_create:
         create_file_from_template(template_path, output_path, command_name, command_title)
 
-    ensure_init_for_path(root / f"bot/cogs/{command_name}", root / "bot")
+    # Garante os __init__.py
+    ensure_init_for_path(cog_dir, root / "bot")
     ensure_init_for_path(bot_dir, root / "bot")
     ensure_init_for_path(root / f"tests/tests/cogs/{command_name}", root / "tests")
     ensure_init_for_path(tests_dir, root / "tests")
 
-    print("All files and __init__.py created successfully.")
+    print(f"\nSuccessfully created structure for '{command_title}' in '{command_name}'!")
 
 
 if __name__ == "__main__":

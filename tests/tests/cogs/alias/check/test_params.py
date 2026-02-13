@@ -84,8 +84,8 @@ class Params:
     special_case: ClassVar[list] = [
         pytest.param(
             "en",
-            "Special case!\n "
-            'Your alias "The_Tests_user": https://shlink.mrchuw.com.br/uQqt5\n '
+            "Special case!\n"
+            'Your alias "The_Tests_user": https://shlink.mrchuw.com.br/uQqt5\n'
             "List of The_Tests_user's aliases: https://shlink.mrchuw.com.br/uQqt5",
             marks=pytest.mark.en,
             id="en",

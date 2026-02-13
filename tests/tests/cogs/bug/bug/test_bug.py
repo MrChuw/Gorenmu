@@ -15,9 +15,9 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Bug.deco_usage(mock_context, "+"), usage, strict=True)
-    mock_context.Asserter.assert_string(interact.translations.Bug.deco_helper(mock_context, "+"), helper, strict=True)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Bug.deco_usage("+"), usage, strict=True)
+    mock_context.Asserter.assert_string(interact.translations.Bug.deco_helper("+"), helper, strict=True)
 
 
 # To lazy to make this tests too.

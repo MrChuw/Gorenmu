@@ -6,50 +6,35 @@ from bot.ext import Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context
+
+    from .nicks import NicksCmd
 
 
 class Translations(TranslationBase):
-    def __init__(self, bot: Gorenmu) -> None:
-        super().__init__(bot)
-        self.populate_subclasses()
+    def __init__(self, bot: Gorenmu, parent: NicksCmd) -> None:
+        super().__init__(bot, __file__)
+        self.parent: NicksCmd = parent
+        self.populate_subclasses(parent=self)
 
     class Nicks(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
+            self.prefix = "Nicks"
 
-        def not_seen(self, ctx: Context, name) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(
-                    "en",
-                    'I have never seen anyone with the nick "{}" in any tracked chat.',
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    'Nunca vi ninguém com o nick "{}" em nenhum chat rastreado.',
-                )
-            return response.format_response(self._untangle_str(ctx, self._cname), name)
+        def not_seen(self, name: str) -> Response:
+            text = self.get_text(self._cname, name=name)
+            return Response(ctx=self.ctx_get(), success=False, response_string=text)
 
-        def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "User nickname history.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Histórico de nicks de um usuário.")
-            return self._untangle_str(ctx, self._cname)
+        def deco_helper(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To use: {}nicks (user nick)")
-                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}nicks (nick do usuário)")
-            return self._untangle_str(ctx, self._cname).format(prefix)
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            return self.get_text(self._cname, prefix=prefix)
 
         # region Hide.
 
-        def deco_description(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "User nickname history.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Histórico de nicks de um usuário.")
-            return self._untangle_str(ctx, self._cname)
+        def deco_description(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
         # endregion
 

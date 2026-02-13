@@ -6,45 +6,32 @@ from bot.ext import Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context
+
+    from .bug import BugCmd
 
 
 class Translations(TranslationBase):
-    def __init__(self, bot: Gorenmu) -> None:
-        super().__init__(bot)
-        self.populate_subclasses()
+    def __init__(self, bot: Gorenmu, parent: BugCmd) -> None:
+        super().__init__(bot, __file__)
+        self.parent: BugCmd = parent
+        self.populate_subclasses(parent=self)
 
     class Bug(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
+            self.prefix = "Bug"
 
-        def bug(self, ctx: Context, bug_id) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "your bug has been reported 🐛 (ID {})")
-                self.lang_dict.add_with(["pt_br", "pt"], "seu bug foi reportado 🐛 (ID {})")
-            return response.format_response(self._untangle_str(ctx, self._cname), bug_id)
+        def bug(self, bug_id: str | int) -> Response:
+            text = self.get_text(self._cname, bug_id=bug_id)
+            return Response(ctx=self.ctx_get(), success=False, response_string=text)
 
-        def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "report a bug that occurred in the Bot.")
-                self.lang_dict.add_with(["pt_br", "pt"], "reporte um bug que ocorreu no Bot.")
-            return self._untangle_str(ctx, self._cname)
+        def deco_helper(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To use: {}bug (description)")
-                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}bug (descrição)")
-            return self._untangle_str(ctx, self._cname).format(prefix)
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            return self.get_text(self._cname, prefix=prefix)
 
-        # region Hide.
-
-        def deco_description(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "report a bug that occurred in the Bot.")
-                self.lang_dict.add_with(["pt_br", "pt"], "reporte um bug que ocorreu no Bot.")
-            return self._untangle_str(ctx, self._cname)
-
-        # endregion
+        def deco_description(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
     Bug: Bug

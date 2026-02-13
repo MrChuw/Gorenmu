@@ -148,8 +148,10 @@ class CommandHandler:
         if isinstance(error, OwnerRequiredError):
             await ctx.simple_response(ctx, translations.Exceptions.owner_required(ctx).response_string)
         if isinstance(error, CommandOnCooldown):
-            format_string = translations.SupportTools.TimeTools.Humanize(ctx).naturaltime(error.remaining, future=True)
-            cooldown_str = translations.Exceptions.command_on_cooldown(ctx, format_string)
+            format_string = translations.SupportTools.TimeTools.Humanize(ctx.user.get_lang()).naturaltime(
+                error.remaining, future=True
+            )
+            cooldown_str = translations.Exceptions.command_on_cooldown(format_string)
             return await ctx.simple_response(ctx, cooldown_str.response_string)
         if isinstance(error, NotImplementedError):
             return await ctx.simple_response(ctx, translations.Exceptions.not_implemented(ctx).response_string)
@@ -161,7 +163,7 @@ class CommandHandler:
             return None
         self.bot.log.error(error)
         return await ctx.simple_response(
-            ctx, translations.Exceptions.error_not_registered(ctx, self.bot.dev_user.display_name).response_string
+            ctx, translations.Exceptions.error_not_registered(self.bot.dev_user.display_name).response_string
         )
 
     async def wait_for(self, event: str, *, timeout: float | None = None, predicate=None, **kwargs) -> Any:

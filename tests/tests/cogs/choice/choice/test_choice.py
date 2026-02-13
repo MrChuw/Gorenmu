@@ -15,9 +15,9 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Choice.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Choice.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Choice.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Choice.deco_helper("+"), helper)
 
 
 async def base_choice(
@@ -28,7 +28,7 @@ async def base_choice(
     expected: str,
     success: bool = False,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.choice._callback(self=interact, ctx=mock_context, content=content)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected)
     mock_context.Asserter.assert_boolean(response.success, success)

@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class JoinCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
 
     cooldown_rate = 3

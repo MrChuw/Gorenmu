@@ -21,8 +21,8 @@ class Params:
         ),
     ]
     no_content: ClassVar[list] = [
-        pytest.param("en", "1234", marks=pytest.mark.en, id="en"),
-        pytest.param("pt_BR", "1234", marks=pytest.mark.pt_BR, id="pt_BR"),
+        pytest.param("en", "1,234", marks=pytest.mark.en, id="en"),
+        pytest.param("pt_BR", "1.234", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
 
     invalid_user: ClassVar[list] = [

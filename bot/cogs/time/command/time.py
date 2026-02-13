@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class TimeCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
         self.TimeTools: TimeTools = TimeTools()
 
@@ -26,6 +26,9 @@ class TimeCmd(commands.CustomComponent):
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
+
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
@@ -33,12 +36,14 @@ class TimeCmd(commands.CustomComponent):
     @commands.command(name="time", aliases=[])
     async def time(self, ctx: Context, unit: str, *, args: str) -> Response:
         if not args.isascii() or not unit.isascii():
-            return self.translations.Time.only_latin(ctx)
+            return self.translations.Time.only_latin()
         extract = self.StringTools.extract_and_remove_all_fields
         rest, tipos = extract(args, "type", ["delta"])
         rest, lang = extract(rest, "lang", ["guess"])
         rest, accu = extract(rest, "accu", ["4"])
-        lang = self.translations.Time.get_lang(ctx, lang[0].lower() != "guess", lang[0].lower() != "guess")
+        lang = self.translations.Time.get_lang(
+            lang[0].lower() != "guess", lang[0].lower() != "guess", ctx.user.language
+        )
         dateconfig = DateParserConfig(allow_past=any(past in rest for past in lang().past.terms))
         lang = lang(dateconfig=dateconfig)
         rest = self.StringTools.remove_numeric_underscores(rest)
@@ -55,23 +60,23 @@ class TimeCmd(commands.CustomComponent):
             time = time.replace(tzinfo=None)
 
         if not tl.result.delta and not tl.result.date:
-            return self.translations.Time.overflow(ctx)
+            return self.translations.Time.overflow()
 
         try:
             precisedelta = await self.to_precise(accu[0], ctx, minimum, supress, time, tl, unit)
         except OverflowError:
-            return self.translations.Time.overflow(ctx)
+            return self.translations.Time.overflow()
         except Exception as error:
             await self.bot.CommandHandler.send_bug(ctx, error)
             ctx.bot.log.warning(error)
-            return self.translations.Exceptions.error(ctx)
+            return self.translations.Exceptions.error()
 
         if mode in tl.locale.past.terms:
-            return self.translations.Time.past(ctx, precisedelta)
+            return self.translations.Time.past(precisedelta)
         elif mode in ("now", "future", *tl.locale.future.terms):
-            return self.translations.Time.future(ctx, precisedelta)
+            return self.translations.Time.future(precisedelta)
         else:
-            return self.translations.Time.present(ctx, precisedelta)
+            return self.translations.Time.present(precisedelta)
 
     @staticmethod
     def _to_seconds(time: datetime | timedelta) -> float:
@@ -113,7 +118,7 @@ class TimeCmd(commands.CustomComponent):
                 f"{tl.locale.century.singular if seconds <= 1 else tl.locale.century.plural}"
             )
         else:
-            precisedelta = self.translations.SupportTools.TimeTools.Humanize(ctx).precisedelta(
+            precisedelta = self.translations.SupportTools.TimeTools.Humanize(ctx.user.language).precisedelta(
                 time, suppress=supress, minimum_unit=minimum, format=f"%0.{accu}f"
             )
         return precisedelta

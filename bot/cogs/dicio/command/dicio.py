@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class DicioCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
@@ -23,6 +23,9 @@ class DicioCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -34,28 +37,24 @@ class DicioCmd(commands.CustomComponent):
         word, lang = self.StringTools.extract_and_remove_field(content, "lang", ctx.user.language or "en")
         word, lang = word.lower(), lang.lower()
         if lang == "languages":
-            return translations.all_languages(ctx, translations.languages("languages"))
+            return translations.all_languages(translations.languages("languages"))
 
         json_response = await self.get_word(word, lang)  # NOQA
         if "error" in json_response:
             return translations.error(
-                ctx,
                 self.bot.config.ApisConfig.dicio_url / "languages",
                 self.bot.dev_user.display_name,
             )
 
         if json_response["exist"]:
-            exist = translations.exist(ctx)
+            exist = translations.check_exist(True)
             url = translations.url(lang, word)
         else:
-            exist = translations.not_exist(ctx)
+            exist = translations.check_exist(False)
             url = ""
-
         similar = ", ".join(json_response["suggestions"]) if json_response["suggestions"] else ""
-
         origin = ", ".join(json_response["stem"]) if json_response["stem"] else word if json_response["exist"] else ""
-
-        return translations.response(ctx, word, exist, similar, origin, url)
+        return translations.response(word, exist, similar, origin, url)
 
     async def get_word(self, word: str, lang: str) -> dict:
         session = self.SessionsCaches.Dicio.session

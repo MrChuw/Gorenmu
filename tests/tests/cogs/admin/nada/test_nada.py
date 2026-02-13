@@ -7,9 +7,9 @@ from tests.tests.cogs.admin.nada.test_params import Params
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Nada.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Nada.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Nada.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Nada.deco_helper("+"), helper)
 
 
 # @pytest.mark.asyncio

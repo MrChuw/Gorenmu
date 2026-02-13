@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from bot.ext.translations.extras import Humanize as ExtrasHumanize
@@ -7,60 +8,88 @@ from bot.ext.translations.extras import Humanize as ExtrasHumanize
 from . import ClassBase, TBase
 
 if TYPE_CHECKING:
-    from bot.ext import Context, TranslationBase
+    from bot.ext import TranslationBase
+
+
+@lru_cache(maxsize=8)
+def _get_humanize_data(instance: TBase, lang: str | None = None) -> ExtrasHumanize:
+    context = instance.ctx_get()
+    lang = lang or context.user.language or "en"
+
+    units_keys = [
+        "years",
+        "months",
+        "weeks",
+        "days",
+        "hours",
+        "minutes",
+        "seconds",
+        "milliseconds",
+        "microseconds",
+        "time",
+    ]
+
+    patterns = {unit: instance.get_list(f"unit_{unit}") for unit in units_keys}
+
+    if lang != "en":
+        en_patterns = {unit: instance.get_list_by_lang("en", f"unit_{unit}", include_en=False) for unit in units_keys}
+        return ExtrasHumanize(patterns, lang, en_patterns)
+
+    return ExtrasHumanize(patterns, "en")
 
 
 class OtherTools(ClassBase):
     class SupportTools(ClassBase, TBase):
-        def __init__(self, parent: TranslationBase | None = None):
-            super().__init__(parent)
+        def __init__(self, parent: TranslationBase | None = None, file=None):
+            super().__init__(parent, file)
             self.populate_subclasses(parent)
 
         class LanguageContext(ClassBase, TBase):
             def __init__(self, parent: TranslationBase | None = None):
                 super().__init__(parent)
+                self.prefix = "LanguageContext"
                 self.populate_subclasses(parent)
 
-            def mention(self, ctx: Context, author_name: str, target_name: str) -> str:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with("en", "you")
-                    self.lang_dict.add_with(["pt_br", "pt"], "você")
-                mention = self._untangle_str(ctx, self._cname)
-                return mention if target_name == author_name else f"@{target_name}"
+            def mention(self, author_name: str, target_name: str) -> str:
+                if target_name.lower() == author_name.lower():
+                    return self.get_text(self._cname)
+                return f"@{target_name}"
 
             class Verbs(TBase):
                 def __init__(self, parent: TranslationBase | None = None):
                     super().__init__(parent)
+                    self.prefix = "LanguageContext_Verbs"
 
-                def cookies_second_person(self, ctx: Context) -> str:
-                    with self.lang_dict.once(self._cname):
-                        self.lang_dict.add_with("en", "have")
-                        self.lang_dict.add_with(["pt_br", "pt"], "já comeu")
-                    return self._untangle_str(ctx, self._cname)
+                def cookies_second_person(self) -> str:
+                    return self.get_text(self._cname)
 
-                def cookies_third_person(self, ctx: Context) -> str:
-                    with self.lang_dict.once(self._cname):
-                        self.lang_dict.add_with("en", "has")
-                        self.lang_dict.add_with(["pt_br", "pt"], "já comeu")
-                    return self._untangle_str(ctx, self._cname)
+                def cookies_third_person(self) -> str:
+                    return self.get_text(self._cname)
 
-                def positive(self, ctx: Context) -> list[str]:
-                    with self.lang_dict.once(self._cname):
-                        self.lang_dict.add_with("en", ["True"])
-                        self.lang_dict.add_with(["pt_br", "pt"], ["Sim"])
-                    return self._untangle_any(ctx, self._cname) + self._untangle_any_lang("en", self._cname)
+                def positive(self, lang: str | None = None, include_en=True) -> list[str]:
+                    return self.get_list_by_lang(
+                        lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
+                    )
 
-                def negative(self, ctx: Context) -> list[str]:
-                    with self.lang_dict.once(self._cname):
-                        self.lang_dict.add_with("en", ["False"])
-                        self.lang_dict.add_with(["pt_br", "pt"], ["Não"])
-                    return self._untangle_any(ctx, self._cname) + self._untangle_any_lang("en", self._cname)
+                def negative(self, lang: str | None = None, include_en=True) -> list[str]:
+                    return self.get_list_by_lang(
+                        lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
+                    )
 
-                def nothing(self, ctx: Context) -> list[str]:
-                    with self.lang_dict.once(self._cname):
-                        self.lang_dict.add_with("en", ["None"])
-                        self.lang_dict.add_with(["pt_br", "pt"], ["Nenhum"])
-                    return self._untangle_any(ctx, self._cname) + self._untangle_any_lang("en", self._cname)
+                def nothing(self, lang: str | None = None, include_en=True) -> list[str]:
+                    return self.get_list_by_lang(
+                        lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
+                    )
+
+                def separators(self, lang: str | None = None, include_en=True) -> list[str]:
+                    return self.get_list_by_lang(
+                        lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
+                    )
+
+                def all(self, lang: str | None = None, include_en=True) -> list[str]:
+                    return self.get_list_by_lang(
+                        lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
+                    )
 
             Verbs: Verbs
 
@@ -69,57 +98,39 @@ class OtherTools(ClassBase):
         class TimeTools(TBase):
             def __init__(self, parent: TranslationBase | None = None):
                 super().__init__(parent)
+                self.prefix = "TimeTools"
 
-            def strftime(self, ctx: Context) -> str:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with("en", "%m/%d/%Y at %I:%M %p")
-                    self.lang_dict.add_with(["pt_br", "pt"], "%d/%m/%Y às %H:%M:%S")
-                return self._untangle_str(ctx, self._cname)
+            def strftime(self) -> str:
+                return self.get_text("strftime")
 
             strftime: str
 
-            def Humanize(self, ctx: Context = None) -> ExtrasHumanize:  # NOQA
-                if not ctx:
-                    ctx = self.ctx_get()
-                cname = self._cname.lower()
-                with self.lang_dict.once(cname):
-                    en_pattern = ExtrasHumanize(
-                        {
-                            "years": ["years", "year", "y"],
-                            "months": ["months", "month", "mo"],
-                            "weeks": ["weeks", "week", "w"],
-                            "days": ["days", "day", "d"],
-                            "hours": ["hours", "hour", "h"],
-                            "minutes": ["minutes", "minute", "min", "m"],
-                            "seconds": ["seconds", "second", "secs", "sec", "s"],
-                            "milliseconds": ["milliseconds", "millisecond", "millisecs", "millisec", "milli"],
-                            "microseconds": ["microseconds", "microsecond", "micro", "us"],
-                            "time": ["time", "t"],
-                        },
-                        "en",
-                    )
-                    self.lang_dict.add_with("en", en_pattern)
-                    self.lang_dict.add_with(
-                        ["pt_br", "pt"],
-                        ExtrasHumanize(
-                            {
-                                "years": ["anos", "ano", "a"],
-                                "months": ["meses", "mês", "mo"],
-                                "weeks": ["semanas", "semana", "w"],
-                                "days": ["dias", "dia", "d"],
-                                "hours": ["horas", "hora", "h"],
-                                "minutes": ["minutos", "minuto", "min", "m"],
-                                "seconds": ["segundos", "segundo", "segs", "seg", "s"],
-                                "milliseconds": ["milissegundos", "milissegundo", "milisecs", "milisec", "mili"],
-                                "microseconds": ["microssegundos", "microssegundo", "micro", "us"],
-                                "time": ["tempo", "t"],
-                            },
-                            "pt_BR",
-                            en_pattern.pattern,
-                        ),
-                    )
-
-                return self._untangle_any(ctx, cname)
+            def Humanize(self, lang: str = None) -> ExtrasHumanize:  # NOQA
+                return _get_humanize_data(self, lang)
+                # context = self.ctx_get()
+                # lang = context.user.language or "en"
+                # units_keys = [
+                #     "years",
+                #     "months",
+                #     "weeks",
+                #     "days",
+                #     "hours",
+                #     "minutes",
+                #     "seconds",
+                #     "milliseconds",
+                #     "microseconds",
+                #     "time",
+                # ]
+                #
+                # patterns = {unit: self.get_list(f"unit_{unit}") for unit in units_keys}
+                #
+                # if lang != "en":
+                #     en_patterns = {
+                #         unit: self.get_list_by_lang("en", f"unit_{unit}", include_en=False) for unit in units_keys
+                #     }
+                #     return ExtrasHumanize(patterns, lang, en_patterns)
+                #
+                # return ExtrasHumanize(patterns, "en")
 
             Humanize: ExtrasHumanize
 
@@ -128,92 +139,53 @@ class OtherTools(ClassBase):
         class Emotes(TBase):
             def __init__(self, parent: TranslationBase | None = None):
                 super().__init__(parent)
+                self.prefix = "Emotes"
 
-            def happy(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["happy"])
-                return self._untangle_any(ctx, self._cname)
+            def happy(self, lang: str | None = None) -> list[str]:
+                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def pog(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["pog"])
-                return self._untangle_any(ctx, self._cname)
+            def pog(self, lang: str | None = None) -> list[str]:
+                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def sad(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["sad"])
-                return self._untangle_any(ctx, self._cname)
+            def sad(self, lang: str | None = None) -> list[str]:
+                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def love(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["love"])
-                return self._untangle_any(ctx, self._cname)
+            def love(self, lang: str | None = None) -> list[str]:
+                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def hug(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["hug"])
-                return self._untangle_any(ctx, self._cname)
+            def hug(self, lang: str | None = None) -> list[str]:
+                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def pat(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["pat"])
-                return self._untangle_any(ctx, self._cname)
+            def pat(self, lang: str | None = None) -> list[str]:
+                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def hit(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["hit"])
-                return self._untangle_any(ctx, self._cname)
+            def hit(self, lang: str | None = None) -> list[str]:
+                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def okay(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["okay"])
-                return self._untangle_any(ctx, self._cname)
+            def okay(self, lang: str | None = None) -> list[str]:
+                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def bed(self, ctx: Context) -> list[str]:
-                with self.lang_dict.once(self._cname):
-                    self.lang_dict.add_with(["en", "pt_br", "pt"], ["bed"])
-                return self._untangle_any(ctx, self._cname)
+            def bed(self, lang: str | None = None) -> list[str]:
+                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
         Emotes: Emotes
 
     SupportTools: SupportTools
 
     class GenericWait(TBase):
-        def __init__(self, parent: TranslationBase | None = None):
-            super().__init__(parent)
+        def __init__(self, parent: TranslationBase | None = None, file=None):
+            super().__init__(parent, file)
+            self.prefix = "GenericWait"
 
         def already_in_action(self, action: str, user1: str, user2: str) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "A {} is already happening between @{} and @{}")
-                self.lang_dict.add_with(["pt_br", "pt"], "Um(a) {} já está ocorrendo entre @{} e @{}")
-            return self._untangle_str(self.ctx_get(), self._cname).format(action, user1, user2)
+            return self.get_text(self._cname, action=action, user1=user1, user2=user2)
 
-        def accept(self) -> list[str]:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", ["yes", "y"])
-                self.lang_dict.add_with(["pt_br", "pt"], ["sim", "s"])
-            return self.lang_dict.get_lang_any(lang="en", namespace=self._cname) + self._untangle_any(
-                self.ctx_get(), self._cname
-            )
+        def accept(self, lang: str | None = None) -> list[str]:
+            target_lang = lang or self.ctx_get().user.get_lang() or "en"
+            return self.get_list_by_lang(target_lang, self._cname)
 
-        def reject(self) -> list[str]:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", ["no", "n"])
-                self.lang_dict.add_with(["pt_br", "pt"], ["não", "nao", "n"])
-            return self.lang_dict.get_lang_any(lang="en", namespace=self._cname) + self._untangle_any(
-                self.ctx_get(), self._cname
-            )
-
-        def deco_helper(self, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "4")
-                self.lang_dict.add_with(["pt_br", "pt"], "")
-            return self._untangle_str(self.ctx_get(), self._cname)
-
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To use: {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}")
-            return self._untangle_str(self.ctx_get(), self._cname).format(prefix)
+        def reject(self, lang: str | None = None) -> list[str]:
+            target_lang = lang or self.ctx_get().user.get_lang() or "en"
+            return self.get_list_by_lang(target_lang, self._cname)
 
     GenericWait: GenericWait

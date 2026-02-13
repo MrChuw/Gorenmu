@@ -7,53 +7,39 @@ from bot.ext import Response, TBase, TranslationBase
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
+    from .shorten import ShortenCmd
+
 
 class Translations(TranslationBase):
-    def __init__(self, bot: Gorenmu) -> None:
-        super().__init__(bot)
+    def __init__(self, bot: Gorenmu, parent: ShortenCmd) -> None:
+        super().__init__(bot, __file__)
+        self.parent: ShortenCmd = parent
         self.populate_subclasses(parent=self)
 
     class Shorten(TBase):
         def __init__(self, parent: Translations):
             super().__init__(parent)
+            self.prefix = "Shorten"
 
         def api_erro(self) -> Response:
-            response = Response(ctx=self.ctx_get(), success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "The shortener API is currently experiencing issues.")
-                self.lang_dict.add_with(["pt_br", "pt"], "A API do encurtador apresentando problemas no momento.")
-            return response.format_response(self._untangle_str(self.ctx_get(), self._cname))
+            text = self.get_text(self._cname)
+            return Response(ctx=self.ctx_get(), success=False, response_string=text)
 
-        def urls(self, urls) -> Response:
-            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Here are all the URLs: {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "Aqui estão todos os URLs: {}")
-            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), urls)
+        def urls(self, urls: str) -> Response:
+            text = self.get_text(self._cname, urls=urls)
+            return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
-        def url(self, url) -> Response:
-            response = Response(ctx=self.ctx_get(), success=True, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Here is the URL: {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "Aqui está URL: {}")
-            return response.format_response(self._untangle_str(self.ctx_get(), self._cname), url)
+        def url(self, url: str) -> Response:
+            text = self.get_text(self._cname, url=url)
+            return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
         def deco_helper(self, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Shorten links using my link shortening service.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Encurta links usando o meu serviço de encurtar links.")
-            return self._untangle_str(self.ctx_get(), self._cname)
+            return self.get_text(self._cname)
 
         def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To use: {}shorten (links)")
-                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}shorten (links)")
-            return self._untangle_str(self.ctx_get(), self._cname).format(prefix)
+            return self.get_text(self._cname, prefix=prefix)
 
         def deco_description(self, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Shorten links using my link shortening service.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Encurta links usando o meu serviço de encurtar links.")
-            return self._untangle_str(self.ctx_get(), self._cname)
+            return self.get_text(self._cname)
 
     Shorten: Shorten

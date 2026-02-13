@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class HyperTranslateCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.StringTools: StringTools = StringTools()
 
@@ -28,6 +28,9 @@ class HyperTranslateCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
@@ -43,14 +46,14 @@ class HyperTranslateCmd(commands.CustomComponent):
         quantity = int(quantity)
         text, output_lang = self.StringTools.remove_prefixed_option(text, "lang:")
         sleep = 0 if quantity > 500 else 0.5
-        await ctx.simple_response(ctx, translations.starter_string(ctx))
+        await ctx.simple_response(ctx, translations.starter_string())
         for runs in range(1, quantity + 2):
             try:
                 await asyncio.sleep(sleep)
                 if runs == quantity:
                     target = "en"
                 elif runs == quantity + 1:
-                    target = output_lang or translations.base_lang(ctx)
+                    target = output_lang or translations.base_lang()
                 else:
                     target = random.choice(list(GOOGLE_LANGS.values()))
                 translator = GoogleTranslator(session=session, target=target)
@@ -63,8 +66,8 @@ class HyperTranslateCmd(commands.CustomComponent):
                 await asyncio.sleep(10)
 
         if not text:
-            return translations.unexpected_error(ctx)
-        return translations.translation(ctx, text)
+            return translations.unexpected_error()
+        return translations.translation(text)
 
 
 async def setup(bot: Gorenmu) -> None:

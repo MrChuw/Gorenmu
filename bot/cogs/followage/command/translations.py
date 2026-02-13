@@ -2,74 +2,50 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from bot.ext import Response, TBase, TranslationBase
+from bot.ext import CommandExemples, Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context
+
+    from .followage import FollowAgeCmd
 
 
 class Translations(TranslationBase):
-    def __init__(self, bot: Gorenmu) -> None:
-        super().__init__(bot)
-        self.populate_subclasses()
+    def __init__(self, bot: Gorenmu, parent: FollowAgeCmd) -> None:
+        super().__init__(bot, __file__)
+        self.parent: FollowAgeCmd = parent
+        self.populate_subclasses(parent=self)
 
     class FollowAge(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
+            self.prefix = "FollowAge"
 
-        def follow(self, ctx: Context, mention: str, mention_channel: str, delta: str) -> Response:
-            response = Response(ctx=ctx, success=True, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "{} follows {} for {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "{} segue {} {}")
-            return response.format_response(self._untangle_str(ctx, self._cname), mention, mention_channel, delta)
+        def follow(self, mention: str, mention_channel: str, delta: str) -> Response:
+            text = self.get_text(self._cname, mention=mention, channel=mention_channel, delta=delta)
+            return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
-        def not_followed(self, ctx: Context, mention, mention_channel) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "{} does not follow {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "{} não segue {}")
-            return response.format_response(self._untangle_str(ctx, self._cname), mention, mention_channel)
+        def not_followed(self, mention: str, mention_channel: str) -> Response:
+            text = self.get_text(self._cname, mention=mention, channel=mention_channel)
+            return Response(ctx=self.ctx_get(), success=False, response_string=text)
 
-        def self_follow(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "Obviously you can't follow yourself.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Obviamente vc não pode seguir vc mesmo.")
-            return response.format_response(self._untangle_str(ctx, self._cname))
+        def self_follow(self) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=self.ctx_get(), success=False, response_string=text)
 
-        def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(
-                    "en",
-                    "Command used to check how long someone has been following a channel.",
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    "Comando utilizado para verificar a quanto tempo alguém segue um canal.",
-                )
-            return self._untangle_str(ctx, self._cname)
+        def deco_helper(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "{}followage (user) (channel)")
-                self.lang_dict.add_with(["pt_br", "pt"], "{}followage (usuário) (canal)")
-            return self._untangle_str(ctx, self._cname).format(prefix)
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            return self.get_text(self._cname, prefix=prefix)
 
         # region Hide.
 
-        def deco_description(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(
-                    "en",
-                    "Command used to check how long someone has been following a channel.",
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    "Comando utilizado para verificar a quanto tempo alguém segue um canal.",
-                )
-            return self._untangle_str(ctx, self._cname)
+        def deco_description(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
+
+        def deco_commands(self, *args, **kwargs) -> CommandExemples:
+            return CommandExemples([])
 
         # endregion
 

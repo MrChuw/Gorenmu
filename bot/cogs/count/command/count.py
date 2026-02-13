@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class CountCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
     cooldown_rate = 3
@@ -27,12 +27,15 @@ class CountCmd(commands.CustomComponent):
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
+
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.command(name="count", aliases=[])
-    async def count(self, ctx: Context, *, content: str) -> Response:
+    async def count(self, ctx: Context, *, content: str) -> Response:  # NOQA
         if (urls := URLExtract().find_urls(text=content)) and "type:url" in content:
             content = ""
             cache_session = self.SessionsCaches.Count
@@ -43,7 +46,7 @@ class CountCmd(commands.CustomComponent):
         punctuations_count = len(re.findall(f"[{re.escape(string.punctuation)}]", content))
         special_chars_count = len([char for char in re.findall(r"[^\w\s]", content) if char not in string.punctuation])
         return self.translations.Count.character_count(
-            ctx, len(content), punctuations_count, uppercase_count, special_chars_count
+            len(content), punctuations_count, uppercase_count, special_chars_count
         )
 
 

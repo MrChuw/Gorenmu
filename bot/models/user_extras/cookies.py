@@ -122,7 +122,7 @@ class Cookies(Base, TimestampMixin):
             user_id = await ctx.bot.memcache.Cookie.get_id_by_name(name)
             cookie = await Cookies.get_or_none(user_id=user_id)
             if not cookie:
-                return translations.Exceptions.user_not_found_name(ctx, name)
+                return translations.Exceptions.user_not_found_name(name)
             await ctx.bot.memcache.Cookie.set(user=[cookie.id, name], cookie=cookie)
         return cookie
 
@@ -132,7 +132,7 @@ class Cookies(Base, TimestampMixin):
         if not cookie:
             cookie = await Cookies.get_or_none(id=user.id)
             if not cookie:
-                return translations.Exceptions.user_not_found_id(ctx, user.id)
+                return translations.Exceptions.user_not_found_id(user.id)
             await ctx.bot.memcache.Cookie.set(user=user, cookie=cookie)
         return cookie
 

@@ -15,16 +15,16 @@ async def interact(mock_bot):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     decorator = interact.translations.AFK
-    mock_context.Asserter.assert_string(decorator.deco_usage(mock_context, "+"), usage, strict=True)
-    mock_context.Asserter.assert_string(decorator.deco_helper(mock_context, "+"), helper, strict=True)
+    mock_context.Asserter.assert_string(decorator.deco_usage("+"), usage, strict=True)
+    mock_context.Asserter.assert_string(decorator.deco_helper("+"), helper, strict=True)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.no_content)
 async def test_no_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context)
     mock_context.Asserter.assert_string(response.response_string, expected)
@@ -34,7 +34,7 @@ async def test_no_content(interact, mock_context: MockContext, lang: str, expect
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.content)
 async def test_afk_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context, content="Just a test")
     mock_context.Asserter.assert_string(response.response_string, expected)
@@ -44,7 +44,7 @@ async def test_afk_content(interact, mock_context: MockContext, lang: str, expec
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.too_much_content)
 async def test_afk_too_much_content(interact, mock_context: MockContext, lang: str, expected: str):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context, content="a" * 500)
     mock_context.Asserter.assert_string(response.response_string, expected)

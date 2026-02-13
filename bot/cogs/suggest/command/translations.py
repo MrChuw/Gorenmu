@@ -6,44 +6,35 @@ from bot.ext import Response, TBase, TranslationBase
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context
+
+    from .suggest import SuggestCmd
 
 
 class Translations(TranslationBase):
-    def __init__(self, bot: Gorenmu) -> None:
-        super().__init__(bot)
-        self.populate_subclasses()
+    def __init__(self, bot: Gorenmu, parent: SuggestCmd) -> None:
+        super().__init__(bot, __file__)
+        self.parent: SuggestCmd = parent
+        self.populate_subclasses(parent=self)
 
     class Suggest(TBase):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, parent: Translations):
+            super().__init__(parent)
+            self.prefix = "Suggest"
 
-        def suggest(self, ctx: Context, *args) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "your suggestion has been reported 📝 (ID {})")
-                self.lang_dict.add_with(["pt_br", "pt"], "seu suggestion foi reportado 📝 (ID {})")
-            return response.format_response(self._untangle_str(ctx, self._cname), args)
+        def suggest(self, id: int | str) -> Response:
+            text = self.get_text(self._cname, id=str(id))
+            return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
-        def deco_helper(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "suggest a new feature to the Bot.")
-                self.lang_dict.add_with(["pt_br", "pt"], "sugerir um novo recurso para o Bot.")
-            return self._untangle_str(ctx, self._cname)
+        def deco_helper(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
-        def deco_usage(self, ctx: Context, prefix: str | None = None, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "To use: {}suggest (description)")
-                self.lang_dict.add_with(["pt_br", "pt"], "Para usar: {}suggest (descrição)")
-            return self._untangle_str(ctx, self._cname).format(prefix)
+        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+            return self.get_text(self._cname, prefix=prefix)
 
         # region Hide.
 
-        def deco_description(self, ctx: Context, *args, **kwargs) -> str:
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with("en", "suggest a new feature to the Bot.")
-                self.lang_dict.add_with(["pt_br", "pt"], "sugerir um novo recurso para o Bot.")
-            return self._untangle_str(ctx, self._cname)
+        def deco_description(self, *args, **kwargs) -> str:
+            return self.get_text(self._cname)
 
         # endregion
 

@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class WikipediaCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
@@ -27,6 +27,9 @@ class WikipediaCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
@@ -47,7 +50,7 @@ class WikipediaCmd(commands.CustomComponent):
                     return self.translations.Exceptions.timeout(ctx)
                 await asyncio.sleep(1)
 
-            return self.translations.Exceptions.echo(ctx, wiki.url.human_repr())
+            return self.translations.Exceptions.echo(wiki.url.human_repr())
         except Exception as e:
             ctx.bot.log.warning(e, exc_info=e)
             await ctx.bot.CommandHandler.send_bug(ctx, e, ping=False)

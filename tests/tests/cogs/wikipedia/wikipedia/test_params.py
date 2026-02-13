@@ -8,14 +8,14 @@ class Params:
         pytest.param(
             "en",
             "Sends a random wikipedia.",
-            "To use: +wikihow",
+            "To use: +wikipedia",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
             "Envia uma wikipedia aleatória.",
-            "Para usar: +wikihow",
+            "Para usar: +wikipedia",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

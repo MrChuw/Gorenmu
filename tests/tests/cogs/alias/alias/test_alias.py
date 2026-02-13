@@ -9,15 +9,15 @@ from .test_alias_params import Params
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Alias.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Alias.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Alias.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Alias.deco_helper("+"), helper)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.params_alias)
 async def test_alias(interact, mock_context: MockContext, lang: str, expected: list[str | int]):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.alias._callback(self=interact, ctx=mock_context, args="")
     mock_context.Asserter.assert_string(response.response_string, expected[0])
     mock_context.Asserter.assert_number(mock_context.simple_response.call_count, expected[1])

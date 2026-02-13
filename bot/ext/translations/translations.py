@@ -3,15 +3,14 @@ from __future__ import annotations
 import inspect
 import types
 from contextvars import ContextVar
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from bot.ext import Command, Context, commands
-from bot.ext.translations.extras import ClassBase, OtherTools, TBase
+from bot.ext import Command, Context
+from bot.ext.translations.extras import ClassBase, LangDict, OtherTools, TBase
 from bot.utils.singleton import Singleton
 
 if TYPE_CHECKING:
-    from twitchio.ext.commands import GuardFailure
-
     from bot.bot import Gorenmu
 
 current_ctx: ContextVar[Context] = ContextVar("current_ctx")
@@ -104,9 +103,11 @@ class CommandExemples:
 
 
 class TranslationBase(ClassBase, metaclass=Singleton):
-    def __init__(self, bot: Gorenmu):
+    def __init__(self, bot: Gorenmu, file):
         self.bot = bot
         self.command = None
+        self.lang_dict: LangDict = LangDict()
+        self.lang_dict.load_fluent_locales(Path(file).parent / "locales")
 
     @classmethod
     def ctx_get(cls):
@@ -126,206 +127,117 @@ class TranslationBase(ClassBase, metaclass=Singleton):
 
     class Exceptions(TBase):
         def __init__(self, parent: TranslationBase | None = None):
-            super().__init__(parent)
+            super().__init__(parent, __file__)
+            self._started = True
+            self.prefix = "Exceptions"
 
-        @staticmethod
-        def empty(ctx: commands.Context, success: bool = True) -> Response:
-            return Response(ctx=ctx, success=success).format_response("")
+        def empty(self, ctx: Context | None = None, success: bool = True) -> Response:
+            return Response(ctx=ctx or self.ctx_get(), success=success, response_string="")
 
-        @staticmethod
-        def echo(ctx: Context, args: str, success: bool = True, handle: str | None = None) -> Response:
-            return Response(ctx=ctx, success=success, handle=handle).format_response(f"{args}")
+        def echo(
+            self, args: str, ctx: Context | None = None, success: bool = True, handle: str | None = None
+        ) -> Response:
+            return Response(ctx=ctx or self.ctx_get(), success=success, handle=handle, response_string=f"{args}")
 
-        def user_not_found_id(self, ctx: Context, arg: str | int) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("user_not_found_id"):
-                self.lang_dict.add_with("en", "I couldn't find any user with id {}.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Não consegui encontrar nenhum usuário com id {}.")
-            return response.format_response(self._untangle_str(ctx, "user_not_found_id"), arg)
+        def user_not_found_id(self, arg: str | int, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, id=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def user_not_found_name(self, ctx: Context, name: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("user_not_found_name"):
-                self.lang_dict.add_with("en", "I couldn't find any user named @{}.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Não consegui encontrar nenhum usuário chamado @{}.")
-            return response.format_response(self._untangle_str(ctx, "user_not_found_name"), name)
+        def user_not_found_name(self, name: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, name=name)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def time_expired(self, ctx: Context, arg: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("time_expired"):
-                self.lang_dict.add_with("en", "Time {} has already expired.")
-                self.lang_dict.add_with(["pt_br", "pt"], "O tempo {} já expirou.")
-            return response.format_response(self._untangle_str(ctx, "time_expired"), arg)
+        def time_expired(self, arg: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, time=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def no_content_provided(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("no_content_provided"):
-                self.lang_dict.add_with("en", "You need to provide content for this command.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Você precisa fornecer conteúdo para este comando.")
-            return response.format_response(self._untangle_str(ctx, "no_content_provided"))
+        def no_content_provided(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def too_much_characters(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("too_much_characters"):
-                self.lang_dict.add_with("en", "The message must have a maximum of 450 characters.")
-                self.lang_dict.add_with(["pt_br", "pt"], "A mensagem deve ter no máximo 450 caracteres.")
-            return response.format_response(self._untangle_str(ctx, "too_much_characters"))
+        def too_much_characters(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def message_too_long(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("message_too_long"):
-                self.lang_dict.add_with("en", "This message is too long.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Esta mensagem é muito longa.")
-            return response.format_response(self._untangle_str(ctx, "message_too_long"))
+        def message_too_long(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def no_id_provided(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("no_id_provided"):
-                self.lang_dict.add_with("en", "You need to provide a valid numeric ID.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Você precisa fornecer um ID numérico válido.")
-            return response.format_response(self._untangle_str(ctx, "no_id_provided"))
+        def no_id_provided(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def id_not_valid(self, ctx: Context, arg: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("id_not_valid"):
-                self.lang_dict.add_with("en", "{} is not a valid ID.")
-                self.lang_dict.add_with(["pt_br", "pt"], "{} não é um ID valido.")
-            return response.format_response(self._untangle_str(ctx, "id_not_valid"), arg)
+        def id_not_valid(self, arg: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, id=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def user_not_provided(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("user_not_provided"):
-                self.lang_dict.add_with("en", "No target user provided!")
-                self.lang_dict.add_with(["pt_br", "pt"], "Nenhum usuário alvo fornecido!")
-            return response.format_response(self._untangle_str(ctx, "user_not_provided"))
+        def user_not_provided(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def guard_caught(self, ctx: Context, cmd: str, reason: GuardFailure, contact: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("guard_caught"):
-                self.lang_dict.add_with(
-                    "en",
-                    'You are not authorized to use the "{}" command due to "{}". '
-                    "If you think this is an error, contact @{}.",
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    'Você não está autorizado a usar o comando "{}" motivo: "{}". '
-                    "Se achar que isso é um erro, entre em contato com @{}.",
-                )
-            return response.format_response(self._untangle_str(ctx, "guard_caught"), cmd, reason, contact)
+        def guard_caught(self, cmd: str, reason, contact: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, cmd=cmd, reason=str(reason), contact=contact)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def unexpected_error(self, ctx: Context, exception: Exception | str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("unexpected_error"):
-                self.lang_dict.add_with("en", "An error occurred, please try again: {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "Ocorreu um erro. Tente novamente: {}")
-            return response.format_response(self._untangle_str(ctx, "unexpected_error"), exception)
+        def unexpected_error(self, exception: Exception | str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, exception=str(exception))
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def error(self, ctx: Context = None) -> Response:
-            ctx = ctx or self.ctx_get()
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(
-                    "en",
-                    "An unexpected error occurred. Please report it to @{} on whispers.",
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"],
-                    "Ocorreu um erro inesperado. Por favor, reporte-o para @{} nos whispers.",
-                )
-            return response.format_response(self._untangle_str(ctx, self._cname), ctx.bot.dev_user.display_name)
+        def error(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, dev=self.ctx_get().bot.dev_user.display_name)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def timeout(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("timeout"):
-                self.lang_dict.add_with("en", "It's been 30 seconds and I can't find any valid links.")
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"], "Já se passaram 30 segundos e não consegui encontrar nenhum link válido."
-                )
-            return response.format_response(self._untangle_str(ctx, "timeout"))
+        def timeout(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def never_seen(self, ctx: Context, arg: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("never_seen"):
-                self.lang_dict.add_with("en", "I don't remember ever seeing any @{}.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Não me lembro de ter visto nenhum @{}.")
-            return response.format_response(self._untangle_str(ctx, "never_seen"), arg)
+        def never_seen(self, arg: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, name=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def channel_not_found(self, ctx: Context, arg: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("channel_not_found"):
-                self.lang_dict.add_with("en", "I couldn't find any channel named @{}.")
-                self.lang_dict.add_with(["pt_br", "pt"], "Não consegui encontrar nenhum canal chamado @{}.")
-            return response.format_response(self._untangle_str(ctx, "channel_not_found"), arg)
+        def channel_not_found(self, arg: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, name=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def dev_required(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("dev_required"):
-                self.lang_dict.add_with("en", "you need to be my creator to run this command.")
-                self.lang_dict.add_with(["pt_br", "pt"], "você precisa ser meu criador para executar este comando.")
-            return response.format_response(self._untangle_str(ctx, "dev_required"))
+        def dev_required(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def owner_required(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("owner_required"):
-                self.lang_dict.add_with("en", "commands reserved for the bot owner.")
-                self.lang_dict.add_with(["pt_br", "pt"], "comandos reservados para o proprietário do bot.")
-            return response.format_response(self._untangle_str(ctx, "owner_required"))
+        def owner_required(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def command_on_cooldown(self, ctx: Context, arg: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("command_on_cooldown"):
-                self.lang_dict.add_with("en", "to use the command again, come back in {}.")
-                self.lang_dict.add_with(["pt_br", "pt"], "para usar o comando novamente, volte em {}.")
-            return response.format_response(self._untangle_str(ctx, "command_on_cooldown"), arg)
+        def command_on_cooldown(self, arg: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, time=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def not_implemented(self, ctx: Context) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("not_implemented"):
-                self.lang_dict.add_with("en", "this command is temporarily disabled.")
-                self.lang_dict.add_with(["pt_br", "pt"], "este comando está temporariamente desativado.")
-            return response.format_response(self._untangle_str(ctx, "not_implemented"))
+        def disabled(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def error_not_registered(self, ctx: Context, arg: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("error_not_registered"):
-                self.lang_dict.add_with("en", "an unexpected error occurred, please report the error to @{}.")
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"], "um erro inesperado ocorreu, por favor informe o erro para @{}."
-                )
-            return response.format_response(self._untangle_str(ctx, "error_not_registered"), arg)
+        def not_implemented(self, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def command_not_pipeble(self, ctx: Context, arg: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("command_not_pipeble"):
-                self.lang_dict.add_with("en", "command {} can't be used with the pipe.")
-                self.lang_dict.add_with(["pt_br", "pt"], "comando {} não pôde ser utilizado com pipe.")
-            return response.format_response(self._untangle_str(ctx, "command_not_pipeble"), arg)
+        def error_not_registered(self, arg: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, dev=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def pipe_response_error(self, ctx: Context, arg: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("pipe_response_error"):
-                self.lang_dict.add_with("en", "an error occurred while executing the previous command: {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "ocorreu um erro ao executar o comando anterior: {}")
-            return response.format_response(self._untangle_str(ctx, "pipe_response_error"), arg)
+        def command_not_pipeble(self, arg: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, cmd=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def pipe_response(self, ctx: Context, arg: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once("pipe_response"):
-                self.lang_dict.add_with("en", "here is the response generated by the previous command: {}")
-                self.lang_dict.add_with(["pt_br", "pt"], "aqui está a resposta gerada pelo comando anterior: {}")
-            return response.format_response(self._untangle_str(ctx, "pipe_response"), arg)
+        def pipe_response_error(self, arg: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, error=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
-        def lottery_seed(self, ctx: Context, arg: str) -> Response:
-            response = Response(ctx=ctx, success=False, handle=None, response_list=None)
-            with self.lang_dict.once(self._cname):
-                self.lang_dict.add_with(
-                    "en", 'something terrible happened, contact "{}" here on Twitch using whispers.'
-                )
-                self.lang_dict.add_with(
-                    ["pt_br", "pt"], 'algo horrível aconteceu, contate "@{}" aqui na twitch utilizando whispers.'
-                )
-            return response.format_response(self._untangle_str(ctx, self._cname), arg)
+        def pipe_response(self, arg: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, response=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
+
+        def lottery_seed(self, arg: str, ctx: Context | None = None) -> Response:
+            text = self.get_text(self._cname, contact=arg)
+            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
 
     Exceptions: Exceptions
 

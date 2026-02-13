@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from bot.ext import Context, Response, commands
-from bot.models import Channel as ChannelBot
 from bot.utils import Role, SessionsCaches, StringTools
 from bot.utils.singleton import Singleton
 
@@ -39,12 +38,15 @@ class AdminSmallCmds(commands.CustomComponent):
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
+
     @commands.Component.guard()
     def is_dev(self, ctx: Context) -> bool:
         return Role.dev(ctx)
 
     @commands.command(name="nada", aliases=[])
-    async def nada(self, ctx: Context, *, args: str = "") -> Response:
+    async def nada(self, ctx: Context, *, args: str = "") -> Response:  # NOQA
         # if " " in args:
         #     command, subcommand = args.split()
         #     command = ctx.bot.get_command(command)
@@ -57,12 +59,12 @@ class AdminSmallCmds(commands.CustomComponent):
         #     teste2 = teste.deco_usage(ctx, prefix=ctx.prefix)
         #     await ctx.reply(teste2)
         # channel = self.bot.channels[ctx.channel.name.lower()]
-        channel = await ChannelBot.get(user_id=192923262)
-        markov = await self.bot.MarkovProcessor.generate(args, channel=channel, max_length=25)
-        await self.bot.ContextHandler.simple_response(ctx, str(self.bot.MarkovProcessor.queue.async_q.qsize()))
+        # channel = await ChannelBot.get(user_id=192923262)
+        # markov = await self.bot.MarkovProcessor.generate(args, channel=channel, max_length=25)
+        # await self.bot.ContextHandler.simple_response(ctx, str(self.bot.MarkovProcessor.queue.async_q.qsize()))
 
-        # return self.translations.Nada.nada(ctx, args + self.StringTools.inv_char())
-        return self.translations.Exceptions.echo(ctx, markov)
+        return self.translations.Nada.nada(args + self.StringTools.inv_char())
+        # return self.translations.Exceptions.echo(ctx, markov)
 
     # @commands.command(name="nada2", aliases=[])
     # async def nada2(self, ctx: Context, *, args: str) -> Response:
@@ -91,7 +93,7 @@ class AdminSmallCmds(commands.CustomComponent):
     #     return self.translations.Exceptions.echo(ctx, markov)
 
     @commands.command(name="restart", aliases=[])
-    async def restart(self, ctx: Context) -> Response:
+    async def restart(self, ctx: Context) -> Response:  # NOQA
         if venv_python := os.getenv("VIRTUAL_ENV"):
             python_executable = os.path.join(venv_python, "bin", "python")
         else:
@@ -100,15 +102,13 @@ class AdminSmallCmds(commands.CustomComponent):
             os.execv(python_executable, [python_executable, *sys.argv])
         except Exception as e:
             self.bot.log.error(e)
-            return self.translations.Restart.unexpected_error(ctx, e)
+            return self.translations.Restart.unexpected_error(e)
 
     @commands.command(name="reload", aliases=[])
     async def reload(self, ctx: Context, command: str, *, extras=False) -> Response:
         translations = self.translations.Reload
 
         reloader_map = {
-            # "emotes": {"attr": "Emotes", "module": "bot.apis.emotes", "class": "Emotes", "args":
-            # [self.bot, self.SessionsCaches.EmotesCachedSession.session]},
             "tokens_handler": {
                 "attr": "TokensHandler",
                 "module": "bot.handlers.tokens_handler",
@@ -149,7 +149,7 @@ class AdminSmallCmds(commands.CustomComponent):
 
         if command == "commands":
             await ctx.bot.CommandHandler.reload_cogs()
-            return translations.commands_reloaded(ctx)
+            return translations.commands_reloaded()
 
         if command == "all":
             Singleton.clear()
@@ -157,7 +157,7 @@ class AdminSmallCmds(commands.CustomComponent):
             for key in ["translations", "commands", *reloader_map]:
                 fake_ctx = await self.reload._callback(self, ctx, command=key)  # NOQA
                 results.append(fake_ctx.response_string)
-            return self.translations.Exceptions.echo(ctx, " ".join(results))
+            return self.translations.Exceptions.echo(" ".join(results))
 
         if command in reloader_map:
             config = reloader_map[command]
@@ -169,10 +169,10 @@ class AdminSmallCmds(commands.CustomComponent):
                     class_name=config["class"],
                     args=config.get("args", []),
                 )
-                return translations.module_reloaded(ctx, config["attr"])
+                return translations.module_reloaded(config["attr"])
             except Exception as e:
                 ctx.bot.log.error(e)
-                return translations.module_reloaded_error(ctx, config["attr"], e)
+                return translations.module_reloaded_error(config["attr"], e)
 
         if command == "translations":
             from bot.utils.reload_util import (
@@ -187,22 +187,22 @@ class AdminSmallCmds(commands.CustomComponent):
                 for cls in new_cls:
                     cls.__bases__ = (new_base,)
                 await ctx.bot.CommandHandler.reload_cogs()
-                return translations.module_reloaded(ctx, "Translations")
+                return translations.module_reloaded("Translations")
             except Exception as e:
                 ctx.bot.log.error(e)
-                return translations.module_reloaded_error(ctx, "Translations", e)
+                return translations.module_reloaded_error("Translations", e)
 
         command_to_reload = ctx.bot.get_command(command)
         if not command_to_reload:
-            return translations.command_not_found(ctx, command)
+            return translations.command_not_found(command)
 
         try:
             spec = importlib.util.find_spec(command_to_reload.module)
             await ctx.bot.CommandHandler.load_command_module(Path(spec.origin).parent)
-            return translations.command_reloaded(ctx, command)
+            return translations.command_reloaded(command)
         except Exception as e:
             ctx.bot.log.error(e)
-            return translations.command_reloaded_error(ctx, command, e)
+            return translations.command_reloaded_error(command, e)
 
 
 async def setup(bot: Gorenmu) -> None:

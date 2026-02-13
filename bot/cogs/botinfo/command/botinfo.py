@@ -14,13 +14,16 @@ if TYPE_CHECKING:
 class BotInfoCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
 
     cooldown_rate = 3
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -30,15 +33,14 @@ class BotInfoCmd(commands.CustomComponent):
     async def bot_info(self, ctx: Context) -> Response:
         translations = self.translations.BotInfo
         if ctx.invoked_with == "site":
-            return translations.site(ctx, ctx.bot.config.BotConfig.site_url)
+            return translations.site(ctx.bot.config.BotConfig.site_url)
         if ctx.invoked_with == "uptime":
-            timesince = self.translations.SupportTools.TimeTools.Humanize(ctx).precisedelta(
+            timesince = self.translations.SupportTools.TimeTools.Humanize(ctx.user.language).precisedelta(
                 datetime.datetime.now(datetime.UTC) - ctx.bot.boot
             )
-            return translations.uptime(ctx, timesince)
+            return translations.uptime(timesince)
 
         return translations.info(
-            ctx,
             len(ctx.bot.channels),
             len(ctx.bot.commands),
             ctx.bot.config.BotConfig.dev_name,

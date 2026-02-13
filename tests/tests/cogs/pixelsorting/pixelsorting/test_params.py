@@ -8,7 +8,7 @@ class Params:
         pytest.param(
             "en",
             "Command used to make basic pixel sorting in images.",
-            "To use: +pxs (url or shortened direct link) ",
+            "To use: +pxs (url or shortened direct link)",
             marks=pytest.mark.en,
             id="en",
         ),

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class ShortenCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.UploadThings: UploadThings = UploadThings(bot)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 

@@ -10,9 +10,9 @@ from tests.tests.cogs.cookies.eat.test_params import Params
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Eat.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Eat.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Eat.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Eat.deco_helper("+"), helper)
 
 
 async def base_eat(
@@ -25,7 +25,7 @@ async def base_eat(
     success: bool = False,
 ):
     response = Response(mock_context)
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     await Check.cookie_check(mock_context, interact.translations)
     for num in range(amount):
         response: Response = await interact.eat._callback(interact, mock_context, *content)  # NOQA

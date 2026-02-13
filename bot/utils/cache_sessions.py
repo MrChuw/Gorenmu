@@ -80,7 +80,7 @@ class SessionsCaches(metaclass=Singleton):
                 "https://e926.net/": timedelta(hours=1),
                 "https://derpibooru.org/": timedelta(hours=1),
                 "https://furbooru.com/": timedelta(hours=1),
-                "http://behoimi.org/": timedelta(hours=1),
+                "https://behoimi.org/": timedelta(hours=1),
                 "https://rule34.paheal.net/": timedelta(hours=1),
             }
 
@@ -270,7 +270,12 @@ class SessionsCaches(metaclass=Singleton):
     class Weather(BaseCachedSession):
         def __init__(self, bot: Gorenmu, useragent: str):
             self.allowed_codes = (200,)
-            super().__init__(bot=bot, useragent=useragent)
+            headers = {
+                "User-Agent": "Gorenmu/2.0 (+https://github.com/MrChuw/Gorenmu)",
+                "Accept": "*/*",
+                "Connection": "close",
+            }
+            super().__init__(bot=bot, useragent=useragent, headers=headers)
 
         def get_expiry_times(self) -> dict:
             return {

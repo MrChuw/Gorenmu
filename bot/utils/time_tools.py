@@ -191,6 +191,8 @@ class TimeTools(metaclass=Singleton):
             self.time = delay if when else when
             self._start_time: float | None = None
             self._end_time: float | None = None
+            self.error = asyncio.exceptions.CancelledError
+            self.timeout_error = asyncio.exceptions.TimeoutError
 
         def when(self) -> float | None:
             """Return the current deadline."""

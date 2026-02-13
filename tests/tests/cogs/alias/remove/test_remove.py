@@ -8,9 +8,9 @@ from tests.tests.cogs.alias.remove.test_params import Params
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, helper, usage", Params.decorators)
 async def test_decorators(interact, mock_context: MockContext, lang: str, helper: str, usage: str):
-    await mock_context.prepare_context(lang)
-    mock_context.Asserter.assert_string(interact.translations.Remove.deco_usage(mock_context, "+"), usage)
-    mock_context.Asserter.assert_string(interact.translations.Remove.deco_helper(mock_context, "+"), helper)
+    await mock_context.prepare_context(lang, interact=interact)
+    mock_context.Asserter.assert_string(interact.translations.Remove.deco_usage("+"), usage)
+    mock_context.Asserter.assert_string(interact.translations.Remove.deco_helper("+"), helper)
 
 
 async def alias_remove(
@@ -22,7 +22,7 @@ async def alias_remove(
     special_user: bool = False,
     success: bool = False,
 ):
-    await mock_context.prepare_context(lang)
+    await mock_context.prepare_context(lang, interact=interact)
     await mock_context.prepare_alias(special_user)
     response: Response = await interact.remove_alias._callback(interact, mock_context, *content)  # NOQA
     mock_context.Asserter.assert_string(response.response_string, expected)

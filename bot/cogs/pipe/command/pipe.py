@@ -13,13 +13,16 @@ if TYPE_CHECKING:
 class PipeCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
 
     cooldown_rate = 3
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
@@ -31,7 +34,7 @@ class PipeCmd(commands.CustomComponent):
             url = f"{ctx.bot.config.BotConfig.site_url}/{ctx.user.language.lower()}/commands/pipe.html"
         else:
             url = f"{ctx.bot.config.BotConfig.site_url}/en/commands/pipe.html"
-        return self.translations.Pipe.pipe(ctx, url)
+        return self.translations.Pipe.pipe(url)
 
 
 async def setup(bot: Gorenmu) -> None:

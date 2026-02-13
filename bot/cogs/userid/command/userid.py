@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class UserIdCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.StringTools: StringTools = StringTools()
         self.BestLogs: BestLogs = BestLogs(bot, self.SessionsCaches.UserId.session)
@@ -27,6 +27,9 @@ class UserIdCmd(commands.CustomComponent):
     cooldown_key = commands.BucketType.user
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -43,19 +46,19 @@ class UserIdCmd(commands.CustomComponent):
             if user.isdigit():
                 user = await ctx.bot.fetch_user(id=int(user))
                 if not user:
-                    return self.translations.Exceptions.user_not_found_id(ctx, user_name)
-                return self.translations.UserId.id_or_name(ctx, user.display_name)
+                    return self.translations.Exceptions.user_not_found_id(user_name)
+                return self.translations.UserId.id_or_name(user.display_name)
             else:
                 user = await ctx.bot.fetch_user(login=user)
                 if not user:
-                    return self.translations.Exceptions.user_not_found_name(ctx, user_name)
-                return self.translations.UserId.id_or_name(ctx, user.id)
+                    return self.translations.Exceptions.user_not_found_name(user_name)
+                return self.translations.UserId.id_or_name(user.id)
         except Exception as e:
             await self.bot.CommandHandler.send_bug(ctx, e, ping=False)
             if user.isdigit():
-                return self.translations.UserId.unknown_id(ctx, user)
+                return self.translations.UserId.unknown_id(user)
             else:
-                return self.translations.UserId.unknown_name(ctx, user)
+                return self.translations.UserId.unknown_name(user)
 
 
 async def setup(bot: Gorenmu) -> None:

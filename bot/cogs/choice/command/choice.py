@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class ChoiceCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
 
     cooldown_rate = 3
     cooldown_per = 10
@@ -23,15 +23,18 @@ class ChoiceCmd(commands.CustomComponent):
 
     async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
 
+    async def component_before_invoke(self, ctx: Context) -> None:
+        self.translations.ctx_set(ctx)
+
     @commands.Component.guard()
     def guards_component(self, ctx: Context) -> bool:  # NOQA
         return True
 
     @commands.command(name="choice", aliases=["pick"])
-    async def choice(self, ctx: Context, *, content: str) -> Response:
-        pattern = self.translations.Choice.pattern(ctx)
+    async def choice(self, ctx: Context, *, content: str) -> Response:  # NOQA
+        pattern = self.translations.Choice.pattern(ctx.user.language)
         choice = random.choice([arg for arg in re.split(pattern, content) if arg])
-        return self.translations.Choice.response(ctx, choice)
+        return self.translations.Choice.response(choice)
 
 
 async def setup(bot: Gorenmu) -> None:
