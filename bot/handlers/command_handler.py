@@ -33,6 +33,14 @@ class CommandHandler:
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
 
+    @staticmethod
+    def _get_module(path: pathlib.Path, filename: pathlib.Path) -> tuple[types.ModuleType, str]:
+        local = os.path.join(path, filename.name)
+        name = local[local.find("bot/cogs") : -3].replace("/", ".")
+        package = ".".join(filename.parts[filename.parts.index("bot") :]).removesuffix(".py")
+        module: types.ModuleType = import_module(name, package=package)
+        return module, name
+
     async def load_command_module(self, path: pathlib.Path) -> None:
         for filename in path.iterdir():
             if filename.suffix != ".py" or filename.name.startswith("__"):
@@ -91,14 +99,6 @@ class CommandHandler:
 
     def is_enabled(self, ctx: Context, command: str = "") -> bool:
         return (command or ctx.command.name.lower()) not in self.bot.channels[ctx.channel.name].disabled
-
-    @staticmethod
-    def _get_module(path: pathlib.Path, filename: pathlib.Path) -> tuple[types.ModuleType, str]:
-        local = os.path.join(path, filename.name)
-        name = local[local.find("bot/cogs") : -3].replace("/", ".")
-        package = ".".join(filename.parts[filename.parts.index("bot") :]).removesuffix(".py")
-        module: types.ModuleType = import_module(name, package=package)
-        return module, name
 
     async def send_bug(self, ctx: Context, error: Exception, ping: bool = True):
         command = self.bot.get_command("bug")

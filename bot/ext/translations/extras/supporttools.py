@@ -107,30 +107,6 @@ class OtherTools(ClassBase):
 
             def Humanize(self, lang: str = None) -> ExtrasHumanize:  # NOQA
                 return _get_humanize_data(self, lang)
-                # context = self.ctx_get()
-                # lang = context.user.language or "en"
-                # units_keys = [
-                #     "years",
-                #     "months",
-                #     "weeks",
-                #     "days",
-                #     "hours",
-                #     "minutes",
-                #     "seconds",
-                #     "milliseconds",
-                #     "microseconds",
-                #     "time",
-                # ]
-                #
-                # patterns = {unit: self.get_list(f"unit_{unit}") for unit in units_keys}
-                #
-                # if lang != "en":
-                #     en_patterns = {
-                #         unit: self.get_list_by_lang("en", f"unit_{unit}", include_en=False) for unit in units_keys
-                #     }
-                #     return ExtrasHumanize(patterns, lang, en_patterns)
-                #
-                # return ExtrasHumanize(patterns, "en")
 
             Humanize: ExtrasHumanize
 

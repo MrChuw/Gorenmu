@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from bot.ext import commands
     from bot.ext.commands import Command, Group
     from bot.models import Channel as ChannelModel
-    from bot.utils import MarkovProcessor
+    from bot.utils import MarkovProcessor, SemaphoreManager
 
 
 class TypesBot(commands.AutoBot):
@@ -31,6 +31,7 @@ class TypesBot(commands.AutoBot):
         self.boot: datetime.datetime = datetime.datetime.now(datetime.UTC)
         self.manual_events: defaultdict[str, dict[str, dict[str, Callable]]] = defaultdict(lambda: defaultdict(dict))
         self.disable_default: list[str] = []
+        self.SemaphoreManager: SemaphoreManager | None = None
 
     def get_command(self, name: str, /) -> Command | Group | None:
         return super().get_command(name)

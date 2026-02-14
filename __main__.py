@@ -3,6 +3,7 @@ import logging
 import os
 
 import twitchio
+import uvloop
 from twitchio.web import StarletteAdapter
 
 # from bot.api import api, api_start
@@ -32,7 +33,7 @@ __version__ = Configs.version
 if __name__ == "__main__":
     log.info("Ligando bot", exc_info=True)
 
-    async def runner() -> None:
+    async def main() -> None:
         adapter: StarletteAdapter = StarletteAdapter(host="localhost", domain=Configs.ApisConfig.join_url.human_repr())
         bot: Gorenmu = Gorenmu(configs=Configs, case_insensitive=True, log=log, adapter=adapter)
         # bot.site = api
@@ -43,6 +44,7 @@ if __name__ == "__main__":
         await bot.start()
 
     try:
-        asyncio.run(runner())
+        with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
+            runner.run(main())
     except KeyboardInterrupt:
         log.warning("Shutting down due to KeyboardInterrupt...")

@@ -6,11 +6,16 @@ from contextvars import Token
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from aiofile import async_open
 from fluent.runtime import FluentBundle, FluentResource
 from fluent.runtime.bundle import Message
 
 if TYPE_CHECKING:
     from bot.ext import Admonitions, CommandExemples, Context, TranslationBase
+
+import asyncio
+
+asyncio.Semaphore()
 
 
 class TranslationEntry:
@@ -43,7 +48,7 @@ class TBase:
         self.parent: TranslationBase | None = parent
         self.lang_dict: LangDict = self.parent.lang_dict
         if file:
-            self.lang_dict.load_fluent_locales(Path(file).parent / "locales")
+            asyncio.create_task(self.lang_dict.load_fluent_locales(Path(file).parent / "locales"))  # NOQA: RUF006
 
     def get_language(self, ctx: Context | str) -> str | None:
         if ctx:
@@ -148,11 +153,13 @@ class ClassBase:
 
 
 class LangDict:
-    def __init__(self):
+    def __init__(self, parent: TranslationBase):
+        self.parent = parent
         self._current_namespace: str | None = None
         self._skip_mode = False
         self._namespaces = defaultdict(dict)
         self._initialized = defaultdict(dict)
+        self.semaphore = parent.bot.SemaphoreManager.get_semaphore("OI_Files", limit=50, burst_size=10)
 
     def define(self, lang: str | list[str], value: Any, namespace: str, msg_id: str):
         langs = [lang] if isinstance(lang, str) else lang
@@ -194,16 +201,65 @@ class LangDict:
         messages = self._namespaces.get(namespace, {}).get(lang) or self._namespaces.get(namespace, {}).get(fallback)
         return messages.get(key) if isinstance(messages, dict) else None
 
-    def load_fluent_locales(self, locales_path: Path):
-        bundles: dict[str, FluentBundle] = {}
-        for ftl_file in locales_path.glob("*.ftl"):
-            lang = ftl_file.stem.lower()
-            with open(ftl_file, encoding="utf-8") as f:
-                resource = FluentResource(f.read())
+    # async def load_fluent_locales(self, locales_path: Path):
+    #     ftl_files = list(locales_path.glob("*.ftl"))
+    #
+    #     async def read_ftl(ftl_file: Path):
+    #         lang_ = ftl_file.stem.lower()
+    #
+    #         async def get_bundle():
+    #             async with async_open(ftl_file, "r", encoding="utf-8") as f:
+    #                 content = await f.read()
+    #                 resource = FluentResource(content)
+    #                 bundle_ = FluentBundle([lang_], use_isolating=False)
+    #                 bundle_.add_resource(resource)
+    #                 return lang_, bundle_
+    #
+    #         if self.parent.bot.mock:
+    #             return await get_bundle()
+    #
+    #         async with self.semaphore:
+    #             return await get_bundle()
+    #
+    #     results = await asyncio.gather(*(read_ftl(f) for f in ftl_files))
+    #     bundles: dict[str, FluentBundle] = dict(results)
+    #
+    #     if "pt_br" in bundles and "pt" not in bundles:
+    #         bundles["pt"] = bundles["pt_br"]
+    #     elif "pt" in bundles and "pt_br" not in bundles:
+    #         bundles["pt_br"] = bundles["pt"]
+    #
+    #     for lang, bundle in bundles.items():
+    #         for msg_id in bundle._messages:  # NOQA
+    #             if "-" in msg_id:
+    #                 prefix, internal_key = msg_id.split("-", 1)
+    #             else:
+    #                 prefix = "default"
+    #                 internal_key = msg_id
+    #
+    #             entry = TranslationEntry(bundle, msg_id)
+    #             self.define(lang, entry, prefix, internal_key)
 
-            bundle = FluentBundle([lang], use_isolating=False)
-            bundle.add_resource(resource)
-            bundles[lang] = bundle
+    async def load_fluent_locales(self, locales_path: Path):
+        ftl_files = list(locales_path.glob("*.ftl"))
+
+        async def read_ftl(ftl_file: Path):
+            lang_ = ftl_file.stem.lower()
+
+            # Se for Mock, lê síncrono para evitar problemas de race condition no xdist
+            if self.parent.bot.mock:
+                with open(ftl_file, encoding="utf-8") as f:
+                    content = f.read()
+                return self._create_bundle(lang_, content)
+
+            # Se for produção, usa o semáforo e aiofile
+            async with self.semaphore, async_open(ftl_file, "r", encoding="utf-8") as f:
+                content = await f.read()
+                return self._create_bundle(lang_, content)
+
+        results = await asyncio.gather(*(read_ftl(f) for f in ftl_files))
+        bundles: dict[str, FluentBundle] = dict(results)
+
         if "pt_br" in bundles and "pt" not in bundles:
             bundles["pt"] = bundles["pt_br"]
         elif "pt" in bundles and "pt_br" not in bundles:
@@ -216,8 +272,15 @@ class LangDict:
                 else:
                     prefix = "default"
                     internal_key = msg_id
+
                 entry = TranslationEntry(bundle, msg_id)
                 self.define(lang, entry, prefix, internal_key)
+
+    def _create_bundle(self, lang: str, content: str):
+        resource = FluentResource(content)
+        bundle = FluentBundle([lang], use_isolating=False)
+        bundle.add_resource(resource)
+        return lang, bundle
 
     def get_text(self, ctx: Context, key: str, entry_prefix: str = "default", **kwargs) -> str:
         lang = ctx.user.language or "en"

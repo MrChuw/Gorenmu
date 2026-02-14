@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import inspect
 import types
 from contextvars import ContextVar
@@ -106,8 +107,8 @@ class TranslationBase(ClassBase, metaclass=Singleton):
     def __init__(self, bot: Gorenmu, file):
         self.bot = bot
         self.command = None
-        self.lang_dict: LangDict = LangDict()
-        self.lang_dict.load_fluent_locales(Path(file).parent / "locales")
+        self.lang_dict: LangDict = LangDict(self)
+        asyncio.create_task(self.lang_dict.load_fluent_locales(Path(file).parent / "locales"))  # NOQA: RUF006
 
     @classmethod
     def ctx_get(cls):

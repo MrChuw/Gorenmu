@@ -7,6 +7,7 @@ requires-python = "==3.13.1"
 
 dependencies = [
     "aiocache[memcached,redis]==0.12.3",
+    "aiofile>=3.9.0",
     "aiohttp==3.12.15",
     "aiohttp-client-cache[all]==0.13.0",
     "beautifulsoup4==4.13.4",
@@ -31,6 +32,7 @@ dependencies = [
     "unidecode==1.4.0",
     "urlextract==1.9.0",
     "uvicorn==0.35.0",
+    "uvloop>=0.22.1",
     "watchdog==6.0.0",
     "yarl==1.20.1",
 ]

@@ -16,7 +16,7 @@ from bot.ext import ChatMessage, Context
 from bot.ext.commands import Group
 from bot.models import User as UserModel
 from bot.models.user_extras import BotsIgnore
-from bot.utils import Check, MarkovProcessor, SessionsCaches
+from bot.utils import Check, MarkovProcessor, SemaphoreManager, SessionsCaches
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -33,6 +33,7 @@ class LifecycleHandler:
         self.running_tasks: dict[str, asyncio.Task] = {}
         self._loop_task: asyncio.Task | None = None
         self.bot_user = None
+        bot.SemaphoreManager = SemaphoreManager(bot)
 
     async def setup_internal(self):
         bot_list = await BotsIgnore.filter(active=True).all()
