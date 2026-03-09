@@ -45,8 +45,8 @@ class Params:
             pytest.param("pt_BR", '😳', id="pt_BR"),
         ]
         another_name: ClassVar[list] = [
-            pytest.param("en", 'You gave @another_name a little kiss 🤗', id="en"),
-            pytest.param("pt_BR", 'você deu um beijinho em @another_name 🤗', id="pt_BR"),
+            pytest.param("en", 'You gave @another_name a little kiss 😘', id="en"),
+            pytest.param("pt_BR", 'você deu um beijinho em @another_name 😘', id="pt_BR"),
         ]
 
     class Ship:
@@ -65,8 +65,8 @@ class Params:
             pytest.param("pt_BR", "😳", id="pt_BR"),
         ]
         another_name: ClassVar[list] = [
-            pytest.param("en", '@another_name & @user2: anotherr2 with 29% love 😢', id="en"),
-            pytest.param("pt_BR", '@another_name & @user2: anotherr2 com 29% de amor 😢', id="pt_BR"),
+            pytest.param("en", '@another_name & @user2: anotherr2 with 79% love 💘', id="en"),
+            pytest.param("pt_BR", '@another_name & @user2: anotherr2 com 79% de amor 💘', id="pt_BR"),
         ]
 
     class Pat:
@@ -93,16 +93,16 @@ class Params:
             pytest.param("pt_BR", 'FeelsWeirdMan', 'Para usar: +penis (username)', id="pt_BR"),
         ]
         yourself: ClassVar[list] = [
-            pytest.param("en", 'username has 11cm 🤏', id="en"),
-            pytest.param("pt_BR", 'username tem 11cm 🤏', id="pt_BR"),
+            pytest.param("en", 'username has 21cm 🍆', id="en"),
+            pytest.param("pt_BR", 'username tem 21cm 🍆', id="pt_BR"),
         ]
         bot_nick: ClassVar[list] = [
             pytest.param("en", 'I only have a pen drive', id="en"),
             pytest.param("pt_BR", 'eu só tenho pen drive', id="pt_BR"),
         ]
         another_name: ClassVar[list] = [
-            pytest.param("en", 'another_name has 9cm 🤏', id="en"),
-            pytest.param("pt_BR", 'another_name tem 9cm 🤏', id="pt_BR"),
+            pytest.param("en", 'another_name has 29cm 🍆', id="en"),
+            pytest.param("pt_BR", 'another_name tem 29cm 🍆', id="pt_BR"),
         ]
 
     class Slap:

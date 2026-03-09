@@ -25,8 +25,16 @@ class Translations(TranslationBase):
             text = self.get_text(self._cname, **kwargs)
             return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
+        def placeholder1(self, name1, name2) -> Response:
+            text = self.get_text(self._cname, name1=name1, name2=name2)
+            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+
         def placeholder_error(self, **kwargs) -> Response:
             text = self.get_text(self._cname, **kwargs)
+            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+
+        def placeholder_error1(self, name1, name2) -> Response:
+            text = self.get_text(self._cname, name1=name1, name2=name2)
             return Response(ctx=self.ctx_get(), success=False, response_string=text)
 
         def placeholder_entry(self, **kwargs) -> str | TranslationEntry:
@@ -34,10 +42,18 @@ class Translations(TranslationBase):
                 return self.get_entry(self._cname)
             return self.get_text(self._cname, **kwargs)
 
+        def placeholder_entry1(self, name1, name2) -> str | TranslationEntry:
+            if not kwargs:
+                return self.get_entry(self._cname)
+            return self.get_text(self._cname, name1=name1, name2=name2)
+
         def placeholder_list(self, **kwargs) -> list[str]:
             return self.get_list(self._cname, **kwargs)
 
-        def placeholder_attributes_list(self, **kwargs) -> list[str]:
+        def placeholder_list1(self, name1, name2) -> list[str]:
+            return self.get_list(self._cname, name1=name1, name2=name2)
+
+        def placeholder_attributes_list(self) -> list[str]:
             return self.get_attributes_list(self._cname)
 
         # --- Help Methods ---
@@ -47,8 +63,6 @@ class Translations(TranslationBase):
 
         def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
             return self.get_text(self._cname, prefix=prefix)
-
-        # region Hide.
 
         def deco_description(self, *args, **kwargs) -> str:
             return self.get_text(self._cname)
@@ -75,7 +89,5 @@ class Translations(TranslationBase):
                     }
                 ]
             )
-
-        # endregion
 
     {command_title}: {command_title}

@@ -1,0 +1,1343 @@
+{
+    "bee": {
+        "specie": {
+            "en": "bee",
+            "pt": "abelha",
+            "pt_br": "abelha"
+        },
+        "emoji": "\ud83d\udc1d",
+        "price": 10
+    },
+    "butterfly": {
+        "specie": {
+            "en": "butterfly",
+            "pt": "borboleta",
+            "pt_br": "borboleta"
+        },
+        "emoji": "\ud83e\udd8b",
+        "price": 10
+    },
+    "shrimp": {
+        "specie": {
+            "en": "shrimp",
+            "pt": "camar\u00e3o",
+            "pt_br": "camar\u00e3o"
+        },
+        "emoji": "\ud83e\udd90",
+        "price": 10
+    },
+    "snail": {
+        "specie": {
+            "en": "snail",
+            "pt": "caracol",
+            "pt_br": "caracol"
+        },
+        "emoji": "\ud83d\udc0c",
+        "price": 10
+    },
+    "ant": {
+        "specie": {
+            "en": "ant",
+            "pt": "formiga",
+            "pt_br": "formiga"
+        },
+        "emoji": "\ud83d\udc1c",
+        "price": 10
+    },
+    "cricket": {
+        "specie": {
+            "en": "cricket",
+            "pt": "grilo",
+            "pt_br": "grilo"
+        },
+        "emoji": "\ud83e\udd97",
+        "price": 10
+    },
+    "ladybug": {
+        "specie": {
+            "en": "ladybug",
+            "pt": "joaninha",
+            "pt_br": "joaninha"
+        },
+        "emoji": "\ud83d\udc1e",
+        "price": 10
+    },
+    "caterpillar": {
+        "specie": {
+            "en": "caterpillar",
+            "pt": "lagarta",
+            "pt_br": "lagarta"
+        },
+        "emoji": "\ud83d\udc1b",
+        "price": 10
+    },
+    "pigeon": {
+        "specie": {
+            "en": "pigeon",
+            "pt": "pombo",
+            "pt_br": "pombo"
+        },
+        "emoji": "\ud83d\udd4a\ufe0f",
+        "price": 10
+    },
+    "fly": {
+        "specie": {
+            "en": "fly",
+            "pt": "mosca",
+            "pt_br": "mosca"
+        },
+        "emoji": "\ud83e\udeb0",
+        "price": 10
+    },
+    "mushroom": {
+        "specie": {
+            "en": "mushroom",
+            "pt": "cogumelo",
+            "pt_br": "cogumelo"
+        },
+        "emoji": "\ud83c\udf44",
+        "price": 15
+    },
+    "spider": {
+        "specie": {
+            "en": "spider",
+            "pt": "aranha",
+            "pt_br": "aranha"
+        },
+        "emoji": "\ud83d\udd77",
+        "price": 20
+    },
+    "fish": {
+        "specie": {
+            "en": "fish",
+            "pt": "peixe",
+            "pt_br": "peixe"
+        },
+        "emoji": "\ud83d\udc1f",
+        "price": 20
+    },
+    "scorpion": {
+        "specie": {
+            "en": "scorpion",
+            "pt": "escorpi\u00e3o",
+            "pt_br": "escorpi\u00e3o"
+        },
+        "emoji": "\ud83e\udd82",
+        "price": 20
+    },
+    "lizard": {
+        "specie": {
+            "en": "lizard",
+            "pt": "lagarto",
+            "pt_br": "lagarto"
+        },
+        "emoji": "\ud83e\udd8e",
+        "price": 20
+    },
+    "bird": {
+        "specie": {
+            "en": "bird",
+            "pt": "p\u00e1ssaro",
+            "pt_br": "p\u00e1ssaro"
+        },
+        "emoji": "\ud83d\udc26",
+        "price": 20
+    },
+    "chick": {
+        "specie": {
+            "en": "chick",
+            "pt": "pintinho",
+            "pt_br": "pintinho"
+        },
+        "emoji": "\ud83d\udc24",
+        "price": 20
+    },
+    "mouse": {
+        "specie": {
+            "en": "mouse",
+            "pt": "rato",
+            "pt_br": "rato"
+        },
+        "emoji": "\ud83d\udc2d",
+        "price": 20
+    },
+    "mosquito": {
+        "specie": {
+            "en": "mosquito",
+            "pt": "mosquito",
+            "pt_br": "mosquito"
+        },
+        "emoji": "\ud83e\udd9f",
+        "price": 20
+    },
+    "rat": {
+        "specie": {
+            "en": "rat",
+            "pt": "ratazana",
+            "pt_br": "ratazana"
+        },
+        "emoji": "\ud83d\udc00",
+        "price": 20
+    },
+    "crab": {
+        "specie": {
+            "en": "crab",
+            "pt": "caranguejo",
+            "pt_br": "caranguejo"
+        },
+        "emoji": "\ud83e\udd80",
+        "price": 20
+    },
+    "hatching_chick": {
+        "specie": {
+            "en": "hatching chick",
+            "pt": "pintinho nascendo",
+            "pt_br": "pintinho nascendo"
+        },
+        "emoji": "\ud83d\udc23",
+        "price": 20
+    },
+    "baby_chick_front": {
+        "specie": {
+            "en": "baby chick",
+            "pt": "pintinho de frente",
+            "pt_br": "pintinho de frente"
+        },
+        "emoji": "\ud83d\udc25",
+        "price": 20
+    },
+    "field mouse": {
+        "specie": {
+            "en": "field mouse",
+            "pt": "camundongo",
+            "pt_br": "camundongo"
+        },
+        "emoji": "\ud83d\udc01",
+        "price": 25
+    },
+    "hen": {
+        "specie": {
+            "en": "hen",
+            "pt": "galinha",
+            "pt_br": "galinha"
+        },
+        "emoji": "\ud83d\udc14",
+        "price": 30
+    },
+    "hamster": {
+        "specie": {
+            "en": "hamster",
+            "pt": "hamster",
+            "pt_br": "hamster"
+        },
+        "emoji": "\ud83d\udc39",
+        "price": 30
+    },
+    "squid": {
+        "specie": {
+            "en": "squid",
+            "pt": "lula",
+            "pt_br": "lula"
+        },
+        "emoji": "\ud83e\udd91",
+        "price": 30
+    },
+    "bat": {
+        "specie": {
+            "en": "bat",
+            "pt": "morcego",
+            "pt_br": "morcego"
+        },
+        "emoji": "\ud83e\udd87",
+        "price": 30
+    },
+    "frog": {
+        "specie": {
+            "en": "frog",
+            "pt": "sapo",
+            "pt_br": "sapo"
+        },
+        "emoji": "\ud83d\udc38",
+        "price": 30
+    },
+    "lobster": {
+        "specie": {
+            "en": "lobster",
+            "pt": "caranguejo",
+            "pt_br": "caranguejo"
+        },
+        "emoji": "\ud83e\udd9e",
+        "price": 30
+    },
+    "turkey": {
+        "specie": {
+            "en": "turkey",
+            "pt": "peru",
+            "pt_br": "peru"
+        },
+        "emoji": "\ud83e\udd83",
+        "price": 30
+    },
+    "goat_alt": {
+        "specie": {
+            "en": "goat",
+            "pt": "cabra",
+            "pt_br": "cabra"
+        },
+        "emoji": "\ud83d\udc10",
+        "price": 30
+    },
+    "tropical fish": {
+        "specie": {
+            "en": "tropical fish",
+            "pt": "peixe tropical",
+            "pt_br": "peixe tropical"
+        },
+        "emoji": "\ud83d\udc20",
+        "price": 30
+    },
+    "crow": {
+        "specie": {
+            "en": "crow",
+            "pt": "corvo",
+            "pt_br": "corvo"
+        },
+        "emoji": "\ud83d\udc26\u200d\u2b1b",
+        "price": 30
+    },
+    "goat": {
+        "specie": {
+            "en": "goat",
+            "pt": "bode",
+            "pt_br": "bode"
+        },
+        "emoji": "\ud83d\udc10",
+        "price": 40
+    },
+    "ram": {
+        "specie": {
+            "en": "ram",
+            "pt": "carneiro",
+            "pt_br": "carneiro"
+        },
+        "emoji": "\ud83d\udc0f",
+        "price": 40
+    },
+    "rabbit": {
+        "specie": {
+            "en": "rabbit",
+            "pt": "coelho",
+            "pt_br": "coelho"
+        },
+        "emoji": "\ud83d\udc30",
+        "price": 40
+    },
+    "squirrel": {
+        "specie": {
+            "en": "squirrel",
+            "pt": "esquilo",
+            "pt_br": "esquilo"
+        },
+        "emoji": "\ud83d\udc3f",
+        "price": 40
+    },
+    "sheep": {
+        "specie": {
+            "en": "sheep",
+            "pt": "ovelha",
+            "pt_br": "ovelha"
+        },
+        "emoji": "\ud83d\udc11",
+        "price": 40
+    },
+    "octopus": {
+        "specie": {
+            "en": "octopus",
+            "pt": "polvo",
+            "pt_br": "polvo"
+        },
+        "emoji": "\ud83d\udc19",
+        "price": 40
+    },
+    "hedgehog": {
+        "specie": {
+            "en": "hedgehog",
+            "pt": "porco-espinho",
+            "pt_br": "porco-espinho"
+        },
+        "emoji": "\ud83e\udd94",
+        "price": 40
+    },
+    "duck": {
+        "specie": {
+            "en": "duck",
+            "pt": "pato",
+            "pt_br": "pato"
+        },
+        "emoji": "\ud83e\udd86",
+        "price": 40
+    },
+    "chipmunk": {
+        "specie": {
+            "en": "chipmunk",
+            "pt": "esquilo-da-p\u00e9rsia",
+            "pt_br": "esquilo-da-p\u00e9rsia"
+        },
+        "emoji": "\ud83d\udc3f\ufe0f",
+        "price": 40
+    },
+    "rabbit_alt": {
+        "specie": {
+            "en": "rabbit",
+            "pt": "coelho",
+            "pt_br": "coelho"
+        },
+        "emoji": "\ud83d\udc07",
+        "price": 40
+    },
+    "ox": {
+        "specie": {
+            "en": "ox",
+            "pt": "boi",
+            "pt_br": "boi"
+        },
+        "emoji": "\ud83d\udc02",
+        "price": 50
+    },
+    "water buffalo": {
+        "specie": {
+            "en": "water buffalo",
+            "pt": "b\u00fafalo",
+            "pt_br": "b\u00fafalo"
+        },
+        "emoji": "\ud83d\udc03",
+        "price": 50
+    },
+    "dog": {
+        "specie": {
+            "en": "dog",
+            "pt": "cachorro",
+            "pt_br": "cachorro"
+        },
+        "emoji": "\ud83d\udc36",
+        "price": 50
+    },
+    "camel": {
+        "specie": {
+            "en": "camel",
+            "pt": "camelo",
+            "pt_br": "camelo"
+        },
+        "emoji": "\ud83d\udc2b",
+        "price": 50
+    },
+    "horse": {
+        "specie": {
+            "en": "horse",
+            "pt": "cavalo",
+            "pt_br": "cavalo"
+        },
+        "emoji": "\ud83d\udc34",
+        "price": 50
+    },
+    "cat": {
+        "specie": {
+            "en": "cat",
+            "pt": "gato",
+            "pt_br": "gato"
+        },
+        "emoji": "\ud83d\udc31",
+        "price": 50
+    },
+    "giraffe": {
+        "specie": {
+            "en": "giraffe",
+            "pt": "girafa",
+            "pt_br": "girafa"
+        },
+        "emoji": "\ud83e\udd92",
+        "price": 50
+    },
+    "boar": {
+        "specie": {
+            "en": "boar",
+            "pt": "javali",
+            "pt_br": "javali"
+        },
+        "emoji": "\ud83d\udc17",
+        "price": 50
+    },
+    "parrot": {
+        "specie": {
+            "en": "parrot",
+            "pt": "papagaio",
+            "pt_br": "papagaio"
+        },
+        "emoji": "\ud83e\udd9c",
+        "price": 50
+    },
+    "pig": {
+        "specie": {
+            "en": "pig",
+            "pt": "porco",
+            "pt_br": "porco"
+        },
+        "emoji": "\ud83d\udc16",
+        "price": 50
+    },
+    "cow": {
+        "specie": {
+            "en": "cow",
+            "pt": "vaca",
+            "pt_br": "vaca"
+        },
+        "emoji": "\ud83d\udc2e",
+        "price": 50
+    },
+    "deer": {
+        "specie": {
+            "en": "deer",
+            "pt": "veado",
+            "pt_br": "veado"
+        },
+        "emoji": "\ud83e\udd8c",
+        "price": 50
+    },
+    "turtle": {
+        "specie": {
+            "en": "turtle",
+            "pt": "tartaruga",
+            "pt_br": "tartaruga"
+        },
+        "emoji": "\ud83d\udc22",
+        "price": 50
+    },
+    "zebra": {
+        "specie": {
+            "en": "zebra",
+            "pt": "zebra",
+            "pt_br": "zebra"
+        },
+        "emoji": "\ud83e\udd93",
+        "price": 50
+    },
+    "badger": {
+        "specie": {
+            "en": "badger",
+            "pt": "texugo",
+            "pt_br": "texugo"
+        },
+        "emoji": "\ud83e\udda1",
+        "price": 50
+    },
+    "otter": {
+        "specie": {
+            "en": "otter",
+            "pt": "lontra",
+            "pt_br": "lontra"
+        },
+        "emoji": "\ud83e\udda6",
+        "price": 50
+    },
+    "skunk": {
+        "specie": {
+            "en": "skunk",
+            "pt": "gamb\u00e1",
+            "pt_br": "gamb\u00e1"
+        },
+        "emoji": "\ud83e\udda8",
+        "price": 50
+    },
+    "oyster": {
+        "specie": {
+            "en": "oyster",
+            "pt": "ostra",
+            "pt_br": "ostra"
+        },
+        "emoji": "\ud83e\uddaa",
+        "price": 50
+    },
+    "beaver": {
+        "specie": {
+            "en": "beaver",
+            "pt": "castor",
+            "pt_br": "castor"
+        },
+        "emoji": "\ud83e\uddab",
+        "price": 50
+    },
+    "dog_alt": {
+        "specie": {
+            "en": "dog",
+            "pt": "c\u00e3o",
+            "pt_br": "c\u00e3o"
+        },
+        "emoji": "\ud83d\udc15",
+        "price": 50
+    },
+    "rooster": {
+        "specie": {
+            "en": "rooster",
+            "pt": "galo",
+            "pt_br": "galo"
+        },
+        "emoji": "\ud83d\udc13",
+        "price": 50
+    },
+    "cockroach": {
+        "specie": {
+            "en": "cockroach",
+            "pt": "barata",
+            "pt_br": "barata"
+        },
+        "emoji": "\ud83e\udeb3",
+        "price": 50
+    },
+    "blowfish": {
+        "specie": {
+            "en": "blowfish",
+            "pt": "baiacu",
+            "pt_br": "baiacu"
+        },
+        "emoji": "\ud83d\udc21",
+        "price": 50
+    },
+    "beetle": {
+        "specie": {
+            "en": "beetle",
+            "pt": "besouro",
+            "pt_br": "besouro"
+        },
+        "emoji": "\ud83e\udeb2",
+        "price": 50
+    },
+    "dromedary": {
+        "specie": {
+            "en": "dromedary",
+            "pt": "dromed\u00e1rio",
+            "pt_br": "dromed\u00e1rio"
+        },
+        "emoji": "\ud83d\udc2a",
+        "price": 50
+    },
+    "horse_alt": {
+        "specie": {
+            "en": "horse",
+            "pt": "cavalo",
+            "pt_br": "cavalo"
+        },
+        "emoji": "\ud83d\udc0e",
+        "price": 50
+    },
+    "black cat": {
+        "specie": {
+            "en": "black cat",
+            "pt": "gato preto",
+            "pt_br": "gato preto"
+        },
+        "emoji": "\ud83d\udc08\u200d\u2b1b",
+        "price": 55
+    },
+    "orange cat": {
+        "specie": {
+            "en": "orange cat",
+            "pt": "gato caramelo",
+            "pt_br": "gato caramelo"
+        },
+        "emoji": "\ud83d\udc08",
+        "price": 55
+    },
+    "eagle": {
+        "specie": {
+            "en": "eagle",
+            "pt": "\u00e1guia",
+            "pt_br": "\u00e1guia"
+        },
+        "emoji": "\ud83e\udd85",
+        "price": 75
+    },
+    "owl": {
+        "specie": {
+            "en": "owl",
+            "pt": "coruja",
+            "pt_br": "coruja"
+        },
+        "emoji": "\ud83e\udd89",
+        "price": 75
+    },
+    "penguin": {
+        "specie": {
+            "en": "penguin",
+            "pt": "pinguim",
+            "pt_br": "pinguim"
+        },
+        "emoji": "\ud83d\udc27",
+        "price": 75
+    },
+    "koala": {
+        "specie": {
+            "en": "koala",
+            "pt": "coala",
+            "pt_br": "coala"
+        },
+        "emoji": "\ud83d\udc28",
+        "price": 75
+    },
+    "snake": {
+        "specie": {
+            "en": "snake",
+            "pt": "cobra",
+            "pt_br": "cobra"
+        },
+        "emoji": "\ud83d\udc0d",
+        "price": 75
+    },
+    "monkey": {
+        "specie": {
+            "en": "monkey",
+            "pt": "macaco",
+            "pt_br": "macaco"
+        },
+        "emoji": "\ud83d\udc35",
+        "price": 75
+    },
+    "fox": {
+        "specie": {
+            "en": "fox",
+            "pt": "raposa",
+            "pt_br": "raposa"
+        },
+        "emoji": "\ud83e\udd8a",
+        "price": 75
+    },
+    "kangaroo": {
+        "specie": {
+            "en": "kangaroo",
+            "pt": "canguru",
+            "pt_br": "canguru"
+        },
+        "emoji": "\ud83e\udd98",
+        "price": 75
+    },
+    "hippopotamus": {
+        "specie": {
+            "en": "hippopotamus",
+            "pt": "hipop\u00f3tamo",
+            "pt_br": "hipop\u00f3tamo"
+        },
+        "emoji": "\ud83e\udd9b",
+        "price": 75
+    },
+    "raccoon": {
+        "specie": {
+            "en": "raccoon",
+            "pt": "guaxinim",
+            "pt_br": "guaxinim"
+        },
+        "emoji": "\ud83e\udd9d",
+        "price": 75
+    },
+    "swan": {
+        "specie": {
+            "en": "swan",
+            "pt": "cisne",
+            "pt_br": "cisne"
+        },
+        "emoji": "\ud83e\udda2",
+        "price": 75
+    },
+    "dodo": {
+        "specie": {
+            "en": "dodo",
+            "pt": "dod\u00f4",
+            "pt_br": "dod\u00f4"
+        },
+        "emoji": "\ud83e\udda4",
+        "price": 75
+    },
+    "flamingo": {
+        "specie": {
+            "en": "flamingo",
+            "pt": "flamingo",
+            "pt_br": "flamingo"
+        },
+        "emoji": "\ud83e\udda9",
+        "price": 75
+    },
+    "bison": {
+        "specie": {
+            "en": "bison",
+            "pt": "bis\u00e3o",
+            "pt_br": "bis\u00e3o"
+        },
+        "emoji": "\ud83e\uddac",
+        "price": 75
+    },
+    "seal": {
+        "specie": {
+            "en": "seal",
+            "pt": "foca",
+            "pt_br": "foca"
+        },
+        "emoji": "\ud83e\uddad",
+        "price": 75
+    },
+    "poodle": {
+        "specie": {
+            "en": "poodle",
+            "pt": "poodle",
+            "pt_br": "poodle"
+        },
+        "emoji": "\ud83d\udc29",
+        "price": 75
+    },
+    "monkey_alt": {
+        "specie": {
+            "en": "monkey",
+            "pt": "macaco",
+            "pt_br": "macaco"
+        },
+        "emoji": "\ud83d\udc12",
+        "price": 75
+    },
+    "whale": {
+        "specie": {
+            "en": "whale",
+            "pt": "baleia",
+            "pt_br": "baleia"
+        },
+        "emoji": "\ud83d\udc33",
+        "price": 100
+    },
+    "elephant": {
+        "specie": {
+            "en": "elephant",
+            "pt": "elefante",
+            "pt_br": "elefante"
+        },
+        "emoji": "\ud83d\udc18",
+        "price": 100
+    },
+    "dolphin": {
+        "specie": {
+            "en": "dolphin",
+            "pt": "golfinho",
+            "pt_br": "golfinho"
+        },
+        "emoji": "\ud83d\udc2c",
+        "price": 100
+    },
+    "crocodile": {
+        "specie": {
+            "en": "crocodile",
+            "pt": "crocodilo",
+            "pt_br": "crocodilo"
+        },
+        "emoji": "\ud83d\udc0a",
+        "price": 100
+    },
+    "wolf": {
+        "specie": {
+            "en": "wolf",
+            "pt": "lobo",
+            "pt_br": "lobo"
+        },
+        "emoji": "\ud83d\udc3a",
+        "price": 100
+    },
+    "leopard": {
+        "specie": {
+            "en": "leopard",
+            "pt": "leopardo",
+            "pt_br": "leopardo"
+        },
+        "emoji": "\ud83d\udc06",
+        "price": 100
+    },
+    "rhinoceros": {
+        "specie": {
+            "en": "rhinoceros",
+            "pt": "rinoceronte",
+            "pt_br": "rinoceronte"
+        },
+        "emoji": "\ud83e\udd8f",
+        "price": 100
+    },
+    "tiger": {
+        "specie": {
+            "en": "tiger",
+            "pt": "tigre",
+            "pt_br": "tigre"
+        },
+        "emoji": "\ud83d\udc2f",
+        "price": 100
+    },
+    "shark": {
+        "specie": {
+            "en": "shark",
+            "pt": "tubar\u00e3o",
+            "pt_br": "tubar\u00e3o"
+        },
+        "emoji": "\ud83e\udd88",
+        "price": 100
+    },
+    "bear": {
+        "specie": {
+            "en": "bear",
+            "pt": "urso",
+            "pt_br": "urso"
+        },
+        "emoji": "\ud83d\udc3b",
+        "price": 100
+    },
+    "llama": {
+        "specie": {
+            "en": "llama",
+            "pt": "lhama",
+            "pt_br": "lhama"
+        },
+        "emoji": "\ud83e\udd99",
+        "price": 100
+    },
+    "peacock": {
+        "specie": {
+            "en": "peacock",
+            "pt": "pav\u00e3o",
+            "pt_br": "pav\u00e3o"
+        },
+        "emoji": "\ud83e\udd9a",
+        "price": 100
+    },
+    "bacteria": {
+        "specie": {
+            "en": "bacteria",
+            "pt": "bact\u00e9ria",
+            "pt_br": "bact\u00e9ria"
+        },
+        "emoji": "\ud83e\udda0",
+        "price": 100
+    },
+    "mammoth": {
+        "specie": {
+            "en": "mammoth",
+            "pt": "mamute",
+            "pt_br": "mamute"
+        },
+        "emoji": "\ud83e\udda3",
+        "price": 100
+    },
+    "sloth": {
+        "specie": {
+            "en": "sloth",
+            "pt": "pregui\u00e7a",
+            "pt_br": "pregui\u00e7a"
+        },
+        "emoji": "\ud83e\udda5",
+        "price": 100
+    },
+    "orangutan": {
+        "specie": {
+            "en": "orangutan",
+            "pt": "orangotango",
+            "pt_br": "orangotango"
+        },
+        "emoji": "\ud83e\udda7",
+        "price": 100
+    },
+    "service dog": {
+        "specie": {
+            "en": "service dog",
+            "pt": "c\u00e3o-assistente",
+            "pt_br": "c\u00e3o-assistente"
+        },
+        "emoji": "\ud83d\udc15\u200d\ud83e\uddba",
+        "price": 100
+    },
+    "zombie": {
+        "specie": {
+            "en": "zombie",
+            "pt": "zombie",
+            "pt_br": "zombie"
+        },
+        "emoji": "\ud83e\udddf",
+        "price": 100
+    },
+    "fairy": {
+        "specie": {
+            "en": "fairy",
+            "pt": "fada",
+            "pt_br": "fada"
+        },
+        "emoji": "\ud83e\uddda",
+        "price": 100
+    },
+    "fairy man": {
+        "specie": {
+            "en": "fairy man",
+            "pt": "homem-fada",
+            "pt_br": "homem-fada"
+        },
+        "emoji": "\ud83e\uddda\u200d\u2642\ufe0f",
+        "price": 100
+    },
+    "guide dog": {
+        "specie": {
+            "en": "guide dog",
+            "pt": "c\u00e3o-guia",
+            "pt_br": "c\u00e3o-guia"
+        },
+        "emoji": "\ud83e\uddae",
+        "price": 100
+    },
+    "tiger_alt": {
+        "specie": {
+            "en": "tiger",
+            "pt": "tigre",
+            "pt_br": "tigre"
+        },
+        "emoji": "\ud83d\udc05",
+        "price": 100
+    },
+    "whale_alt": {
+        "specie": {
+            "en": "whale",
+            "pt": "baleia",
+            "pt_br": "baleia"
+        },
+        "emoji": "\ud83d\udc0b",
+        "price": 100
+    },
+    "elf": {
+        "specie": {
+            "en": "elf",
+            "pt": "elfo",
+            "pt_br": "elfo"
+        },
+        "emoji": "\ud83e\udddd",
+        "price": 100
+    },
+    "elf_man": {
+        "specie": {
+            "en": "elf man",
+            "pt": "elfo homem",
+            "pt_br": "elfo homem"
+        },
+        "emoji": "\ud83e\udddd\u200d\u2642\ufe0f",
+        "price": 100
+    },
+    "elf_woman": {
+        "specie": {
+            "en": "elf woman",
+            "pt": "elfa",
+            "pt_br": "elfa"
+        },
+        "emoji": "\ud83e\udddd\u200d\u2640\ufe0f",
+        "price": 100
+    },
+    "zombie_man": {
+        "specie": {
+            "en": "zombie man",
+            "pt": "zumbi",
+            "pt_br": "zumbi"
+        },
+        "emoji": "\ud83e\udddf\u200d\u2642\ufe0f",
+        "price": 100
+    },
+    "zombie_woman": {
+        "specie": {
+            "en": "zombie woman",
+            "pt": "zumbi feminina",
+            "pt_br": "zumbi feminina"
+        },
+        "emoji": "\ud83e\udddf\u200d\u2640\ufe0f",
+        "price": 100
+    },
+    "polar bear": {
+        "specie": {
+            "en": "polar bear",
+            "pt": "urso polar",
+            "pt_br": "urso polar"
+        },
+        "emoji": "\ud83d\udc3b\u200d\u2744\ufe0f",
+        "price": 125
+    },
+    "worm": {
+        "specie": {
+            "en": "worm",
+            "pt": "minhoca",
+            "pt_br": "minhoca"
+        },
+        "emoji": "\ud83e\udeb1",
+        "price": 150
+    },
+    "standing cow": {
+        "specie": {
+            "en": "standing cow",
+            "pt": "vaca inteira",
+            "pt_br": "vaca inteira"
+        },
+        "emoji": "\ud83d\udc04",
+        "price": 150
+    },
+    "gorilla": {
+        "specie": {
+            "en": "gorilla",
+            "pt": "gorila",
+            "pt_br": "gorila"
+        },
+        "emoji": "\ud83e\udd8d",
+        "price": 200
+    },
+    "lion": {
+        "specie": {
+            "en": "lion",
+            "pt": "le\u00e3o",
+            "pt_br": "le\u00e3o"
+        },
+        "emoji": "\ud83e\udd81",
+        "price": 200
+    },
+    "panda": {
+        "specie": {
+            "en": "panda",
+            "pt": "panda",
+            "pt_br": "panda"
+        },
+        "emoji": "\ud83d\udc3c",
+        "price": 200
+    },
+    "ghost": {
+        "specie": {
+            "en": "ghost",
+            "pt": "fantasma",
+            "pt_br": "fantasma"
+        },
+        "emoji": "\ud83d\udc7b",
+        "price": 200
+    },
+    "goblin": {
+        "specie": {
+            "en": "goblin",
+            "pt": "duende",
+            "pt_br": "duende"
+        },
+        "emoji": "\ud83d\udc7a",
+        "price": 250
+    },
+    "troll": {
+        "specie": {
+            "en": "troll",
+            "pt": "troll",
+            "pt_br": "troll"
+        },
+        "emoji": "\ud83e\uddcc",
+        "price": 250
+    },
+    "vampire man": {
+        "specie": {
+            "en": "vampire man",
+            "pt": "vampiro",
+            "pt_br": "vampiro"
+        },
+        "emoji": "\ud83e\udddb\u200d\u2642\ufe0f",
+        "price": 250
+    },
+    "vampire woman": {
+        "specie": {
+            "en": "vampire woman",
+            "pt": "vampira",
+            "pt_br": "vampira"
+        },
+        "emoji": "\ud83e\udddb\u200d\u2640\ufe0f",
+        "price": 250
+    },
+    "ogre": {
+        "specie": {
+            "en": "ogre",
+            "pt": "ogro",
+            "pt_br": "ogro"
+        },
+        "emoji": "\ud83d\udc79",
+        "price": 300
+    },
+    "devil": {
+        "specie": {
+            "en": "devil",
+            "pt": "diabo",
+            "pt_br": "diabo"
+        },
+        "emoji": "\ud83d\ude08",
+        "price": 300
+    },
+    "unicorn": {
+        "specie": {
+            "en": "unicorn",
+            "pt": "unic\u00f3rnio",
+            "pt_br": "unic\u00f3rnio"
+        },
+        "emoji": "\ud83e\udd84",
+        "price": 500
+    },
+    "dinosaur": {
+        "specie": {
+            "en": "dinosaur",
+            "pt": "dinossauro",
+            "pt_br": "dinossauro"
+        },
+        "emoji": "\ud83e\udd95",
+        "price": 500
+    },
+    "t-rex": {
+        "specie": {
+            "en": "t-rex",
+            "pt": "t-rex",
+            "pt_br": "t-rex"
+        },
+        "emoji": "\ud83e\udd96",
+        "price": 500
+    },
+    "imp": {
+        "specie": {
+            "en": "imp",
+            "pt": "diabinho",
+            "pt_br": "diabinho"
+        },
+        "emoji": "\ud83d\udc7f",
+        "price": 500
+    },
+    "genie": {
+        "specie": {
+            "en": "genie",
+            "pt": "g\u00eanio",
+            "pt_br": "g\u00eanio"
+        },
+        "emoji": "\ud83e\uddde",
+        "price": 500
+    },
+    "mermaid": {
+        "specie": {
+            "en": "mermaid",
+            "pt": "sereia",
+            "pt_br": "sereia"
+        },
+        "emoji": "\ud83e\udddc\u200d\u2640\ufe0f",
+        "price": 500
+    },
+    "merman": {
+        "specie": {
+            "en": "merman",
+            "pt": "trit\u00e3o",
+            "pt_br": "trit\u00e3o"
+        },
+        "emoji": "\ud83e\udddc\u200d\u2642\ufe0f",
+        "price": 500
+    },
+    "genie_man": {
+        "specie": {
+            "en": "genie man",
+            "pt": "g\u00eanio",
+            "pt_br": "g\u00eanio"
+        },
+        "emoji": "\ud83e\uddde\u200d\u2642\ufe0f",
+        "price": 500
+    },
+    "genie_woman": {
+        "specie": {
+            "en": "genie woman",
+            "pt": "g\u00eania",
+            "pt_br": "g\u00eania"
+        },
+        "emoji": "\ud83e\uddde\u200d\u2640\ufe0f",
+        "price": 500
+    },
+    "alien": {
+        "specie": {
+            "en": "alien",
+            "pt": "alien",
+            "pt_br": "alien"
+        },
+        "emoji": "\ud83d\udc7d",
+        "price": 999
+    },
+    "dragon": {
+        "specie": {
+            "en": "dragon",
+            "pt": "drag\u00e3o",
+            "pt_br": "drag\u00e3o"
+        },
+        "emoji": "\ud83d\udc32",
+        "price": 999
+    },
+    "robot": {
+        "specie": {
+            "en": "robot",
+            "pt": "rob\u00f4",
+            "pt_br": "rob\u00f4"
+        },
+        "emoji": "\ud83e\udd16",
+        "price": 999
+    },
+    "dragon_alt": {
+        "specie": {
+            "en": "dragon",
+            "pt": "drag\u00e3o",
+            "pt_br": "drag\u00e3o"
+        },
+        "emoji": "\ud83d\udc09",
+        "price": 999
+    },
+    "space invader": {
+        "specie": {
+            "en": "space invader",
+            "pt": "space invader",
+            "pt_br": "space invader"
+        },
+        "emoji": "\ud83d\udc7e",
+        "price": 1500
+    },
+    "superhero": {
+        "specie": {
+            "en": "superhero",
+            "pt": "super-her\u00f3i",
+            "pt_br": "super-her\u00f3i"
+        },
+        "emoji": "\ud83e\uddb8\u200d\u2642\ufe0f",
+        "price": 9999
+    },
+    "superheroine": {
+        "specie": {
+            "en": "superheroine",
+            "pt": "super-hero\u00edna",
+            "pt_br": "super-hero\u00edna"
+        },
+        "emoji": "\ud83e\uddb8\u200d\u2640\ufe0f",
+        "price": 9999
+    },
+    "supervillain": {
+        "specie": {
+            "en": "supervillain",
+            "pt": "supervil\u00e3o",
+            "pt_br": "supervil\u00e3o"
+        },
+        "emoji": "\ud83e\uddb9",
+        "price": 10000
+    },
+    "supervillain_man": {
+        "specie": {
+            "en": "supervillain man",
+            "pt": "supervil\u00e3o",
+            "pt_br": "supervil\u00e3o"
+        },
+        "emoji": "\ud83e\uddb9\u200d\u2642\ufe0f",
+        "price": 10000
+    },
+    "supervillain_woman": {
+        "specie": {
+            "en": "supervillain woman",
+            "pt": "supervil\u00e3",
+            "pt_br": "supervil\u00e3"
+        },
+        "emoji": "\ud83e\uddb9\u200d\u2640\ufe0f",
+        "price": 10000
+    }
+}

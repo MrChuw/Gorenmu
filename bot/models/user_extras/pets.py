@@ -25,3 +25,17 @@ class Pets(Base, TimestampMixin):
 
     class Meta:
         table = "pet"
+
+    @staticmethod
+    async def create_pet(specie: str, user: User, name: str | None = None):
+        return await Pets.create(user=user, specie=specie, name=name)
+
+    async def update_name(self, name: str):
+        self.name = name
+        await self.save()
+        return self
+
+    async def change_owner(self, new_owner: User):
+        self.user = new_owner
+        await self.save()
+        return self

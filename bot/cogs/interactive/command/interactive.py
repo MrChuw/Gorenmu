@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import datetime
-import hashlib
 from typing import TYPE_CHECKING
 
 from bot.apis import Emotes
 from bot.ext import ChatMessage, Context, Response, commands
-from bot.utils import SessionsCaches, StringTools
+from bot.utils import RandomUtils, SessionsCaches, StringTools
 
 from .translations import Translations
 
@@ -14,11 +12,15 @@ if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 
+# TODO: Change to random utils
+
+
 class InteractiveCmd(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
+        self.RandomUtils: RandomUtils = RandomUtils()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.Emotes: Emotes = Emotes(bot, self.SessionsCaches.Emotes.session)
 
@@ -82,18 +84,14 @@ class InteractiveCmd(commands.CustomComponent):
         name = await self.generic_prepare(ctx, arg, "hug", translations)
         if isinstance(name, Response):
             return name
-        emote = None
-        if not self.bot.mock:
-            emote = (await self.Emotes.get_hug(ctx, 1))[0]
-        if not emote:
-            emote = "🤗"
+        emote = await self.RandomUtils.pick_dynamic(self.Emotes.get_hug(ctx, 1), "🤗", self.bot)
         return translations.options(user=name, emote=emote)
 
     @commands.command(name="kiss", aliases=[])
     async def kiss(self, ctx: Context, arg: str) -> Response:
         translations = self.translations.Kiss
         name = await self.generic_prepare(ctx, arg, "kiss", translations)
-        emote = (None if self.bot.mock else (await self.Emotes.get_kiss(ctx, 1))[0]) or "🤗"
+        emote = await self.RandomUtils.pick_dynamic(self.Emotes.get_kiss(ctx, 1), "😘", self.bot)
         return name if isinstance(name, Response) else translations.options(user=name, emote=emote)
 
     @commands.command(name="ship", aliases=["love"])
@@ -105,19 +103,13 @@ class InteractiveCmd(commands.CustomComponent):
         if name1 == name2:
             return translations.yourself()
 
-        seed_string = f"{name1.lower()}{name1.lower()}{datetime.datetime.now().strftime('%Y-%U')}"
-        hash_digest = hashlib.sha256(seed_string.encode()).hexdigest()
-        percentage = int(hash_digest, 16) % 101
-        ship = name1[: len(name1) // 2 + 1] + name2[len(name2) // 2 + 1 :]
-        emojis = ["😭", "😥", "💔", "😢", "😐", "😊", "❤", "💕", "💘", "😍", "PogChamp ❤"]
-        emoji = emojis[round(percentage / 10)]
-        return await translations.options(
-            user1=name1,
-            user2=name2,
-            ship=ship,
-            percentage=percentage,
-            emoji=emoji,
+        percentage = self.RandomUtils.get_seeded_percentage(
+            name1.lower(), name2.lower(), time_basis=self.RandomUtils.TimeBasis.WEEKLY
         )
+        emojis = ["😭", "😥", "💔", "😢", "😐", "😊", "❤", "💕", "💘", "😍", "PogChamp ❤"]
+        emoji = self.RandomUtils.pick_by_percentage(emojis, percentage)
+        ship_name = name1[: len(name1) // 2 + 1] + name2[len(name2) // 2 + 1 :]
+        return await translations.options(user1=name1, user2=name2, ship=ship_name, percentage=percentage, emoji=emoji)
 
     @commands.command(name="pat", aliases=[])
     async def pat(self, ctx: Context, *, arg: str) -> Response:
@@ -127,7 +119,7 @@ class InteractiveCmd(commands.CustomComponent):
             return name
         if name == ctx.author.name:
             return translations.yourself()
-        emote = (None if self.bot.mock else (await self.Emotes.get_pat(ctx, 1))[0]) or "😚"
+        emote = await self.RandomUtils.pick_dynamic(self.Emotes.get_pat(ctx, 1), "😚", self.bot)
         return await translations.options(name, emote)
 
     @commands.command(name="penis", aliases=[])
@@ -138,9 +130,8 @@ class InteractiveCmd(commands.CustomComponent):
         name = await self.generic_prepare(ctx, arg, "penis", translations)
         if isinstance(name, Response):
             return name
-        seed = f"{name.lower()}{datetime.datetime.now().strftime('%j')}"
-        hash_val = int(hashlib.sha256(seed.encode()).hexdigest(), 16)
-        length = (hash_val % 28) + 5
+        percentage = self.RandomUtils.get_seeded_percentage(name.lower(), time_basis=self.RandomUtils.TimeBasis.DAILY)
+        length = self.RandomUtils.map_percentage_to_range(percentage, min_value=5, max_value=32)
         emoji = "🤏" if length <= 13 else "🍌" if length <= 19 else "🍆"
         return await translations.options(name, length, emoji)
 
@@ -152,16 +143,13 @@ class InteractiveCmd(commands.CustomComponent):
             return name
         if name == ctx.author.name:
             return translations.yourself()
-        now = datetime.datetime.now()
-        seed_string = f"{name.lower()}{now.strftime('%Y-%m-%d-%H-%M')}-{now.second // 30}"
-        hash_digest = hashlib.sha256(seed_string.encode()).hexdigest()
-        percentage = int(hash_digest, 16) % 101
-        emoji = "👋"
-        if not self.bot.mock:
-            emojis = await self.Emotes.get_hit(ctx, amount=10)
-            if len(emojis) > 2:
-                emoji = emojis[round(percentage / 10)]
-        return await translations.options(name, percentage, emoji)
+        percentage = self.RandomUtils.get_seeded_percentage(
+            name.lower(), time_basis=self.RandomUtils.TimeBasis.SECOND_30
+        )
+        emote = await self.RandomUtils.pick_dynamic_by_percentage(
+            self.Emotes.get_hit(ctx, 1), "👋", percentage, self.bot
+        )
+        return await translations.options(name, percentage, emote)
 
     @commands.command(name="tuck", aliases=[])
     async def tuck(self, ctx: Context, *, arg: str) -> Response:
@@ -169,22 +157,18 @@ class InteractiveCmd(commands.CustomComponent):
         name = await self.generic_prepare(ctx, arg, "tuck", translations)
         if isinstance(name, Response):
             return name
-        now = datetime.datetime.now()
-        seed_string = f"{name.lower()}{now.strftime('%Y-%m-%d-%H-%M-%S')}-{now.second // 30}"
-        hash_digest = hashlib.sha256(seed_string.encode()).hexdigest()
-        emoji1 = "🙂"
-        emoji2 = "🛏"
-        if not self.bot.mock:
-            base_value = int(hash_digest, 16) % 101
-            emojis1 = await self.Emotes.get_okay(ctx, amount=10)
-            if emojis1:
-                index1 = (base_value * len(emojis1)) // 101
-                emoji1 = emojis1[min(index1, len(emojis1) - 1)]
-
-            emojis2 = await self.Emotes.get_bed(ctx, amount=10)
-            if emojis2:
-                index2 = (base_value * len(emojis2)) // 101
-                emoji2 = emojis2[min(index2, len(emojis2) - 1)]
+        percentage = self.RandomUtils.get_seeded_percentage(
+            name.lower(), time_basis=self.RandomUtils.TimeBasis.SECOND_30
+        )
+        emoji1 = await self.RandomUtils.pick_dynamic_by_percentage(
+            self.Emotes.get_okay(ctx, 1), "🙂", percentage, self.bot
+        )
+        percentage = self.RandomUtils.get_seeded_percentage(
+            name.lower(), time_basis=self.RandomUtils.TimeBasis.SECOND_30
+        )
+        emoji2 = await self.RandomUtils.pick_dynamic_by_percentage(
+            self.Emotes.get_bed(ctx, 1), "🛏", percentage, self.bot
+        )
         if name == ctx.author.name:
             return translations.yourself(emoji2)
         return await translations.options(name, emoji1, emoji2)
@@ -211,13 +195,13 @@ class InteractiveCmd(commands.CustomComponent):
             return self.translations.GenericWait.already_in_action(action, name, ctx.author.name), None
         return name
 
-    async def generic_prepare_2_names(self, ctx: Context, arg: str, translation):
+    async def generic_prepare_2_names(
+        self, ctx: Context, arg: str, translation
+    ) -> tuple[str | None, None] | tuple[str | None, str | None]:
         name1, name2, _ = self.StringTools.safe_split(arg, 3)
         name1 = self.StringTools.str2name_or(name1)
         name2 = self.StringTools.str2name_or(name2)
-        quick_responses = {
-            ctx.bot.bot_user.name.lower(): translation.bot_nick(),
-        }
+        quick_responses = {ctx.bot.bot_user.name.lower(): translation.bot_nick()}
         if name1 in quick_responses:
             return quick_responses.get(name1), None
         elif name2 in quick_responses:

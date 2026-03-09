@@ -59,7 +59,7 @@ class MockContext(AsyncMock):
         self.invoked_with: str = ""
 
     async def prepare_context(
-        self, translation: str = "en", seed: int = 0, interact=None, afk_data=None, cookie_data=None
+        self, translation: str = "en", seed: int = 0, interact=None, afk_data=None, cookie_data=None, pet_data=None
     ):
         random.seed(seed)
         self.user = await User.create_or_update(self)
@@ -75,6 +75,10 @@ class MockContext(AsyncMock):
             from tests.helpers.fake_db_data import create_cookie_db
 
             await create_cookie_db(self.bot)
+        if pet_data:
+            from tests.helpers.fake_db_data import create_pet_data
+
+            await create_pet_data(self.bot)
 
     async def prepare_alias(self, special_user):
         command_check = self.bot.get_command("chance")

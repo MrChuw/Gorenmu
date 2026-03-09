@@ -4,7 +4,7 @@ import datetime
 from typing import TYPE_CHECKING
 
 from bot.cogs.afk.commands.translations import Translations
-from bot.models import Channel, Cookies, Status, User
+from bot.models import Channel, Cookies, Pets, Status, User
 from tests.helpers.mock_classes import MockContext
 
 if TYPE_CHECKING:
@@ -109,3 +109,22 @@ async def create_afk_data(bot: Gorenmu):
     #     ctx.user = user
     #     await Status.go_afk(ctx=ctx, status=afk, content="content")
     # yield
+
+
+async def create_pet_data(bot: Gorenmu):
+    ctx = MockContext("username", 12345, "channelname", 123456, bot)  # NOQA
+    user = await User.create_or_update(ctx)
+    await Pets.create_pet("bee", user)
+    await Pets.create_pet("bee", user, "bee2")
+    await Pets.create_pet("supervillain_woman", user, "vilão")
+
+    ctx1 = MockContext("has_pet", 1234432132, "channelname", 123456, bot)  # NOQA
+    user1 = await User.create_or_update(ctx1)
+    await Pets.create_pet("bee", user1)
+    await Pets.create_pet("boar", user1, "javali")
+    await Pets.create_pet("supervillain_woman", user1, "vilão")
+
+    ctx2 = MockContext("has_no_pet", 12344321324, "channelname", 123456, bot)  # NOQA
+    await User.create_or_update(ctx2)
+
+    ...

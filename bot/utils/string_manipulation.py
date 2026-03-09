@@ -314,6 +314,15 @@ class StringTools(metaclass=Singleton):
         for _ in range(max_parts):
             yield next(it, fill)
 
+    @staticmethod
+    def string_validator(text, max_length: int = 32):
+        if len(text) > max_length:
+            return False
+        if not re.match(r'^[a-zA-Z0-9\U00010000-\U0010ffff]', text):
+            return False
+        allowed_pattern = re.compile(r'^[a-zA-Z0-9\s.,!@#$%&?*()\-\U00010000-\U0010ffff]+$')
+        return bool(allowed_pattern.match(text))
+
 
 def _get_compiled(field: str, pos: tuple, neg: tuple, nth: tuple):
     mapping = {w.lower(): True for w in pos} | {w.lower(): False for w in neg} | {w.lower(): None for w in nth}

@@ -115,6 +115,8 @@ lz4==4.4.5
     # via clickhouse-connect
 motor==3.7.1
     # via aiohttp-client-cache
+msgspec==0.20.0
+    # via gorenmu (pyproject.toml)
 multidict==6.6.4
     # via
     #   aiobotocore
@@ -180,7 +182,7 @@ tortoise-orm==0.25.3
     # via gorenmu (pyproject.toml)
 tqdm==4.67.1
     # via nltk
-twitchio @ git+https://github.com/PythonistaGuild/TwitchIO.git@58eabd3730ec52bb56a4c88d959229ac067ceb45
+twitchio @ git+https://github.com/PythonistaGuild/TwitchIO.git@eddbe30c7696b6059b2f649689c3280d93dd6d16
     # via gorenmu (pyproject.toml)
 typing-extensions==4.14.1
     # via

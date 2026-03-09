@@ -116,33 +116,37 @@ class Cookies(Base, TimestampMixin):
         return final_time - datetime.now(UTC)  # NOQA TODO: fix NOQA?
 
     @staticmethod
-    async def find_by_name(name: str, ctx: Context, translations: TranslationBase) -> Cookies | Response:
+    async def find_by_name(
+        name: str, ctx: Context, translations: TranslationBase, none: bool = False
+    ) -> Cookies | Response | None:
         cookie = await ctx.bot.memcache.Cookie.get_by_name(name)
         if not cookie:
             user_id = await ctx.bot.memcache.Cookie.get_id_by_name(name)
             cookie = await Cookies.get_or_none(user_id=user_id)
             if not cookie:
-                return translations.Exceptions.user_not_found_name(name)
+                return None if none else translations.Exceptions.user_not_found_name(name)
             await ctx.bot.memcache.Cookie.set(user=[cookie.id, name], cookie=cookie)
         return cookie
 
     @staticmethod
-    async def find_by_id(user: User, ctx: Context, translations: TranslationBase) -> Cookies | Response:
+    async def find_by_id(
+        user: User, ctx: Context, translations: TranslationBase, none: bool = False
+    ) -> Cookies | Response | None:
         cookie = await ctx.bot.memcache.Cookie.get(user_id=user.id)
         if not cookie:
             cookie = await Cookies.get_or_none(id=user.id)
             if not cookie:
-                return translations.Exceptions.user_not_found_id(user.id)
+                return None if none else translations.Exceptions.user_not_found_id(user.id)
             await ctx.bot.memcache.Cookie.set(user=user, cookie=cookie)
         return cookie
 
     @staticmethod
     async def get_cookie(
-        ctx: Context, translations: TranslationBase, name: str | None = None, user: User = None
+        ctx: Context, translations: TranslationBase, name: str | None = None, user: User = None, none: bool = False
     ) -> Cookies | Response:
         if name:
-            return await Cookies.find_by_name(name=name, ctx=ctx, translations=translations)
+            return await Cookies.find_by_name(name=name, ctx=ctx, translations=translations, none=none)
         elif user:
-            return await Cookies.find_by_id(user=user, ctx=ctx, translations=translations)
+            return await Cookies.find_by_id(user=user, ctx=ctx, translations=translations, none=none)
         else:
-            return await Cookies.find_by_id(user=ctx.user, ctx=ctx, translations=translations)
+            return await Cookies.find_by_id(user=ctx.user, ctx=ctx, translations=translations, none=none)

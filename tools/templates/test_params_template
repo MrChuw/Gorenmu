@@ -19,6 +19,7 @@ class Params:
             id="pt_BR",
         ),
     ]
+
     no_content: ClassVar[list] = [
         pytest.param(
                 "en",

@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from bot.apis import Emotes
 from bot.ext import Context, Response, commands
 from bot.models import Cookies, User
-from bot.utils import Check, SessionsCaches, StringTools
+from bot.utils import Check, RandomUtils, SessionsCaches, StringTools
 
 from .translations import Translations
 
@@ -23,6 +23,7 @@ class CookieCmd(commands.CustomComponent):
         self.multiplicador = 1
         self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
+        self.RandomUtils: RandomUtils = RandomUtils()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.emotes: Emotes = Emotes(bot, self.SessionsCaches.Emotes.session)
 
@@ -234,12 +235,12 @@ class CookieCmd(commands.CustomComponent):
         stock_method = cookie.stock_all if is_all_mode else cookie.stock
 
         if total_reward:
-            emote = (await self.emotes.get_pog(ctx=ctx))[0]
+            emote = await self.RandomUtils.pick_dynamic(self.emotes.get_pat(ctx, 10), "PogChamp", self.bot)
             total = total_reward * self.multiplicador
             await stock_method(amount_available)  # NOQA
             suffix = translations.cookie_win_suffix(total, time_suffix)
         else:
-            emote = (await self.emotes.get_sad(ctx=ctx))[0]
+            emote = await self.RandomUtils.pick_dynamic(self.emotes.get_pat(ctx, 10), "peepoSad", self.bot)
             await stock_method(0)  # NOQA
             suffix = translations.cookie_loss_suffix(time_suffix)
 

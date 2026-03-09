@@ -4,6 +4,7 @@ from .command_checks import Check, Role
 from .config import Config
 from .discord_webhook import DiscordWebHook
 from .markov_tools import MarkovProcessor
+from .random_utils import RandomUtils
 from .reload_util import reload_and_get
 from .semaphore_manager import AdvancedSemaphore, SemaphoreManager
 from .string_manipulation import StringTools
@@ -25,4 +26,5 @@ __all__ = [
     UploadThings,
     SemaphoreManager,
     AdvancedSemaphore,
+    RandomUtils,
 ]
