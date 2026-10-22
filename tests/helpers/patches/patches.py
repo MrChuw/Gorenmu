@@ -13,15 +13,17 @@ from freezegun import freeze_time
 from bot.apis.ivrfi.parsers.subage import SubAge
 from bot.apis.ivrfi.parsers.user import UserElement
 from bot.apis.weather import Forecast, Geocoding
-from bot.cogs.preview.command.preview import PreviewCmd
 from bot.cogs.pixelsorting.command import pixelsorting
+from bot.cogs.preview.command.preview import PreviewCmd
+from bot.cogs.randomscp.command import randomscp
 from bot.handlers import TokensHandler
 from bot.models.base import TimestampMixin
 from bot.utils.discord_webhook import DiscordWebHook
 
 if TYPE_CHECKING:
-    from bot.bot import Gorenmu
     from PIL import Image
+
+    from bot.bot import Gorenmu
 
 _real_sleep = asyncio.sleep
 
@@ -213,8 +215,6 @@ class MockBuilder:
     class _Commands:
         def __init__(self, builder):
             self.builder = builder
-            import bot.cogs.randomscp.command.randomscp as randomscp
-
             self.randomscp = randomscp
 
         def get_scp(self, return_value: str | None = None, side_effect=None, status=200) -> MockBuilder:
@@ -300,12 +300,18 @@ class MockBuilder:
                 def __init__(self, builder):
                     self.builder = builder
 
-                def fetch_user(self, dict_to_parse: dict | None = None) -> MockBuilder:
+                def fetch_user(self, dict_to_parse: dict | list[dict] | None = None) -> MockBuilder:
                     self.builder.patches["ivrfi_user_fetch_user"].append(
                         patch(
                             "bot.apis.ivrfi.api.ApiIvrFi.Twitch.User.fetch_user",
                             AsyncMock(
-                                return_value=(UserElement.from_dict(dict_to_parse) if dict_to_parse else None)
+                                return_value=(
+                                    UserElement.from_dict(
+                                        dict_to_parse[0] if isinstance(dict_to_parse, list) else dict_to_parse
+                                    )
+                                    if dict_to_parse
+                                    else None
+                                )
                             ),
                         )
                     )
