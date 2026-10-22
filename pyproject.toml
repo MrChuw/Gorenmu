@@ -94,9 +94,6 @@ filterwarnings = [
     "ignore::DeprecationWarning:twitchio.*:",
     "ignore::DeprecationWarning:starlette.*:",
 ]
-[tool.deptry.per_rule_ignores]
-DEP004 = ["debugpy"]
-
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
@@ -106,6 +103,9 @@ markers = ["network: tests that make real requests", "disabled: Tests that have 
 #addopts = "-n auto -m 'not disabled'"
 # addopts = "-m 'not network and not disabled'"
 addopts = "-n auto -m 'not network and not disabled'"
+
+[tool.deptry.per_rule_ignores]
+DEP004 = ["debugpy"]
 
 [tool.uv.sources]
 twitchio = { git = "https://github.com/PythonistaGuild/TwitchIO.git" }
