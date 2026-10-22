@@ -3,7 +3,7 @@ import datetime
 import pytest
 import pytest_asyncio
 
-from bot.cogs.weather.command.weather import WeatherCmd, Response
+from bot.cogs.weather.command.weather import Response, WeatherCmd
 from tests.helpers.mock_classes import MockContext
 
 from .fake_data import forecast, geocoding

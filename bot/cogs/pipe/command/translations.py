@@ -67,4 +67,3 @@ class Pipe(TBase):
         )
 
     # endregion
-

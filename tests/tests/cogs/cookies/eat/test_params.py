@@ -81,8 +81,10 @@ class Params:
             "en",
             [
                 "The person born with a talent they are meant to use will find their greatest happiness in using it.",
-                "The trouble with most people is that they think with "
-                "their hopes or fears or wishes rather than with their minds.",
+                (
+                    "The trouble with most people is that they think with "
+                    "their hopes or fears or wishes rather than with their minds."
+                ),
                 "You're still on cooldown, wait ",
             ],
             marks=pytest.mark.en,

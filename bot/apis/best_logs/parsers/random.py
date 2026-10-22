@@ -206,7 +206,6 @@ class Random:
         return random.choice(self.messages)
 
 
-
 def random_from_dict(s: Any) -> Random:
     return Random.from_dict(s)
 

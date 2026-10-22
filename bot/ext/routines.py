@@ -12,7 +12,7 @@ from twitchio.ext.routines import LOGGER, CoroT, T  # noqa
 from twitchio.ext.routines import Routine as BaseRoutine
 from twitchio.ext.routines import routine as base_routine
 
-__all__ = ("Day", "ScheduleBuilder", "Routine", "routine")
+__all__ = ("Day", "Routine", "ScheduleBuilder", "routine")
 
 
 class Day(IntEnum):

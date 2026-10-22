@@ -54,4 +54,3 @@ class Choice(TBase):
                 {"args": self.get_text("cmd_ex3_args"), "response": self.get_text("cmd_ex3_res")},
             ]
         )
-

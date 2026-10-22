@@ -49,9 +49,7 @@ class _AsyncContextManager:
         self._period = period
 
     async def __aenter__(self) -> RateLimiter:
-        await self._limiter.acquire(
-            self._bucket, max_calls=self._max_calls, period=self._period
-        )
+        await self._limiter.acquire(self._bucket, max_calls=self._max_calls, period=self._period)
         return self._limiter
 
     async def __aexit__(
@@ -84,9 +82,7 @@ class _SyncContextManager:
         self._period = period
 
     def __enter__(self) -> RateLimiter:
-        self._limiter.acquire_sync(
-            self._bucket, max_calls=self._max_calls, period=self._period
-        )
+        self._limiter.acquire_sync(self._bucket, max_calls=self._max_calls, period=self._period)
         return self._limiter
 
     def __exit__(
@@ -126,19 +122,9 @@ class RateLimiter(metaclass=Singleton):
             for idx, name in enumerate(chain_names):
                 if name not in self._buckets:
                     is_leaf = idx == len(chain_names) - 1
-                    max_c = (
-                        leaf_max_calls
-                        if (is_leaf and leaf_max_calls is not None)
-                        else 1_000_000
-                    )
-                    per = (
-                        leaf_period
-                        if (is_leaf and leaf_period is not None)
-                        else 1.0
-                    )
-                    self._buckets[name] = _Bucket(
-                        name=name, max_calls=max_c, period=per
-                    )
+                    max_c = leaf_max_calls if (is_leaf and leaf_max_calls is not None) else 1_000_000
+                    per = leaf_period if (is_leaf and leaf_period is not None) else 1.0
+                    self._buckets[name] = _Bucket(name=name, max_calls=max_c, period=per)
                 chain_nodes.append(self._buckets[name])
 
         return chain_nodes
@@ -148,9 +134,7 @@ class RateLimiter(metaclass=Singleton):
         with self._global_lock:
             existing = self._buckets.get(bucket_path)
             if existing is None:
-                self._buckets[bucket_path] = _Bucket(
-                    name=bucket_path, max_calls=max_calls, period=period
-                )
+                self._buckets[bucket_path] = _Bucket(name=bucket_path, max_calls=max_calls, period=period)
             else:
                 with existing.sync_lock:
                     existing.max_calls = max_calls
@@ -249,6 +233,7 @@ class RateLimiter(metaclass=Singleton):
         """Context manager helper for synchronous `with`."""
         return _SyncContextManager(self, bucket, max_calls, period)
 
+
 # USAGE EXAMPLES:
 
 # 1. Configuration & Hierarchy Setup:
@@ -280,5 +265,3 @@ class RateLimiter(metaclass=Singleton):
 #     RateLimiter().configure("irc", max_calls=100, period=30.0)
 # else:
 #     RateLimiter().configure("irc", max_calls=20, period=30.0)
-
-

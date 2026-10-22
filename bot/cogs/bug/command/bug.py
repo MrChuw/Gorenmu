@@ -19,7 +19,6 @@ class BugCmd(commands.CustomComponent):
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.DiscordWebHook: DiscordWebHook = DiscordWebHook()
 
-
     @commands.command(name="bug", aliases=["report"])
     async def bug(self, ctx: Context, *, content) -> Response:
         session = self.SessionsCaches.Bug.session

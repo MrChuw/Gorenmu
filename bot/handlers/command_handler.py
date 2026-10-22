@@ -19,17 +19,14 @@ from bot.exceptions import (
     InvalidArgument,
     OwnerRequiredError,
 )
-from bot.ext import Routine
-from bot.ext.translations.translations import LangDict, TBase, TranslationBase
-
-from bot.ext import Context
+from bot.ext import Context, Routine
+from bot.ext.translations.translations import LangDict, TranslationBase
 
 if TYPE_CHECKING:
     from twitchio import ChatMessage
 
     from bot.bot import Gorenmu
     from bot.cogs.bug.command.bug import BugCmd
-
 
 
 class CommandHandler:
@@ -116,14 +113,13 @@ class CommandHandler:
                 command_inner: str = target.command.name.lower()
         else:
             ctx = await self.bot.LifecycleHandler.get_context(target)
-            command_inner  = ctx.command.name.lower()
+            command_inner = ctx.command.name.lower()
         command = command or command_inner
 
         return command not in channel_commands
 
     # def is_enabled(self, ctx: Context, command: str = "") -> bool:
     #     return (command or ctx.command.name.lower()) not in self.bot.channels[ctx.channel.name].disabled
-
 
     async def send_bug(self, ctx: Context, error: Exception, ping: bool = True):
         command = self.bot.get_command("bug")

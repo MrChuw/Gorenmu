@@ -36,4 +36,3 @@ class Chance(TBase):
 
     def deco_commands(self, *args, **kwargs) -> CommandExemples:
         return CommandExemples([{"response": self.get_text("cmd_ex1_res")}])
-

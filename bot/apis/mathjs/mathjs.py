@@ -118,9 +118,7 @@ class Mathjs(MathjsCore):
                 "sign": lambda x: (x > 0) - (x < 0),
                 "factorial": self._safe_factorial,
                 "combinations": math.comb,
-                "permutations": lambda n, k=None: (
-                    math.perm(n, k) if k is not None else math.factorial(n)
-                ),
+                "permutations": lambda n, k=None: math.perm(n, k) if k is not None else math.factorial(n),
                 "sum": self._sum,
                 "mean": self._mean,
                 "median": self._median,
@@ -143,9 +141,7 @@ class Mathjs(MathjsCore):
                 "conj": lambda z: z.conjugate() if isinstance(z, complex) else z,
                 "re": lambda z: z.real if isinstance(z, complex) else z,
                 "im": lambda z: z.imag if isinstance(z, complex) else 0.0,
-                "arg": lambda z: (
-                    math.atan2(z.imag, z.real) if isinstance(z, complex) else 0.0
-                ),
+                "arg": lambda z: math.atan2(z.imag, z.real) if isinstance(z, complex) else 0.0,
                 "random": self._random,
                 "randomInt": self._random_int,
                 "pickRandom": self._pick_random,

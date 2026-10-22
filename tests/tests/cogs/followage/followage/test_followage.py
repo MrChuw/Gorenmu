@@ -54,9 +54,7 @@ async def base_followage(
         response = await interact.followage._callback(  # NOQA
             interact, mock_context, name=content.split()[0], channel=content.split()[1]
         )
-    mock_context.Asserter.assert_string(
-        response.response, expected=expected, re_expected=re_expected, strict=True
-    )
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected, strict=True)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

@@ -21,7 +21,6 @@ class AnnotationsCmd(commands.CustomComponent):
         self.StringTools: StringTools = StringTools()
         self.translations: Translations = Translations(bot, self)
 
-
     @commands.group(name="annotations", aliases=["note", "annotation"])
     async def annotations(self, ctx: Context) -> Response:
         await ctx.simple_response(ctx, "Shush")

@@ -27,7 +27,6 @@ class Translations(TranslationBase):
         self.Extras: Extras = Extras(self)
 
 
-
 class Table(TBase):
     def __init__(self, parent: Translations):
         self.prefix = "Alias-Table"
@@ -580,9 +579,7 @@ class Template(TBase):
         super().__init__(parent, __file__)
 
     def part1(self, command_title: str, rate: int, per: str, cooldown_type: str) -> str:
-        return self.get_text(
-            self._cname, command_title=command_title, rate=rate, per=per, cooldown_type=cooldown_type
-        )
+        return self.get_text(self._cname, command_title=command_title, rate=rate, per=per, cooldown_type=cooldown_type)
 
     def part2(self, description: str, aliases: str) -> str:
         return self.get_text(self._cname, description=description, aliases=aliases)
@@ -601,4 +598,3 @@ class Template(TBase):
 
     def bucket_type(self, type_key: str) -> str:
         return self.get_text(self._cname, type=type_key)
-

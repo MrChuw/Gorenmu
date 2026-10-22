@@ -6,26 +6,25 @@ import re
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta, tzinfo
 from types import TracebackType
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, ClassVar, Literal
 
 from bot.utils.singleton import Singleton
 
 from .timelength import English, Guess, Locale, Portuguese, Spanish, TimeLength
-from .timelength.dataclasses import Scale
 from .timelength.parsers.date_parser import DateParserConfig, preprocess_dates
 
 if TYPE_CHECKING:
-    from bot.bot import Context
+    pass
 
 __all__ = [
-    "preprocess_dates",
     "DateParserConfig",
     "English",
-    "Spanish",
     "Guess",
-    "TimeLength",
     "Portuguese",
+    "Spanish",
+    "TimeLength",
     "TimeTools",
+    "preprocess_dates",
 ]
 
 TimeUnit = Literal[
@@ -250,7 +249,7 @@ class TimeTools(metaclass=Singleton):
             scale = lang.get_scale(term)
             return scale.key if scale else "minute"
 
-        _REAL_UNIT_BY_KEY: dict[str, str] = {
+        _REAL_UNIT_BY_KEY: ClassVar[dict[str, str]] = {
             "past": "past",
             "now": "now",
             "future": "future",
@@ -301,7 +300,7 @@ class TimeTools(metaclass=Singleton):
         # For a given display unit, which of `_ALL_UNITS` should be kept (i.e. NOT suppressed).
         # "weeks" piggybacks on "days", and "decades"/"centuries" keep "months"/"years" respectively
         # since those pair naturally with them (e.g. "1 decade, 3 months").
-        _KEEP_UNIT: dict[str, str] = {
+        _KEEP_UNIT: ClassVar[dict[str, str]] = {
             "microseconds": "microseconds",
             "milliseconds": "milliseconds",
             "seconds": "seconds",

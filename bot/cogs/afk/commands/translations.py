@@ -256,4 +256,3 @@ class Activity:
         self.afks = {}
         for key, value in data.get("afks", {}).items():
             self.afks[key] = Activity.Status(*value, _property=self.property)
-

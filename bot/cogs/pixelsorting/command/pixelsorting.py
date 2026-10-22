@@ -32,13 +32,13 @@ class PixelSortCmd(commands.CustomComponent):
         translations = self.translations.PixelSorting
         extract = self.StringTools.extract_and_remove_all_fields
 
-        rest, tipos        = extract(args,  "type",          ["sum"])
-        rest, crop         = extract(rest,  "crop")
-        rest, is_random    = extract(rest,  "rand",          ["false"])
-        rest, intensity    = extract(rest,  "inte",          ["50"])  # NOQA
-        rest, direction    = extract(rest,  "dire",          ["vertical"])
-        rest, mask_mode    = extract(rest,  "maskmode",      ["none"])  # NOQA
-        rest, mask_image_arg = extract(rest, "maskimage",    ["none"])  # NOQA
+        rest, tipos = extract(args, "type", ["sum"])
+        rest, crop = extract(rest, "crop")
+        rest, is_random = extract(rest, "rand", ["false"])
+        rest, intensity = extract(rest, "inte", ["50"])  # NOQA
+        rest, direction = extract(rest, "dire", ["vertical"])
+        rest, mask_mode = extract(rest, "maskmode", ["none"])  # NOQA
+        rest, mask_image_arg = extract(rest, "maskimage", ["none"])  # NOQA
         rest, mask_threshold = extract(rest, "maskthreshold", ["128"])  # NOQA
 
         urls = self.StringTools.urls_extract(rest)
@@ -105,8 +105,8 @@ async def teardown(bot: "Gorenmu") -> None: ...  # NOQA
 # Image fetching
 # ---------------------------------------------------------------------------
 
-RGBA_Array = npt.NDArray[np.uint8]   # shape (H, W, 4)
-Mask_Array = npt.NDArray[np.bool_]   # shape (H, W)
+RGBA_Array = npt.NDArray[np.uint8]  # shape (H, W, 4)
+Mask_Array = npt.NDArray[np.bool_]  # shape (H, W)
 
 # Sorting-key functions receive a (N, 4) uint8 array and return a (N,) float64
 KeyFn = Callable[[RGBA_Array], npt.NDArray[np.float64]]
@@ -115,22 +115,29 @@ KeyFn = Callable[[RGBA_Array], npt.NDArray[np.float64]]
 # Key-function table (operates on 2-D slices of shape (N, 4))
 # ---------------------------------------------------------------------------
 
+
 def _key_red(p: RGBA_Array) -> npt.NDArray[np.float64]:
     return p[:, 0].astype(np.float64)
+
 
 def _key_green(p: RGBA_Array) -> npt.NDArray[np.float64]:
     return p[:, 1].astype(np.float64)
 
+
 def _key_blue(p: RGBA_Array) -> npt.NDArray[np.float64]:
     return p[:, 2].astype(np.float64)
+
 
 def _key_rgb(p: RGBA_Array) -> npt.NDArray[np.float64]:
     return p[:, :3].astype(np.float64).sum(axis=1)
 
+
 def _key_rgba(p: RGBA_Array) -> npt.NDArray[np.float64]:
     return p.astype(np.float64).sum(axis=1)
 
+
 _key_sum = _key_rgba  # alias kept for the "sum" mode
+
 
 def _key_hue(p: RGBA_Array) -> npt.NDArray[np.float64]:
     rgb = p[:, :3].astype(np.float64) / 255.0
@@ -151,6 +158,7 @@ def _key_hue(p: RGBA_Array) -> npt.NDArray[np.float64]:
     h[mb] = (r[mb] - g[mb]) / delta[mb] + 4
     return h / 6.0
 
+
 def _key_saturation(p: RGBA_Array) -> npt.NDArray[np.float64]:
     rgb = p[:, :3].astype(np.float64) / 255.0
     cmax = rgb.max(axis=1)
@@ -159,48 +167,56 @@ def _key_saturation(p: RGBA_Array) -> npt.NDArray[np.float64]:
     s = np.where(cmax != 0, delta / cmax, 0.0)
     return s
 
+
 def _key_value(p: RGBA_Array) -> npt.NDArray[np.float64]:
     return p[:, :3].astype(np.float64).max(axis=1) / 255.0
+
 
 def _key_lightness(p: RGBA_Array) -> npt.NDArray[np.float64]:
     rgb = p[:, :3].astype(np.float64) / 255.0
     return (rgb.max(axis=1) + rgb.min(axis=1)) / 2.0
 
+
 def _key_luma(p: RGBA_Array) -> npt.NDArray[np.float64]:
     rgb = p[:, :3].astype(np.float64)
     return 0.2126 * rgb[:, 0] + 0.7152 * rgb[:, 1] + 0.0722 * rgb[:, 2]
+
 
 def _key_chroma(p: RGBA_Array) -> npt.NDArray[np.float64]:
     rgb = p[:, :3].astype(np.float64)
     return rgb.max(axis=1) - rgb.min(axis=1)
 
+
 def _key_dist_white(p: RGBA_Array) -> npt.NDArray[np.float64]:
     diff = (255 - p[:, :3]).astype(np.float64)
-    return np.sqrt((diff ** 2).sum(axis=1))
+    return np.sqrt((diff**2).sum(axis=1))
+
 
 def _key_dist_black(p: RGBA_Array) -> npt.NDArray[np.float64]:
     rgb = p[:, :3].astype(np.float64)
-    return np.sqrt((rgb ** 2).sum(axis=1))
+    return np.sqrt((rgb**2).sum(axis=1))
+
 
 def _key_random(p: RGBA_Array) -> npt.NDArray[np.float64]:
     return np.random.rand(len(p))
 
+
 _KEY_FN: dict[str, KeyFn] = {
-    "red":        _key_red,
-    "green":      _key_green,
-    "blue":       _key_blue,
-    "rgb":        _key_rgb,
-    "rgba":       _key_rgba,
-    "sum":        _key_sum,
-    "hue":        _key_hue,
+    "red": _key_red,
+    "green": _key_green,
+    "blue": _key_blue,
+    "rgb": _key_rgb,
+    "rgba": _key_rgba,
+    "sum": _key_sum,
+    "hue": _key_hue,
     "saturation": _key_saturation,
-    "value":      _key_value,
-    "lightness":  _key_lightness,
-    "luma":       _key_luma,
-    "chroma":     _key_chroma,
+    "value": _key_value,
+    "lightness": _key_lightness,
+    "luma": _key_luma,
+    "chroma": _key_chroma,
     "dist_white": _key_dist_white,
     "dist_black": _key_dist_black,
-    "random":     _key_random,
+    "random": _key_random,
 }
 
 _VALID_TYPES: frozenset[str] = frozenset(_KEY_FN)
@@ -235,6 +251,7 @@ async def request_images(
 # Tile-cutting helper
 # ---------------------------------------------------------------------------
 
+
 async def cut(
     images: list[Image.Image],
     size: str,
@@ -251,7 +268,7 @@ async def cut(
     for img_idx, image in enumerate(images):
         img_w, img_h = image.size
         for x, y in itertools.product(range(0, img_w, w), range(0, img_h, h)):
-            right  = min(x + w, img_w)
+            right = min(x + w, img_w)
             bottom = min(y + h, img_h)
             tiles.append(image.crop((x, y, right, bottom)))
             positions.append((img_idx, x, y))
@@ -263,20 +280,21 @@ async def cut(
 # Mask builder
 # ---------------------------------------------------------------------------
 
+
 def _build_mask(
     img_rgba: Image.Image,
     mask_mode: str | None,
     mask_image: Image.Image | None,
     mask_threshold: int,
 ) -> Mask_Array:
-    """Return a boolean (H, W) array – True where pixels should be sorted."""
+    """Return a boolean (H, W) array - True where pixels should be sorted."""
     w, h = img_rgba.size
     if mask_mode == "external" and mask_image:
         m = mask_image.convert("L").resize((w, h))
     elif mask_mode == "internal":
-        gray  = img_rgba.convert("L")
+        gray = img_rgba.convert("L")
         edges = gray.filter(ImageFilter.FIND_EDGES)
-        m     = ImageOps.equalize(edges)
+        m = ImageOps.equalize(edges)
     else:
         return np.ones((h, w), dtype=np.bool_)
 
@@ -284,8 +302,9 @@ def _build_mask(
 
 
 # ---------------------------------------------------------------------------
-# Core sorting  (fully vectorised – no per-pixel Python loops)
+# Core sorting  (fully vectorised - no per-pixel Python loops)
 # ---------------------------------------------------------------------------
+
 
 def _sort_arr_by_mask(
     arr: RGBA_Array,
@@ -293,14 +312,14 @@ def _sort_arr_by_mask(
     key_fn: KeyFn,
 ) -> RGBA_Array:
     """Sort *all* unmasked pixels globally by key, return a new array."""
-    out   = arr.copy()
-    flat  = arr.reshape(-1, 4)
+    out = arr.copy()
+    flat = arr.reshape(-1, 4)
     m_flat = mask.ravel()
-    idxs  = np.where(m_flat)[0]
+    idxs = np.where(m_flat)[0]
     if idxs.size == 0:
         return out
-    pixels = flat[idxs]                         # (N, 4)
-    order  = np.argsort(key_fn(pixels), kind="stable")
+    pixels = flat[idxs]  # (N, 4)
+    order = np.argsort(key_fn(pixels), kind="stable")
     flat_out = out.reshape(-1, 4)
     flat_out[idxs] = pixels[order]
     return out
@@ -313,14 +332,14 @@ def _sort_rows(
 ) -> RGBA_Array:
     """Sort each row's unmasked pixels, preserving their column positions."""
     out = arr.copy()
-    h, w = arr.shape[:2]
+    h, _ = arr.shape[:2]
     for r in range(h):
-        m_row  = mask[r]                        # (W,)
-        idxs   = np.where(m_row)[0]
+        m_row = mask[r]  # (W,)
+        idxs = np.where(m_row)[0]
         if idxs.size == 0:
             continue
-        pixels = arr[r, idxs]                   # (N, 4)
-        order  = np.argsort(key_fn(pixels), kind="stable")
+        pixels = arr[r, idxs]  # (N, 4)
+        order = np.argsort(key_fn(pixels), kind="stable")
         out[r, idxs] = pixels[order]
     return out
 
@@ -332,19 +351,20 @@ def _sort_cols(
 ) -> RGBA_Array:
     """Sort each column's unmasked pixels, preserving their row positions."""
     out = arr.copy()
-    h, w = arr.shape[:2]
+    _, w = arr.shape[:2]
     for c in range(w):
-        m_col  = mask[:, c]                     # (H,)
-        idxs   = np.where(m_col)[0]
+        m_col = mask[:, c]  # (H,)
+        idxs = np.where(m_col)[0]
         if idxs.size == 0:
             continue
-        pixels = arr[idxs, c]                   # (N, 4)
-        order  = np.argsort(key_fn(pixels), kind="stable")
+        pixels = arr[idxs, c]  # (N, 4)
+        order = np.argsort(key_fn(pixels), kind="stable")
         out[idxs, c] = pixels[order]
     return out
 
 
 # Random-segment variants ---------------------------------------------------
+
 
 def _rand_sort_rows(
     arr: RGBA_Array,
@@ -358,14 +378,14 @@ def _rand_sort_rows(
         if random.randint(0, 100) > intensity:
             continue
         start = random.randint(0, max(0, w - 3))
-        end   = random.randint(start + 1, max(start + 1, w - 1))
-        seg   = np.arange(start, end)
+        end = random.randint(start + 1, max(start + 1, w - 1))
+        seg = np.arange(start, end)
         m_seg = mask[r, seg]
-        idxs  = seg[m_seg]
+        idxs = seg[m_seg]
         if idxs.size == 0:
             continue
         pixels = arr[r, idxs]
-        order  = np.argsort(key_fn(pixels), kind="stable")
+        order = np.argsort(key_fn(pixels), kind="stable")
         out[r, idxs] = pixels[order]
     return out
 
@@ -382,14 +402,14 @@ def _rand_sort_cols(
         if random.randint(0, 100) > intensity:
             continue
         start = random.randint(0, max(0, h - 3))
-        end   = random.randint(start + 1, max(start + 1, h - 1))
-        seg   = np.arange(start, end)
+        end = random.randint(start + 1, max(start + 1, h - 1))
+        seg = np.arange(start, end)
         m_seg = mask[seg, c]
-        idxs  = seg[m_seg]
+        idxs = seg[m_seg]
         if idxs.size == 0:
             continue
         pixels = arr[idxs, c]
-        order  = np.argsort(key_fn(pixels), kind="stable")
+        order = np.argsort(key_fn(pixels), kind="stable")
         out[idxs, c] = pixels[order]
     return out
 
@@ -406,8 +426,9 @@ def _rand_sort_global(
 
 
 # ---------------------------------------------------------------------------
-# sorting()  – async wrapper so the event loop stays yieldy between images
+# sorting()  - async wrapper so the event loop stays yieldy between images
 # ---------------------------------------------------------------------------
+
 
 async def sorting(
     images: list[Image.Image],
@@ -423,7 +444,7 @@ async def sorting(
     result: list[Image.Image] = []
 
     for image in images:
-        await asyncio.sleep(0)                  # yield between images
+        await asyncio.sleep(0)  # yield between images
 
         img_rgba = image.convert("RGBA")
         arr: RGBA_Array = np.asarray(img_rgba, dtype=np.uint8).copy()
@@ -452,6 +473,7 @@ async def sorting(
 # ---------------------------------------------------------------------------
 # manipulate()
 # ---------------------------------------------------------------------------
+
 
 async def manipulate(
     images: list[Image.Image],

@@ -48,7 +48,6 @@ async def setup(bot: Gorenmu) -> None:
 async def teardown(bot: Gorenmu) -> None: ...  # NOQA
 
 
-
 # TODO: test if works right the way is now, then other wise use this method.
 """
 @helper('Envia um link do wikihow aleatório.')
@@ -65,17 +64,12 @@ async def wikihow(self, ctx: Context, repete: str = "") -> None:
             for _ in range(repete):
                 r = await s.get("https://pt.wikihow.com/Special:Randomizer")
                 url_formatada = unquote(r.url)
-                
+
                 await ctx.resposta(ctx, url_formatada)
-                
+
                 if repete > 1:
                     await asyncio.sleep(1.2)
-                    
+
     except Exception as e:
         return await ctx.resposta(ctx, "aconteceu algum erro, tente novamente.")
 """
-
-
-
-
-

@@ -180,4 +180,3 @@ class GenericWait(TBase):
     def reject(self, lang: str | None = None) -> list[str]:
         target_lang = lang or self.ctx_get().user.get_lang() or "en"
         return self.get_list_by_lang(target_lang, self._cname)
-

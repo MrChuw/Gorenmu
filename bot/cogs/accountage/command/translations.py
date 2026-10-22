@@ -42,4 +42,3 @@ class AccountAge(TBase):
                 {"args": self.get_text("cmd_ex2_args"), "response": self.get_text("cmd_ex2_res")},
             ]
         )
-

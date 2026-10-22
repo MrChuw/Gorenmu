@@ -17,7 +17,6 @@ class ChoiceCmd(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
 
-
     @commands.command(name="choice", aliases=["pick"])
     async def choice(self, ctx: Context, *, content: str) -> Response:  # NOQA
         pattern = self.translations.Choice.pattern(ctx.user.language)

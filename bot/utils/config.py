@@ -144,7 +144,9 @@ class DatabaseConfig:
         elif self.type in [DatabaseType.MARIA_DB, DatabaseType.MYSQL]:
             self.database_uri = f"mysql://{self.login}:{self.password}@{self.host}:{self.port}/{self.name}"
         elif self.type == DatabaseType.POSTGRESQL:
-            self.database_uri = f"asyncpg://{self.login}:{self.password}@{self.host}:{self.port}/{self.name}?schema={self.name}"
+            self.database_uri = (
+                f"asyncpg://{self.login}:{self.password}@{self.host}:{self.port}/{self.name}?schema={self.name}"
+            )
         else:
             self.database_uri = f"sqlite://{sqlite_file}"
 

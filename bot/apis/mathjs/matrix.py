@@ -150,7 +150,7 @@ class Matrix(np.ndarray):
                 try:
                     self[np_idx] = replacement
                     return Matrix(self.copy())
-                except IndexError as e:
+                except IndexError:
                     new_shape = list(self.shape)
                     for dim, idx_val in enumerate(np_idx):
                         if isinstance(idx_val, (int, np.integer)) and idx_val >= new_shape[dim]:

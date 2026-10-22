@@ -36,4 +36,3 @@ class UpSideDown(TBase):
 
     def deco_commands(self, *args, **kwargs) -> CommandExemples:
         return CommandExemples([{"args": "tests", "response": self.get_text("cmd_res")}])
-

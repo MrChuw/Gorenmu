@@ -20,14 +20,13 @@ class IsAfkCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.StringTools = StringTools()
 
-
     @commands.command(name="isafk", aliases=[])
     async def isafk(self, ctx: Context, name: str) -> Response:
         author_name = ctx.author.name or ""
         name = self.StringTools.str2name(name or author_name)
         actions = {
-                str(ctx.bot.bot_user.display_name or "").lower(): self.translations.IsAFK.bot(),
-                author_name.lower(): self.translations.IsAFK.author(),
+            str(ctx.bot.bot_user.display_name or "").lower(): self.translations.IsAFK.bot(),
+            author_name.lower(): self.translations.IsAFK.author(),
         }
         if name.lower() in actions:
             return actions[name.lower()]

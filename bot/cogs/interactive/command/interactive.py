@@ -6,7 +6,7 @@ from bot.apis import Emotes
 from bot.ext import ChatMessage, Context, Response, commands
 from bot.utils import RandomUtils, SessionsCaches, StringTools
 
-from .translations import Translations, TranslationTyping
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -54,7 +54,7 @@ class InteractiveCmd(commands.CustomComponent):
                 timeout=10,
                 ctx=ctx,
                 target_name=name,
-                generic_wait=self.translations.GenericWait
+                generic_wait=self.translations.GenericWait,
             )
             if message.text.lower() in self.translations.GenericWait.accept():
                 response = translations.options(name, ctx.author.name or "")
@@ -181,9 +181,7 @@ class InteractiveCmd(commands.CustomComponent):
             return False
         return payload.text.lower() in self.translations.GenericWait.accept() + self.translations.GenericWait.reject()
 
-    async def generic_prepare(
-        self, ctx: Context, arg: str, action: str, translation
-    ) -> str | Response:
+    async def generic_prepare(self, ctx: Context, arg: str, action: str, translation) -> str | Response:
         name = self.StringTools.str2name_or(arg)
         quick_responses: dict[str, Response] = {
             (ctx.bot.bot_user.name or "").lower(): translation.bot_nick(),

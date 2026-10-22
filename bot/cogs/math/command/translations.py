@@ -37,7 +37,6 @@ class Math(TBase):
         text = self.get_text(self._cname)
         return Response(ctx=self.ctx_get(), success=False, response=text)
 
-
     def evaluation_timeout(self, timeout: int) -> Response:
         text = self.get_text(self._cname, timeout=timeout)
         return Response(ctx=self.ctx_get(), success=False, response=text)
@@ -86,13 +85,11 @@ class Math(TBase):
         text = self.get_text(self._cname)
         return Response(ctx=self.ctx_get(), success=False, response=text)
 
-
     def deco_helper(self, *args, **kwargs) -> str:
         return self.get_text(self._cname)
 
     def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
         return self.get_text(self._cname, prefix=prefix)
-
 
     def deco_description(self, *args, **kwargs) -> str:
         return self.get_text(self._cname)
@@ -114,4 +111,3 @@ class Math(TBase):
                 {"args": "sum(range(10,20))", "response": "165"},
             ]
         )
-

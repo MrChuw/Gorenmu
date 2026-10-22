@@ -37,7 +37,6 @@ class TypesBot(commands.AutoBot):
         return super().get_command(name)  # ty:ignore[invalid-return-type]
 
 
-
 def create_inner_dict() -> dict[str, Callable[..., Any]]:
     return {}
 

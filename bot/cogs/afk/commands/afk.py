@@ -19,7 +19,6 @@ class AFKCmd(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
 
-
     @commands.command(name=afk_keys[0], aliases=afk_keys[1:])
     async def afk(self, ctx: Context, *, content: str = "") -> Response:
         if len(content) >= 450:

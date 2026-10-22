@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Callable, Coroutine, Iterable, Sequence
 from functools import partial
-from typing import TYPE_CHECKING, Any, Concatenate, Generic, ParamSpec, Self, TypeVar
+from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, Self, TypeVar
 
 from twitchio import ChatMessage, User
 from twitchio.ext.commands import (
@@ -30,7 +30,6 @@ T_Trans = TypeVar("T_Trans")
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
     from bot.ext import Context
-
 
     type PrefixT = str | Iterable[str] | Callable[[Gorenmu, ChatMessage], Coroutine[Any, Any, str | Iterable[str]]]
 
@@ -101,7 +100,7 @@ class Command(TwitchioCommand):
 
 
 class CustomComponent(Component):
-    #translations: T_Trans
+    # translations: T_Trans
     bot: Gorenmu
 
     def __new__(cls, *args, **kwargs) -> Self:
@@ -139,7 +138,7 @@ class CustomComponent(Component):
     cooldown_per = 10
     cooldown_key = BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+    async def component_command_error(self, payload: CommandErrorPayload) -> bool | None: ...
 
     async def component_before_invoke(self, ctx: Context) -> None:  # ty:ignore[invalid-method-override]
         self.translations.ctx_set(ctx)
@@ -151,7 +150,6 @@ class CustomComponent(Component):
     async def component_load(self) -> None: ...
 
     async def component_teardown(self) -> None: ...
-
 
 
 def command(
@@ -253,14 +251,13 @@ class Group(TwitchioGroup):
         return self._buckets[0]._cooldown._rate  # NOQA
 
 
-
 def group(
     name: str | None = None,
     aliases: list[str] | None = None,
     extras: dict[Any, Any] | None = None,
     **kwargs: Any,
 ) -> Callable[[AnyCoro[Any]], Group]:
-# ) -> Callable[[Command], Command]:
+    # ) -> Callable[[Command], Command]:
     def wrapper(
         func: (Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro]),
     ) -> Group:

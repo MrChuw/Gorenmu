@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock
 
 from twitchio.models import ChatMessage
-from twitchio.types_.eventsub import ChannelChatMessageEvent, ChatMessageData
 
 from bot.ext import Context
 from bot.models import Alias, Channel, Cookies, MessagesLog, User

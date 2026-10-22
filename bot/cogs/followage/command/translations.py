@@ -44,4 +44,3 @@ class FollowAge(TBase):
 
     def deco_commands(self, *args, **kwargs) -> CommandExemples:
         return CommandExemples([])
-

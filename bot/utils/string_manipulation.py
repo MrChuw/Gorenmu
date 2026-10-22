@@ -9,7 +9,7 @@ from collections.abc import Iterable
 from datetime import datetime
 from functools import lru_cache
 from string import ascii_letters, digits
-from typing import TYPE_CHECKING, Any, Literal, Never, TypeVar, overload
+from typing import TYPE_CHECKING, Any, Literal, TypeVar, overload
 
 from unidecode import unidecode
 from urlextract import URLExtract

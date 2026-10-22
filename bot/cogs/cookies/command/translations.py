@@ -279,6 +279,7 @@ class Top(TBase):
 
 # endregion
 
+
 class SlotMachine(TBase):
     def __init__(self, parent: Translations):
         self.prefix = "Cookie-SlotMachine"
@@ -321,4 +322,3 @@ class SlotMachine(TBase):
                 {"args": "slotmachine all", "response": self.get_text("cmd_ex2_res")},
             ]
         )
-

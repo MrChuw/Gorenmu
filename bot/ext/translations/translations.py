@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-import asyncio
 from contextvars import ContextVar
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar
 
-from bot.ext import Command, Context, commands
+from bot.ext import Command, Context
 from bot.ext.translations.extras import GenericWait, LangDict, SupportTools, TBase
 from bot.utils.singleton import Singleton
 
@@ -96,9 +95,7 @@ class Exceptions(TBase):
     def empty(self, ctx: Context | None = None, success: bool = True) -> Response:
         return Response(ctx=ctx or self.ctx_get(), success=success, response="")
 
-    def echo(
-        self, args: str, ctx: Context | None = None, success: bool = True, handle: str | None = None
-    ) -> Response:
+    def echo(self, args: str, ctx: Context | None = None, success: bool = True, handle: str | None = None) -> Response:
         return Response(ctx=ctx or self.ctx_get(), success=success, handle=handle, response=f"{args}")
 
     def user_not_found_id(self, arg: str | int, ctx: Context | None = None) -> Response:

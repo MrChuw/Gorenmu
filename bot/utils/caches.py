@@ -3,7 +3,7 @@ from __future__ import annotations
 import builtins
 from collections.abc import Iterable
 from datetime import timedelta
-from typing import TYPE_CHECKING, Any, Generic, TypeVar
+from typing import TYPE_CHECKING, Any
 
 from twitchio import ChannelInfo as ChannelTmi
 from twitchio import User as UserTmi

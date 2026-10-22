@@ -90,4 +90,3 @@ class {command_title}(TBase):
                 }
             ]
         )
-

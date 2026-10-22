@@ -41,9 +41,7 @@ class HelpCmd(commands.CustomComponent):
         url = site_url / "commands" / command.qualified_name  # TODO: Change.
         # TODO: change this cooldown message thing.
         if hasattr(command, "per"):
-            cooldown = self.translations.SupportTools.TimeTools.Humanize().naturaldelta(
-                command.per / command.rate
-            )
+            cooldown = self.translations.SupportTools.TimeTools.Humanize().naturaldelta(command.per / command.rate)
         else:
             cooldown = "None"
         return translations.help(

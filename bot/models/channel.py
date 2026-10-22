@@ -4,9 +4,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from tortoise import fields
-from tortoise.models import Model, Field
-
-from bot.models.base import CharFieldStr
+from tortoise.models import Model
 
 if TYPE_CHECKING:
     from bot.models import MarkovChannels, MarkovUsers, MessagesLog  # NOQA

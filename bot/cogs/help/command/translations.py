@@ -86,4 +86,3 @@ class Help(TBase):
                 },
             ]
         )
-

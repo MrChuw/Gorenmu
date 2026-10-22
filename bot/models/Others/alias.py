@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tortoise import fields
-from tortoise.fields.relational import ForeignKeyRelation, RelationalField
+from tortoise.fields.relational import ForeignKeyRelation
 from tortoise.models import Model
 from twitchio.ext.commands import Command, Group
 
@@ -20,16 +20,14 @@ if TYPE_CHECKING:
 
 class Alias(Model, TimestampMixin):
     id = fields.IntField(primary_key=True, db_db_index=True)
-    user: User = fields.ForeignKeyField(
-        "models.User", related_name="Alias", null=True, on_delete=SET_NULL
-    )  # ty:ignore[invalid-assignment]
+    user: User = fields.ForeignKeyField("models.User", related_name="Alias", null=True, on_delete=SET_NULL)  # ty:ignore[invalid-assignment]
     channel: ForeignKeyRelation[Channel] | None = fields.ForeignKeyField(
         "models.Channel", related_name="Alias", null=True, on_delete=SET_NULL
     )
     name = fields.CharField(max_length=50, db_index=True)
     command = fields.CharField(max_length=50, null=True)
     invocation = fields.CharField(max_length=50, null=True)
-    arguments: list[str] | None = fields.JSONField(null=True)   # ty:ignore[invalid-assignment]
+    arguments: list[str] | None = fields.JSONField(null=True)  # ty:ignore[invalid-assignment]
     description: str | None = fields.TextField(null=True)  # ty:ignore[invalid-assignment]
     parent: Alias | None = fields.ForeignKeyField(
         "models.Alias", related_name="children", null=True, on_delete=SET_NULL
@@ -113,7 +111,7 @@ class Alias(Model, TimestampMixin):
                 invocation=invocation,
                 arguments=arguments,
                 description=description,
-                parent=parent
+                parent=parent,
             )
         await alias.save()
 

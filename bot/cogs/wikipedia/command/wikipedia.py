@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-from logging import Logger
 from typing import TYPE_CHECKING
 
 from bot.ext import Context, Response, commands

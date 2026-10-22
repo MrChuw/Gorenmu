@@ -83,7 +83,7 @@ class LiveCmd(commands.CustomComponent):
 
     @staticmethod
     async def _handle_last_broadcast(
-            ctx: Context, user_id: str, stream, humanize, translations: Live, twitch_url
+        ctx: Context, user_id: str, stream, humanize, translations: Live, twitch_url
     ) -> tuple[str, str]:
         last_stream_natural = humanize.naturaltime(stream.started_at)
         last_stream_precise = humanize.precisedelta(stream.started_at)
@@ -97,7 +97,7 @@ class LiveCmd(commands.CustomComponent):
 
     @staticmethod
     async def _handle_live_stream(
-            ctx: Context, user_id: str, stream, humanize, translations: Live, twitch_url
+        ctx: Context, user_id: str, stream, humanize, translations: Live, twitch_url
     ) -> tuple[str, str]:
         stream_started = stream.created_at
         current_stream_natural = humanize.naturaltime(stream_started)

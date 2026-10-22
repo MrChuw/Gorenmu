@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from bot.cogs.time.command.translations import _get_cached_lang_logic
-from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase, TranslationEntry
-from bot.utils.timelength import English, Guess, Locale, Portuguese, Spanish
+from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBase
+from bot.utils.timelength import English, Guess, Locale
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu

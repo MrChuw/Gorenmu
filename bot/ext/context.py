@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import uuid
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
+from unittest.mock import AsyncMock
 
 import twitchio
 from twitchio import ChannelPointsRedemptionAdd, ChannelPointsRedemptionUpdate, ChatMessage, ChatMessageReply
@@ -8,12 +11,7 @@ from twitchio.ext.commands import Context as TwitchioContext
 
 # Importe o tipo correto de onde a TwitchIO o define (geralmente twitchio.types.events ou similar)
 from twitchio.types_.eventsub import ChannelChatMessageEvent
-from twitchio.user import Chatter
 from twitchio.utils import Colour  # noqa
-import uuid
-from datetime import UTC, datetime
-from typing import Any, cast
-from unittest.mock import AsyncMock
 
 if TYPE_CHECKING:
     from twitchio.ext.commands.view import StringView
@@ -259,4 +257,3 @@ class Context(TwitchioContext):
 
     async def is_online(self):
         return await self.bot.ChannelHandler.is_online(self)
-

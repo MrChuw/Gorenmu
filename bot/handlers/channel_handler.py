@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from bot.models import Channel as ChannelModel
 from bot.ext import ChatMessage, Context
+from bot.models import Channel as ChannelModel
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -97,6 +97,3 @@ class ChannelManager:
 
     def all(self) -> dict[str, ChannelModel]:
         return self._channels
-
-
-

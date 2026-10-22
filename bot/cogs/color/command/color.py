@@ -46,9 +46,7 @@ class ColorCmd(commands.CustomComponent):
                     await get_color_info(tmi_color.hex_clean, template, name=name)
                 if not template:
                     return self.translations.Exceptions.translation_error(
-                            "user_color",
-                            ctx.user.language,
-                            ctx.bot.dev_user.display_name or ""
+                        "user_color", ctx.user.language, ctx.bot.dev_user.display_name or ""
                     )
 
         if color_hex := re.match(r"^#?[0-9a-fA-F]{6}$", name):
@@ -58,9 +56,7 @@ class ColorCmd(commands.CustomComponent):
                 await get_color_info(color_hex, template)
             if not template:
                 return self.translations.Exceptions.translation_error(
-                        "hex_color",
-                        ctx.user.language,
-                        ctx.bot.dev_user.display_name or ""
+                    "hex_color", ctx.user.language, ctx.bot.dev_user.display_name or ""
                 )
 
         if user:
@@ -73,9 +69,7 @@ class ColorCmd(commands.CustomComponent):
                     await get_color_info(user_db.saved_color, template)
                 if not template:
                     return self.translations.Exceptions.translation_error(
-                            "saved_color",
-                            ctx.user.language,
-                            ctx.bot.dev_user.display_name or ""
+                        "saved_color", ctx.user.language, ctx.bot.dev_user.display_name or ""
                     )
 
         if not tmi_color and not color_hex:

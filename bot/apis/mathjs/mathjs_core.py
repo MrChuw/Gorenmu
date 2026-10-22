@@ -7,11 +7,11 @@ import re
 import signal
 from collections.abc import Sequence
 from decimal import Decimal
-from typing import Any
+from typing import Any, ClassVar
 
 import numpy as np
 
-from .matrix import Index, Matrix, index
+from .matrix import Matrix
 from .unit import Unit
 
 try:
@@ -98,9 +98,7 @@ class MathjsCore:
         max_bytes = max_memory_mb * 1024 * 1024
         with contextlib.suppress(ValueError, OSError):
             _soft, hard = resource.getrlimit(resource.RLIMIT_AS)
-            new_limit = (
-                max_bytes if hard == resource.RLIM_INFINITY else min(max_bytes, hard)
-            )
+            new_limit = max_bytes if hard == resource.RLIM_INFINITY else min(max_bytes, hard)
             resource.setrlimit(resource.RLIMIT_AS, (new_limit, hard))
 
     @contextlib.contextmanager
@@ -144,9 +142,7 @@ class MathjsCore:
         return None
 
     def _safe_pow(self, base: Any, exponent: Any) -> Any:
-        if isinstance(base, (int, float, Decimal)) and isinstance(
-            exponent, (int, float, Decimal)
-        ):  # noqa: SIM102
+        if isinstance(base, (int, float, Decimal)) and isinstance(exponent, (int, float, Decimal)):  # noqa: SIM102
             if base_log10 := self._log10_magnitude(base):
                 try:
                     exp_value = float(exponent)
@@ -169,12 +165,7 @@ class MathjsCore:
 
     def _safe_factorial(self, n: int) -> int:
         if isinstance(n, int) and n > 1:
-            estimated_digits = (
-                n * math.log10(n)
-                - n * math.log10(math.e)
-                + 0.5 * math.log10(2 * math.pi * n)
-                + 1
-            )
+            estimated_digits = n * math.log10(n) - n * math.log10(math.e) + 0.5 * math.log10(2 * math.pi * n) + 1
             if estimated_digits > self.max_digits:
                 raise OverflowError(
                     f"factorial({n}) would have ~{estimated_digits:.0f} digits, "
@@ -184,9 +175,7 @@ class MathjsCore:
                 )
         return math.factorial(n)
 
-    def _eval_ast(
-        self, node: ast.AST, local_scope: dict[str, Any], depth: int = 0
-    ) -> Any:
+    def _eval_ast(self, node: ast.AST, local_scope: dict[str, Any], depth: int = 0) -> Any:
         if depth > self.max_depth:
             raise RecursionError(
                 f"Expression too complex: depth limit ({self.max_depth}) exceeded.",
@@ -207,9 +196,7 @@ class MathjsCore:
         if isinstance(node, ast.List):
             return [self._eval_ast(elt, local_scope, depth + 1) for elt in node.elts]
         if isinstance(node, ast.Tuple):
-            return tuple(
-                self._eval_ast(elt, local_scope, depth + 1) for elt in node.elts
-            )
+            return tuple(self._eval_ast(elt, local_scope, depth + 1) for elt in node.elts)
 
         if isinstance(node, ast.BinOp):
             left = self._eval_ast(node.left, local_scope, depth + 1)
@@ -267,10 +254,7 @@ class MathjsCore:
         if isinstance(node, ast.Call):
             func = self._eval_ast(node.func, local_scope, depth + 1)
             args = [self._eval_ast(arg, local_scope, depth + 1) for arg in node.args]
-            kwargs = {
-                kw.arg: self._eval_ast(kw.value, local_scope, depth + 1)
-                for kw in node.keywords
-            }
+            kwargs = {kw.arg: self._eval_ast(kw.value, local_scope, depth + 1) for kw in node.keywords}
             return func(*args, **kwargs)
 
         if isinstance(node, ast.Attribute):
@@ -285,9 +269,7 @@ class MathjsCore:
         if isinstance(node, ast.Lambda):
             lambda_node = node
 
-            def lambda_func(
-                *args, _node=lambda_node, _self=self, _local=local_scope, _depth=depth
-            ):  # noqa
+            def lambda_func(*args, _node=lambda_node, _self=self, _local=local_scope, _depth=depth):  # noqa
                 call_scope = _local.copy()
                 for param, arg in zip(_node.args.args, args, strict=False):
                     call_scope[param.arg] = arg
@@ -305,7 +287,7 @@ class MathjsCore:
         try:
             tree = ast.parse(stmt, mode="eval")
             return self._eval_ast(tree.body, local_scope)
-        except SyntaxError as e:
+        except SyntaxError:
             tree = ast.parse(stmt, mode="exec")
             value = None
             for node in tree.body:
@@ -356,16 +338,12 @@ class MathjsCore:
         data = self._to_array(args)
         return float(np.median(data))
 
-    def _std(
-        self, *args: float | Sequence[float], normalization: str = "unbiased"
-    ) -> float:
+    def _std(self, *args: float | Sequence[float], normalization: str = "unbiased") -> float:
         data = self._to_array(args)
         ddof = 0 if normalization == "uncorrected" else 1
         return float(np.std(data, ddof=ddof))
 
-    def _variance(
-        self, *args: float | Sequence[float], normalization: str = "unbiased"
-    ) -> float:
+    def _variance(self, *args: float | Sequence[float], normalization: str = "unbiased") -> float:
         data = self._to_array(args)
         ddof = 0 if normalization == "uncorrected" else 1
         return float(np.var(data, ddof=ddof))
@@ -518,11 +496,7 @@ class MathjsCore:
 
         result: list[int | float] = []
         current = (
-            float(start)
-            if isinstance(start, float)
-            or isinstance(step, float)
-            or isinstance(end, float)
-            else start
+            float(start) if isinstance(start, float) or isinstance(step, float) or isinstance(end, float) else start
         )
         epsilon = 1e-12 if isinstance(current, float) else 0
         if step > 0:
@@ -588,9 +562,7 @@ class MathjsCore:
             right, right_end = self._extract_right_operand(expr, pos + len(".^"))
             if not left or not right:
                 break
-            expr = (
-                f"{expr[:left_start]}elementwise_pow({left}, {right}){expr[right_end:]}"
-            )
+            expr = f"{expr[:left_start]}elementwise_pow({left}, {right}){expr[right_end:]}"
         return expr
 
     @staticmethod
@@ -661,14 +633,12 @@ class MathjsCore:
             j += 1
         return expr[sign_start:j], j
 
-    _POLY_TERM_RE_CACHE: dict[str, re.Pattern] = {}
+    _POLY_TERM_RE_CACHE: ClassVar[dict[str, re.Pattern]] = {}
 
     def _polynomial_term_re(self, var: str) -> re.Pattern:
         pattern = self._POLY_TERM_RE_CACHE.get(var)
         if pattern is None:
-            pattern = re.compile(
-                rf"^(?P<coef>\d+(?:\.\d+)?)?\*?(?P<var>{re.escape(var)})?(?:\*\*|\^)?(?P<pow>\d+)?$"
-            )
+            pattern = re.compile(rf"^(?P<coef>\d+(?:\.\d+)?)?\*?(?P<var>{re.escape(var)})?(?:\*\*|\^)?(?P<pow>\d+)?$")
             self._POLY_TERM_RE_CACHE[var] = pattern
         return pattern
 
@@ -698,9 +668,7 @@ class MathjsCore:
             has_var = match.group("var") is not None
             coef_str = match.group("coef")
             coef = float(coef_str) if coef_str is not None else 1.0
-            power = (
-                int(match.group("pow")) if match.group("pow") else (1 if has_var else 0)
-            )
+            power = int(match.group("pow")) if match.group("pow") else (1 if has_var else 0)
             coeffs[power] = coeffs.get(power, 0.0) + sign * coef
         return coeffs
 
@@ -724,9 +692,7 @@ class MathjsCore:
         result = ("-" if first_coef < 0 else "") + _term(first_power, first_coef)
         for power in powers[1:]:
             coef = coeffs[power]
-            result += (
-                f" - {_term(power, coef)}" if coef < 0 else f" + {_term(power, coef)}"
-            )
+            result += f" - {_term(power, coef)}" if coef < 0 else f" + {_term(power, coef)}"
         return result
 
     def simplify(self, expr: str, var: str = "x") -> str:
@@ -734,9 +700,7 @@ class MathjsCore:
 
     def derivative(self, expr: str, var: str = "x") -> str:
         coeffs = self._parse_polynomial(expr, var)
-        deriv = {
-            power - 1: coef * power for power, coef in coeffs.items() if power >= 1
-        }
+        deriv = {power - 1: coef * power for power, coef in coeffs.items() if power >= 1}
         return self._format_polynomial(deriv, var)
 
     @staticmethod

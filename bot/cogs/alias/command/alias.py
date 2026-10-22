@@ -18,8 +18,8 @@ if TYPE_CHECKING:
 
 class ParsedCommand(NamedTuple):
     command: commands.Command | commands.Group | None
-    guard_result: None | GuardFailure | str
-    trigger_name: None | str
+    guard_result: GuardFailure | str | None
+    trigger_name: str | None
 
 
 ALIAS_NAME_REGEX: re.Pattern = re.compile(

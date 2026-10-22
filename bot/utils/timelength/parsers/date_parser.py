@@ -12,7 +12,7 @@ DateOrder = Literal["DM", "MD"]
 class DateParse:
     """Represents a single date/datetime found and parsed out of a piece of text."""
 
-    __slots__ = ("text", "span", "date")
+    __slots__ = ("date", "span", "text")
 
     def __init__(self, text: str, span: tuple[int, int], date: datetime) -> None:
         self.text: str = text

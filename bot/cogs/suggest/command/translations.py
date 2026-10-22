@@ -33,4 +33,3 @@ class Suggest(TBase):
 
     def deco_description(self, *args, **kwargs) -> str:
         return self.get_text(self._cname)
-

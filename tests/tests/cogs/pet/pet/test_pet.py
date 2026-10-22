@@ -32,9 +32,7 @@ async def base_pet(
 ):
     await mock_context.prepare_context(lang, interact=interact, pet_data=create_pet)
     response: Response = await interact.pet._callback(interact, mock_context, name="")  # NOQA
-    mock_context.Asserter.assert_string(
-        response.response, expected=expected, re_expected=re_expected, strict=True
-    )
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected, strict=True)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

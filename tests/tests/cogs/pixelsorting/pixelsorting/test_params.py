@@ -127,4 +127,3 @@ class Params:
         pytest.param("en", "test_dire_vertical_result.png", marks=pytest.mark.en, id="en"),
         pytest.param("pt_BR", "test_dire_vertical_result.png", marks=pytest.mark.pt_BR, id="pt_BR"),
     ]
-

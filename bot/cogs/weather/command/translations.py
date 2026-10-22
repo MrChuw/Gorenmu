@@ -85,7 +85,7 @@ class Weather(TBase):
         precip_val = w_hour.precipitation[index]  # ty: ignore[unresolved-attribute, not-subscriptable]  # noqa
         precip_string = ""
         if precip_val > 0:
-            precip_string = self.weather_string(units, precip_val) # ty: ignore[invalid-argument-type]  # noqa
+            precip_string = self.weather_string(units, precip_val)  # ty: ignore[invalid-argument-type]  # noqa
 
         text = self.get_text(
             "weather_display",
@@ -163,4 +163,3 @@ class Weather(TBase):
                 },
             ]
         )
-

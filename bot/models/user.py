@@ -65,7 +65,6 @@ async def get_user_tz(city: str | None, timezone: str | None, bot: Gorenmu):
     return ZoneInfo("UTC")
 
 
-
 class User(Base, TimestampMixin, ContentMixin):
     # region Hide.
     name: fields.Field[str] = fields.CharField(unique=True, db_index=True, max_length=64, description="Twitch username")

@@ -321,8 +321,8 @@ class Math(BaseCachedSession):
 
     def get_expiry_times(self) -> dict:
         return {
-                self.bot.config.ApisConfig.pastebin_url / "*": timedelta(weeks=4),
-                "https://api.mathjs.org/v4/*": timedelta(days=30)
+            self.bot.config.ApisConfig.pastebin_url / "*": timedelta(weeks=4),
+            "https://api.mathjs.org/v4/*": timedelta(days=30),
         }
 
 

@@ -32,10 +32,7 @@ class MathCmd(commands.CustomComponent):
                 return await self._format_math_result(result)
             else:
                 request = await self.SessionsCaches.Math.session.get(
-                        "https://api.mathjs.org/v4/",
-                        params={
-                                "expr": text
-                        }
+                    "https://api.mathjs.org/v4/", params={"expr": text}
                 )
                 result = parse_math_result(await request.text())
 

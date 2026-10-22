@@ -29,6 +29,7 @@ class ReminderCmd(commands.CustomComponent):
         self.TimeTools: TimeTools = TimeTools()
         self.bot.RoutineHandler.add_routine_sync("remind", self.routine)
         self.in_flight_reminders: set[int] = set()
+        self._dispatch_tasks: set[asyncio.Task] = set()
         self.limiter = RateLimiter()
         self.limiter.configure(bucket_path="irc:remind", max_calls=10, period=0.5)
 
@@ -315,7 +316,10 @@ class ReminderCmd(commands.CustomComponent):
 
         for remind in reminds:
             self.in_flight_reminders.add(remind.id)
-            asyncio.create_task(self.dispatch_reminder(self.bot, remind))
+            task = asyncio.create_task(self.dispatch_reminder(self.bot, remind))
+            # Keep a strong reference to the task so it is not garbage collected while running.
+            self._dispatch_tasks.add(task)
+            task.add_done_callback(self._dispatch_tasks.discard)
 
     def _build_dispatch_text(self, remind: Reminder) -> str:
         """Build the text of a reminder, used both by the routine and by the on message delivery."""

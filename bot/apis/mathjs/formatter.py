@@ -40,10 +40,7 @@ def _format_complex(value: complex, options: FormatOptions) -> str:
     real_str = format_number(real, options)
     imag_abs = abs(imag)
     sign = '+' if imag > 0 else '-'
-    if imag_abs == 1:
-        imag_str = "i"
-    else:
-        imag_str = f"{format_number(imag_abs, options)}i"
+    imag_str = "i" if imag_abs == 1 else f"{format_number(imag_abs, options)}i"
     return f"{real_str}{sign}{imag_str}"
 
 
@@ -56,7 +53,7 @@ def _format_nested(data: Any, options: FormatOptions, depth: int = 0) -> str:
     pretty = options.pretty and has_nested_children
 
     if truncate:
-        head, tail = data[:options.edge_items], data[-options.edge_items:]
+        head, tail = data[: options.edge_items], data[-options.edge_items :]
         head_fmt = [_format_nested(x, options, depth + 1) for x in head]
         tail_fmt = [_format_nested(x, options, depth + 1) for x in tail]
         if pretty:

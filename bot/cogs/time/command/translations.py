@@ -19,7 +19,9 @@ def _get_cached_lang_logic(
     locales = {"English": English, "Portuguese": Portuguese, "Spanish": Spanish}
 
     if lang_val:
-        res = translator_instance.get_text_by_lang(lang_name, cname) or translator_instance.get_text_by_lang("en", cname)
+        res = translator_instance.get_text_by_lang(lang_name, cname) or translator_instance.get_text_by_lang(
+            "en", cname
+        )
         return locales.get(res, English)
 
     if guess:
@@ -84,4 +86,3 @@ class Time(TBase):
 
     def deco_admonitions(self, *args, **kwargs) -> Admonitions:
         return Admonitions([])
-

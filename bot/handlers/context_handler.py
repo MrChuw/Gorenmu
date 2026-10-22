@@ -105,7 +105,7 @@ class ContextHandler:
         await self.handle_response(ctx=ctx, full_response=full_response)
         return None
 
-    async def response(self, response: Response) -> None | bool:
+    async def response(self, response: Response) -> bool | None:
         ctx: Context = response.ctx
         if not ctx.bot.channels.is_online(ctx):
             return False
@@ -120,7 +120,7 @@ class ContextHandler:
             await self.handle_response_list(ctx, response_list, handle)
         return None
 
-    async def simple_response(self, ctx: Context, response: str, handle: str | None = None) -> None | bool:
+    async def simple_response(self, ctx: Context, response: str, handle: str | None = None) -> bool | None:
         if not ctx.bot.channels.is_online(ctx):
             return False
         response_str = response
@@ -321,25 +321,17 @@ class ContextHandler:
             "reply": ChatMessageReplyData(  # ty:ignore[missing-typed-dict-key]
                 **reply_data
             ),
-            "cheer": ChatMessageCheerData(
-                bits=original_msg.cheer.bits if original_msg.cheer else 0
-            ),
+            "cheer": ChatMessageCheerData(bits=original_msg.cheer.bits if original_msg.cheer else 0),
             "channel_points_custom_reward_id": "",
             "channel_points_animation_id": original_msg.channel_points_animation_id,
             "source_broadcaster_user_id": (
-                original_msg.source_broadcaster.id
-                if original_msg.source_broadcaster
-                else ""
+                original_msg.source_broadcaster.id if original_msg.source_broadcaster else ""
             ),
             "source_broadcaster_user_login": (
-                original_msg.source_broadcaster.name
-                if original_msg.source_broadcaster
-                else ""
+                original_msg.source_broadcaster.name if original_msg.source_broadcaster else ""
             ),
             "source_broadcaster_user_name": (
-                original_msg.source_broadcaster.display_name
-                if original_msg.source_broadcaster
-                else ""
+                original_msg.source_broadcaster.display_name if original_msg.source_broadcaster else ""
             ),
             "source_message_id": original_msg.source_id,
             "source_badges": source_badges,

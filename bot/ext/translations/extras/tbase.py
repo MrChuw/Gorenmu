@@ -121,7 +121,7 @@ class LangDict:
         self._prefix_to_folder[p_lower] = folder_resolved
 
         # Se a pasta ainda não foi lida na memória, adiciona na fila de pendentes
-        if not any(f == folder_resolved for f, _ in self._bundles.keys()):
+        if not any(f == folder_resolved for f, _ in self._bundles):
             self._unloaded_folders.add(folder_resolved)
 
     async def reload(self, target: str = "all") -> int:
@@ -176,7 +176,7 @@ class LangDict:
         if "pt_br" in langs:
             langs.add("pt")
 
-        return sorted(list(langs)) if langs else ["en"]
+        return sorted(langs) if langs else ["en"]
 
     def get_lang_any(self, lang: str, key: str, fallback: str = "en") -> TranslationEntry | None:
         key_lower = key.lower()
@@ -220,7 +220,6 @@ class LangDict:
     def get_list_by_lang(
         self, lang: str, key: str, entry_prefix: str = "default", include_en: bool = True
     ) -> list[str]:
-        full_key = self._build_key(key, entry_prefix)
         raw = self.get_text_by_lang(lang.lower(), key, entry_prefix)
         current_list = [s.strip() for s in raw.split(",")] if "missing:" not in raw else []
 
@@ -270,10 +269,7 @@ class LangDict:
     def is_initialized(self, namespace: str) -> bool:
         """Verifica se algum dado desse namespace já foi inicializado."""
         ns_prefix = f"{namespace.lower()}-"
-        for lang_dict in self._custom_data.values():
-            if any(k.startswith(ns_prefix) for k in lang_dict):
-                return True
-        return False
+        return any(any(k.startswith(ns_prefix) for k in lang_dict) for lang_dict in self._custom_data.values())
 
     def get_raw(self, lang: str, namespace: str, key: str, fallback: str = "en") -> Any | None:
         """Recupera um objeto arbitrário salvo com fallback de idioma."""
@@ -284,20 +280,13 @@ class LangDict:
         return self._custom_data.get(l_lower, {}).get(full_key) or self._custom_data.get(fb_lower, {}).get(full_key)
 
 
-
-
-
-
-
-
-
 class TBase:
     _is_tbase = True
     _started = False
     prefix: str
     parent: TranslationBase
 
-    def __init__(self, parent: TranslationBase, file=None, is_base= False):
+    def __init__(self, parent: TranslationBase, file=None, is_base=False):
         self.parent: TranslationBase = parent
         self.lang_dict: LangDict = self.parent.lang_dict
         if file:
@@ -368,4 +357,3 @@ class TBase:
     def get_attributes(self, key: str, **kwargs) -> dict[str, str]:
         prefix = kwargs.pop("entry_prefix", self.prefix)
         return self.lang_dict.get_attributes(self.ctx_get(), key, prefix)
-

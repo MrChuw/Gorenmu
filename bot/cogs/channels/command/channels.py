@@ -17,7 +17,6 @@ class ChannelsCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
 
-
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return Role.admin(ctx)
