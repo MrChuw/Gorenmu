@@ -185,7 +185,11 @@ class TimeTools(metaclass=Singleton):
             # 2) Se uma data foi encontrada, resolve como instante absoluto: data + delta.
             if dt is not None:
                 target = dt + (result.delta or timedelta(0))
-                if mode in locale.past.terms:
+                if mode is None:
+                    # Without an explicit mode, infer it from the resolved instant: a date in the past is
+                    # reported as "X ago", while a future/present one is reported as a plain duration.
+                    mode = locale.now.singular if target >= now.replace(microsecond=0) else locale.past.singular
+                if mode in locale.past.terms and result.delta is not None:
                     return self.tl.ago(base=dt), mode
                 return target, mode
 
