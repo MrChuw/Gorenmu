@@ -1,7 +1,7 @@
 import pytest
 import pytest_asyncio
 
-from bot.cogs.pet.command.pet import PetCmd
+from bot.cogs.pet.command.pet import PetCmd, Response
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params
@@ -33,7 +33,7 @@ async def base_pet(
     await mock_context.prepare_context(lang, interact=interact, pet_data=create_pet)
     response: Response = await interact.pet._callback(interact, mock_context, name="")  # NOQA
     mock_context.Asserter.assert_string(
-        response.response_string, expected=expected, re_expected=re_expected, strict=True
+        response.response, expected=expected, re_expected=re_expected, strict=True
     )
     mock_context.Asserter.assert_boolean(response.success, success)
 

@@ -14,11 +14,14 @@ from bot.apis.ivrfi.parsers.subage import SubAge
 from bot.apis.ivrfi.parsers.user import UserElement
 from bot.apis.weather import Forecast, Geocoding
 from bot.cogs.preview.command.preview import PreviewCmd
+from bot.cogs.pixelsorting.command import pixelsorting
 from bot.handlers import TokensHandler
 from bot.models.base import TimestampMixin
+from bot.utils.discord_webhook import DiscordWebHook
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
+    from PIL import Image
 
 _real_sleep = asyncio.sleep
 
@@ -41,6 +44,7 @@ class MockBuilder:
         self.Default: MockBuilder._Default = self._Default(self)
         self.Handlers: MockBuilder._Handlers = self._Handlers(self)
         self.Db: MockBuilder._Db = self._Db(self)
+        self.Discord: MockBuilder._Discord = self._Discord(self)
 
     class _Errors:
         def __init__(self, builder):
@@ -67,7 +71,7 @@ class MockBuilder:
         def __init__(self, builder):
             self.builder = builder
 
-        def name(self, return_value: str = "Vermilion") -> MockBuilder:
+        def name(self, return_value: str | None = "Vermilion") -> MockBuilder:
             self.builder.patches["color_name"].append(patch("bot.apis.color.Color.name", return_value=return_value))
             return self.builder
 
@@ -226,6 +230,12 @@ class MockBuilder:
             self.builder.patches["get_preview"].append(patch.object(PreviewCmd, "get_preview", mock_get))
             return self.builder
 
+        def request_images(self, return_value: list[Image.Image], side_effect=None):
+            mock_get = AsyncMock(side_effect=side_effect)
+            mock_get.return_value = return_value
+            self.builder.patches["request_images"].append(patch.object(pixelsorting, "request_images", mock_get))
+            return self.builder
+
     class _Asyncio:
         def __init__(self, builder):
             self.builder = builder
@@ -295,7 +305,7 @@ class MockBuilder:
                         patch(
                             "bot.apis.ivrfi.api.ApiIvrFi.Twitch.User.fetch_user",
                             AsyncMock(
-                                return_value=(UserElement.from_dict(dict_to_parse[0]) if dict_to_parse else None)
+                                return_value=(UserElement.from_dict(dict_to_parse) if dict_to_parse else None)
                             ),
                         )
                     )
@@ -367,6 +377,23 @@ class MockBuilder:
             def updated_at(self, time) -> MockBuilder:
                 p = patch.object(TimestampMixin, "updated_at", new_callable=PropertyMock, return_value=time)
                 self.builder.patches["updated_at"].append(p)
+                return self.builder
+
+    class _Discord:
+        def __init__(self, builder):
+            self.builder = builder
+            self.DiscordWebHook: MockBuilder._Discord._DiscordWebHook = self._DiscordWebHook(builder)
+
+        class _DiscordWebHook:
+            def __init__(self, builder):
+                self.builder = builder
+
+            def send_discord_webhook(self) -> MockBuilder:
+                mock_sub = AsyncMock(return_value=True)
+                self.builder.patches["send_discord_webhook"].append(
+                    patch.object(DiscordWebHook, "send_discord_webhook", mock_sub)
+                )
+
                 return self.builder
 
     async def __aenter__(self):

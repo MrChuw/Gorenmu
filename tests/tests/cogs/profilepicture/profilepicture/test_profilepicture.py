@@ -21,7 +21,7 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.success)
-async def test_success(interact, mock_context: MockContext, lang: str, expected):
+async def test_success(interact, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang, interact=interact)
     session = interact.SessionsCaches.ProfilePicture.session
     async with (
@@ -30,15 +30,15 @@ async def test_success(interact, mock_context: MockContext, lang: str, expected)
         .Session.post_json(session=session, return_value={"url": expected})
     ):
         response = await interact.profilepicture._callback(self=interact, ctx=mock_context, name="")
-        mock_context.Asserter.assert_string(response.response_string.strip(), expected, strict=True)
+        mock_context.Asserter.assert_string(response.response.strip(), expected, strict=True)
     mock_context.Asserter.assert_boolean(response.success, True)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.not_found)
-async def test_not_found(interact, mock_context: MockContext, lang: str, expected):
+async def test_not_found(interact, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang, interact=interact)
     async with mock_context.MockBuilder.Bot.fetch_user(name=None):
         response = await interact.profilepicture._callback(self=interact, ctx=mock_context, name="unknown_user")
-        mock_context.Asserter.assert_string(response.response_string, expected, strict=True)
+        mock_context.Asserter.assert_string(response.response, expected, strict=True)
     mock_context.Asserter.assert_boolean(response.success, False)

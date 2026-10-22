@@ -19,5 +19,5 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 async def test_cookie(interact: CookieCmd, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.cookies._callback(self=interact, ctx=mock_context)
-    assert response.response_string == expected, f"Expected {expected!r}, got: {response.response_string!r}"
+    assert response.response == expected, f"Expected {expected!r}, got: {response.response!r}"
     mock_context.Asserter.assert_boolean(response.success, False)

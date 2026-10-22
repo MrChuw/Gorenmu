@@ -44,10 +44,10 @@ async def base_nada(
         response: Response = await interact.hypertranslate._callback(  # NOQA
             interact,
             mock_context,
-            quantity=str(quantity) if pass_q else content,
-            text=content if pass_q else "",
+            quantity_in=str(quantity) if pass_q else content,
+            text_in=content if pass_q else "",
         )
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

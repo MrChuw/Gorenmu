@@ -51,11 +51,11 @@ async def base_followage(
     async with mock_context.MockBuilder.ApiIvrFi.Twitch.Channel.fetch_preview(
         dict_to_parse=json_response
     ).Bot.fetch_user("xXCoolNickXx"):
-        response = await interact.followage._callback(
+        response = await interact.followage._callback(  # NOQA
             interact, mock_context, name=content.split()[0], channel=content.split()[1]
-        )  # NOQA
+        )
     mock_context.Asserter.assert_string(
-        response.response_string, expected=expected, re_expected=re_expected, strict=True
+        response.response, expected=expected, re_expected=re_expected, strict=True
     )
     mock_context.Asserter.assert_boolean(response.success, success)
 

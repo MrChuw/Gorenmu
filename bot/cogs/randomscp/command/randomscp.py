@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import re
+import urllib.parse
 from typing import TYPE_CHECKING
 
 from aiohttp import ClientResponse
@@ -22,7 +23,6 @@ class RandomSCPCmd(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
-
 
     @commands.command(name="randomscp", aliases=["rscp"])
     async def randomscp(self, ctx: Context) -> Response:
@@ -65,7 +65,6 @@ async def get_scp(session: CachedSession) -> ClientResponse:
     soup = BeautifulSoup(await response.text(), "html.parser")
     iframe = soup.find("iframe", src=IFRAME_SRC_PATTERN)
 
-
     if not isinstance(iframe, Tag):
         raise SCPNotFoundError("Could not find a valid redirect iframe tag.")
 
@@ -73,6 +72,14 @@ async def get_scp(session: CachedSession) -> ClientResponse:
     if not src or not isinstance(src, str):
         raise SCPNotFoundError("Redirect iframe is missing a valid 'src' attribute.")
 
-    url = src.replace("https://snippets.wdfiles.com/local--code/code:iframe-redirect#http", "https")
-    return await session.head(url)
+    # Extract the target URL directly from the fragment after '#'
+    parsed = urllib.parse.urlsplit(src)
+    url = parsed.fragment
 
+    # Ensure it always has a valid HTTPS scheme
+    if url.startswith("http://"):
+        url = "https://" + url.removeprefix("http://")
+    elif not url.startswith("https://"):
+        url = f"https://{url.lstrip('/')}"
+
+    return await session.head(url)

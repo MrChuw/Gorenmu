@@ -41,7 +41,7 @@ async def base_live(
     await mock_context.prepare_context(lang, interact=interact)
     async with mock_context.MockBuilder.ApiIvrFi.Twitch.User.fetch_user(dict_to_parse=json_response).Bot.fetch_videos():
         response = await interact.live._callback(self=interact, ctx=mock_context, channel=content)  # NOQA
-        mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+        mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

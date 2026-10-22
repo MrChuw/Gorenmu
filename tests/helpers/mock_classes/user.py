@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 class MockUser:
     def __init__(
         self,
-        _id: int,
-        name: str,
+        user_id: int = 1234567,
+        name: str = "xxcoolnickxx",
         color: str = "",
         channel: str = "",
         saved_color: str = "",
@@ -28,7 +28,7 @@ class MockUser:
     ):
         if nick_history is None:
             nick_history = []
-        self.id: int = _id
+        self.id: int = user_id
         self.name: str = name
         self.color: str = color
         self.channel: str = channel

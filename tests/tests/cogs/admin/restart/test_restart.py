@@ -41,5 +41,5 @@ async def test_failure(interact, mock_context: MockContext, lang: str, expected:
     await mock_context.prepare_context(lang, interact=interact)
     async with mock_context.MockBuilder.Errors.os_execv(OSError("exec failed")):
         response: Response = await interact.restart._callback(self=interact, ctx=mock_context)
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, False)

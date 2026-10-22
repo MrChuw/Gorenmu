@@ -3,7 +3,7 @@ import datetime
 import pytest
 import pytest_asyncio
 
-from bot.cogs.weather.command.weather import WeatherCmd
+from bot.cogs.weather.command.weather import WeatherCmd, Response
 from tests.helpers.mock_classes import MockContext
 
 from .fake_data import forecast, geocoding
@@ -26,7 +26,7 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 
 async def base_weather(
-    interact,
+    interact: WeatherCmd,
     mock_context: MockContext,
     lang: str,
     content: str,
@@ -36,7 +36,7 @@ async def base_weather(
 ):
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.weather._callback(interact, mock_context, location=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

@@ -35,7 +35,7 @@ async def call_and_assert(
 ):
     response: Response = await interact.gift._callback(interact, mock_context, *content)  # NOQA
     selected = (expected[0] if index is None else expected[index]) if isinstance(expected, list) else expected
-    mock_context.Asserter.assert_string(response.response_string, selected)
+    mock_context.Asserter.assert_string(response.response, selected)
     if success is not None:
         mock_context.Asserter.assert_boolean(response.success, success)
 

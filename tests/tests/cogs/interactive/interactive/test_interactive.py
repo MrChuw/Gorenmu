@@ -26,7 +26,7 @@ async def run_interactive_test(
     await mock_context.prepare_context(lang, interact=interact)
     cmd = getattr(interact, command_name)
     response = await cmd._callback(interact, mock_context, arg=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, strict=True)
+    mock_context.Asserter.assert_string(response.response, expected=expected, strict=True)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

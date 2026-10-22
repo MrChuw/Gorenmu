@@ -1,7 +1,7 @@
 import pytest
 import pytest_asyncio
 
-from bot.cogs.userid.command.userid import UserIdCmd
+from bot.cogs.userid.command.userid import Response, UserIdCmd
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params
@@ -29,11 +29,10 @@ async def base_userid(
     re_expected: str | None = None,
     success: bool = False,
 ):
+    mock_context.get_reply = None
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.userid._callback(interact, mock_context, content)  # NOQA
-    mock_context.Asserter.assert_string(
-        response.response_string, expected=expected, re_expected=re_expected, strict=True
-    )
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected, strict=True)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

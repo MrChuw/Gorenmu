@@ -32,7 +32,7 @@ async def base_randomline(
     await mock_context.prepare_context(lang, interact=interact)
     await mock_context.fake_messages()
     response: Response = await interact.randomline._callback(interact, mock_context, options=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

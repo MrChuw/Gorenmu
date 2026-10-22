@@ -38,7 +38,7 @@ async def base_count(
     session = interact.SessionsCaches.Count.session
     async with mock_context.MockBuilder.Session.get(session, text):
         response: Response = await interact.count._callback(interact, mock_context, content=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

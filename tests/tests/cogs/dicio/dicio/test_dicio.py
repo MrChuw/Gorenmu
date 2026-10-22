@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 import pytest
 import pytest_asyncio
 
@@ -5,6 +7,9 @@ from bot.cogs.dicio.command.dicio import DicioCmd
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params
+
+if TYPE_CHECKING:
+    from bot.ext import Response
 
 
 @pytest_asyncio.fixture
@@ -37,7 +42,7 @@ async def base_dicio(
     async with mock_context.MockBuilder.Session.get_json(session, response_get):
         response: Response = await interact.dicio._callback(interact, mock_context, content=content)  # NOQA
     mock_context.Asserter.assert_string(
-        response.response_string,
+        response.response,
         expected=expected,
         re_expected=re_expected,
         strict=True,

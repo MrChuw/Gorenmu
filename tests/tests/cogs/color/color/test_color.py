@@ -1,7 +1,7 @@
 import pytest
 import pytest_asyncio
 
-from bot.cogs.color.command.color import ColorCmd
+from bot.cogs.color.command.color import ColorCmd, Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.color.color.test_params import Params
 
@@ -30,7 +30,7 @@ async def base_color(
 ):
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.color._callback(interact, mock_context, content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

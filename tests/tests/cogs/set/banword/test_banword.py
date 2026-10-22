@@ -40,9 +40,9 @@ async def test_add(interact, mock_context: MockContext, lang: str, expected: str
     content = "blablabla, blablablabla. asdfaadsf! pasldfjl?, asldfjpalsdfc"
     response = await base_banword(interact, mock_context, lang=lang, option="add", content=content, success=True)
     words = interact.StringTools.extract_words_simple(content)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
-    channel = mock_context.bot.channels[mock_context.channel.name.lower()]
-    assert words == list(channel.banwords.keys())
+    mock_context.Asserter.assert_string(response.response, expected=expected)
+    if channel := mock_context.bot.channels[mock_context.channel.name.lower()]:
+        assert words == list(channel.banwords.keys())
 
 
 @pytest.mark.asyncio
@@ -52,9 +52,9 @@ async def test_remove(interact, mock_context: MockContext, lang: str, expected: 
     await base_banword(interact, mock_context, lang=lang, option="add", content=content, success=True)
     response = await base_banword(interact, mock_context, lang=lang, option="remove", content=content, success=True)
     words = interact.StringTools.extract_words_simple(content)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
-    channel = mock_context.bot.channels[mock_context.channel.name.lower()]
-    assert words != list(channel.banwords.keys())
+    mock_context.Asserter.assert_string(response.response, expected=expected)
+    if channel := mock_context.bot.channels[mock_context.channel.name.lower()]:
+        assert words != list(channel.banwords.keys())
 
 
 @pytest.mark.asyncio
@@ -64,9 +64,9 @@ async def test_clean(interact, mock_context: MockContext, lang: str, expected: s
     await base_banword(interact, mock_context, lang=lang, option="add", content=content, success=True)
     response = await base_banword(interact, mock_context, lang=lang, option="clean", content=" ", success=True)
     words = interact.StringTools.extract_words_simple(content)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
-    channel = mock_context.bot.channels[mock_context.channel.name.lower()]
-    assert words != list(channel.banwords.keys())
+    mock_context.Asserter.assert_string(response.response, expected=expected)
+    if channel := mock_context.bot.channels[mock_context.channel.name.lower()]:
+        assert words != list(channel.banwords.keys())
 
 
 @pytest.mark.asyncio
@@ -75,9 +75,9 @@ async def test_add_remove(interact, mock_context: MockContext, lang: str, expect
     content = "blablabla, blablablabla. asdfaadsf! pasldfjl?, asldfjpalsdfc"
     response = await base_banword(interact, mock_context, lang=lang, option="None", content=content, success=False)
     words = interact.StringTools.extract_words_simple(content)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, strict=True)
-    channel = mock_context.bot.channels[mock_context.channel.name.lower()]
-    assert words != list(channel.banwords.keys())
+    mock_context.Asserter.assert_string(response.response, expected=expected, strict=True)
+    if channel := mock_context.bot.channels[mock_context.channel.name.lower()]:
+        assert words != list(channel.banwords.keys())
 
 
 # @pytest.mark.asyncio

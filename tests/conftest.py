@@ -42,7 +42,7 @@ def mock_context(mock_bot):
 async def mock_bot():
     adapter: StarletteAdapter = StarletteAdapter(host="0.0.0.0")
     DEBUG = os.getenv("DEBUG", "1") == "1"  # NOQA
-    Configs = Config(os.path.join(os.path.dirname(__file__), "test_config.toml"))  # NOQA
+    Configs = Config(os.path.join(os.path.dirname(__file__), "test_config.toml"), True)  # NOQA
 
     if DEBUG:
         log = logging.getLogger()

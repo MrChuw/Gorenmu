@@ -36,7 +36,7 @@ async def base_annotations_check(
         title = "a" * 32
         await Annotation.create(content=content_note, user=mock_context.user, title=title)
     response: Response = await interact.check._callback(self=interact, ctx=mock_context, content=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

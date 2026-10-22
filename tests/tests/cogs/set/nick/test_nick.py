@@ -22,7 +22,7 @@ async def base_nick(
 ):
     await mock_context.prepare_context(lang, interact=interact)
     response = await interact.set_nick._callback(self=interact, ctx=mock_context, args=args)
-    mock_context.Asserter.assert_string(response.response_string, expected, strict=True)
+    mock_context.Asserter.assert_string(response.response, expected, strict=True)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

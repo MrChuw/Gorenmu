@@ -23,7 +23,7 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 
 async def base_wikihow(interact, mock_context: MockContext, expected, success: bool = False):
     response = await interact.wikihow._callback(interact, mock_context)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=None)
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=None)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

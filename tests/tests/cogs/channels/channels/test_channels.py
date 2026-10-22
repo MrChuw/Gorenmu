@@ -1,7 +1,7 @@
 import pytest
 import pytest_asyncio
 
-from bot.cogs.channels.command.channels import ChannelsCmd
+from bot.cogs.channels.command.channels import ChannelsCmd, Response
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params
@@ -36,7 +36,7 @@ async def base_channels(
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.channels._callback(interact, mock_context, content)  # NOQA
     mock_context.Asserter.assert_string(
-        response.response_string,
+        response.response,
         expected=expected,
         re_expected=re_expected,
         strict=True,

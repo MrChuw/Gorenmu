@@ -44,7 +44,7 @@ async def base_rafk(
         )
         await interact.bot.memcache.RAfk.set([int(mock_context.author.id), "username"], afk_str)
     response: Response = await interact.rafk._callback(self=interact, ctx=mock_context)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

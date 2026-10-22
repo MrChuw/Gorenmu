@@ -39,8 +39,8 @@ async def base_isafk(
     success: bool = False,
 ):
     await mock_context.prepare_context(lang, interact=interact, afk_data=True)
-    response: Response = await interact.isafk._callback(self=interact, ctx=mock_context, content=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    response: Response = await interact.isafk._callback(self=interact, ctx=mock_context, name=content)  # NOQA
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

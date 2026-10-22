@@ -24,15 +24,15 @@ class Params:
     no_content: ClassVar[list] = [
         pytest.param(
             "en",
-            r"I am connected to 8 channels, with (7[0-9]|[89][0-9]|\d{3,}) commands, "
-            r"made by @mr_chuw in Python \(Twitchio\)\. Bot website: https://gorenmu\.vercel\.app/",
+            "I am connected to 8 channels, with 0 commands, made by @mr_chuw in "
+            "Python (Twitchio). Bot website: https://gorenmu.vercel.app/",
             marks=pytest.mark.en,
             id="en",
         ),
         pytest.param(
             "pt_BR",
-            r"Estou conectado a 8 canais, com (7[0-9]|[89][0-9]|\d{3,}) comandos, "
-            r"criados por @mr_chuw em Python \(Twitchio\)\. Site do bot: https://gorenmu\.vercel\.app/",
+            "Estou conectado a 8 canais, com 0 comandos, criados por @mr_chuw em "
+            "Python (Twitchio). Site do bot: https://gorenmu.vercel.app/",
             marks=pytest.mark.pt_BR,
             id="pt_BR",
         ),

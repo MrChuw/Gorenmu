@@ -80,7 +80,7 @@ async def base_slotmachine(
     async with mock_context.MockBuilder.Emotes.get_random_by_amount(emote_list if emotes else []):
         await asyncio.sleep(0.01)
         response: Response = await interact.slotmachine._callback(interact, mock_context, amount=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected, re_expected)
+    mock_context.Asserter.assert_string(response.response, expected, re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

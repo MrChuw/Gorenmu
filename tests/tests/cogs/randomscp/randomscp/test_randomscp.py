@@ -26,9 +26,9 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
     mock_context.Asserter.assert_string(interact.translations.RandomScp.deco_helper("+"), helper)
 
 
-async def base_randomscp(interact, mock_context: MockContext, expected, success: bool = False):
+async def base_randomscp(interact: RandomSCPCmd, mock_context: MockContext, expected, success: bool = False):
     response = await interact.randomscp._callback(interact, mock_context)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=None)
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=None)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

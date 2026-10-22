@@ -39,7 +39,7 @@ async def test_go_online(interact, mock_context: MockContext, lang: str, expecte
     channel.online = False
     mock_context.invoked_with = "set start"
     response = await base_start(interact, mock_context, lang=lang, success=True)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected)
     assert channel.online
 
 
@@ -49,7 +49,7 @@ async def test_already_on(interact, mock_context: MockContext, lang: str, expect
     channel = mock_context.bot.channels[mock_context.channel.name.lower()]
     mock_context.invoked_with = "set start"
     response = await base_start(interact, mock_context, lang=lang, success=False)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected)
     assert channel.online
 
 
@@ -59,7 +59,7 @@ async def test_stopped(interact, mock_context: MockContext, lang: str, expected:
     channel = mock_context.bot.channels[mock_context.channel.name.lower()]
     mock_context.invoked_with = "set stop"
     response = await base_start(interact, mock_context, lang=lang, success=True)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected)
     assert not channel.online
 
 
@@ -70,5 +70,5 @@ async def test_already_off(interact, mock_context: MockContext, lang: str, expec
     channel.online = False
     mock_context.invoked_with = "set stop"
     response = await base_start(interact, mock_context, lang=lang, success=False)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected)
     assert not channel.online

@@ -3,7 +3,7 @@ import datetime
 import pytest
 import pytest_asyncio
 
-from bot.cogs.ping.command.ping import PingCmd
+from bot.cogs.ping.command.ping import PingCmd, Response
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params
@@ -38,7 +38,7 @@ async def base_ping(
 ):
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.ping._callback(interact, mock_context)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, re_expected=re_expected)
+    mock_context.Asserter.assert_string(response.response, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

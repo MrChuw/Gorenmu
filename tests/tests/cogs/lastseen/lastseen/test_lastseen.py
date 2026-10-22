@@ -46,7 +46,7 @@ async def base_lastseen(
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.lastseen._callback(interact, mock_context, args=content)  # NOQA
     mock_context.Asserter.assert_string(
-        response.response_string,
+        response.response,
         expected=expected,
         re_expected=re_expected,
         strict=True,

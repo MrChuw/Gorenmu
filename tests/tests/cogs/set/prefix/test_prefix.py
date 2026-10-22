@@ -38,7 +38,7 @@ async def base_prefix(
 async def test_changed(interact, mock_context: MockContext, lang: str, expected: str):
     prefix = "-"
     response = await base_prefix(interact, mock_context, lang=lang, content=prefix, success=True)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected)
     channel = mock_context.bot.channels[mock_context.channel.name.lower()]
     assert prefix == channel.prefix
 
@@ -48,6 +48,6 @@ async def test_changed(interact, mock_context: MockContext, lang: str, expected:
 async def test_to_long(interact, mock_context: MockContext, lang: str, expected: str):
     prefix = "---"
     response = await base_prefix(interact, mock_context, lang=lang, content=prefix, success=False)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected)
     channel = mock_context.bot.channels[mock_context.channel.name.lower()]
     assert prefix != channel.prefix

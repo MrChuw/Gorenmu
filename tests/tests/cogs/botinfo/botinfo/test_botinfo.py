@@ -3,7 +3,7 @@ import datetime
 import pytest
 import pytest_asyncio
 
-from bot.cogs.botinfo.command.botinfo import BotInfoCmd
+from bot.cogs.botinfo.command.botinfo import BotInfoCmd, Response
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.botinfo.botinfo.test_params import Params
 
@@ -38,7 +38,7 @@ async def base_botinfo(
 ):
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.bot_info._callback(interact, mock_context)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 
@@ -50,7 +50,7 @@ async def test_bot_info(interact, mock_context: MockContext, lang: str, expected
         interact,
         mock_context,
         lang=lang,
-        re_expected=expected,
+        expected=expected,
         success=True,
     )
 

@@ -14,6 +14,8 @@ cfgv==3.4.0
     # via pre-commit
 click==8.3.1
     # via deptry
+debugpy==1.8.21
+    # via gorenmu (pyproject.toml:dev)
 deptry==0.24.0
     # via gorenmu (pyproject.toml:dev)
 distlib==0.4.0
@@ -56,8 +58,14 @@ propcache==0.4.1
     # via
     #   aiohttp
     #   yarl
+py-spy==0.4.2
+    # via gorenmu (pyproject.toml:dev)
+pydevd==3.5.0
+    # via gorenmu (pyproject.toml:dev)
 pygments==2.19.2
     # via pytest
+pyrefly==1.1.1
+    # via gorenmu (pyproject.toml:dev)
 pytest==8.4.1
     # via
     #   gorenmu (pyproject.toml:dev)
@@ -76,7 +84,7 @@ pyyaml==6.0.2
     # via pre-commit
 requirements-parser==0.13.0
     # via deptry
-ruff==0.14.6
+ruff==0.16.7
     # via gorenmu (pyproject.toml:dev)
 six==1.17.0
     # via python-dateutil
@@ -85,6 +93,8 @@ snakeviz==2.2.2
 tornado==6.5.4
     # via snakeviz
 tuna==0.5.11
+    # via gorenmu (pyproject.toml:dev)
+ty==0.0.80
     # via gorenmu (pyproject.toml:dev)
 virtualenv==20.34.0
     # via pre-commit

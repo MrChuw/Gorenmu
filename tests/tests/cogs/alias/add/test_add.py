@@ -19,7 +19,7 @@ async def alias_add(
     command_ = mock_context.bot.get_command("chance")
     await Alias.save_alias(mock_context, "The_Tests_alias", command_, "chance", None)
     response: Response = await interact.add_command._callback(interact, mock_context, *content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

@@ -44,7 +44,7 @@ async def base_count(
         await mock_context.create_cookie(user=mock_context.user, received=25, consumed=54, donated=93, stocked=8534)
         response: Response = await interact.count._callback(interact, mock_context, *content)  # NOQA
 
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

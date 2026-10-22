@@ -30,7 +30,7 @@ async def base_choice(
 ):
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.choice._callback(self=interact, ctx=mock_context, content=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

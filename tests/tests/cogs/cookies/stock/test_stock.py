@@ -37,7 +37,7 @@ async def base_stock(
     cookie.cooldown = values[4]
     await cookie.save()
     response: Response = await interact.stock._callback(interact, mock_context, *content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected, re_expected)
+    mock_context.Asserter.assert_string(response.response, expected, re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

@@ -25,5 +25,5 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 async def test_chance(interact, mock_context: MockContext, lang: str, expected: str):
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.chance._callback(self=interact, ctx=mock_context)
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, True)

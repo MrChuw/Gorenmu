@@ -19,7 +19,7 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 async def test_alias(interact, mock_context: MockContext, lang: str, expected: list[str | int]):
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.alias._callback(self=interact, ctx=mock_context, args="")
-    mock_context.Asserter.assert_string(response.response_string, expected[0])
+    mock_context.Asserter.assert_string(response.response, expected[0])
     mock_context.Asserter.assert_number(mock_context.simple_response.call_count, expected[1])
     simple_response = mock_context.simple_response.call_args_list[0][0][1]
     mock_context.Asserter.assert_string(simple_response, expected[2])

@@ -27,7 +27,7 @@ async def test_no_content(interact, mock_context: MockContext, lang: str, expect
     await mock_context.prepare_context(lang, interact=interact)
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context)
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, True)
 
 
@@ -37,7 +37,7 @@ async def test_afk_content(interact, mock_context: MockContext, lang: str, expec
     await mock_context.prepare_context(lang, interact=interact)
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context, content="Just a test")
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, True)
 
 
@@ -47,5 +47,5 @@ async def test_afk_too_much_content(interact, mock_context: MockContext, lang: s
     await mock_context.prepare_context(lang, interact=interact)
     mock_context.invoke_by = "afk"
     response: Response = await interact.afk._callback(self=interact, ctx=mock_context, content="a" * 500)
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, False)

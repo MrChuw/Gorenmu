@@ -29,7 +29,7 @@ async def base_eat(
     await Check.cookie_check(mock_context, interact.translations)
     for num in range(amount):
         response: Response = await interact.eat._callback(interact, mock_context, *content)  # NOQA
-        mock_context.Asserter.assert_string(response.response_string, expected[num])
+        mock_context.Asserter.assert_string(response.response, expected[num])
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

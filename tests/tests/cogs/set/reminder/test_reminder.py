@@ -22,7 +22,7 @@ async def base_reminder(
 ):
     await mock_context.prepare_context(lang, interact=interact)
     response = await interact.set_reminder._callback(self=interact, ctx=mock_context, args=args)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected, strict=True)
+    mock_context.Asserter.assert_string(response.response, expected, strict=True)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

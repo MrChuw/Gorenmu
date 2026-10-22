@@ -32,7 +32,7 @@ async def base_randomcolor(
     await mock_context.prepare_context(lang, interact=interact)
     async with mock_context.MockBuilder.Color.name(return_value=return_value):
         response: Response = await interact.randomcolor._callback(self=interact, ctx=mock_context, tipo=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected)
+    mock_context.Asserter.assert_string(response.response, expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

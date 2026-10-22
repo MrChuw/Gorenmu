@@ -32,8 +32,8 @@ async def base_safebooru(
     success: bool = False,
 ):
     await mock_context.prepare_context(lang, interact=interact)
-    response: Response = await interact.safebooru._callback(interact, mock_context, args=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    response: safebooru.Response = await interact.safebooru._callback(interact, mock_context, args=content)  # NOQA
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

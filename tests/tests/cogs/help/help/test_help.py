@@ -1,13 +1,15 @@
 import pytest
 import pytest_asyncio
 
-from bot.cogs.help.command.help import HelpCmd
+from bot.cogs.help.command.help import HelpCmd, Response
+from bot.cogs.ping.command.ping import PingCmd
 from tests.helpers.mock_classes import MockContext
 from tests.tests.cogs.help.help.test_params import Params
 
 
 @pytest_asyncio.fixture
 async def interact(mock_bot):
+    await mock_bot.add_component(PingCmd(bot=mock_bot))
     return HelpCmd(bot=mock_bot)
 
 
@@ -30,7 +32,7 @@ async def base_help(
 ):
     await mock_context.prepare_context(lang, interact=interact)
     response: Response = await interact.help._callback(interact, mock_context, content=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

@@ -2,6 +2,7 @@ import pytest
 import pytest_asyncio
 
 from bot.cogs.set.command.set import SetCmd
+from bot.cogs.weather.command.weather import WeatherCmd
 from tests.helpers.mock_classes import MockContext
 
 from .test_params import Params
@@ -9,6 +10,7 @@ from .test_params import Params
 
 @pytest_asyncio.fixture
 async def interact(mock_bot):
+    await mock_bot.add_component(WeatherCmd(bot=mock_bot))
     return SetCmd(bot=mock_bot)
 
 
@@ -37,23 +39,21 @@ async def base_enable(
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.enable)
 async def test_enable(interact, mock_context: MockContext, lang: str, expected: str):
-    channel = mock_context.bot.channels[mock_context.channel.name.lower()]
-    channel.disabled["weather"] = mock_context.author.id
-    response = await base_enable(interact, mock_context, lang=lang, content="wt", success=True)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
-    channel = mock_context.bot.channels[mock_context.channel.name.lower()]
-    assert "weather" not in list(channel.disabled.keys())
+    if channel := mock_context.bot.channels[mock_context.channel.name.lower()]:
+        channel.disabled["weather"] = mock_context.author.id
+        response = await base_enable(interact, mock_context, lang=lang, content="wt", success=True)
+        mock_context.Asserter.assert_string(response.response, expected=expected)
+        assert "weather" not in list(channel.disabled.keys())
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.enable_all)
 async def test_enable_all(interact, mock_context: MockContext, lang: str, expected: str):
-    channel = mock_context.bot.channels[mock_context.channel.name.lower()]
-    channel.disabled["weather"] = mock_context.author.id
-    response = await base_enable(interact, mock_context, lang=lang, content="all", success=True)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
-    channel = mock_context.bot.channels[mock_context.channel.name.lower()]
-    assert "weather" not in list(channel.disabled.keys())
+    if channel := mock_context.bot.channels[mock_context.channel.name.lower()]:
+        channel.disabled["weather"] = mock_context.author.id
+        response = await base_enable(interact, mock_context, lang=lang, content="all", success=True)
+        mock_context.Asserter.assert_string(response.response, expected=expected)
+        assert "weather" not in list(channel.disabled.keys())
 
 
 async def base_disable(
@@ -74,15 +74,15 @@ async def base_disable(
 @pytest.mark.parametrize("lang, expected", Params.disable)
 async def test_disable(interact, mock_context: MockContext, lang: str, expected: str):
     response = await base_disable(interact, mock_context, lang=lang, content="wt", success=True)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
-    channel = mock_context.bot.channels[mock_context.channel.name.lower()]
-    assert "weather" in list(channel.disabled.keys())
+    mock_context.Asserter.assert_string(response.response, expected=expected)
+    if channel := mock_context.bot.channels[mock_context.channel.name.lower()]:
+        assert "weather" in list(channel.disabled.keys())
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("lang, expected", Params.disable_all)
 async def test_disable_all(interact, mock_context: MockContext, lang: str, expected: str):
     response = await base_disable(interact, mock_context, lang=lang, content="all", success=True)
-    mock_context.Asserter.assert_string(response.response_string, expected=expected)
-    channel = mock_context.bot.channels[mock_context.channel.name.lower()]
-    assert "weather" in list(channel.disabled.keys())
+    mock_context.Asserter.assert_string(response.response, expected=expected)
+    if channel := mock_context.bot.channels[mock_context.channel.name.lower()]:
+        assert "weather" in list(channel.disabled.keys())

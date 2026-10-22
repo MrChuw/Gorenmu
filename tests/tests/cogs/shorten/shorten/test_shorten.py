@@ -31,7 +31,7 @@ async def base_shorten(
 ):
     await mock_context.prepare_context(lang, interact=interact)
     response = await interact.shorten._callback(interact, mock_context, content=content)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected=expected, re_expected=re_expected)
+    mock_context.Asserter.assert_string(response.response, expected=expected, re_expected=re_expected)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

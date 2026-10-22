@@ -41,7 +41,7 @@ async def base_accountage(
     await mock_context.prepare_context(lang, interact=interact)
     response = await interact.accountage._callback(interact, mock_context, content)  # NOQA
     mock_context.Asserter.assert_string(
-        response.response_string,
+        response.response,
         expected=expected,
         re_expected=re_expected,
         strict=True,

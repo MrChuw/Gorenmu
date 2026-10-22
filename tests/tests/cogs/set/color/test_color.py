@@ -23,7 +23,7 @@ async def base_color(
     await mock_context.prepare_context(lang, interact=interact)
     mock_context.author.color = "#abc123"  # fallback color in case of invalid input
     response = await interact.set_color._callback(self=interact, ctx=mock_context, args=args)  # NOQA
-    mock_context.Asserter.assert_string(response.response_string, expected, strict=True)
+    mock_context.Asserter.assert_string(response.response, expected, strict=True)
     mock_context.Asserter.assert_boolean(response.success, success)
 
 

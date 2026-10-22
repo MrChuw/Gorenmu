@@ -27,7 +27,7 @@ async def test_decorators(interact, mock_context: MockContext, lang: str, helper
 # ):
 #     await mock_context.prepare_context(lang, interact=interact)
 #     response: Response = await interact.imgur._callback(interact, mock_context, content)  # NOQA
-#     mock_context.Asserter.assert_string(response.response_string, expected=expected,
+#     mock_context.Asserter.assert_string(response.response, expected=expected,
 #     re_expected=re_expected, strict=True)
 #     mock_context.Asserter.assert_boolean(response.success, success)
 #

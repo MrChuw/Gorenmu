@@ -1,18 +1,14 @@
 from __future__ import annotations
 
-import asyncio
 import contextlib
 import importlib.util
 import inspect
 import os
-import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
-
-import debugpy
 
 from bot.ext import Context, Response, commands
 from bot.utils import Role, SessionsCaches, StringTools
@@ -47,10 +43,8 @@ class AdminSmallCmds(commands.CustomComponent):
                 return self.translations.Exceptions.echo("::: Para desconectar, pare a sessão pelo próprio VS Code :::")
 
             if not debugpy.is_client_connected():
-                try:
+                with contextlib.suppress(RuntimeError):
                     debugpy.listen(("127.0.0.1", 5678))
-                except RuntimeError:
-                    pass  # Já está escutando na porta
                 return self.translations.Exceptions.echo(
                     "::: Debugger ready on `127.0.0.1:5678` (Waiting for IDE to attach) :::"
                 )
