@@ -12,82 +12,82 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: {command_title}Cmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: {command_title}Cmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.parent: {command_title}Cmd
+        self.{command_title}: {command_title} = {command_title}(parent=self)
 
-    class {command_title}(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "{command_title}"
 
-        def placeholder(self, **kwargs) -> Response:
-            text = self.get_text(self._cname, **kwargs)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+class {command_title}(TBase):
+    def __init__(self, parent: Translations):
+        super().__init__(parent)
+        self.prefix = "{command_title}"
 
-        def placeholder1(self, name1, name2) -> Response:
-            text = self.get_text(self._cname, name1=name1, name2=name2)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+    def placeholder(self, **kwargs) -> Response:
+        text = self.get_text(self._cname, **kwargs)
+        return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
-        def placeholder_error(self, **kwargs) -> Response:
-            text = self.get_text(self._cname, **kwargs)
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+    def placeholder1(self, name1, name2) -> Response:
+        text = self.get_text(self._cname, name1=name1, name2=name2)
+        return Response(ctx=self.ctx_get(), success=True, response_string=text)
 
-        def placeholder_error1(self, name1, name2) -> Response:
-            text = self.get_text(self._cname, name1=name1, name2=name2)
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+    def placeholder_error(self, **kwargs) -> Response:
+        text = self.get_text(self._cname, **kwargs)
+        return Response(ctx=self.ctx_get(), success=False, response_string=text)
 
-        def placeholder_entry(self, **kwargs) -> str | TranslationEntry:
-            if not kwargs:
-                return self.get_entry(self._cname)
-            return self.get_text(self._cname, **kwargs)
+    def placeholder_error1(self, name1, name2) -> Response:
+        text = self.get_text(self._cname, name1=name1, name2=name2)
+        return Response(ctx=self.ctx_get(), success=False, response_string=text)
 
-        def placeholder_entry1(self, name1, name2) -> str | TranslationEntry:
-            if not kwargs:
-                return self.get_entry(self._cname)
-            return self.get_text(self._cname, name1=name1, name2=name2)
+    def placeholder_entry(self, **kwargs) -> str | TranslationEntry:
+        if not kwargs:
+            return self.get_entry(self._cname)
+        return self.get_text(self._cname, **kwargs)
 
-        def placeholder_list(self, **kwargs) -> list[str]:
-            return self.get_list(self._cname, **kwargs)
+    def placeholder_entry1(self, name1, name2) -> str | TranslationEntry:
+        if not kwargs:
+            return self.get_entry(self._cname)
+        return self.get_text(self._cname, name1=name1, name2=name2)
 
-        def placeholder_list1(self, name1, name2) -> list[str]:
-            return self.get_list(self._cname, name1=name1, name2=name2)
+    def placeholder_list(self, **kwargs) -> list[str]:
+        return self.get_list(self._cname, **kwargs)
 
-        def placeholder_attributes_list(self) -> list[str]:
-            return self.get_attributes_list(self._cname)
+    def placeholder_list1(self, name1, name2) -> list[str]:
+        return self.get_list(self._cname, name1=name1, name2=name2)
 
-        # --- Help Methods ---
+    def placeholder_attributes_list(self) -> list[str]:
+        return self.get_attributes_list(self._cname)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    # --- Help Methods ---
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        def deco_commands(self, *args, **kwargs) -> CommandExemples:
-            return CommandExemples(
-                [
-                    {
-                        "prefix": self.get_text("cmd_ex1_prefix"),
-                        "args": "exemplo_arg",
-                        "response": self.get_text("cmd_ex1_res"),
-                    },
-                ]
-            )
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_admonitions(self, *args, **kwargs) -> Admonitions:
-            return Admonitions(
-                [
-                    {
-                        "admonition_type": "info",
-                        "position": "top",
-                        "title": self.get_text("adm_title"),
-                        "message": self.get_text("adm_msg"),
-                    }
-                ]
-            )
+    def deco_commands(self, *args, **kwargs) -> CommandExemples:
+        return CommandExemples(
+            [
+                {
+                    "prefix": self.get_text("cmd_ex1_prefix"),
+                    "args": "exemplo_arg",
+                    "response": self.get_text("cmd_ex1_res"),
+                },
+            ]
+        )
 
-    {command_title}: {command_title}
+    def deco_admonitions(self, *args, **kwargs) -> Admonitions:
+        return Admonitions(
+            [
+                {
+                    "admonition_type": "info",
+                    "position": "top",
+                    "title": self.get_text("adm_title"),
+                    "message": self.get_text("adm_msg"),
+                }
+            ]
+        )
+

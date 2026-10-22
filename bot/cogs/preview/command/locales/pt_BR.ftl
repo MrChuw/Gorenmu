@@ -1,6 +1,7 @@
 # Translation for Preview
 Preview-not_live = O canal {$name} não esta em live no momento.
 Preview-preview = Preview: {$preview} || VOD: {$vod}
+Preview-vod = VOD: {$vod}
 
 Preview-deco_helper = Este comando enviara um print e timestamp da live pedida.
 Preview-deco_usage = {$prefix}preview (nome_do_canal)

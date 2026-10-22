@@ -12,57 +12,54 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: PingCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: PingCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Ping: Ping = Ping(self)
 
-    class Ping(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Ping"
 
-        def ping(self, ping: str, tmi: str, mem: str, started: str) -> Response:
-            text = self.get_text(self._cname, ping=ping, tmi=tmi, mem=mem, started=started)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+class Ping(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Ping"
+        super().__init__(parent, __file__)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def ping(self, ping: str, tmi: str, mem: str, started: str) -> Response:
+        text = self.get_text(self._cname, ping=ping, tmi=tmi, mem=mem, started=started)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix1=prefix, prefix2=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        # region Hide.
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix1=prefix, prefix2=prefix)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    # region Hide.
 
-        def deco_commands(self, *args, **kwargs) -> CommandExemples:
-            return CommandExemples([{"args": "", "response": self.get_text("cmd_res")}])
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_admonitions(self, *args, **kwargs) -> Admonitions:
-            return Admonitions(
-                [
-                    {
-                        "admonition_type": "info",
-                        "position": "bottom",
-                        "title": self.get_text("adm_tmi_title"),
-                        "message": self.get_text("adm_tmi_msg"),
-                    },
-                    {
-                        "admonition_type": "info",
-                        "position": "bottom",
-                        "title": self.get_text("adm_ram_title"),
-                        "message": self.get_text("adm_ram_msg"),
-                    },
-                    {
-                        "admonition_type": "info",
-                        "position": "bottom",
-                        "title": self.get_text("adm_up_title"),
-                        "message": self.get_text("adm_up_msg"),
-                    },
-                ]
-            )
+    def deco_commands(self, *args, **kwargs) -> CommandExemples:
+        return CommandExemples([{"args": "", "response": self.get_text("cmd_res")}])
 
-        # endregion
+    def deco_admonitions(self, *args, **kwargs) -> Admonitions:
+        return Admonitions(
+            [
+                {
+                    "admonition_type": "info",
+                    "position": "bottom",
+                    "title": self.get_text("adm_tmi_title"),
+                    "message": self.get_text("adm_tmi_msg"),
+                },
+                {
+                    "admonition_type": "info",
+                    "position": "bottom",
+                    "title": self.get_text("adm_ram_title"),
+                    "message": self.get_text("adm_ram_msg"),
+                },
+                {
+                    "admonition_type": "info",
+                    "position": "bottom",
+                    "title": self.get_text("adm_up_title"),
+                    "message": self.get_text("adm_up_msg"),
+                },
+            ]
+        )
 
-    Ping: Ping

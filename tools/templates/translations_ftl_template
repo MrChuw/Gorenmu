@@ -1,6 +1,6 @@
 # Translation for {command_title}
-{command_title}-placeholder = Esse é um placeholder com variável: {{ $args }}
-{command_title}-placeholder_error = Ocorreu um erro ao processar {{ $args }}.
+{command_title}-placeholder = Esse é um placeholder com variável: { $args }
+{command_title}-placeholder_error = Ocorreu um erro ao processar { $args }.
 {command_title}-placeholder_list = Item 1, Item 2, Item 3, Item 4
 {command_title}-placeholder_attributes_list =
     .stocked = stocked, stocked
@@ -11,7 +11,7 @@
     .total = total, total
 
 {command_title}-deco_helper = Ajuda do comando {command_title}.
-{command_title}-deco_usage = Como usar: {{ $prefix }}{command_name} <argumento>
+{command_title}-deco_usage = Como usar: { $prefix }{command_name} <argumento>
 {command_title}-deco_description = Descrição detalhada do comando {command_title}.
 
 # Commands

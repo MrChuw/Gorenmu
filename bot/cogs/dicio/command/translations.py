@@ -12,48 +12,51 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: DicioCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: DicioCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Dicio: Dicio = Dicio(self)
 
-    class Dicio(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Dicio"
 
-        def response(self, word, exist, similar, origin, url) -> Response:
-            text = self.get_text(self._cname, word=word, exist=exist, similar=similar, origin=origin, url=url)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+class Dicio(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Dicio"
+        super().__init__(parent, __file__)
 
-        def check_exist(self, exist) -> str:
-            text = self.get_text(self._cname, exist=exist)
-            return text
+    def response(self, word, exist, similar, origin, url) -> Response:
+        text = self.get_text(self._cname, word=word, exist=exist, similar=similar, origin=origin, url=url)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def all_languages(self, languages) -> Response:
-            text = self.get_text(self._cname, languages=languages)
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+    def check_exist(self, exist) -> str:
+        return self.get_text(self._cname, exist=exist)
 
-        def error(self, link, dev) -> Response:
-            text = self.get_text(self._cname, link=link, dev=dev)
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+    def all_languages(self, languages) -> Response:
+        text = self.get_text(self._cname, languages=languages)
+        return Response(ctx=self.ctx_get(), success=False, response=text)
 
-        def url(self, lang, word):
-            return self.get_text_by_lang(lang, self._cname, word=word)
+    def error(self, link, dev) -> Response:
+        text = self.get_text(self._cname, link=link, dev=dev)
+        return Response(ctx=self.ctx_get(), success=False, response=text)
 
-        def languages(self, lang) -> str:
-            langs = self.get_attributes(self._cname)
-            if lang == "languages":
-                return ", ".join(self.lang_dict._namespaces["languages"].keys())  # NOQA
+    def url(self, lang, word):
+        return self.get_text_by_lang(lang, self._cname, word=word)
 
-            return langs.get(lang, "en/en_US")
+    # TODO: test new method
+    # def languages(self, lang) -> str:
+    #     langs = self.get_attributes(self._cname)
+    #     if lang == "languages":
+    #         return ", ".join(self.lang_dict._namespaces["languages"].keys())  # NOQA
+    #     return langs.get(lang, "en/en_US")
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def languages(self, lang) -> str:
+        langs = self.get_attributes(self._cname)
+        if lang == "languages":
+            return ", ".join(self.lang_dict.get_languages())
+        return langs.get(lang, "en/en_US")
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-    Dicio: Dicio
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)

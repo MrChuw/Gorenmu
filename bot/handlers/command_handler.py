@@ -20,18 +20,22 @@ from bot.exceptions import (
     OwnerRequiredError,
 )
 from bot.ext import Routine
+from bot.ext.translations.translations import LangDict, TBase, TranslationBase
+
+from bot.ext import Context
 
 if TYPE_CHECKING:
     from twitchio import ChatMessage
 
     from bot.bot import Gorenmu
     from bot.cogs.bug.command.bug import BugCmd
-    from bot.ext import Context
+
 
 
 class CommandHandler:
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
+        self.lang_dict: LangDict = LangDict(bot)
 
     @staticmethod
     def _get_module(path: pathlib.Path, filename: pathlib.Path) -> tuple[types.ModuleType, str]:
@@ -40,6 +44,13 @@ class CommandHandler:
         package = ".".join(filename.parts[filename.parts.index("bot") :]).removesuffix(".py")
         module: types.ModuleType = import_module(name, package=package)
         return module, name
+
+    async def teardown_all_commands(self) -> None:
+        modules = list(self.bot.modules.keys())
+        for command_name in modules:
+            await self.bot.unload_module(command_name)
+            ...
+        ...
 
     async def load_command_module(self, path: pathlib.Path) -> None:
         for filename in path.iterdir():
@@ -63,15 +74,15 @@ class CommandHandler:
                     extra={"locals": locals()},
                 )
 
-    def load_routines(self, path: pathlib.Path) -> None:
+    async def load_routines(self, path: pathlib.Path) -> None:
         for filename in path.iterdir():
             if filename.suffix != ".py" or filename.name.startswith("__"):
                 continue
             try:
-                module, name = self._get_module(path=path, filename=filename)
+                module, _ = self._get_module(path=path, filename=filename)
                 routine: Routine = module.routine
                 # TODO: To test.
-                self.bot.RoutineHandler.add_routine(str(path), routine)
+                await self.bot.RoutineHandler.add_routine(str(path), routine)
             except Exception as e:
                 logger.error(f"Routine '{filename.name[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
@@ -86,8 +97,8 @@ class CommandHandler:
                         continue
                     if "commands" in folder.name or "command" in folder.name:
                         await self.load_command_module(folder)
-                    elif "routines" in folder.name:
-                        self.load_routines(folder)
+                    elif "routines" in folder.name or "routine" in folder.name:
+                        await self.load_routines(folder)
         except Exception as e:
             logger.error(f"Failed to {'reload' if reload else 'load'} cogs: {e}", extra={"locals": locals()})
 
@@ -97,8 +108,22 @@ class CommandHandler:
     async def reload_cogs(self) -> None:
         await self._load_all_cogs(reload=True)
 
-    def is_enabled(self, ctx: Context, command: str = "") -> bool:
-        return (command or ctx.command.name.lower()) not in self.bot.channels[ctx.channel.name].disabled
+    async def is_enabled(self, target: Context | ChatMessage, command: str = "") -> bool:
+        channel_commands = self.bot.channels.disabled(target)
+        command_inner = ""
+        if isinstance(target, Context):
+            if target.command:
+                command_inner: str = target.command.name.lower()
+        else:
+            ctx = await self.bot.LifecycleHandler.get_context(target)
+            command_inner  = ctx.command.name.lower()
+        command = command or command_inner
+
+        return command not in channel_commands
+
+    # def is_enabled(self, ctx: Context, command: str = "") -> bool:
+    #     return (command or ctx.command.name.lower()) not in self.bot.channels[ctx.channel.name].disabled
+
 
     async def send_bug(self, ctx: Context, error: Exception, ping: bool = True):
         command = self.bot.get_command("bug")
@@ -135,7 +160,7 @@ class CommandHandler:
             return None
         if ctx.prefix != self.bot.channels[ctx.channel.name].prefix:
             return None
-        translations = ctx.command.component.translations
+        translations: TranslationBase = ctx.command.component.translations
         translations.ctx_set(ctx)
         if not isinstance(error, (InvalidArgument, CommandOnCooldown, CommandDisabledError, CommandNotFound)):
             await self.send_bug(ctx, error)
@@ -157,6 +182,8 @@ class CommandHandler:
             return await ctx.simple_response(ctx, translations.Exceptions.not_implemented(ctx).response_string)
         if isinstance(error, InvalidArgument) and ctx.command:
             deco = translations.get_decorator(ctx=ctx)
+            if not deco:
+                return None  # TODO: Message of usage not implemented, pls contact dev.
             await ctx.reply(deco.deco_usage(ctx=ctx, prefix=ctx.prefix))
             return None
         if isinstance(error, GuardFailure):
@@ -187,6 +214,16 @@ class CommandHandler:
             predicate = injected_predicate
 
         return await self.bot.wait_for("message", timeout=timeout, predicate=predicate)
+
+    async def generic_wait(self, payload: ChatMessage, ctx: Context, target_name: str, generic_wait) -> bool:
+        # return True
+        if payload.chatter.id == self.bot.bot_id or payload.source_broadcaster is not None:
+            return False
+        if (payload.chatter.name or "").lower() != target_name:
+            return False
+        if (payload.broadcaster.name or "").lower() != (ctx.broadcaster.name or "").lower():
+            return False
+        return payload.text.lower() in generic_wait.accept() + generic_wait.reject()
 
     async def setup(self): ...
 

@@ -1,69 +1,52 @@
 from __future__ import annotations
 
 import asyncio
-import inspect
-import types
 from contextvars import ContextVar
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypeVar
 
-from bot.ext import Command, Context
-from bot.ext.translations.extras import ClassBase, LangDict, OtherTools, TBase
+from bot.ext import Command, Context, commands
+from bot.ext.translations.extras import GenericWait, LangDict, SupportTools, TBase
 from bot.utils.singleton import Singleton
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
+T_Comp = TypeVar("T_Comp")
 current_ctx: ContextVar[Context] = ContextVar("current_ctx")
-
-
-"""
-Criar uma forma de dumpar todas as traducoes para um json/xml/txt em ingles, onde esse json seria usado como base para
-o weblate ou qualquer outro usar para traduzir.
-
-def strftime(self, ctx: Context) -> str:
-    with self.lang_dict.once("strftime"):
-        self.lang_dict.add_with("en", "%m/%d/%Y in %I:%M %p")
-        self.lang_dict.add_with(["pt_br", "pt"], "%d/%m/%Y às %H:%M:%S")
-        self.lang_dict.add_translation_with("SupportTools.TimeTools.strftime_str")
-    return self._untangle_str(ctx, "strftime")
-
-e então ele adicionaria todas as traducoes para as linguas
-
-talvez ter um
-{
-"SupportedLangs": ["es", "es-ES", "es-MX"]
-}
-
-que seria refente ao ["pt_br", "pt"] no add_with
-
-"""  # NOQA
 
 
 class Response:
     def __init__(
         self,
         ctx: Context,
-        response: str | None = None,
+        response: str = "",
         success: bool = True,
         response_list: list[str] | None = None,
         handle: str | None = None,
-        response_string: str | None = None,
+        response_string: str = "",
     ):
+        if response_list is None:
+            response_list = []
+        if handle is None:
+            handle = ""
         self.ctx: Context = ctx
         self.success: bool = success
         self.response: str = response
         self.response_list: list[str] = response_list
-        self.handle: str = handle
+        self.handle: str | None = handle
         self.response_string: str = response_string
 
     def format_response(self, response: str, *args: Any, **kwargs: Any) -> Response:
         self.response = response
         if args:
-            self.response_string = self.response.format(*args, **kwargs)
+            self.response = self.response.format(*args, **kwargs)
         else:
-            self.response_string = self.response
+            self.response = self.response
         return self
+
+    def __str__(self) -> str:
+        return self.response
 
 
 class AdmonitionItem:
@@ -97,18 +80,163 @@ class CommandExemples:
         if not data:
             self.items = []
             return
-        self.items = [CommandExemplesItem(item) for item in data] if data else False
+        self.items = [CommandExemplesItem(item) for item in data]
 
     def __iter__(self):
-        return iter(self.items) if self.items else iter([])
+        return iter(self.items)
 
 
-class TranslationBase(ClassBase, metaclass=Singleton):
-    def __init__(self, bot: Gorenmu, file):
+class Exceptions(TBase):
+    def __init__(self, parent: TranslationBase):
+        self.prefix = "Exceptions"
+        super().__init__(parent, __file__, is_base=True)
+        self._started = True
+        self.parent.register_locale(self.prefix, is_base=True)
+
+    def empty(self, ctx: Context | None = None, success: bool = True) -> Response:
+        return Response(ctx=ctx or self.ctx_get(), success=success, response="")
+
+    def echo(
+        self, args: str, ctx: Context | None = None, success: bool = True, handle: str | None = None
+    ) -> Response:
+        return Response(ctx=ctx or self.ctx_get(), success=success, handle=handle, response=f"{args}")
+
+    def user_not_found_id(self, arg: str | int, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, id=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def user_not_found_name(self, name: str) -> Response:
+        text = self.get_text(self._cname, name=name)
+        return Response(ctx=self.ctx_get(), success=False, response=text)
+
+    def time_expired(self, arg: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, time=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def time_limit_s(self, arg: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, time=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def no_content_provided(self, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def too_much_characters(self, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def message_too_long(self, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def no_id_provided(self, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def id_not_valid(self, arg: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, id=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def user_not_provided(self, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def guard_caught(self, cmd: str, reason, contact: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, cmd=cmd, reason=str(reason), contact=contact)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def unexpected_error(self, exception: Exception | str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, exception=str(exception))
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def error(self) -> Response:
+        text = self.get_text(self._cname, dev=self.ctx_get().bot.dev_user.display_name or "")
+        return Response(ctx=self.ctx_get(), success=False, response=text)
+
+    def timeout(self, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def never_seen(self, arg: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, name=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def channel_not_found(self, arg: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, name=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def dev_required(self, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def owner_required(self, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def command_on_cooldown(self, arg: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, time=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def disabled(self, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def not_implemented(self, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def error_not_registered(self, dev: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, dev=dev)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def command_not_pipeble(self, arg: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, cmd=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def pipe_response_error(self, arg: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, error=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def pipe_response(self, arg: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, response=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def lottery_seed(self, arg: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, contact=arg)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def user_opt_out(self, name: str, ctx: Context | None = None) -> Response:
+        text = self.get_text(self._cname, name=name)
+        return Response(ctx=ctx or self.ctx_get(), success=False, response=text)
+
+    def translation_error(self, translation_name: str, language: str, dev_name: str) -> Response:
+        text = self.get_text(self._cname, translation_name=translation_name, language=language, dev_name=dev_name)
+        return Response(ctx=self.ctx_get(), success=False, response=text)
+
+
+class TranslationBase[T_Comp](metaclass=Singleton):
+    upper: T_Comp | None
+
+    def __init__(self, bot: Gorenmu, file: str | None = None, upper: T_Comp | None = None):
+        super().__init__()
         self.bot = bot
+        self.upper: T_Comp | None = upper
         self.command = None
-        self.lang_dict: LangDict = LangDict(self)
-        asyncio.create_task(self.lang_dict.load_fluent_locales(Path(file).parent / "locales"))  # NOQA: RUF006
+        self.lang_dict: LangDict = bot.CommandHandler.lang_dict
+        self.locales_dir_base = Path(__file__).resolve().parent / "locales"
+        self.locales_dir: Path | None = None
+        if file:
+            self.locales_dir = Path(file).resolve().parent / "locales"
+
+        self.Exceptions: Exceptions = Exceptions(parent=self)
+        self.SupportTools: SupportTools = SupportTools(parent=self)
+        self.GenericWait: GenericWait = GenericWait(parent=self)
+
+    def register_locale(self, prefix: str, is_base: bool = False) -> None:
+        """Registra a pasta base ou a pasta do cog associada ao prefixo."""
+        target_dir = self.locales_dir_base if is_base else self.locales_dir
+        if target_dir and target_dir.exists():
+            self.lang_dict.register_domain(prefix=prefix, folder=target_dir)
 
     @classmethod
     def ctx_get(cls):
@@ -125,138 +253,3 @@ class TranslationBase(ClassBase, metaclass=Singleton):
             if name.lower() == command_name:
                 decorators = getattr(self, name)
         return decorators
-
-    class Exceptions(TBase):
-        def __init__(self, parent: TranslationBase | None = None):
-            super().__init__(parent, __file__)
-            self._started = True
-            self.prefix = "Exceptions"
-
-        def empty(self, ctx: Context | None = None, success: bool = True) -> Response:
-            return Response(ctx=ctx or self.ctx_get(), success=success, response_string="")
-
-        def echo(
-            self, args: str, ctx: Context | None = None, success: bool = True, handle: str | None = None
-        ) -> Response:
-            return Response(ctx=ctx or self.ctx_get(), success=success, handle=handle, response_string=f"{args}")
-
-        def user_not_found_id(self, arg: str | int, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, id=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def user_not_found_name(self, name: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, name=name)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def time_expired(self, arg: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, time=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def no_content_provided(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def too_much_characters(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def message_too_long(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def no_id_provided(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def id_not_valid(self, arg: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, id=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def user_not_provided(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def guard_caught(self, cmd: str, reason, contact: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, cmd=cmd, reason=str(reason), contact=contact)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def unexpected_error(self, exception: Exception | str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, exception=str(exception))
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def error(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, dev=self.ctx_get().bot.dev_user.display_name)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def timeout(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def never_seen(self, arg: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, name=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def channel_not_found(self, arg: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, name=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def dev_required(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def owner_required(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def command_on_cooldown(self, arg: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, time=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def disabled(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def not_implemented(self, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def error_not_registered(self, arg: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, dev=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def command_not_pipeble(self, arg: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, cmd=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def pipe_response_error(self, arg: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, error=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def pipe_response(self, arg: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, response=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-        def lottery_seed(self, arg: str, ctx: Context | None = None) -> Response:
-            text = self.get_text(self._cname, contact=arg)
-            return Response(ctx=ctx or self.ctx_get(), success=False, response_string=text)
-
-    Exceptions: Exceptions
-
-    class SupportTools(OtherTools.SupportTools):
-        def __init__(self, parent: TranslationBase | None = None) -> None:
-            super().__init__(parent)
-
-        @staticmethod
-        def fake_stacktrace(message: str) -> Exception | None:
-            exc = Exception(message)
-            tb = types.TracebackType(tb_next=None, tb_frame=inspect.currentframe().f_back, tb_lasti=0, tb_lineno=1)
-            exc.__traceback__ = tb
-            return exc
-
-    SupportTools: OtherTools.SupportTools
-
-    class GenericWait(OtherTools.GenericWait):
-        def __init__(self, parent: TranslationBase | None = None) -> None:
-            super().__init__(parent)
-
-    GenericWait: GenericWait

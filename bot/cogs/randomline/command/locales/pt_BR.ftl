@@ -4,6 +4,7 @@ RandomLine-no_channel_message = Não encontrei nenhuma mensagem do canal @{$chan
 RandomLine-no_user_on_channel = Não encontrei nenhuma mensagem de @{$name} em @{$channel_name}.
 RandomLine-search_timeout = 30s se passaram e não consegui encontrar uma mensagem do usuário @{$name} no canal @{$channel_name}
 RandomLine-random_line = {$content} (enviado há {$time} por @{$nick} )
+RandomLine-error = Para usar: `{$prefix}rl channel:<nome do canal>` ou `{$prefix}rl user:<nome do usuário>` ou `{$prefix}rl` ou `{$prefix}rl channel:<nome do canal> user:<nome do usuário>`
 
 RandomLine-deco_helper = Pega uma mensagem aleatória do canal ou de um usuário em um canal.
 RandomLine-deco_usage = Para usar: `{$prefix}rl channel:<nome do canal>` ou `{$prefix}rl user:<nome do usuário>` ou `{$prefix}rl` ou `{$prefix}rl channel:<nome do canal> user:<nome do usuário>`

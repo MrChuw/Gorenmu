@@ -15,6 +15,7 @@ Reload-commands_reloaded = Os comandos foram recarregados com sucesso.
 Reload-command_not_found = Comando com nome { $command } não encontrado.
 Reload-command_reloaded = Comando { $command } recarregado com sucesso.
 Reload-command_reloaded_error = O comando { $attr } teve um erro ao recarregar: { $exception }
+Reload-command_error = O comando { $attr } teve um erro ao recarregar.
 Reload-module_reloaded = { $attr } foram recarregadas com sucesso.
 Reload-module_reloaded_error = { $attr } tiveram um erro ao recarregar: { $exception }
 Reload-deco_helper = Recarregar os comandos usando all ou nome do comando.

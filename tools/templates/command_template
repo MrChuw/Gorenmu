@@ -10,7 +10,9 @@ if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 
-class {command_title}Cmd(commands.CustomComponent):
+class {command_title}Cmd(commands.CustomComponent[Translations]):
+    translations: Translations
+
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
         self.translations: Translations = Translations(bot, parent=self)
@@ -19,19 +21,20 @@ class {command_title}Cmd(commands.CustomComponent):
     cooldown_per = 10
     cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None:
-        ...
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:  # ty:ignore[invalid-method-override]
+        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
         return True
 
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
 
     @commands.command(name='{command_name}', aliases=[])
     async def {command_name}(self, ctx: Context, *, args, ) -> Response:
-        return self.translations.Exceptions.echo(ctx, args)
+        translations = self.translations.{command_title}
+        return translations.parent.Exceptions.echo(ctx, args)
 
 
 

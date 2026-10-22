@@ -12,34 +12,37 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: ShortenCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: ShortenCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Shorten: Shorten = Shorten(self)
 
-    class Shorten(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Shorten"
 
-        def api_erro(self) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+class Shorten(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Shorten"
+        super().__init__(parent, __file__)
 
-        def urls(self, urls: str) -> Response:
-            text = self.get_text(self._cname, urls=urls)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+    def no_urls(self) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=self.ctx_get(), success=False, response=text)
 
-        def url(self, url: str) -> Response:
-            text = self.get_text(self._cname, url=url)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+    def api_erro(self) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=self.ctx_get(), success=False, response=text)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def urls(self, urls: str) -> Response:
+        text = self.get_text(self._cname, urls=urls)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def url(self, url: str) -> Response:
+        text = self.get_text(self._cname, url=url)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-    Shorten: Shorten
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
+
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
+

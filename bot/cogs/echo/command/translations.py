@@ -12,38 +12,36 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: EchoCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: EchoCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Echo: Echo = Echo(self)
 
-    class Echo(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Echo"
 
-        def echo(self, args) -> Response:
-            text = self.get_text(self._cname, args=args)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+class Echo(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Echo"
+        super().__init__(parent, __file__)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def echo(self, args) -> Response:
+        text = self.get_text(self._cname, args=args)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        def deco_admonitions(self, *args, **kwargs) -> Admonitions:
-            return Admonitions(
-                [
-                    {
-                        "admonition_type": "warning",
-                        "position": "top",
-                        "title": self.get_text("adm_title"),
-                        "message": self.get_text("adm_msg"),
-                    }
-                ]
-            )
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-    Echo: Echo
+    def deco_admonitions(self, *args, **kwargs) -> Admonitions:
+        return Admonitions(
+            [
+                {
+                    "admonition_type": "warning",
+                    "position": "top",
+                    "title": self.get_text("adm_title"),
+                    "message": self.get_text("adm_msg"),
+                }
+            ]
+        )

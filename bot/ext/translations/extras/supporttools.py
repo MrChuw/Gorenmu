@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import inspect
+import types
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from bot.ext.translations.extras import Humanize as ExtrasHumanize
 
-from . import ClassBase, TBase
+from . import TBase
 
 if TYPE_CHECKING:
     from bot.ext import TranslationBase
@@ -13,9 +15,6 @@ if TYPE_CHECKING:
 
 @lru_cache(maxsize=8)
 def _get_humanize_data(instance: TBase, lang: str | None = None) -> ExtrasHumanize:
-    context = instance.ctx_get()
-    lang = lang or context.user.language or "en"
-
     units_keys = [
         "years",
         "months",
@@ -38,130 +37,147 @@ def _get_humanize_data(instance: TBase, lang: str | None = None) -> ExtrasHumani
     return ExtrasHumanize(patterns, "en")
 
 
-class OtherTools(ClassBase):
-    class SupportTools(ClassBase, TBase):
-        def __init__(self, parent: TranslationBase | None = None, file=None):
-            super().__init__(parent, file)
-            self.populate_subclasses(parent)
+class SupportTools(TBase):
+    def __init__(self, parent: TranslationBase, file=None):
+        super().__init__(parent, file, is_base=True)
+        self.LanguageContext = self._LanguageContext(parent)
+        self.TimeTools = self._TimeTools(parent)
+        self.Emotes = self._Emotes(parent)
 
-        class LanguageContext(ClassBase, TBase):
-            def __init__(self, parent: TranslationBase | None = None):
-                super().__init__(parent)
-                self.prefix = "LanguageContext"
-                self.populate_subclasses(parent)
+    @staticmethod
+    def fake_stacktrace(message: str) -> Exception:
+        exc = Exception(message)
+        current_frame = inspect.currentframe()
+        parent_frame = current_frame.f_back if current_frame else None
+        if parent_frame is not None:
+            tb = types.TracebackType(
+                tb_next=None,
+                tb_frame=parent_frame,
+                tb_lasti=0,
+                tb_lineno=1,
+            )
+            exc.__traceback__ = tb
+        return exc
 
-            def mention(self, author_name: str, target_name: str) -> str:
-                if target_name.lower() == author_name.lower():
-                    return self.get_text(self._cname)
-                return f"@{target_name}"
+    class _LanguageContext(TBase):
+        def __init__(self, parent: TranslationBase):
+            self.prefix = "LanguageContext"
+            super().__init__(parent)
+            self.Verbs = self._Verbs(parent)
+            self.parent.register_locale(self.prefix, is_base=True)
 
-            class Verbs(TBase):
-                def __init__(self, parent: TranslationBase | None = None):
-                    super().__init__(parent)
-                    self.prefix = "LanguageContext_Verbs"
+        def mention(self, author_name: str, target_name: str) -> str:
+            if target_name.lower() == author_name.lower():
+                return self.get_text(self._cname)
+            return f"@{target_name}"
 
-                def cookies_second_person(self) -> str:
-                    return self.get_text(self._cname)
+        def multi_mention(self, target_name: list[str]) -> str:
+            div = self.get_text(self._cname)
+            string_ = ""
+            string_ += f"@{target_name.pop(0)} "
+            for name in target_name:
+                string_ += f"{div} @{name} "
+            return string_
 
-                def cookies_third_person(self) -> str:
-                    return self.get_text(self._cname)
+        class _Verbs(TBase):
+            def __init__(self, parent: TranslationBase):
+                self.prefix = "LanguageContext_Verbs"
+                super().__init__(parent, is_base=True)
+                self.parent.register_locale(self.prefix, is_base=True)
 
-                def positive(self, lang: str | None = None, include_en=True) -> list[str]:
-                    return self.get_list_by_lang(
-                        lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
-                    )
+            def cookies_second_person(self) -> str:
+                return self.get_text(self._cname)
 
-                def negative(self, lang: str | None = None, include_en=True) -> list[str]:
-                    return self.get_list_by_lang(
-                        lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
-                    )
+            def cookies_third_person(self) -> str:
+                return self.get_text(self._cname)
 
-                def nothing(self, lang: str | None = None, include_en=True) -> list[str]:
-                    return self.get_list_by_lang(
-                        lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
-                    )
+            def positive(self, lang: str | None = None, include_en=True) -> list[str]:
+                return self.get_list_by_lang(
+                    lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
+                )
 
-                def separators(self, lang: str | None = None, include_en=True) -> list[str]:
-                    return self.get_list_by_lang(
-                        lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
-                    )
+            def negative(self, lang: str | None = None, include_en=True) -> list[str]:
+                return self.get_list_by_lang(
+                    lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
+                )
 
-                def all(self, lang: str | None = None, include_en=True) -> list[str]:
-                    return self.get_list_by_lang(
-                        lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
-                    )
+            def nothing(self, lang: str | None = None, include_en=True) -> list[str]:
+                return self.get_list_by_lang(
+                    lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
+                )
 
-            Verbs: Verbs
+            def separators(self, lang: str | None = None, include_en=True) -> list[str]:
+                return self.get_list_by_lang(
+                    lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
+                )
 
-        LanguageContext: LanguageContext
+            def all(self, lang: str | None = None, include_en=True) -> list[str]:
+                return self.get_list_by_lang(
+                    lang or self.ctx_get().user.get_lang() or "en", self._cname, include_en=include_en
+                )
 
-        class TimeTools(TBase):
-            def __init__(self, parent: TranslationBase | None = None):
-                super().__init__(parent)
-                self.prefix = "TimeTools"
+    class _TimeTools(TBase):
+        def __init__(self, parent: TranslationBase):
+            self.prefix = "TimeTools"
+            super().__init__(parent, is_base=True)
+            self.parent.register_locale(self.prefix, is_base=True)
 
-            def strftime(self) -> str:
-                return self.get_text("strftime")
+        def strftime(self) -> str:
+            return self.get_text("strftime")
 
-            strftime: str
+        def Humanize(self, lang: str | None = None) -> ExtrasHumanize:  # noqa: N802
+            context = self.ctx_get()
+            lang = lang or context.user.language or "en"
+            return _get_humanize_data(self, lang)
 
-            def Humanize(self, lang: str = None) -> ExtrasHumanize:  # NOQA
-                return _get_humanize_data(self, lang)
+    class _Emotes(TBase):
+        def __init__(self, parent: TranslationBase):
+            self.prefix = "Emotes"
+            super().__init__(parent, is_base=True)
+            self.parent.register_locale(self.prefix, is_base=True)
 
-            Humanize: ExtrasHumanize
+        def happy(self, lang: str | None = None) -> list[str]:
+            return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-        TimeTools: TimeTools
+        def pog(self, lang: str | None = None) -> list[str]:
+            return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-        class Emotes(TBase):
-            def __init__(self, parent: TranslationBase | None = None):
-                super().__init__(parent)
-                self.prefix = "Emotes"
+        def sad(self, lang: str | None = None) -> list[str]:
+            return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def happy(self, lang: str | None = None) -> list[str]:
-                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
+        def love(self, lang: str | None = None) -> list[str]:
+            return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def pog(self, lang: str | None = None) -> list[str]:
-                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
+        def hug(self, lang: str | None = None) -> list[str]:
+            return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def sad(self, lang: str | None = None) -> list[str]:
-                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
+        def pat(self, lang: str | None = None) -> list[str]:
+            return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def love(self, lang: str | None = None) -> list[str]:
-                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
+        def hit(self, lang: str | None = None) -> list[str]:
+            return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def hug(self, lang: str | None = None) -> list[str]:
-                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
+        def okay(self, lang: str | None = None) -> list[str]:
+            return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def pat(self, lang: str | None = None) -> list[str]:
-                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
+        def bed(self, lang: str | None = None) -> list[str]:
+            return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def hit(self, lang: str | None = None) -> list[str]:
-                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
 
-            def okay(self, lang: str | None = None) -> list[str]:
-                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
+class GenericWait(TBase):
+    def __init__(self, parent: TranslationBase, file=None):
+        self.prefix = "GenericWait"
+        super().__init__(parent, file)
+        self.parent.register_locale(self.prefix, is_base=True)
 
-            def bed(self, lang: str | None = None) -> list[str]:
-                return self.get_list_by_lang(lang or self.ctx_get().user.get_lang() or "en", self._cname)
+    def already_in_action(self, action: str, user1: str, user2: str) -> str:
+        return self.get_text(self._cname, action=action, user1=user1, user2=user2)
 
-        Emotes: Emotes
+    def accept(self, lang: str | None = None) -> list[str]:
+        target_lang = lang or self.ctx_get().user.get_lang() or "en"
+        return self.get_list_by_lang(target_lang, self._cname)
 
-    SupportTools: SupportTools
+    def reject(self, lang: str | None = None) -> list[str]:
+        target_lang = lang or self.ctx_get().user.get_lang() or "en"
+        return self.get_list_by_lang(target_lang, self._cname)
 
-    class GenericWait(TBase):
-        def __init__(self, parent: TranslationBase | None = None, file=None):
-            super().__init__(parent, file)
-            self.prefix = "GenericWait"
-
-        def already_in_action(self, action: str, user1: str, user2: str) -> str:
-            return self.get_text(self._cname, action=action, user1=user1, user2=user2)
-
-        def accept(self, lang: str | None = None) -> list[str]:
-            target_lang = lang or self.ctx_get().user.get_lang() or "en"
-            return self.get_list_by_lang(target_lang, self._cname)
-
-        def reject(self, lang: str | None = None) -> list[str]:
-            target_lang = lang or self.ctx_get().user.get_lang() or "en"
-            return self.get_list_by_lang(target_lang, self._cname)
-
-    GenericWait: GenericWait

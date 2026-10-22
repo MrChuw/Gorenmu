@@ -12,34 +12,29 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: LeaveCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: LeaveCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Leave: Leave = Leave(self)
 
-    class Leave(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Leave"
 
-        def not_on_channel(self) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+class Leave(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Leave"
+        super().__init__(parent, __file__)
 
-        def channel_removed(self, args: str) -> Response:
-            text = self.get_text(self._cname, args=args)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+    def not_on_channel(self) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=self.ctx_get(), success=False, response=text)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def channel_removed(self, args: str) -> Response:
+        text = self.get_text(self._cname, args=args)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        # region Hide.
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        # endregion
-
-    Leave: Leave

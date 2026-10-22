@@ -12,34 +12,29 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: WikiHowCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: WikiHowCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot, __file__, upper=parent)
+        self.Wikihow: Wikihow = Wikihow(self)
 
-    class Wikihow(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Wikihow"
 
-        def url(self, lang: str) -> str:
-            if lang:
-                return self.get_text_by_lang(lang, self._cname)
-            return self.get_text(self._cname)
+class Wikihow(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Wikihow"
+        super().__init__(parent, __file__)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def url(self, lang: str) -> str:
+        if lang:
+            return self.get_text_by_lang(lang, self._cname)
+        return self.get_text(self._cname)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        # region Hide.
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_commands(self, *args, **kwargs) -> CommandExemples:
-            return CommandExemples([{"response": self.get_text("cmd_ex1_res")}])
+    def deco_commands(self, *args, **kwargs) -> CommandExemples:
+        return CommandExemples([{"response": self.get_text("cmd_ex1_res")}])
 
-        # endregion
-
-    Wikihow: Wikihow

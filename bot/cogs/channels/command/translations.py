@@ -12,30 +12,29 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: ChannelsCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: ChannelsCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Channels: Channels = Channels(self)
 
-    class Channels(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Channels"
 
-        def quantity(self, count: int | str) -> Response:
-            text = self.get_text(self._cname, count=count)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+class Channels(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Channels"
+        super().__init__(parent, __file__)
 
-        def names(self, list_str: str) -> Response:
-            text = self.get_text(self._cname, list=list_str)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+    def quantity(self, count: int | str) -> Response:
+        text = self.get_text(self._cname, count=count)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def names(self, list_str: str) -> Response:
+        text = self.get_text(self._cname, list=list_str)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-    Channels: Channels
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
+

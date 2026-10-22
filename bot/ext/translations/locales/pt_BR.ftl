@@ -2,6 +2,7 @@
 Exceptions-user_not_found_id = Não consegui encontrar nenhum usuário com id { $id }.
 Exceptions-user_not_found_name = Não consegui encontrar nenhum usuário chamado @{ $name }.
 Exceptions-time_expired = O tempo { $time } já expirou.
+Exceptions-time_limit_s = Tempo limite excedido (máximo { $time }s).
 Exceptions-no_content_provided = Você precisa fornecer conteúdo para este comando.
 Exceptions-too_much_characters = A mensagem deve ter no máximo 450 caracteres.
 Exceptions-message_too_long = Esta mensagem é muito longa.
@@ -24,6 +25,9 @@ Exceptions-command_not_pipeble = comando { $cmd } não pôde ser utilizado com p
 Exceptions-pipe_response_error = ocorreu um erro ao executar o comando anterior: { $error }
 Exceptions-pipe_response = aqui está a resposta gerada pelo comando anterior: { $response }
 Exceptions-lottery_seed = algo horrível aconteceu, contate "@{ $contact }" aqui na twitch utilizando whispers.
+Exceptions-user_opt_out = o usuario { $name } optou por não ser marcado em comandos.
+Exceptions-translation_error = Falha ao tentar pegar as traducoes para "{ $translation_name }" para lingua { $language } e ingles, porfavor contatar { $dev_name }.
+
 
 ## LanguageContext
 LanguageContext-mention = você

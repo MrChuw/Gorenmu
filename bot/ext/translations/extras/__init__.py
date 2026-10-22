@@ -1,7 +1,7 @@
 from .humanize import Humanize
 
-from .tbase import ClassBase, TBase, LangDict  # isort: skip
-from .supporttools import OtherTools  # isort: skip
+from .tbase import TBase, LangDict  # isort: skip
+from .supporttools import SupportTools, GenericWait  # isort: skip
 
 
-__all__ = [Humanize, ClassBase, TBase, OtherTools, LangDict]
+__all__ = [Humanize, TBase, SupportTools, GenericWait, LangDict]

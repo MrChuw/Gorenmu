@@ -21,38 +21,37 @@ def _get_cached_choice_pattern(parent_instance: TranslationBase, lang: str | Non
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: ChoiceCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: ChoiceCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Choice: Choice = Choice(self)
 
-    class Choice(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Choice"
 
-        def response(self, choice: str) -> Response:
-            text = self.get_text(self._cname, choice=choice)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+class Choice(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Choice"
+        super().__init__(parent, __file__)
 
-        def pattern(self, lang: str | None = None) -> re.Pattern[str]:
-            return _get_cached_choice_pattern(self.parent, lang)
+    def response(self, choice: str) -> Response:
+        text = self.get_text(self._cname, choice=choice)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def pattern(self, lang: str | None = None) -> re.Pattern[str]:
+        return _get_cached_choice_pattern(self.parent, lang)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        def deco_commands(self, *args, **kwargs) -> CommandExemples:
-            return CommandExemples(
-                [
-                    {"args": self.get_text("cmd_ex1_args"), "response": self.get_text("cmd_ex1_res")},
-                    {"args": self.get_text("cmd_ex2_args"), "response": self.get_text("cmd_ex2_res")},
-                    {"args": self.get_text("cmd_ex3_args"), "response": self.get_text("cmd_ex3_res")},
-                ]
-            )
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-    Choice: Choice
+    def deco_commands(self, *args, **kwargs) -> CommandExemples:
+        return CommandExemples(
+            [
+                {"args": self.get_text("cmd_ex1_args"), "response": self.get_text("cmd_ex1_res")},
+                {"args": self.get_text("cmd_ex2_args"), "response": self.get_text("cmd_ex2_res")},
+                {"args": self.get_text("cmd_ex3_args"), "response": self.get_text("cmd_ex3_res")},
+            ]
+        )
+

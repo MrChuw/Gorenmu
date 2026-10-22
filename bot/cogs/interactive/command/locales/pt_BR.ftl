@@ -44,6 +44,9 @@ Kiss-deco_description = De um abraço em alguém.
 Ship-bot_nick = 😳
 Ship-yourself = uma pessoa não pode ser shippada com ela mesma...
 Ship-options = @{$user1} & @{$user2}: {$ship} com {$percentage}% de amor {$emoji}
+Ship-forgot_option1 = Você esqueceu de enviar o primeiro nome para o ship.
+Ship-forgot_option2 = Você esqueceu de enviar o segundo nome para o ship.
+
 
 Ship-deco_helper = De um shippe alguém com outra pessoa.
 Ship-deco_usage = Para usar: {$prefix}Ship (username1) (username2)

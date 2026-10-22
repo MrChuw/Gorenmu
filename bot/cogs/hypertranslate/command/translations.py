@@ -12,51 +12,46 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: HyperTranslateCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: HyperTranslateCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.HyperTranslate: HyperTranslate = HyperTranslate(self)
 
-    class HyperTranslate(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "HyperTranslate"
 
-        def base_lang(self) -> str:
-            return self.get_text(self._cname)
+class HyperTranslate(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "HyperTranslate"
+        super().__init__(parent, __file__)
 
-        def starter_string(self) -> str:
-            return self.get_text(self._cname)
+    def base_lang(self) -> str:
+        return self.get_text(self._cname)
 
-        def unexpected_error(self) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+    def starter_string(self) -> str:
+        return self.get_text(self._cname)
 
-        def translation(self, text) -> Response:
-            res_text = self.get_text(self._cname, text=text)
-            return Response(ctx=self.ctx_get(), success=True, response_string=res_text)
+    def unexpected_error(self) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=self.ctx_get(), success=False, response=text)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def translation(self, text) -> Response:
+        res_text = self.get_text(self._cname, text=text)
+        return Response(ctx=self.ctx_get(), success=True, response=res_text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        # region Hide.
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_commands(self, *args, **kwargs) -> CommandExemples:
-            return CommandExemples(
-                [
-                    {
-                        "prefix": self.get_text("cmd_ex1_prefix"),
-                        "args": self.get_text("cmd_ex1_args"),
-                        "response": self.get_text("cmd_ex1_res"),
-                    }
-                ]
-            )
+    def deco_commands(self, *args, **kwargs) -> CommandExemples:
+        return CommandExemples(
+            [
+                {
+                    "prefix": self.get_text("cmd_ex1_prefix"),
+                    "args": self.get_text("cmd_ex1_args"),
+                    "response": self.get_text("cmd_ex1_res"),
+                }
+            ]
+        )
 
-        # endregion
-
-    HyperTranslate: HyperTranslate

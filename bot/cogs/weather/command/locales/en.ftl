@@ -17,8 +17,7 @@ Weather-weather_wind_direction =
 
 Weather-weather_display = { $city }. { $desc } { $emoji }, temperature of { $temp } { $u_temp }, maximum of { $max } { $u_temp } and apparent temperature of { $app } { $u_temp }, { $press } { $u_press }, { $hum }{ $u_hum }, { $wind_spd }{ $u_wind_spd } { $wind_dir }{ $precip }
 
-Weather-weather_strings =
-    .precip = , and precipitation of { $val } { $u_precip }
+Weather-weather_string = , and precipitation of { $val } { $u_precip }
 
 Weather-deco_helper = Enter the command and a city to get the weather forecast.
 Weather-deco_usage = To use: { $prefix }weather (location)

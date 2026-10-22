@@ -5,12 +5,16 @@ import re
 from collections.abc import Callable, Coroutine, Iterable
 from typing import TYPE_CHECKING, Any, ParamSpec, TypeVar
 
-from twitchio.ext.commands.core import CommandErrorPayload
+from twitchio import Chatter
+from twitchio.ext.commands.core import CommandErrorPayload, RewardCommand, RewardStatus
 from twitchio.ext.commands.exceptions import (
     CommandError,
     CommandHookError,
     CommandNotFound,
 )
+from twitchio.models.eventsub_ import ChannelPointsRedemptionAdd, ChannelPointsRedemptionUpdate
+from twitchio.types_ import ChatMessageBadgeData, ChatMessageCheerData, ChatMessageReplyData
+from twitchio.types_.eventsub import ChannelChatMessageEvent, ChatMessageData
 
 from bot.ext import ChatMessage
 from bot.models import Alias
@@ -40,10 +44,10 @@ class ContextHandler:
         self.bot = bot
 
     @staticmethod
-    async def extract_response(response: Response):
-        handle = response.handle if response else None
-        response_str = response.response_string or None
-        response_list = response.response_list or None
+    async def extract_response(response: Response) -> tuple[str | None, str, list[str] | None, bool]:
+        handle = response.handle
+        response_str: str = response.response or response.response_string or ""
+        response_list: list[str] | None = response.response_list or None
         return handle, response_str, response_list, response.success
 
     @staticmethod
@@ -74,14 +78,14 @@ class ContextHandler:
         return None
 
     @staticmethod
-    async def handle_banwords(ctx: Context, response_str: str):
-        banned_words = ctx.bot.channels[ctx.channel.name].banwords
-        user_display_name = ctx.user.nickname or ctx.author.name
+    async def handle_banwords(ctx: Context, response_str: str) -> tuple[str, str]:
+        banned_words = ctx.bot.channels.banwords(ctx)
+        user_display_name: str = str(ctx.user.nickname or ctx.author.name)
         for word in banned_words:
             pattern = re.compile(re.escape(word), re.IGNORECASE)
             response_str = pattern.sub("*" * len(word), response_str)
             if word.lower() in (ctx.user.nickname or "").lower():
-                user_display_name = ctx.author.name
+                user_display_name: str = str(ctx.author.name)
         return response_str, user_display_name
 
     async def handle_response_list(self, ctx: Context, response_list: list[str], handle: str | None):
@@ -103,7 +107,7 @@ class ContextHandler:
 
     async def response(self, response: Response) -> None | bool:
         ctx: Context = response.ctx
-        if ctx.bot.channels[ctx.channel.name].online is False:
+        if not ctx.bot.channels.is_online(ctx):
             return False
         handle, response_str, response_list, _ = await self.extract_response(response)
         response_str, user_handler = await self.handle_banwords(ctx, response_str)
@@ -117,7 +121,7 @@ class ContextHandler:
         return None
 
     async def simple_response(self, ctx: Context, response: str, handle: str | None = None) -> None | bool:
-        if ctx.bot.channels[ctx.channel.name].online is False:
+        if not ctx.bot.channels.is_online(ctx):
             return False
         response_str = response
         response_str, user_handler = await self.handle_banwords(ctx, response_str)
@@ -155,8 +159,8 @@ class ContextHandler:
                     )
                 break
 
-            response: Response = await ctx.invoke()
-            if not response and response_str:
+            response: Response | bool = await ctx.invoke()
+            if isinstance(response, bool) or not response:
                 return await self.simple_response(ctx, response_str)
             if not response.success:
                 await self.simple_response(
@@ -177,22 +181,24 @@ class ContextHandler:
         return None
 
     async def alias_handler(self, external_ctx: Context, message: ChatMessage):
-        args: list[str] = message.content.replace(f"{external_ctx.prefix}{external_ctx.prefix}", "").split()
+        args: list[str] = message.text.replace(f"{external_ctx.prefix}{external_ctx.prefix}", "").split()
         name: str = args.pop(0)
-        alias = await Alias.get_or_none(user=external_ctx.user, name=name, deleted=False)
-        if not alias.command:  # NOQA
-            alias = await alias.parent
+        alias = await Alias.get_or_none(user=external_ctx.user, name=name, deleted=False).prefetch_related("parent")
         if not alias:
             return None
-        message.content = f"{external_ctx.prefix}{alias.invocation} {' '.join(alias.arguments)}"
+        if not alias.command:
+            alias = alias.parent
+        if not alias or not alias.command:
+            return None
+        message.text = f"{external_ctx.prefix}{alias.invocation} {' '.join(alias.arguments)}"
         # Add `m_user` for when the commando is invoked on a response.
-        if "{channel}" in message.content:
-            message.content = message.content.replace("{channel}", external_ctx.channel.name)
-        if "{user}" in message.content:
-            message.content = message.content.replace("{user}", external_ctx.user.name)
+        if "{channel}" in message.text:
+            message.text = message.text.replace("{channel}", external_ctx.channel.name or "")
+        if "{user}" in message.text:
+            message.text = message.text.replace("{user}", external_ctx.user.name)
         if args:
-            message.content = format_content(message.content, args)
-        if " | " in message.content:
+            message.text = format_content(message.text, args)
+        if " | " in message.text:
             return await self.pipe_handler(external_ctx, message)
 
         ctx = await self.bot.get_context(message)
@@ -211,11 +217,23 @@ class ContextHandler:
         if not ctx.command:
             raise CommandNotFound(f'The command "{ctx.invoked_with}" was not found.')
 
+        if isinstance(ctx._payload, (ChannelPointsRedemptionAdd, ChannelPointsRedemptionUpdate)):  # NOQA
+            # TODO: discover what to do with this.
+            assert isinstance(ctx._command, RewardCommand)  # NOQA
+
+            status: RewardStatus = RewardStatus(ctx._payload.status)  # NOQA
+            invoke_when: RewardStatus = ctx._command._invoke_when  # NOQA
+
+            if invoke_when is RewardStatus.all:
+                pass
+            elif status is not invoke_when:
+                return False
+
         self.bot.dispatch("command_invoked", self)
 
-        command_result: None | Response = None
+        command_result: Response | bool = False
         try:
-            command_result = await ctx.command.invoke(ctx)
+            command_result: Response = await ctx.command.invoke(ctx)  # NOQA
         except CommandError as e:
             ctx._failed = True
             await ctx.command.dispatch_error(ctx, e)
@@ -234,6 +252,106 @@ class ContextHandler:
             self.bot.dispatch("command_completed", self)
 
         return command_result
+
+    async def create_mock_context(self, ctx: Context, custom_text: str, **overrides: Any) -> Context:
+        """
+        Create a mock Context based on an existing context with customized message data.
+
+        Args:
+            ctx: The original command context to replicate.
+            custom_text: The new string content for the mock message.
+            **overrides: Key-value pairs to override attributes in the ChannelChatMessageEvent.
+        """
+        # 1. Create base message and badges from the original context
+        original_msg: ChatMessage = ctx.message  # NOQA # ty:ignore[invalid-assignment]
+        if not original_msg:
+            return ctx
+        chatter: Chatter = ctx.author  # NOQA # ty:ignore[invalid-assignment]
+
+        fragments = []  # Can be expanded if you need fragment parsing
+        costom_message = ChatMessageData(text=f"{custom_text}", fragments=fragments)
+
+        # Safely extract badges (handling empty lists gracefully)
+        badges = []
+        if original_msg.badges:
+            b = original_msg.badges[0]
+            badges.append(ChatMessageBadgeData(set_id=b.set_id, id=b.id, info=b.info))
+
+        source_badges = []
+        if original_msg.source_badges:
+            sb = original_msg.source_badges[0]
+            source_badges.append(ChatMessageBadgeData(set_id=sb.set_id, id=sb.id, info=sb.info))
+
+        # 2. Build the Reply Data
+        reply_data = {
+            "parent_message_id": "",
+            "parent_message_body": "",
+            "parent_user_id": "",
+            "parent_user_name": "",
+            "parent_user_login": "",
+            "thread_message_id": "",
+            "thread_user_id": "",
+            "thread_user_name": "",
+            "thread_user_login": "",
+        }
+
+        if original_msg.reply:
+            r = original_msg.reply
+            reply_data |= {
+                "parent_message_id": (r.parent_message_id or ""),
+                "parent_message_body": (r.parent_message_body or ""),
+                "parent_user_id": (r.parent_user.id if r.parent_user else ""),
+                "parent_user_name": (r.parent_user.display_name if r.parent_user else "") or "",
+                "parent_user_login": (r.parent_user.name if r.parent_user else "") or "",
+                "thread_message_id": (r.thread_message_id or ""),
+                "thread_user_id": (r.thread_user.id if r.thread_user else ""),
+                "thread_user_name": (r.thread_user.display_name if r.thread_user else "") or "",
+                "thread_user_login": (r.thread_user.name if r.thread_user else "") or "",
+            }
+
+        event_payload = {
+            "chatter_user_id": ctx.author.id,
+            "chatter_user_login": ctx.author.name or "",
+            "chatter_user_name": ctx.author.name or "",
+            "message_id": str(original_msg.id) or "",
+            "message": costom_message,
+            "color": chatter.colour.hex if chatter.colour else "",  # NOQA
+            "message_type": original_msg.type,
+            "badges": badges,
+            "reply": ChatMessageReplyData(  # ty:ignore[missing-typed-dict-key]
+                **reply_data
+            ),
+            "cheer": ChatMessageCheerData(
+                bits=original_msg.cheer.bits if original_msg.cheer else 0
+            ),
+            "channel_points_custom_reward_id": "",
+            "channel_points_animation_id": original_msg.channel_points_animation_id,
+            "source_broadcaster_user_id": (
+                original_msg.source_broadcaster.id
+                if original_msg.source_broadcaster
+                else ""
+            ),
+            "source_broadcaster_user_login": (
+                original_msg.source_broadcaster.name
+                if original_msg.source_broadcaster
+                else ""
+            ),
+            "source_broadcaster_user_name": (
+                original_msg.source_broadcaster.display_name
+                if original_msg.source_broadcaster
+                else ""
+            ),
+            "source_message_id": original_msg.source_id,
+            "source_badges": source_badges,
+            "broadcaster_user_id": original_msg.broadcaster.id,
+            "broadcaster_user_login": original_msg.broadcaster.name or "",
+            "broadcaster_user_name": original_msg.broadcaster.display_name or "",
+        } | overrides
+        # 4. Instantiate final objects
+        channel_chat_message = ChannelChatMessageEvent(**event_payload)  # ty:ignore[missing-typed-dict-key]
+        mock_message = ChatMessage(payload=channel_chat_message, http=ctx.author._http)  # NOQA
+
+        return await ctx.bot.get_context(mock_message)
 
     async def setup(self): ...
 

@@ -14,37 +14,35 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: BotInfoCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: BotInfoCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.BotInfo: BotInfo = BotInfo(self)
 
-    class BotInfo(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "BotInfo"
 
-        def info(self, channels: int | str, commands: int | str, name: str, url: yarl.URL) -> Response:
-            text = self.get_text(self._cname, channels=channels, commands=commands, name=name, url=url.human_repr())
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+class BotInfo(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "BotInfo"
+        super().__init__(parent, __file__)
 
-        def site(self, site_url: yarl.URL) -> Response:
-            text = self.get_text(self._cname, site_url=str(site_url))
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+    def info(self, channels: int | str, commands: int | str, name: str, url: yarl.URL) -> Response:
+        text = self.get_text(self._cname, channels=channels, commands=commands, name=name, url=url.human_repr())
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def uptime(self, time: str) -> Response:
-            text = self.get_text(self._cname, time=time)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+    def site(self, site_url: yarl.URL) -> Response:
+        text = self.get_text(self._cname, site_url=str(site_url))
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def uptime(self, time: str) -> Response:
+        text = self.get_text(self._cname, time=time)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        def deco_commands(self, *args, **kwargs) -> CommandExemples:
-            return CommandExemples([{"response": self.get_text("cmd_ex1_res")}])
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-    BotInfo: BotInfo
+    def deco_commands(self, *args, **kwargs) -> CommandExemples:
+        return CommandExemples([{"response": self.get_text("cmd_ex1_res")}])

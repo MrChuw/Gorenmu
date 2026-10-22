@@ -4,6 +4,7 @@ RandomLine-no_channel_message = Couldn't find any message from channel @{$channe
 RandomLine-no_user_on_channel = Couldn't find any message from @{$name} in @{$channel_name}.
 RandomLine-search_timeout = 30s has passed and I was unable to find a message from user @{$name} on channel @{$channel_name}
 RandomLine-random_line = {$content} (sent {$time} ago by @{$nick} )
+RandomLine-error = to use: `{$prefix}rl channel:(channel_name)` or `{$prefix}rl user:(user_name)` or `{$prefix}rl` or `{$prefix}rl channel:(channel_name) user:(user_name)`
 
 RandomLine-deco_helper = Fetches a random message from the channel or from a user in the channel.
 RandomLine-deco_usage = to use: `{$prefix}rl channel:(channel_name)` or `{$prefix}rl user:(user_name)` or `{$prefix}rl` or `{$prefix}rl channel:(channel_name) user:(user_name)`

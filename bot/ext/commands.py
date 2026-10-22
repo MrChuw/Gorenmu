@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Callable, Coroutine, Iterable, Sequence
 from functools import partial
-from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, Self, TypeVar
+from typing import TYPE_CHECKING, Any, Concatenate, Generic, ParamSpec, Self, TypeVar
 
 from twitchio import ChatMessage, User
 from twitchio.ext.commands import (
@@ -24,9 +24,13 @@ from twitchio.ext.routines import routine
 T = TypeVar("T")
 type Coro = Coroutine[Any, Any, None]
 type CoroC = Coroutine[Any, Any, bool]
+R_co = TypeVar("R_co", covariant=True)
+AnyCoro = Callable[..., Coroutine[Any, Any, R_co]]
+T_Trans = TypeVar("T_Trans")
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Context, TranslationBase
+    from bot.ext import Context
+
 
     type PrefixT = str | Iterable[str] | Callable[[Gorenmu, ChatMessage], Coroutine[Any, Any, str | Iterable[str]]]
 
@@ -97,7 +101,8 @@ class Command(TwitchioCommand):
 
 
 class CustomComponent(Component):
-    translations: TranslationBase = None
+    #translations: T_Trans
+    bot: Gorenmu
 
     def __new__(cls, *args, **kwargs) -> Self:
         self: Self = super().__new__(cls, *args, **kwargs)
@@ -129,6 +134,24 @@ class CustomComponent(Component):
                 continue
             injected = partial(member, self)
             bot.manual_events[category_name][event_name][name] = injected
+
+    cooldown_rate = 3
+    cooldown_per = 10
+    cooldown_key = BucketType.user
+
+    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
+
+    async def component_before_invoke(self, ctx: Context) -> None:  # ty:ignore[invalid-method-override]
+        self.translations.ctx_set(ctx)
+
+    @Component.guard()
+    def guards_component(self, ctx: Context) -> bool:  # NOQA
+        return True
+
+    async def component_load(self) -> None: ...
+
+    async def component_teardown(self) -> None: ...
+
 
 
 def command(
@@ -185,6 +208,7 @@ def guard(
 
 class Group(TwitchioGroup):
     component: CustomComponent
+    pipeble: bool
 
     def command(
         self,
@@ -221,13 +245,22 @@ class Group(TwitchioGroup):
         view = ctx.view_skip
         return ctx.command.commands.get(view.get_word())
 
+    async def dispatch_error(self, context: Context, exception: CommandError) -> None:
+        await self._dispatch_error(context, exception)
+
+    @property
+    def rate(self):
+        return self._buckets[0]._cooldown._rate  # NOQA
+
+
 
 def group(
     name: str | None = None,
     aliases: list[str] | None = None,
     extras: dict[Any, Any] | None = None,
     **kwargs: Any,
-) -> Callable[[Command], Command]:
+) -> Callable[[AnyCoro[Any]], Group]:
+# ) -> Callable[[Command], Command]:
     def wrapper(
         func: (Callable[Concatenate[Component_T, Context, P], Coro] | Callable[Concatenate[Context, P], Coro]),
     ) -> Group:

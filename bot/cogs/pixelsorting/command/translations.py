@@ -7,93 +7,95 @@ from bot.ext import Admonitions, CommandExemples, Response, TBase, TranslationBa
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
-    from .pixelsorting import PixelSortingCmd
+    from .pixelsorting import PixelSortCmd
 
 
 class Translations(TranslationBase):
-    def __init__(self, bot: Gorenmu, parent: PixelSortingCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: PixelSortingCmd = parent
-        self.populate_subclasses(parent=self)
+    def __init__(self, bot: Gorenmu, parent: PixelSortCmd) -> None:
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.PixelSorting: PixelSorting = PixelSorting(self)
 
-    class PixelSorting(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "PixelSorting"
 
-        def no_url(self) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+class PixelSorting(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "PixelSorting"
+        super().__init__(parent, __file__)
 
-        def invalid_content_type(self) -> Response:
-            text = self.get_text(self._cname)
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+    def no_url(self) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=self.ctx_get(), success=False, response=text)
 
-        def took_too_long(self, time: str | int | float) -> Response:
-            text = self.get_text(self._cname, time=str(time))
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+    def invalid_content_type(self) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=self.ctx_get(), success=False, response=text)
 
-        def image(self, shortened: str) -> Response:
-            text = self.get_text(self._cname, shortened=shortened)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+    def took_too_long(self, time: str | int | float) -> Response:
+        text = self.get_text(self._cname, time=str(time))
+        return Response(ctx=self.ctx_get(), success=False, response=text)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def image(self, shortened: str) -> Response:
+        text = self.get_text(self._cname, shortened=shortened)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def upload_error(self) -> Response:
+        text = self.get_text(self._cname)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        # region Hide.
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        def deco_commands(self, *args, **kwargs) -> CommandExemples:
-            return CommandExemples(
-                [
-                    {
-                        "prefix": self.get_text("cmd_no_args_prefix"),
-                        "args": self.get_text("cmd_url_arg"),
-                        "response": self.get_text("cmd_res"),
-                    },
-                    {
-                        "prefix": self.get_text("cmd_args_prefix"),
-                        "args": self.get_text("cmd_full_args"),
-                        "response": self.get_text("cmd_res"),
-                    },
-                ]
-            )
+    # region Hide.
 
-        def deco_admonitions(self, *args, **kwargs) -> Admonitions:
-            return Admonitions(
-                [
-                    {
-                        "admonition_type": "warning",
-                        "position": "top",
-                        "title": self.get_text("adm_res_title"),
-                        "message": self.get_text("adm_res_msg"),
-                    },
-                    {
-                        "admonition_type": "info",
-                        "position": "top",
-                        "title": self.get_text("adm_modes_title"),
-                        "message": self.get_text("adm_modes_msg"),
-                    },
-                    {
-                        "admonition_type": "info",
-                        "position": "middle",
-                        "title": self.get_text("adm_mask_title"),
-                        "message": self.get_text("adm_mask_msg"),
-                    },
-                    {
-                        "admonition_type": "info",
-                        "position": "bottom",
-                        "title": self.get_text("adm_rand_title"),
-                        "message": self.get_text("adm_rand_msg"),
-                    },
-                ]
-            )
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        # endregion
+    def deco_commands(self, *args, **kwargs) -> CommandExemples:
+        return CommandExemples(
+            [
+                {
+                    "prefix": self.get_text("cmd_no_args_prefix"),
+                    "args": self.get_text("cmd_url_arg"),
+                    "response": self.get_text("cmd_res"),
+                },
+                {
+                    "prefix": self.get_text("cmd_args_prefix"),
+                    "args": self.get_text("cmd_full_args"),
+                    "response": self.get_text("cmd_res"),
+                },
+            ]
+        )
 
-    PixelSorting: PixelSorting
+    def deco_admonitions(self, *args, **kwargs) -> Admonitions:
+        return Admonitions(
+            [
+                {
+                    "admonition_type": "warning",
+                    "position": "top",
+                    "title": self.get_text("adm_res_title"),
+                    "message": self.get_text("adm_res_msg"),
+                },
+                {
+                    "admonition_type": "info",
+                    "position": "top",
+                    "title": self.get_text("adm_modes_title"),
+                    "message": self.get_text("adm_modes_msg"),
+                },
+                {
+                    "admonition_type": "info",
+                    "position": "middle",
+                    "title": self.get_text("adm_mask_title"),
+                    "message": self.get_text("adm_mask_msg"),
+                },
+                {
+                    "admonition_type": "info",
+                    "position": "bottom",
+                    "title": self.get_text("adm_rand_title"),
+                    "message": self.get_text("adm_rand_msg"),
+                },
+            ]
+        )
+
+    # endregion

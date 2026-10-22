@@ -14,7 +14,7 @@
 #     def __init__(self, bot: Gorenmu, parent: GamesCmd) -> None:
 #         super().__init__(bot)
 #         self.parent: GamesCmd = parent
-#         self.populate_subclasses(parent=self)
+#         # self.populate_subclasses(parent=self)
 #
 #     class Games(TBase):
 #         def __init__(self, parent: Translations):

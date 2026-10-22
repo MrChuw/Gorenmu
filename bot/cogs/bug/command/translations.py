@@ -12,26 +12,25 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: BugCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: BugCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Bug: Bug = Bug(self)
 
-    class Bug(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Bug"
 
-        def bug(self, bug_id: str | int) -> Response:
-            text = self.get_text(self._cname, bug_id=bug_id)
-            return Response(ctx=self.ctx_get(), success=False, response_string=text)
+class Bug(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Bug"
+        super().__init__(parent, __file__)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def bug(self, bug_id: str | int) -> Response:
+        text = self.get_text(self._cname, bug_id=bug_id)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-    Bug: Bug
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
+

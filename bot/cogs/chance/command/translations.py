@@ -12,29 +12,28 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: ChanceCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: ChanceCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Chance: Chance = Chance(self)
 
-    class Chance(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Chance"
 
-        def response(self, value: int | str) -> Response:
-            text = self.get_text(self._cname, value=value)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+class Chance(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Chance"
+        super().__init__(parent, __file__)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def response(self, value: int | str) -> Response:
+        text = self.get_text(self._cname, value=value)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        def deco_commands(self, *args, **kwargs) -> CommandExemples:
-            return CommandExemples([{"response": self.get_text("cmd_ex1_res")}])
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-    Chance: Chance
+    def deco_commands(self, *args, **kwargs) -> CommandExemples:
+        return CommandExemples([{"response": self.get_text("cmd_ex1_res")}])
+

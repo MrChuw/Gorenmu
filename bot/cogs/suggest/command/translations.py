@@ -12,30 +12,25 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: SuggestCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: SuggestCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Suggest: Suggest = Suggest(self)
 
-    class Suggest(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Suggest"
 
-        def suggest(self, id: int | str) -> Response:
-            text = self.get_text(self._cname, id=str(id))
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+class Suggest(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Suggest"
+        super().__init__(parent, __file__)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def suggest(self, id: int | str) -> Response:
+        text = self.get_text(self._cname, id=str(id))
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        # region Hide.
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        # endregion
-
-    Suggest: Suggest

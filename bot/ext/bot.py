@@ -5,15 +5,14 @@ import datetime
 from asyncio import Task
 from collections import defaultdict
 from collections.abc import Callable
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from twitchio.ext import commands
 from twitchio.user import User
 
 if TYPE_CHECKING:
-    from bot.ext import commands
     from bot.ext.commands import Command, Group
-    from bot.models import Channel as ChannelModel
+    from bot.handlers.channel_handler import ChannelManager
     from bot.utils import MarkovProcessor, SemaphoreManager
 
 
@@ -22,16 +21,26 @@ class TypesBot(commands.AutoBot):
         super().__init__(*args, **kwargs)
         self.MarkovProcessor: MarkovProcessor | None = None
         self.MarkovTask: Task[None] | None = None
-        self.dev_user: User | None = None
-        self.bot_user: User | None = None
+        self.dev_user: User = None  # type: ignore
+        self.bot_user: User = None  # type: ignore
         self.mock: bool = kwargs.get("mock", False)
         self.lottery_lock: asyncio.Lock = asyncio.Lock()
-        self.channels: dict[str, ChannelModel] = {}
+        self.channels: ChannelManager = None  # type: ignore
         self.bots_ids: list[int] = []
         self.boot: datetime.datetime = datetime.datetime.now(datetime.UTC)
-        self.manual_events: defaultdict[str, dict[str, dict[str, Callable]]] = defaultdict(lambda: defaultdict(dict))
+        self.manual_events: defaultdict[str, dict[str, dict[str, Callable[..., Any]]]] = defaultdict(create_middle_dict)
         self.disable_default: list[str] = []
-        self.SemaphoreManager: SemaphoreManager | None = None
+        self.SemaphoreManager: SemaphoreManager = None  # type: ignore
+        self.debugpy_listening = False
 
     def get_command(self, name: str, /) -> Command | Group | None:
-        return super().get_command(name)
+        return super().get_command(name)  # ty:ignore[invalid-return-type]
+
+
+
+def create_inner_dict() -> dict[str, Callable[..., Any]]:
+    return {}
+
+
+def create_middle_dict() -> defaultdict[str, dict[str, Callable[..., Any]]]:
+    return defaultdict(create_inner_dict)

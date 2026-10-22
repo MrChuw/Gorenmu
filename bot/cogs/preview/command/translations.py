@@ -14,34 +14,33 @@ if TYPE_CHECKING:
 
 class Translations(TranslationBase):
     def __init__(self, bot: Gorenmu, parent: PreviewCmd) -> None:
-        super().__init__(bot, __file__)
-        self.parent: PreviewCmd = parent
-        self.populate_subclasses(parent=self)
+        super().__init__(bot=bot, file=__file__, upper=parent)
+        self.Preview: Preview = Preview(self)
 
-    class Preview(TBase):
-        def __init__(self, parent: Translations):
-            super().__init__(parent)
-            self.prefix = "Preview"
 
-        def not_live(self, name: str) -> Response:
-            text = self.get_text(self._cname, name=name)
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+class Preview(TBase):
+    def __init__(self, parent: Translations):
+        self.prefix = "Preview"
+        super().__init__(parent, __file__)
 
-        def preview(self, preview_url: str, vod_url: yarl.URL) -> Response:
-            text = self.get_text(self._cname, preview=preview_url, vod=vod_url.human_repr())
-            return Response(ctx=self.ctx_get(), success=True, response_string=text)
+    def not_live(self, name: str) -> Response:
+        text = self.get_text(self._cname, name=name)
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_helper(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def preview(self, preview_url: str, vod_url: yarl.URL) -> Response:
+        text = self.get_text(self._cname, preview=preview_url, vod=vod_url.human_repr())
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
-            return self.get_text(self._cname, prefix=prefix)
+    def vod(self, vod_url: yarl.URL) -> Response:
+        text = self.get_text(self._cname, vod=vod_url.human_repr())
+        return Response(ctx=self.ctx_get(), success=True, response=text)
 
-        # region Hide.
+    def deco_helper(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-        def deco_description(self, *args, **kwargs) -> str:
-            return self.get_text(self._cname)
+    def deco_usage(self, prefix: str | None = None, *args, **kwargs) -> str:
+        return self.get_text(self._cname, prefix=prefix)
 
-        # endregion
+    def deco_description(self, *args, **kwargs) -> str:
+        return self.get_text(self._cname)
 
-    Preview: Preview
