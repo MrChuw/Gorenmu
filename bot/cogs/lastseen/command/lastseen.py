@@ -36,11 +36,11 @@ class LastSeenCmd(commands.CustomComponent):
     @commands.command(name="lastseen", aliases=["ls"])
     async def lastseen(self, ctx: Context, *, args="") -> Response:
         if not args:
-            args = ctx.channel.name
+            args = ctx.channel_name
         name = self.StringTools.str2name(args)
-        if name == ctx.bot.bot_user.display_name.lower():
+        if name == ctx.bot_name.lower():
             return self.translations.LastSeen.bot()
-        elif name == ctx.author.name.lower():
+        elif name == ctx.author_name.lower():
             return self.translations.LastSeen.author()
         elif not (user := await User.get_or_none(name=name)):
             return self.translations.Exceptions.user_not_found_name(name)
@@ -51,7 +51,7 @@ class LastSeenCmd(commands.CustomComponent):
             return self.translations.LastSeen.not_authorized(name + self.StringTools.inv_char(), time)
         else:
             time = self.translations.SupportTools.TimeTools.Humanize(ctx.user.language).updated_a_time(user.updated_at)
-            return self.translations.LastSeen.last_seen(name, user.channel, user.content, time)
+            return self.translations.LastSeen.last_seen(name, user.channel, user.content or "", time)
 
 
 async def setup(bot: Gorenmu) -> None:

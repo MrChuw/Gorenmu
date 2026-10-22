@@ -1,227 +1,312 @@
+from __future__ import annotations
+
 import asyncio
 import datetime
+import inspect
 from collections.abc import Callable
+from enum import IntEnum
+from typing import Any, Self
 
+from twitchio.backoff import Backoff
+from twitchio.ext.routines import LOGGER, CoroT, T  # noqa
 from twitchio.ext.routines import Routine as BaseRoutine
-from twitchio.ext.routines import compute_timedelta
+from twitchio.ext.routines import routine as base_routine
 
-__all__ = "Routine"
+__all__ = ("Day", "ScheduleBuilder", "Routine", "routine")
 
 
-# TODO: Remake everything based on new routines
+class Day(IntEnum):
+    MONDAY = 0
+    TUESDAY = 1
+    WEDNESDAY = 2
+    THURSDAY = 3
+    FRIDAY = 4
+    SATURDAY = 5
+    SUNDAY = 6
 
 
 class Routine(BaseRoutine):
     def __init__(
         self,
         *,
-        coro: Callable,
-        loop: asyncio.AbstractEventLoop | None = None,
-        iterations: int | None = None,
-        time: datetime.datetime | None = None,
-        delta: float | None = None,
-        wait_first: bool | None = False,
-        weekly_days: list[int] | None = None,
-        weekly_times: list[datetime.time] | None = None,
-    ):
-        self._coro = coro
-        self._loop = loop or asyncio.get_event_loop()
-        self._task: asyncio.Task = None  # type: ignore
+        coro: CoroT,
+        slots: list[tuple[Day, datetime.time]] | None = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(coro=coro, **kwargs)
+        self._slots: list[tuple[Day, datetime.time]] = slots or []
 
-        self._time = time
-        self._delta = delta
+    def __get__(self, instance: T, type_: type[T]) -> Routine:
+        if instance is None:
+            return self
 
-        self._start_time: datetime.datetime = None  # type: ignore
+        copy = Routine(
+            coro=self._coro,
+            slots=self._slots,
+            name=self._name,
+            time=self._time,
+            delta=self._original_delta,
+            max_attempts=self._max_attempts,
+            iterations=self._iterations,
+            wait_remainder=self._wait_remainder,
+            wait_first=self._wait_first,
+            stop_on_error=self._stop_on_error,
+        )
+        copy._injected = instance
+        copy._before_routine = self._before_routine
+        copy._after_routine = self._after_routine
+        copy._on_error = self._on_error
 
-        self._completed_loops = 0
+        setattr(instance, self._coro.__name__, copy)  # ty: ignore[unresolved-attribute]
+        return copy
 
-        iterations = iterations if iterations != 0 else None
-        self._iterations = iterations
-        self._remaining_iterations = iterations
+    def _compute_next_run(self, now: datetime.datetime) -> datetime.datetime:
+        if not self._slots:
+            raise ValueError("No weekly slots scheduled for this routine.")
 
-        self._before = None
-        self._after = None
-        self._error = None
+        candidates: list[datetime.datetime] = []
+        for day, time_val in self._slots:
+            days_ahead = (day.value - now.weekday()) % 7
+            candidate_date = now.date() + datetime.timedelta(days=days_ahead)
+            candidate_dt = datetime.datetime.combine(candidate_date, time_val, tzinfo=now.tzinfo)
 
-        self._stop_set = False
-        self._restarting = False
-        self._wait_first = wait_first
+            if candidate_dt <= now:
+                candidate_dt += datetime.timedelta(days=7)
 
-        self._stop_on_error = True
+            candidates.append(candidate_dt)
 
-        self._instance = None
+        return min(candidates)
 
-        self._args: tuple | None = None
-        self._kwargs: dict | None = None
+    def next_iteration(self) -> float:
+        if self._slots:
+            now = datetime.datetime.now(tz=datetime.UTC)
+            next_run = self._compute_next_run(now)
+            return max((next_run - now).total_seconds(), 0)
 
-        self._weekly_days = weekly_days
-        self.weekly_times = weekly_times
+        return super().next_iteration()
 
-    async def _routine(self, *args, **kwargs) -> None:
-        self._stop_on_error = kwargs.pop("stop_on_error", self._stop_on_error)
+    async def _routine_loop(self, *args: Any, **kwargs: Any) -> None:
+        if not self._slots:
+            return await super()._routine_loop(*args, **kwargs)
 
-        self._start_time = datetime.datetime.now(datetime.UTC)
+        backoff = Backoff(base=3, maximum_time=10, maximum_tries=5)
 
-        try:
-            if self._before:
-                if self._instance:
-                    await self._before(self._instance)
-                else:
-                    await self._before()
-        except Exception as e:
-            await self._error(e)
+        if self._should_stop:
+            return
 
-            if self._stop_on_error:
+        if self._before_routine:
+            try:
+                await self._before_routine(*args, **kwargs)
+            except Exception as e:
+                await self._call_error(e)
                 return self.cancel()
 
-        if self._weekly_days and self.weekly_times:
+        if self._wait_first:
+            await asyncio.sleep(self.next_iteration())
+
+        attempts = self._max_attempts
+        try:
             while True:
-                if self._iterations is not None and self._remaining_iterations <= 0:
-                    break
-
-                now = datetime.datetime.now()
-                next_run = self._compute_next_weekly_run(now)
-                await asyncio.sleep((next_run - now).total_seconds())
-                await self._execute_routine(args, kwargs)
-
-                # Update remaining iterations
-                if self._iterations is not None:
-                    self._remaining_iterations -= 1
-        else:
-            if self._time:
-                wait = compute_timedelta(self._time)
-                await asyncio.sleep(wait)
-
-            if self._wait_first and not self._time:
-                await asyncio.sleep(self._delta)
-
-            if self._remaining_iterations == 0:
-                self._remaining_iterations = self._iterations
-
-            iteration: int = 0
-            while True:
-                iteration += 1
-                start = datetime.datetime.now(datetime.UTC)
-
-                await self._execute_routine(args, kwargs)
+                self._last_start = datetime.datetime.now(tz=datetime.UTC)
+                self._current_iteration += 1
 
                 try:
-                    self._remaining_iterations -= 1
-                except TypeError:
-                    pass
-                else:
-                    if self._remaining_iterations == 0:
+                    await self._coro(*args, **kwargs)
+                except Exception as e:
+                    await self._call_error(e)
+
+                    if self._stop_on_error:
+                        self._should_stop = False
                         break
 
-                if self._stop_set:
-                    self._stop_set = False
+                    if attempts is not None:
+                        attempts -= 1
+                        if attempts <= 0:
+                            LOGGER.warning(
+                                "The maximum retry attempts for Routine: %s has been reached and will now be canceled.",
+                                self.__repr__(),
+                            )
+                            break
+
+                        await asyncio.sleep(backoff.calculate())
+                        continue
+                else:
+                    attempts = self._max_attempts
+                    self._completed += 1
+
+                if self.remaining_iterations is not None and self.remaining_iterations <= 0:
                     break
 
-                if self._time:
-                    sleep = compute_timedelta(self._time + datetime.timedelta(days=iteration))
-                else:
-                    sleep = max(
-                        (start - datetime.datetime.now(datetime.UTC)).total_seconds() + self._delta,
-                        0,
-                    )
+                if self._should_stop:
+                    self._should_stop = False
+                    break
 
-                self._completed_loops += 1
-                await asyncio.sleep(sleep)
+                await asyncio.sleep(self.next_iteration())
 
-        try:
-            if self._after:
-                if self._instance:
-                    await self._after(self._instance)
-                else:
-                    await self._after()
         except Exception as e:
-            await self._error(e)
-        finally:
-            return self.cancel()  # NOQA: B012
-
-    def _compute_next_weekly_run(self, now: datetime.datetime) -> datetime.datetime:
-        """Compute the next run time based on weekly_days and weekly_time."""
-        next_run = None
-        for day, time in zip(self._weekly_days, self.weekly_times, strict=False):
-            next_run_candidate = now + datetime.timedelta((day - now.weekday() + 7) % 7)
-            next_run_candidate = datetime.datetime.combine(next_run_candidate.date(), time)
-            if next_run_candidate > now and (next_run is None or next_run_candidate < next_run):
-                next_run = next_run_candidate
-        if next_run is None:
-            next_run = datetime.datetime.combine(now.date() + datetime.timedelta(7), self.weekly_times[0])
-        return next_run
-
-    async def _execute_routine(self, args, kwargs) -> None:
-        try:
-            if self._instance:
-                await self._coro(self._instance, *args, **kwargs)
-            else:
-                await self._coro(*args, **kwargs)
-        except Exception as e:
-            await self._error(e)
-
-            if self._stop_on_error:
-                return self.cancel()
-
-
-def routine(
-    *,
-    seconds: float | None = 0,
-    minutes: float | None = 0,
-    hours: float | None = 0,
-    time: datetime.datetime | None = None,
-    iterations: int | None = None,
-    wait_first: bool | None = False,
-    weekly_days: list[int] | None = None,  # Lista de dias da semana
-    weekly_times: list[datetime.time] | None = None,  # Lista de horários
-):
-    def decorator(coro: Callable) -> Routine:
-        time_ = time
-        weekly_time = weekly_times
-        if any((seconds, minutes, hours)) and time_:
-            raise RuntimeError(
-                "Argument <time> cannot be used in conjunction with any <seconds>, <minutes> or <hours> argument(s)."
+            LOGGER.error(
+                "A fatal error occurred during an iteration of Routine: %s. This routine will now be canceled.",
+                self.__repr__(),
+                exc_info=e,
             )
 
-        if weekly_days and weekly_times:
-            if not isinstance(weekly_days, list) or not all(
-                isinstance(day, int) and 0 <= day <= 6 for day in weekly_days
-            ):
-                raise TypeError("weekly_days must be a list of integers between 0 and 6.")
-            if not isinstance(weekly_time, list) or not all(isinstance(t, datetime.time) for t in weekly_time):
-                raise TypeError("weekly_time must be a list of datetime.time objects.")
+        if self._after_routine:
+            try:
+                await self._after_routine(*args, **kwargs)
+            except Exception as e:
+                await self._call_error(e)
 
-            if len(weekly_time) < len(weekly_days):
-                weekly_time += [datetime.time(hour=12, minute=0)] * (len(weekly_days) - len(weekly_time))
-            elif len(weekly_time) > len(weekly_days):
-                weekly_time = weekly_time[: len(weekly_days)]
+        self.cancel()
 
-            delta = None
-        else:
-            if not time_:
-                delta = compute_timedelta(
-                    datetime.datetime.now(datetime.UTC)
-                    + datetime.timedelta(seconds=seconds, minutes=minutes, hours=hours)
-                )
-            else:
-                delta = None
-                now = datetime.datetime.now(time_.tzinfo)
-                if time_ < now:
-                    time_ = datetime.datetime.combine(now.date(), time_.time())
-                if time_ < now:
-                    time_ = time_ + datetime.timedelta(days=1)
 
-        if not asyncio.iscoroutinefunction(coro):
-            raise TypeError(f"Expected coroutine function, not type {type(coro).__name__!r}.")
+class ScheduleBuilder:
+    def __init__(
+        self,
+        *days: Day,
+        name: str | None = None,
+        iterations: int | None = None,
+        wait_first: bool = True,
+        max_attempts: int | None = 5,
+        stop_on_error: bool = False,
+    ) -> None:
+        self._days: set[Day] = set(days)
+        self._times: list[datetime.time] = []
+        self._config: dict[str, Any] = {
+            "name": name,
+            "iterations": iterations,
+            "wait_first": wait_first,
+            "max_attempts": max_attempts,
+            "stop_on_error": stop_on_error,
+        }
+
+    @staticmethod
+    def _parse_time(target: str | datetime.time) -> datetime.time:
+        if isinstance(target, datetime.time):
+            return target
+        parsed = datetime.datetime.strptime(target, "%H:%M")
+        return parsed.time()
+
+    # Day properties for chaining
+    @property
+    def monday(self) -> Self:
+        self._days.add(Day.MONDAY)
+        return self
+
+    @property
+    def tuesday(self) -> Self:
+        self._days.add(Day.TUESDAY)
+        return self
+
+    @property
+    def wednesday(self) -> Self:
+        self._days.add(Day.WEDNESDAY)
+        return self
+
+    @property
+    def thursday(self) -> Self:
+        self._days.add(Day.THURSDAY)
+        return self
+
+    @property
+    def friday(self) -> Self:
+        self._days.add(Day.FRIDAY)
+        return self
+
+    @property
+    def saturday(self) -> Self:
+        self._days.add(Day.SATURDAY)
+        return self
+
+    @property
+    def sunday(self) -> Self:
+        self._days.add(Day.SUNDAY)
+        return self
+
+    def at(self, *times: str | datetime.time) -> Self:
+        for t in times:
+            self._times.append(self._parse_time(t))
+        return self
+
+    def __call__(self, coro: CoroT) -> Routine:
+        if not inspect.iscoroutinefunction(coro):
+            raise TypeError(f"Routine expected coroutine function, got {type(coro).__name__!r}")
+
+        if not self._days:
+            raise ValueError("ScheduleBuilder requires at least one Day specified.")
+
+        if not self._times:
+            raise ValueError("ScheduleBuilder requires at least one target time via .at(...)")
+
+        # Compute cartesian product of days and times
+        slots: list[tuple[Day, datetime.time]] = [(day, t) for day in self._days for t in self._times]
 
         return Routine(
             coro=coro,
-            time=time_,
-            delta=delta,
-            iterations=iterations,
-            wait_first=wait_first,
-            weekly_days=weekly_days,
-            weekly_times=weekly_time,
+            slots=slots,
+            time=None,
+            delta=None,
+            wait_remainder=False,
+            **self._config,
         )
 
-    return decorator
+
+class RoutineFactory:
+    """Entrypoint namespace preserving TwitchIO defaults while offering the builder."""
+
+    def __call__(
+        self,
+        *,
+        delta: datetime.timedelta | None = None,
+        time: datetime.datetime | None = None,
+        name: str | None = None,
+        iterations: int | None = None,
+        wait_first: bool = False,
+        wait_remainder: bool = False,
+        max_attempts: int | None = 5,
+        stop_on_error: bool = False,
+    ) -> Callable[[CoroT], BaseRoutine]:
+        return base_routine(
+            delta=delta,
+            time=time,
+            name=name,
+            iterations=iterations,
+            wait_first=wait_first,
+            wait_remainder=wait_remainder,
+            max_attempts=max_attempts,
+            stop_on_error=stop_on_error,
+        )
+
+    @staticmethod
+    def every(*days: Day, **kwargs: Any) -> ScheduleBuilder:
+        return ScheduleBuilder(*days, **kwargs)
+
+
+routine = RoutineFactory()
+
+
+"""
+# 1. Chaining multiple .at() calls on a single property
+@routine.every().friday.at("12:00").at("18:00")
+async def single_day_chained() -> None:
+    pass
+
+# 2. Passing multiple times in a single .at() call
+@routine.every().friday.at("12:00", "18:00")
+async def single_day_multi_arg() -> None:
+    pass
+
+# 3. Chaining properties across multiple days
+@routine.every().tuesday.thursday.at("12:00", "18:00")
+async def multi_day_properties() -> None:
+    pass
+
+# 4. Supplying Day Enums directly into .every()
+@routine.every(Day.TUESDAY, Day.THURSDAY).at("12:00", "18:00")
+async def multi_day_enums() -> None:
+    pass
+
+# 5. Default TwitchIO routine syntax remains untouched
+@routine(delta=datetime.timedelta(minutes=5))
+async def standard_routine() -> None:
+    pass
+"""

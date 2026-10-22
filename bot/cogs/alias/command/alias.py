@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import asyncio
 import re
-from itertools import chain, repeat
 from typing import TYPE_CHECKING, NamedTuple
 
 from twitchio.ext.commands import GuardFailure
 
 from bot.ext import Command, Context, Response, commands
 from bot.models import Alias, User
-from bot.utils import SessionsCaches, UploadThings
+from bot.utils import SessionsCaches, StringTools, UploadThings
 
 from .translations import Translations
 
@@ -18,12 +17,12 @@ if TYPE_CHECKING:
 
 
 class ParsedCommand(NamedTuple):
-    command: commands.Command | None
-    guard_result: None | GuardFailure
+    command: commands.Command | commands.Group | None
+    guard_result: None | GuardFailure | str
     trigger_name: None | str
 
 
-ALIAS_NAME_REGEX = re.compile(
+ALIAS_NAME_REGEX: re.Pattern = re.compile(
     r"^[-\w\u00a9\u00ae\u2000-\u3300\ud83c\ud000-\udfff\ud83d\ud000-\udfff\ud83e\ud000-\udfff]{2,30}$"
 )
 
@@ -34,19 +33,7 @@ class AliasCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.UploadThings: UploadThings = UploadThings(bot)
-
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: Context) -> bool:  # NOQA
-        return True
+        self.StringTools: StringTools = StringTools()
 
     @commands.group(name="alias")
     @commands.cooldown(rate=10, per=10, key=commands.BucketType.user)
@@ -55,11 +42,13 @@ class AliasCmd(commands.CustomComponent):
         return self.translations.Exceptions.empty(ctx, success=False)
 
     @alias.command(name="add", pipeble=False)
-    async def add_command(self, ctx: Context, *args) -> Response:
+    async def add_command(self, ctx: Context, *args: str) -> Response:
         translations = self.translations
-        name, command_string, *rest = chain(args, repeat(None, 2))
+        name, command_string, rest = self.StringTools.unpack_dynamic(args, 2)
         if not command_string:
             return translations.Add.no_command_to_add(ctx.prefix)
+        if not name:
+            return translations.Add.error_no_name()
 
         if not ALIAS_NAME_REGEX.match(name):
             return translations.Alias.alias_invalid_name()
@@ -72,9 +61,9 @@ class AliasCmd(commands.CustomComponent):
         if not result.command:
             return translations.Add.command_dont_exist(command_string)
 
-        if result.guard_result:
+        if result.guard_result and result.trigger_name:
             return translations.Exceptions.guard_caught(
-                result.trigger_name, result.guard_result, ctx.bot.dev_user.display_name
+                result.trigger_name, result.guard_result, ctx.bot.dev_user.display_name or ""
             )
 
         rest = [arg for arg in rest if arg]
@@ -84,13 +73,16 @@ class AliasCmd(commands.CustomComponent):
         return translations.Add.alias_created(alias.name)
 
     @alias.command(name="check", aliases=["list"], pipeble=False)
-    async def check_alias(self, ctx: Context, *args) -> Response:
+    async def check_alias(self, ctx: Context, *args: str) -> Response:
         translations = self.translations
-        first_name, second_name, *_rest = chain(args, repeat(None, 2))
+        first_name, second_name, _ = self.StringTools.unpack_dynamic(args, n=2)
 
         # no arguments: list own aliases
         if not first_name and not second_name:
             return await handle_list_all(ctx, translations, self)
+
+        if not first_name:
+            return translations.Check.no_first_name()
 
         # prepare lists
         aliases = await Alias.list_alias(ctx, user=ctx.user)
@@ -110,7 +102,7 @@ class AliasCmd(commands.CustomComponent):
         if not target_aliases_flat and first_name in aliases_flat and not second_name:
             user = ctx.user
             alias_name = first_name
-            # will lookup alias below
+            # will look up alias below
         elif target_aliases_flat and first_name not in aliases_flat and not second_name:
             return await handle_target_list(ctx, target_user, translations, self)
         elif target_aliases_flat and first_name in aliases_flat and not second_name:
@@ -126,17 +118,17 @@ class AliasCmd(commands.CustomComponent):
         return await handle_alias_lookup(ctx, user, alias_name, translations, self)  # NOQA
 
     @alias.command(name="copy", pipeble=False)
-    async def copy_alias(self, ctx: Context, *args):
+    async def copy_alias(self, ctx: Context, *args: str):
         translations = self.translations
         exception = self.translations.Exceptions
-        target_user_name, target_alias_name, *rest = chain(args, repeat(None, 2))
+        target_user_name, target_alias_name, rest = self.StringTools.unpack_dynamic(args, 2)
         new_name = rest[0] if (rest := [arg for arg in rest if arg]) else None
         if not target_user_name:
             return exception.user_not_provided(ctx)
         if not target_alias_name:
             return translations.Copy.alias_not_provided()
         if not ALIAS_NAME_REGEX.match(target_alias_name):
-            return translations.Copy.target_alias_invalid_name(ctx)
+            return translations.Copy.target_alias_invalid_name()
         alias = await Alias.filter_cached(ctx=ctx, alias_name=target_alias_name)
         if alias:
             return translations.Add.alias_name_conflict(target_alias_name)
@@ -154,32 +146,37 @@ class AliasCmd(commands.CustomComponent):
             )
             return translations.Copy.link_to_a_link(ctx.prefix, original_user.name, target_alias.parent.name)
         else:
-            new_alias = await Alias.create_cached(
-                ctx=ctx,
-                name=new_name or target_alias_name,
-                command=target_alias.command,  # NOQA
-                invocation=target_alias.invocation,
-                arguments=target_alias.arguments,
-                parent=target_alias,
-            )
+            if command := ctx.bot.get_command(target_alias.command or ""):
+                new_alias = await Alias.create_cached(
+                    ctx=ctx,
+                    name=new_name or target_alias_name,
+                    command=command,  # NOQA
+                    invocation=target_alias.invocation,
+                    arguments=target_alias.arguments,
+                    parent=target_alias,
+                )
+            else:
+                return translations.Copy.copy_success("asdf")
         if new_name:
             return translations.Copy.copy_with_name_of(target_alias_name, new_alias.name)
         return translations.Copy.copy_success(new_alias.name)
 
     @alias.command(name="describe", pipeble=False)
-    async def describe_alias(self, ctx: Context, *args):
+    async def describe_alias(self, ctx: Context, *args: str):
         translations = self.translations
         if not args:
             return translations.Describe.no_args_to_parse(ctx.prefix)
+        name, rest = self.StringTools.unpack_dynamic(args, 1)
+        if not name:
+            return translations.Describe.no_args_to_parse(ctx.prefix)
 
-        name, *rest = chain(args, repeat(None, 2))
         rest = [arg for arg in rest if arg]
-        alias = await Alias.filter_cached(ctx=ctx, alias_name=name).first()
+        alias = await Alias.filter_first_prefetch(ctx=ctx, alias_name=name)
 
         if not alias:
             return translations.Alias.dont_have_alias(name)
 
-        description = " ".join(rest).strip()
+        description: str = " ".join(rest).strip()
         if not description or description.lower() == "none":
             alias.description = None
             await alias.save()
@@ -190,23 +187,25 @@ class AliasCmd(commands.CustomComponent):
             return translations.Describe.description_updated(name)
 
     @alias.command(name="edit", pipeble=False)
-    async def edit_alias(self, ctx: Context, *args):
+    async def edit_alias(self, ctx: Context, *args: str):
         translations = self.translations
         if len(args) < 2:
             return translations.Edit.no_args_provided()
 
-        name, command_, *rest = chain(args, repeat(None, 2))
+        name, command_, rest = self.StringTools.unpack_dynamic(args, 2)
+
+        if not name or not command_:
+            return translations.Edit.no_args_provided()
         rest = [arg for arg in rest if arg]
         command_check = await parse_command_by_name(ctx, command_)
 
         if not command_check.command:
             return translations.Edit.command_dont_exist(command_)
-        if command_check.guard_result:
+        if command_check.guard_result and command_check.trigger_name:
             return self.translations.Exceptions.guard_caught(
-                command_check.trigger_name, command_check.guard_result, ctx.bot.dev_user.display_name
+                command_check.trigger_name, command_check.guard_result, ctx.bot.dev_user.display_name or ""
             )
-
-        alias = await Alias.filter_cached(ctx=ctx, alias_name=name)
+        alias = await Alias.filter_first(ctx=ctx, alias_name=name)
         if not alias:
             return translations.Alias.dont_have_alias(name)
 
@@ -221,17 +220,19 @@ class AliasCmd(commands.CustomComponent):
         return translations.Edit.edit_success(alias.name)
 
     @alias.command(name="link", pipeble=False)
-    async def link_alias(self, ctx: Context, *args):
+    async def link_alias(self, ctx: Context, *args: str):
         translations = self.translations
         exception = self.translations.Exceptions
         link_to_link = False
         original_user = None
+        user_name, alias_name, custom_link_name, _ = self.StringTools.unpack_dynamic(args, 3)
         if len(args) < 2:
             return translations.Link.link_no_args(ctx.prefix)
+        if not user_name or not alias_name:
+            return translations.Link.link_no_args(ctx.prefix)
 
-        user_name, alias_name, custom_link_name, *_rest = chain(args, repeat(None, 2))
         name = custom_link_name or alias_name
-        existing_alias = await Alias.filter_cached(ctx=ctx, alias_name=name)
+        existing_alias = await Alias.filter_first(ctx=ctx, alias_name=name)
 
         if existing_alias and not custom_link_name:
             return translations.Add.alias_name_conflict(alias_name)
@@ -242,13 +243,14 @@ class AliasCmd(commands.CustomComponent):
         target_user_data = await User.get_or_none(name=user_name)
         if not target_user_data:
             return exception.user_not_found_name(user_name)
-        target_alias = await Alias.filter_cached(ctx, user=target_user_data, alias_name=alias_name).first_prefetch()
+
+        target_alias = await Alias.filter_first(ctx, alias_name=alias_name, user=target_user_data)
 
         if not target_alias or (not target_alias.command and not target_alias.parent):
             return translations.Link.user_dont_has_alias(alias_name)
 
         elif target_alias.command is None and target_alias.parent is not None:
-            target_alias: Alias = await target_alias.parent
+            target_alias = await target_alias.parent
             await target_alias.fetch_related("user")
             original_user = await target_alias.user
             target_alias.name = alias_name
@@ -262,7 +264,7 @@ class AliasCmd(commands.CustomComponent):
         await Alias.link_alias(ctx, name, target_alias)
 
         name_string = (
-            translations.Link.link_name_string(custom_link_name)
+            translations.Link.link_name_string(custom_link_name or "")
             if (custom_link_name and custom_link_name != target_alias.name)
             else ""
         )
@@ -273,10 +275,10 @@ class AliasCmd(commands.CustomComponent):
         return translations.Link.link_success(name_string)
 
     @alias.command(name="remove", pipeble=False)
-    async def remove_alias(self, ctx: Context, *args):
-        if not args:
+    async def remove_alias(self, ctx: Context, *args: str):
+        name, _ = self.StringTools.unpack_dynamic(args, 1)
+        if not args or not name:
             return self.translations.Remove.no_alias_name_provided()
-        name, *_rest = chain(args, repeat(None, 2))
         alias = await Alias.get_or_none(user=ctx.user, name=name)
         if not alias:
             return self.translations.Alias.dont_have_alias(name)
@@ -285,17 +287,18 @@ class AliasCmd(commands.CustomComponent):
         return self.translations.Remove.alias_removed(name)
 
     @alias.command(name="rename", pipeble=False)
-    async def rename_alias(self, ctx: Context, *args):
-        if len(args) < 2:
+    async def rename_alias(self, ctx: Context, *args: str):
+        old_alias_name, new_alias_name, _ = self.StringTools.unpack_dynamic(args, 2)
+        if len(args) < 2 or not old_alias_name or not new_alias_name:
             return self.translations.Rename.no_name_provided()
-        old_alias_name, new_alias_name, *_rest = chain(args, repeat(None, 2))
+
         if not ALIAS_NAME_REGEX.match(new_alias_name):
             return self.translations.Alias.alias_invalid_name()
-        old_alias = await Alias.filter_cached(ctx=ctx, alias_name=old_alias_name).first()
+        old_alias = await Alias.filter_first(ctx=ctx, alias_name=old_alias_name)
 
         if not old_alias:
             return self.translations.Alias.dont_have_alias(old_alias_name)
-        existing_alias = await Alias.filter_cached(ctx=ctx, alias_name=new_alias_name).first()
+        existing_alias = await Alias.filter_first(ctx=ctx, alias_name=new_alias_name)
         if existing_alias:
             return self.translations.Rename.alias_already_exists(new_alias_name)
 
@@ -330,19 +333,19 @@ async def run_guards(command: Command, ctx: Context):
     return None
 
 
-async def parse_commands(ctx: Context, string: str):
+async def parse_commands(ctx: Context, string: str) -> ParsedCommand:
     if "|" in string:
         return await parse_pipe_commands(ctx, string)
     return await parse_command_by_name(ctx, string)
 
 
 async def parse_command_by_name(ctx: Context, string: str) -> ParsedCommand:
-    message = ctx.message
-    message.text = f"{ctx.prefix}{string}"
-    cctx = await ctx.bot.get_context(message)
-    if not cctx.command:
-        return ParsedCommand(cctx.command, None, None)
-    return ParsedCommand(cctx.command, await run_guards(cctx.command, ctx), cctx.command.name)
+    command_text = f"{ctx.prefix}{string}"
+    mock_ctx = await ctx.bot.ContextHandler.create_mock_context(ctx, custom_text=command_text)
+    command: Command = mock_ctx.command  # NOQA # ty:ignore[invalid-assignment] # sourcery skip: use-named-expression
+    if not command:
+        return ParsedCommand(command, None, None)
+    return ParsedCommand(command, await run_guards(command, ctx), mock_ctx.command.name)
 
 
 async def parse_pipe_commands(ctx: Context, string: str) -> ParsedCommand:
@@ -356,7 +359,7 @@ async def parse_pipe_commands(ctx: Context, string: str) -> ParsedCommand:
 
 
 # TODO: Make the api tests
-async def upload_alias(ctx: Context, aliases: list[Alias], table_name: str, command: AliasCmd):
+async def upload_alias(ctx: Context, aliases: list[Alias], table_name: str, command: AliasCmd) -> str | None:
     translations = command.translations.Table
     alias_table_headers = translations.alias_table_headers()
     alias_table_replaces = translations.alias_table_replaces()
@@ -368,7 +371,7 @@ async def upload_alias(ctx: Context, aliases: list[Alias], table_name: str, comm
             alias = await alias.parent
         description = alias.description or alias_table_replaces[0]
         invocation = alias.invocation or ""
-        arguments = " ".join(alias.arguments) or None
+        arguments = " ".join(alias.arguments) if alias.arguments else None
         if arguments and "|" in arguments:
             arguments = arguments.replace("|", r"\|")
         parent_name = alias_table_replaces[2]
@@ -419,7 +422,9 @@ async def upload_alias(ctx: Context, aliases: list[Alias], table_name: str, comm
 async def handle_list_all(ctx: Context, translations: Translations, command):
     aliases = await Alias.all_prefetch(ctx=ctx, user=ctx.user)
     names = flatten_alias_names(aliases)
-    url = await upload_alias(ctx, aliases, translations.Table.alias_table_name(ctx.author.display_name), command)
+    url = await upload_alias(ctx, aliases, translations.Table.alias_table_name(ctx.author_display_name or ""), command)
+    if not url:
+        return translations.Check.user_alias_list_error()
     return translations.Check.user_alias_list(", ".join(names), url)
 
 
@@ -427,32 +432,44 @@ def flatten_alias_names(aliases) -> list[str]:
     return [alias.name for alias in aliases]
 
 
-async def handle_target_list(ctx: Context, target_user, translations: Translations, command):
+async def handle_target_list(ctx: Context, target_user: User, translations: Translations, command):
     target_aliases = await Alias.all_prefetch(ctx=ctx, user=target_user)
-    mention = translations.SupportTools.LanguageContext.mention(ctx.author.name, target_user.name)
+    mention = translations.SupportTools.LanguageContext.mention(ctx.author_display_name or "", target_user.name)
     url = await upload_alias(ctx, target_aliases, translations.Table.alias_table_name(mention), command)
+    if not url:
+        return translations.Table.alias_table_upload_error(
+            name=ctx.author_display_name or "", dev_name=ctx.bot.dev_user.display_name or ""
+        )
     return translations.Check.list_of_alias_of(mention, url)
 
 
 async def handle_special_case(
-    ctx: Context, translations: Translations, aliases, target_aliases, first_name: str, target_user, command
+    ctx: Context, translations: Translations, aliases, target_aliases, first_name: str, target_user: User, command
 ):
-    url1 = await upload_alias(ctx, aliases, translations.Table.alias_table_name(ctx.author.display_name), command)
+    url1 = await upload_alias(ctx, aliases, translations.Table.alias_table_name(ctx.author_display_name or ""), command)
     url2 = await upload_alias(ctx, target_aliases, translations.Table.alias_table_name(target_user.name), command)
+    if not url1 or not url2:
+        return translations.Table.alias_table_upload_error(
+            name=ctx.author_display_name or "", dev_name=ctx.bot.dev_user.display_name or ""
+        )
     return translations.Check.list_of_special_case(first_name, url1, url2)
 
 
 async def handle_alias_lookup(ctx: Context, user, alias_name: str, translations: Translations, command) -> Response:
-    alias = await Alias.filter_cached(ctx=ctx, user=user, alias_name=alias_name).first().prefetch_related()
+    alias = await Alias.filter_first_prefetch(ctx=ctx, user=user, alias_name=alias_name)
     if not alias:
-        mention = translations.SupportTools.LanguageContext.mention(ctx.author.name, user.name)
+        mention = translations.SupportTools.LanguageContext.mention(ctx.author_display_name or "", user.name)
         return translations.Check.alias_not_found(mention, alias_name)
 
     if not alias.command and not alias.parent:
         return translations.Check.alias_deleted(alias_name)
 
     url = await upload_alias(ctx, [alias], translations.Table.alias_table_name(user.name), command)
-    invocation = f"{alias.invocation} {' '.join(alias.arguments)}"
+    if not url:
+        return translations.Table.alias_table_upload_error(
+            name=ctx.author_display_name or "", dev_name=ctx.bot.dev_user.display_name or ""
+        )
+    invocation = f"{alias.invocation} {' '.join(alias.arguments)}" if alias.arguments else ""
 
     if not alias.command and alias.parent:
         parent_alias = await Alias.get(id=alias.parent.id, deleted=False)

@@ -20,23 +20,10 @@ class FollowAgeCmd(commands.CustomComponent):
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.ApiIvrFi: ApiIvrFi = ApiIvrFi(bot, self.SessionsCaches.IvrFi.session)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="followage", aliases=[])
     async def followage(self, ctx: Context, name: str, channel: str = "") -> Response:
         name = self.StringTools.str2name(name)
-        channel = self.StringTools.str2name(channel or ctx.channel.name)
+        channel = self.StringTools.str2name(channel or ctx.channel.name or "")
 
         if name == channel:
             return self.translations.FollowAge.self_follow()
@@ -49,10 +36,12 @@ class FollowAgeCmd(commands.CustomComponent):
         if not broadcaster:
             return self.translations.Exceptions.user_not_found_name(channel)
 
-        mention = self.translations.SupportTools.LanguageContext.mention(name, ctx.author.name)
-        mention_channel = self.translations.SupportTools.LanguageContext.mention(broadcaster.name, ctx.author.name)
+        mention = self.translations.SupportTools.LanguageContext.mention(name, ctx.author.name or "")
+        mention_channel = self.translations.SupportTools.LanguageContext.mention(
+            broadcaster.name or "", ctx.author.name or ""
+        )
 
-        follow = await self.ApiIvrFi.Twitch.Channel.fetch_followage(channel, user.name)
+        follow = await self.ApiIvrFi.Twitch.Channel.fetch_followage(channel, user.name or "")
         if not follow.followed_at:
             return self.translations.FollowAge.not_followed(mention, channel)
         humanize = self.translations.SupportTools.TimeTools.Humanize(ctx.user.language)

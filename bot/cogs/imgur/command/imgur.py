@@ -53,7 +53,7 @@ class ImgurCmd(commands.CustomComponent):
             async with timeout:
                 all_links = await self.fetch_imgur_links(requested_amount, imgur_type)
         except TimeoutError:
-            return translation.took_too_long(round(timeout.duration(), 2))
+            return translation.took_too_long(round(timeout.duration() or 0, 2))
         except Exception as e:
             await self.bot.CommandHandler.send_bug(ctx, e)
             self.bot.log.error(e)

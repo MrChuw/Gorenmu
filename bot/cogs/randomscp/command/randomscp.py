@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import re
 from typing import TYPE_CHECKING
 
 from aiohttp import ClientResponse
 from aiohttp_client_cache import CachedSession
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 from bot.ext import Context, Response, commands
 from bot.utils import SessionsCaches
@@ -22,18 +23,6 @@ class RandomSCPCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
-    cooldown_rate = 1
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: Context) -> bool:  # NOQA
-        return True
 
     @commands.command(name="randomscp", aliases=["rscp"])
     async def randomscp(self, ctx: Context) -> Response:
@@ -52,19 +41,7 @@ class RandomSCPCmd(commands.CustomComponent):
         except Exception as e:
             ctx.bot.log.warning(e, exc_info=e)
             await ctx.bot.CommandHandler.send_bug(ctx, e, ping=False)
-            return self.translations.Exceptions.error(ctx)
-
-
-async def get_scp(session: CachedSession) -> ClientResponse:
-    async with session.disabled():
-        response = await session.get("https://scp-wiki.wikidot.com/random:random-page")  # NOQA
-    soup = BeautifulSoup(await response.text(), "html.parser")
-    iframe = soup.find(
-        "iframe",
-        src=lambda x: x and "https://snippets.wdfiles.com/local--code/code:" in x,
-    )
-    url = iframe["src"].replace("https://snippets.wdfiles.com/local--code/code:iframe-redirect#http", "https")  # NOQA
-    return await session.head(url)
+            return self.translations.Exceptions.error()
 
 
 async def setup(bot: Gorenmu) -> None:
@@ -72,3 +49,30 @@ async def setup(bot: Gorenmu) -> None:
 
 
 async def teardown(bot: Gorenmu) -> None: ...  # NOQA
+
+
+class SCPNotFoundError(Exception):
+    pass
+
+
+IFRAME_SRC_PATTERN = re.compile(r"^https://snippets\.wdfiles\.com/local--code/code:")
+
+
+async def get_scp(session: CachedSession) -> ClientResponse:
+    async with session.disabled():
+        response = await session.get("https://scp-wiki.wikidot.com/random:random-page")
+
+    soup = BeautifulSoup(await response.text(), "html.parser")
+    iframe = soup.find("iframe", src=IFRAME_SRC_PATTERN)
+
+
+    if not isinstance(iframe, Tag):
+        raise SCPNotFoundError("Could not find a valid redirect iframe tag.")
+
+    src = iframe.get("src")
+    if not src or not isinstance(src, str):
+        raise SCPNotFoundError("Redirect iframe is missing a valid 'src' attribute.")
+
+    url = src.replace("https://snippets.wdfiles.com/local--code/code:iframe-redirect#http", "https")
+    return await session.head(url)
+

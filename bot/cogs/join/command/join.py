@@ -18,20 +18,7 @@ class JoinCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    # TODO: add more scopes later, fix get_or_none to user_id
+    # TODO: add more scopes later
     # TODO: also add explanations for scopes
     @commands.command(name='join', aliases=[], whispable=True)
     async def join(self, ctx: Context, args: str = "") -> Response:
@@ -39,7 +26,7 @@ class JoinCmd(commands.CustomComponent):
         args, lang = self.StringTools.remove_prefixed_option(args, "lang")
         if channel and not channel.removed:
             channel.online = True
-            channel.language = lang
+            channel.language = lang  # type: ignore[assignment]
             await channel.save()
             await self.bot.ChannelHandler.load_channels()
             return self.translations.Join.already_in_chat(channel.prefix)

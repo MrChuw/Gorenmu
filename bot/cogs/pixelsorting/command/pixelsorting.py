@@ -1,15 +1,13 @@
-from __future__ import annotations
-
 import asyncio
-import colorsys
-import itertools
 import random
+from collections.abc import Callable
 from io import BytesIO
 from typing import TYPE_CHECKING
 
+import numpy as np
+import numpy.typing as npt
 from aiohttp_client_cache import CachedSession
 from PIL import Image, ImageFilter, ImageOps
-from PIL.ImageFile import ImageFile
 
 from bot.ext import Context, Response, commands
 from bot.utils import SessionsCaches, StringTools, TimeTools, UploadThings
@@ -21,7 +19,7 @@ if TYPE_CHECKING:
 
 
 class PixelSortCmd(commands.CustomComponent):
-    def __init__(self, bot: Gorenmu) -> None:
+    def __init__(self, bot: "Gorenmu") -> None:
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
@@ -29,41 +27,38 @@ class PixelSortCmd(commands.CustomComponent):
         self.UploadThings: UploadThings = UploadThings(bot)
         self.TimeTools: TimeTools = TimeTools()
 
-    cooldown_rate = 1
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="pixelsorting", aliases=["pxs"])
-    async def pixel_sorting(self, ctx: Context, *, args) -> Response:  # NOQA
+    async def pixel_sorting(self, ctx: Context, *, args: str) -> Response:  # NOQA
         translations = self.translations.PixelSorting
         extract = self.StringTools.extract_and_remove_all_fields
-        rest, tipos = extract(args, "type", ["sum"])
-        rest, crop = extract(rest, "crop")
-        rest, is_random = extract(rest, "rand", ["false"])
-        rest, intensity = extract(rest, "inte", ["50"])  # NOQA
-        rest, direction = extract(rest, "dire", ["vertical"])
-        rest, mask_mode = extract(rest, "maskmode", ["none"])  # NOQA
-        rest, mask_image = extract(rest, "maskimage", ["none"])  # NOQA
+
+        rest, tipos        = extract(args,  "type",          ["sum"])
+        rest, crop         = extract(rest,  "crop")
+        rest, is_random    = extract(rest,  "rand",          ["false"])
+        rest, intensity    = extract(rest,  "inte",          ["50"])  # NOQA
+        rest, direction    = extract(rest,  "dire",          ["vertical"])
+        rest, mask_mode    = extract(rest,  "maskmode",      ["none"])  # NOQA
+        rest, mask_image_arg = extract(rest, "maskimage",    ["none"])  # NOQA
         rest, mask_threshold = extract(rest, "maskthreshold", ["128"])  # NOQA
+
         urls = self.StringTools.urls_extract(rest)
         if not urls:
             return translations.no_url()
-        session = self.SessionsCaches.PixelSorting.session
+
+        session: CachedSession = self.SessionsCaches.PixelSorting.session
         images = await request_images(urls=urls, session=session)
-        if type(images) is str:
+        if isinstance(images, str):
             return translations.invalid_content_type()
-        if mask_image != "none":
-            url = self.StringTools.urls_extract(mask_image[0])
-            mask_image = await request_images(urls=url, session=session) if url else images
+
+        resolved_mask_image: Image.Image | None = None
+        if mask_image_arg[0] != "none":
+            url = self.StringTools.urls_extract(mask_image_arg[0])
+            mask_res = await request_images(urls=url, session=session) if url else images
+            if isinstance(mask_res, str):
+                return translations.invalid_content_type()
+            if isinstance(mask_res, list) and len(mask_res) > 0:
+                resolved_mask_image = mask_res[0]
+
         timeout = self.TimeTools.Timeout.timeout(300)
         try:
             async with timeout:
@@ -75,432 +70,430 @@ class PixelSortCmd(commands.CustomComponent):
                     crop=crop,
                     rand=is_random[0],
                     mask_mode=mask_mode[0],
-                    mask_image=mask_image[0],
+                    mask_image=resolved_mask_image,
                     mask_threshold=int(mask_threshold[0]),
                 )
         except timeout.error:
-            return translations.took_too_long(timeout.duration())
+            return translations.took_too_long(timeout.duration() or 0)
+
         if isinstance(manipulated, Response):
             return manipulated
+        if ctx.bot.mock:
+            return manipulated.getvalue()  # ty: ignore[invalid-return-type] # noqa just for testing purposes.
         upload = await self.UploadThings.upload_file(
             manipulated.getvalue(),
             "image/png",
             session=session,
             filename="manipulated.png",
-            url=self.bot.config.ApisConfig.feridinha_url,
+            url=self.bot.config.ApisConfig.feridinha_url.human_repr(),
             api_key={"token": self.bot.config.ApisConfig.feridinha_key},
         )
         shortened = await self.UploadThings.shortener(url=upload, session=session, tags=["PixelSorting"])
-        return translations.image(shortened)
+        if shortened:
+            return translations.image(shortened)
+        return translations.upload_error()
 
 
-async def setup(bot: Gorenmu) -> None:
+async def setup(bot: "Gorenmu") -> None:
     await bot.add_component(PixelSortCmd(bot))
 
 
-async def teardown(bot: Gorenmu) -> None: ...  # NOQA
+async def teardown(bot: "Gorenmu") -> None: ...  # NOQA
 
 
-async def request_images(urls: str, session: CachedSession) -> list[ImageFile] | str:
-    images = []
+# ---------------------------------------------------------------------------
+# Image fetching
+# ---------------------------------------------------------------------------
+
+RGBA_Array = npt.NDArray[np.uint8]   # shape (H, W, 4)
+Mask_Array = npt.NDArray[np.bool_]   # shape (H, W)
+
+# Sorting-key functions receive a (N, 4) uint8 array and return a (N,) float64
+KeyFn = Callable[[RGBA_Array], npt.NDArray[np.float64]]
+
+# ---------------------------------------------------------------------------
+# Key-function table (operates on 2-D slices of shape (N, 4))
+# ---------------------------------------------------------------------------
+
+def _key_red(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    return p[:, 0].astype(np.float64)
+
+def _key_green(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    return p[:, 1].astype(np.float64)
+
+def _key_blue(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    return p[:, 2].astype(np.float64)
+
+def _key_rgb(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    return p[:, :3].astype(np.float64).sum(axis=1)
+
+def _key_rgba(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    return p.astype(np.float64).sum(axis=1)
+
+_key_sum = _key_rgba  # alias kept for the "sum" mode
+
+def _key_hue(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    rgb = p[:, :3].astype(np.float64) / 255.0
+    cmax = rgb.max(axis=1)
+    cmin = rgb.min(axis=1)
+    delta = cmax - cmin
+    h = np.zeros(len(p), dtype=np.float64)
+    m = delta != 0
+    r, g, b = rgb[:, 0], rgb[:, 1], rgb[:, 2]
+    # red max
+    mr = m & (cmax == r)
+    h[mr] = ((g[mr] - b[mr]) / delta[mr]) % 6
+    # green max
+    mg = m & (cmax == g)
+    h[mg] = (b[mg] - r[mg]) / delta[mg] + 2
+    # blue max
+    mb = m & (cmax == b)
+    h[mb] = (r[mb] - g[mb]) / delta[mb] + 4
+    return h / 6.0
+
+def _key_saturation(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    rgb = p[:, :3].astype(np.float64) / 255.0
+    cmax = rgb.max(axis=1)
+    cmin = rgb.min(axis=1)
+    delta = cmax - cmin
+    s = np.where(cmax != 0, delta / cmax, 0.0)
+    return s
+
+def _key_value(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    return p[:, :3].astype(np.float64).max(axis=1) / 255.0
+
+def _key_lightness(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    rgb = p[:, :3].astype(np.float64) / 255.0
+    return (rgb.max(axis=1) + rgb.min(axis=1)) / 2.0
+
+def _key_luma(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    rgb = p[:, :3].astype(np.float64)
+    return 0.2126 * rgb[:, 0] + 0.7152 * rgb[:, 1] + 0.0722 * rgb[:, 2]
+
+def _key_chroma(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    rgb = p[:, :3].astype(np.float64)
+    return rgb.max(axis=1) - rgb.min(axis=1)
+
+def _key_dist_white(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    diff = (255 - p[:, :3]).astype(np.float64)
+    return np.sqrt((diff ** 2).sum(axis=1))
+
+def _key_dist_black(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    rgb = p[:, :3].astype(np.float64)
+    return np.sqrt((rgb ** 2).sum(axis=1))
+
+def _key_random(p: RGBA_Array) -> npt.NDArray[np.float64]:
+    return np.random.rand(len(p))
+
+_KEY_FN: dict[str, KeyFn] = {
+    "red":        _key_red,
+    "green":      _key_green,
+    "blue":       _key_blue,
+    "rgb":        _key_rgb,
+    "rgba":       _key_rgba,
+    "sum":        _key_sum,
+    "hue":        _key_hue,
+    "saturation": _key_saturation,
+    "value":      _key_value,
+    "lightness":  _key_lightness,
+    "luma":       _key_luma,
+    "chroma":     _key_chroma,
+    "dist_white": _key_dist_white,
+    "dist_black": _key_dist_black,
+    "random":     _key_random,
+}
+
+_VALID_TYPES: frozenset[str] = frozenset(_KEY_FN)
+
+
+async def request_images(
+    urls: list[str],
+    session: CachedSession,
+) -> list[Image.Image] | str:
+    images: list[Image.Image] = []
     max_width = 1920
     max_height = 1080
+
     for url in urls:
-        response = await session.get(url)
-        if not response.content_type.startswith("image/") and len(urls) == 1:
-            return response.content_type
-        elif response.content_type.startswith("image/"):
-            img = Image.open(BytesIO(await response.read())).convert("RGBA")
+        async with session.get(url) as response:
+            content_type: str = response.content_type or ""
+            if not content_type.startswith("image/"):
+                if len(urls) == 1:
+                    return content_type
+                continue
+            content = await response.read()
+            img = Image.open(BytesIO(content)).convert("RGBA")
             w, h = img.size
             if w > max_width or h > max_height:
                 img.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
             images.append(img)
-    return images or "error"
 
+    return images
+
+
+# ---------------------------------------------------------------------------
+# Tile-cutting helper
+# ---------------------------------------------------------------------------
+
+async def cut(
+    images: list[Image.Image],
+    size: str,
+) -> tuple[list[Image.Image], list[tuple[int, int, int]]]:
+    import itertools
+
+    tiles: list[Image.Image] = []
+    positions: list[tuple[int, int, int]] = []
+
+    w_step, h_step = size.split("px:")
+    w = max(50, int(w_step.replace("px", "")))
+    h = max(50, int(h_step.replace("px", "")))
+
+    for img_idx, image in enumerate(images):
+        img_w, img_h = image.size
+        for x, y in itertools.product(range(0, img_w, w), range(0, img_h, h)):
+            right  = min(x + w, img_w)
+            bottom = min(y + h, img_h)
+            tiles.append(image.crop((x, y, right, bottom)))
+            positions.append((img_idx, x, y))
+
+    return tiles, positions
+
+
+# ---------------------------------------------------------------------------
+# Mask builder
+# ---------------------------------------------------------------------------
+
+def _build_mask(
+    img_rgba: Image.Image,
+    mask_mode: str | None,
+    mask_image: Image.Image | None,
+    mask_threshold: int,
+) -> Mask_Array:
+    """Return a boolean (H, W) array – True where pixels should be sorted."""
+    w, h = img_rgba.size
+    if mask_mode == "external" and mask_image:
+        m = mask_image.convert("L").resize((w, h))
+    elif mask_mode == "internal":
+        gray  = img_rgba.convert("L")
+        edges = gray.filter(ImageFilter.FIND_EDGES)
+        m     = ImageOps.equalize(edges)
+    else:
+        return np.ones((h, w), dtype=np.bool_)
+
+    return np.asarray(m, dtype=np.uint8) >= mask_threshold
+
+
+# ---------------------------------------------------------------------------
+# Core sorting  (fully vectorised – no per-pixel Python loops)
+# ---------------------------------------------------------------------------
+
+def _sort_arr_by_mask(
+    arr: RGBA_Array,
+    mask: Mask_Array,
+    key_fn: KeyFn,
+) -> RGBA_Array:
+    """Sort *all* unmasked pixels globally by key, return a new array."""
+    out   = arr.copy()
+    flat  = arr.reshape(-1, 4)
+    m_flat = mask.ravel()
+    idxs  = np.where(m_flat)[0]
+    if idxs.size == 0:
+        return out
+    pixels = flat[idxs]                         # (N, 4)
+    order  = np.argsort(key_fn(pixels), kind="stable")
+    flat_out = out.reshape(-1, 4)
+    flat_out[idxs] = pixels[order]
+    return out
+
+
+def _sort_rows(
+    arr: RGBA_Array,
+    mask: Mask_Array,
+    key_fn: KeyFn,
+) -> RGBA_Array:
+    """Sort each row's unmasked pixels, preserving their column positions."""
+    out = arr.copy()
+    h, w = arr.shape[:2]
+    for r in range(h):
+        m_row  = mask[r]                        # (W,)
+        idxs   = np.where(m_row)[0]
+        if idxs.size == 0:
+            continue
+        pixels = arr[r, idxs]                   # (N, 4)
+        order  = np.argsort(key_fn(pixels), kind="stable")
+        out[r, idxs] = pixels[order]
+    return out
+
+
+def _sort_cols(
+    arr: RGBA_Array,
+    mask: Mask_Array,
+    key_fn: KeyFn,
+) -> RGBA_Array:
+    """Sort each column's unmasked pixels, preserving their row positions."""
+    out = arr.copy()
+    h, w = arr.shape[:2]
+    for c in range(w):
+        m_col  = mask[:, c]                     # (H,)
+        idxs   = np.where(m_col)[0]
+        if idxs.size == 0:
+            continue
+        pixels = arr[idxs, c]                   # (N, 4)
+        order  = np.argsort(key_fn(pixels), kind="stable")
+        out[idxs, c] = pixels[order]
+    return out
+
+
+# Random-segment variants ---------------------------------------------------
+
+def _rand_sort_rows(
+    arr: RGBA_Array,
+    mask: Mask_Array,
+    key_fn: KeyFn,
+    intensity: int,
+) -> RGBA_Array:
+    out = arr.copy()
+    h, w = arr.shape[:2]
+    for r in range(h):
+        if random.randint(0, 100) > intensity:
+            continue
+        start = random.randint(0, max(0, w - 3))
+        end   = random.randint(start + 1, max(start + 1, w - 1))
+        seg   = np.arange(start, end)
+        m_seg = mask[r, seg]
+        idxs  = seg[m_seg]
+        if idxs.size == 0:
+            continue
+        pixels = arr[r, idxs]
+        order  = np.argsort(key_fn(pixels), kind="stable")
+        out[r, idxs] = pixels[order]
+    return out
+
+
+def _rand_sort_cols(
+    arr: RGBA_Array,
+    mask: Mask_Array,
+    key_fn: KeyFn,
+    intensity: int,
+) -> RGBA_Array:
+    out = arr.copy()
+    h, w = arr.shape[:2]
+    for c in range(w):
+        if random.randint(0, 100) > intensity:
+            continue
+        start = random.randint(0, max(0, h - 3))
+        end   = random.randint(start + 1, max(start + 1, h - 1))
+        seg   = np.arange(start, end)
+        m_seg = mask[seg, c]
+        idxs  = seg[m_seg]
+        if idxs.size == 0:
+            continue
+        pixels = arr[idxs, c]
+        order  = np.argsort(key_fn(pixels), kind="stable")
+        out[idxs, c] = pixels[order]
+    return out
+
+
+def _rand_sort_global(
+    arr: RGBA_Array,
+    mask: Mask_Array,
+    key_fn: KeyFn,
+    intensity: int,
+) -> RGBA_Array:
+    if random.randint(0, 100) > intensity:
+        return arr.copy()
+    return _sort_arr_by_mask(arr, mask, key_fn)
+
+
+# ---------------------------------------------------------------------------
+# sorting()  – async wrapper so the event loop stays yieldy between images
+# ---------------------------------------------------------------------------
+
+async def sorting(
+    images: list[Image.Image],
+    mode: str,
+    rand: bool,
+    direction: str,
+    intensity: int,
+    mask_mode: str | None,
+    mask_image: Image.Image | None,
+    mask_threshold: int,
+) -> list[Image.Image]:
+    key_fn: KeyFn = _KEY_FN.get(mode, _key_sum)
+    result: list[Image.Image] = []
+
+    for image in images:
+        await asyncio.sleep(0)                  # yield between images
+
+        img_rgba = image.convert("RGBA")
+        arr: RGBA_Array = np.asarray(img_rgba, dtype=np.uint8).copy()
+        mask = _build_mask(img_rgba, mask_mode, mask_image, mask_threshold)
+
+        if rand:
+            if direction == "global":
+                out = _rand_sort_global(arr, mask, key_fn, intensity)
+            elif direction == "horizontal":
+                out = _rand_sort_rows(arr, mask, key_fn, intensity)
+            else:  # vertical
+                out = _rand_sort_cols(arr, mask, key_fn, intensity)
+        else:
+            if direction == "global":
+                out = _sort_arr_by_mask(arr, mask, key_fn)
+            elif direction == "horizontal":
+                out = _sort_rows(arr, mask, key_fn)
+            else:  # vertical
+                out = _sort_cols(arr, mask, key_fn)
+
+        result.append(Image.fromarray(out, "RGBA"))
+
+    return result
+
+
+# ---------------------------------------------------------------------------
+# manipulate()
+# ---------------------------------------------------------------------------
 
 async def manipulate(
-    images: list[ImageFile],
+    images: list[Image.Image],
     tipos: list[str],
     intensity: int,
     direction: str = "global",
     crop: list[str] | None = None,
     rand: str | None = None,
-    mask_mode: str | None = None,  # 'none' | 'external' | 'internal'
+    mask_mode: str | None = None,
     mask_image: Image.Image | None = None,
     mask_threshold: int = 128,
 ) -> BytesIO | Response:
-    positions = None
-    manipulated_amount = 0
-    manipulated = images
-    buffer = BytesIO()
-    types = [
-        "red",
-        "green",
-        "blue",
-        "sum",
-        "rgb",
-        "rgba",
-        "hue",
-        "saturation",
-        "value",
-        "lightness",
-        "luma",
-        "chroma",
-        "dist_white",
-        "dist_black",
-        "random",
-    ]
+    positions: list[tuple[int, int, int]] = []
+    manipulated: list[Image.Image] = images
 
     if crop:
         manipulated, positions = await cut(images=manipulated, size=crop[0])
     if mask_mode == "external" and not mask_image:
         mask_image = images[0]
 
-    rand = rand != "false"
+    is_rand = rand != "false"
     for tipo in tipos:
-        if tipo.lower() in types:
+        if tipo.lower() in _VALID_TYPES:
             manipulated = await sorting(
                 images=manipulated,
                 mode=tipo.lower(),
-                rand=rand,
+                rand=is_rand,
                 direction=direction,
                 intensity=intensity,
                 mask_mode=mask_mode,
                 mask_image=mask_image,
                 mask_threshold=mask_threshold,
             )
-            manipulated_amount += 1
-            await asyncio.sleep(0)
+
+    buffer = BytesIO()
     if crop:
         reconstructed = [Image.new(img.mode, img.size) for img in images]
         for tile, (img_idx, x, y) in zip(manipulated, positions, strict=False):
             reconstructed[img_idx].paste(tile, (x, y))
         reconstructed[0].save(buffer, format="PNG")
-        buffer.seek(0)
-        return buffer
+    else:
+        manipulated[0].save(buffer, format="PNG")
 
-    manipulated[0].save(buffer, format="PNG")
     buffer.seek(0)
     return buffer
-
-
-async def cut(images: list[ImageFile], size: str) -> tuple[list[ImageFile], list[tuple[int, int, int]]]:
-    tiles: list[ImageFile] = []
-    positions: list[tuple[int, int, int]] = []
-
-    for img_idx, image in enumerate(images):
-        w_step, h_step = size.split("px:")
-        w = max(50, int(w_step.replace("px", "")))
-        h = max(50, int(h_step.replace("px", "")))
-        img_w, img_h = image.size
-
-        for x, y in itertools.product(range(0, img_w, w), range(0, img_h, h)):
-            right = min(x + w, img_w)
-            bottom = min(y + h, img_h)
-
-            chunk = image.crop((x, y, right, bottom))
-            tiles.append(chunk)
-            positions.append((img_idx, x, y))
-
-    return tiles, positions
-
-
-async def sorting(
-    images: list[ImageFile],
-    mode: str,
-    rand: bool,
-    direction: str,
-    intensity: int,
-    mask_mode: str | None,
-    mask_image: Image | None,  # NOQA
-    mask_threshold: int,
-) -> list[ImageFile]:
-    result = []
-    for image in images:
-        img_rgba = image.convert("RGBA")
-        w, h = img_rgba.size
-        flat_pixels = list(img_rgba.getdata())  # NOQA
-
-        if mask_mode == "external":
-            mask = mask_image.convert("L").resize((w, h))
-        elif mask_mode == "internal":
-            gray = img_rgba.convert("L")
-            edges = gray.filter(ImageFilter.FIND_EDGES)
-            mask = ImageOps.equalize(edges)
-        else:
-            mask = Image.new("L", (w, h), 255)
-
-        mask_data = list(mask.getdata())  # NOQA
-
-        def should_sort(i: int) -> bool:
-            return mask_data[i] >= mask_threshold
-
-        async def random_segment_sort(seq, idxs):  # NOQA
-            if random.randint(0, 100) <= intensity:
-                return seq
-            to_sort = [(seq[i], i) for i in idxs if should_sort(i)]  # NOQA
-            if not to_sort:
-                return seq
-            pixels_only, positions = zip(*to_sort)  # NOQA
-            sorted_pixels = await quick_sort(list(pixels_only), mode=mode)  # NOQA
-            seq = list(seq)  # NOQA
-            for pos, px in zip(positions, sorted_pixels):  # NOQA
-                seq[pos] = px
-            return seq
-
-        sorted_img = Image.new("RGBA", (w, h))
-        if not rand:
-            if direction == "global":
-                idxs = list(range(w * h))  # NOQA
-                to_sort = [(flat_pixels[i], i) for i in idxs if should_sort(i)]
-                pixels_only, positions = zip(*to_sort, strict=False) if to_sort else ([], [])
-                sorted_pixels = await quick_sort(list(pixels_only), mode) if pixels_only else []
-                new_flat = flat_pixels[:]
-                for pos, px in zip(positions, sorted_pixels, strict=False):
-                    new_flat[pos] = px
-                sorted_img.putdata(new_flat)
-
-            elif direction == "horizontal":
-                rows = [flat_pixels[i * w : (i + 1) * w] for i in range(h)]
-                tasks = []
-                for row_i, row in enumerate(rows):
-                    await asyncio.sleep(0)
-                    base = row_i * w
-
-                    to_sort = [(row[j], j) for j in range(w) if should_sort(base + j)]
-                    pixels_only, rel_positions = zip(*to_sort, strict=False) if to_sort else ([], ())
-
-                    async def sort_row(pixels, rel_pos, original_row):
-                        await asyncio.sleep(0)
-                        sorted_p = await quick_sort(list(pixels), mode) if pixels else []
-                        new_row = list(original_row)
-                        for rel_idx, px in zip(rel_pos, sorted_p):  # NOQA
-                            new_row[rel_idx] = px
-                        return new_row
-
-                    tasks.append(sort_row(pixels_only, rel_positions, row))
-
-                sorted_rows = await asyncio.gather(*tasks)
-                sorted_img.putdata([px for row in sorted_rows for px in row])
-
-            else:  # vertical
-                rows = [flat_pixels[i * w : (i + 1) * w] for i in range(h)]
-                cols = list(zip(*rows, strict=False))
-                tasks = []
-                for col_j, col in enumerate(cols):
-                    await asyncio.sleep(0)
-                    idxs = [r * w + col_j for r in range(h)]  # NOQA
-                    to_sort = [(col[r], idxs[r]) for r in range(h) if should_sort(idxs[r])]
-                    pixels_only, positions = zip(*to_sort, strict=False) if to_sort else ([], [])
-
-                    async def sort_col(pixels, pos):  # NOQA
-                        await asyncio.sleep(0)
-                        sorted_p = await quick_sort(list(pixels), mode) if pixels else []
-                        new_col = list(col)
-                        for p, px in zip(pos, sorted_p):  # NOQA
-                            new_col[p // w] = px
-                        return new_col
-
-                    tasks.append(sort_col(pixels_only, positions))
-                sorted_cols = await asyncio.gather(*tasks)
-                transposed = list(zip(*sorted_cols, strict=False))
-                sorted_img.putdata([px for row in transposed for px in row])
-
-        else:
-            if mask_mode == "external":
-                mask = mask_image.convert("L").resize((w, h))
-            elif mask_mode == "internal":
-                gray = img_rgba.convert("L")
-                edges = gray.filter(ImageFilter.FIND_EDGES)
-                mask = ImageOps.equalize(edges)
-            else:
-                mask = Image.new("L", (w, h), 255)
-            mask_data = list(mask.getdata())  # NOQA
-
-            def should_sort(i: int) -> bool:
-                return mask_data[i] >= mask_threshold
-
-            if direction == "global":
-                seq = flat_pixels
-                idxs = list(range(w * h))  # NOQA
-                new_flat = await random_segment_sort(seq, idxs)
-                sorted_img.putdata(new_flat)
-
-            elif direction == "horizontal":
-                rows = [flat_pixels[i * w : (i + 1) * w] for i in range(h)]
-                tasks = []
-
-                for row_i, row in enumerate(rows):
-                    base = row_i * w
-
-                    async def process_row(row=row):  # NOQA
-                        # aplica intensidade e filtro de máscara
-                        if random.randint(0, 100) > intensity:
-                            return row
-
-                        start = random.randint(0, w - 3)
-                        end = random.randint(start + 1, w - 1)
-                        to_sort = [(row[x], x) for x in range(start, end) if should_sort(base + x)]  # NOQA
-
-                        if not to_sort:
-                            return row
-
-                        pixels_only, rel_xs = zip(*to_sort)  # NOQA
-                        sorted_seg = await quick_sort(list(pixels_only), mode="sum")
-
-                        new_row = list(row)
-                        for rel_x, px in zip(rel_xs, sorted_seg):  # NOQA
-                            new_row[rel_x] = px
-                        return new_row
-
-                    tasks.append(process_row())
-
-                sorted_rows = await asyncio.gather(*tasks)
-                sorted_img.putdata([px for row in sorted_rows for px in row])
-
-            else:  # vertical
-                rows = [flat_pixels[i * w : (i + 1) * w] for i in range(h)]
-                cols = list(zip(*rows, strict=False))
-                tasks = []
-
-                for col_j, col in enumerate(cols):
-                    idxs = [r * w + col_j for r in range(h)]
-
-                    async def process_col(col=col, idxs=idxs):  # NOQA
-                        if random.randint(0, 100) > intensity:
-                            return col
-
-                        start = random.randint(0, h - 3)
-                        end = random.randint(start + 1, h - 1)
-                        to_sort = [(col[y], y) for y in range(start, end) if should_sort(idxs[y])]  # NOQA
-
-                        if not to_sort:
-                            return col
-
-                        pixels_only, rel_ys = zip(*to_sort)  # NOQA
-                        sorted_seg = await quick_sort(list(pixels_only), mode="sum")
-
-                        new_col = list(col)
-                        for rel_y, px in zip(rel_ys, sorted_seg):  # NOQA
-                            new_col[rel_y] = px
-                        return new_col
-
-                    tasks.append(process_col())
-
-                sorted_cols = await asyncio.gather(*tasks)
-                transposed = list(zip(*sorted_cols, strict=False))
-                sorted_img.putdata([px for row in transposed for px in row])
-
-        result.append(sorted_img)
-    return result
-
-
-async def quick_sort(pixels, mode="RGB"):
-    key_funcs = {
-        "red": lambda p: p[0],
-        "green": lambda p: p[1],
-        "blue": lambda p: p[2],
-        "alpha": lambda p: p[3] if len(p) > 3 else 0,
-        "rgb": lambda p: p[0] + p[1] + p[2],
-        "rgba": lambda p: p[0] + p[1] + p[2] + (p[3] if len(p) > 3 else 0),
-        "sum": lambda p: p[0] + p[1] + p[2] + (p[3] if len(p) > 3 else 0),
-        "hue": lambda p: colorsys.rgb_to_hsv(*[v / 255 for v in p[:3]])[0],
-        "saturation": lambda p: colorsys.rgb_to_hsv(*[v / 255 for v in p[:3]])[1],
-        "value": lambda p: colorsys.rgb_to_hsv(*[v / 255 for v in p[:3]])[2],
-        "lightness": lambda p: colorsys.rgb_to_hls(*[v / 255 for v in p[:3]])[1],
-        "luma": lambda p: 0.2126 * p[0] + 0.7152 * p[1] + 0.0722 * p[2],
-        "chroma": lambda p: max(p[:3]) - min(p[:3]),
-        "dist_white": lambda p: sum((255 - v) ** 2 for v in p[:3]) ** 0.5,
-        "dist_black": lambda p: (p[0] ** 2 + p[1] ** 2 + p[2] ** 2) ** 0.5,
-    }
-    await asyncio.sleep(0)
-    key = key_funcs[mode]
-    pixels.sort(key=key)
-    return pixels
-
-
-async def random_sort_pixels(
-    images: list[Image.Image],
-    intensity: int,
-    mask_image: Image.Image,
-    mask_mode: str = "external",  # 'external' | 'internal' | 'none'
-    mask_threshold: int = 128,  # 0-255
-) -> list[Image.Image]:
-    intensity = max(0, min(intensity, 100))
-
-    def build_mask(img, mode):  # NOQA
-        w, h = img.size  # NOQA
-        if mode == "external":
-            m = mask_image.convert("L").resize((w, h))
-        elif mode == "internal":
-            gray = img.convert("L")
-            edges = gray.filter(ImageFilter.FIND_EDGES)
-            m = ImageOps.equalize(edges)
-        else:  # 'none'
-            m = Image.new("L", (w, h), 255)
-        return list(m.getdata())  # NOQA
-
-    result = []
-    for img in images:
-        img_rgba = img.convert("RGBA")
-        w, h = img_rgba.size
-        pixels = img_rgba.load()
-
-        mask_data = build_mask(img_rgba, mask_mode)
-
-        sorted_img = Image.new("RGBA", (w, h))
-        sorted_pixels = sorted_img.load()
-        line_tasks = []
-
-        for y in range(h):
-            await asyncio.sleep(0)
-            if random.randint(0, 100) > intensity:
-
-                async def copy_line(y=y):  # NOQA
-                    return [pixels[x, y] for x in range(w)]  # NOQA
-
-                line_tasks.append(copy_line())
-                continue
-
-            start = random.randint(0, w - 3)
-            end = random.randint(start + 1, w - 1)  # NOQA
-
-            to_sort = []
-            for x in range(start, end):
-                idx = y * w + x
-                if mask_data[idx] >= mask_threshold:
-                    to_sort.append((pixels[x, y], x))
-
-            if not to_sort:
-
-                async def copy_line_nosort(y=y):  # NOQA
-                    return [pixels[x, y] for x in range(w)]  # NOQA
-
-                line_tasks.append(copy_line_nosort())
-                continue
-
-            pixels_only, xs = zip(*to_sort, strict=False)
-
-            async def sort_and_rebuild(pixels_list, xs, y=y):  # NOQA
-                sorted_seg = await quick_sort(list(pixels_list), mode="sum")
-                new_line = []
-                seg_i = 0
-                for x in range(w):  # NOQA
-                    if x in xs:
-                        new_line.append(sorted_seg[seg_i])
-                        seg_i += 1
-                    else:
-                        new_line.append(pixels[x, y])
-                return new_line
-
-            line_tasks.append(sort_and_rebuild(pixels_only, xs))
-
-        sorted_rows = await asyncio.gather(*line_tasks)
-        for y, row in enumerate(sorted_rows):
-            for x, px in enumerate(row):
-                await asyncio.sleep(0)
-                sorted_pixels[x, y] = px
-
-        result.append(sorted_img)
-
-    return result

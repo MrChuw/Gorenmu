@@ -19,24 +19,12 @@ class PingCmd(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="ping", aliases=["pong"])
     async def ping(self, ctx: Context) -> Response:
         translations = self.translations.Ping
         humanize = self.translations.SupportTools.TimeTools.Humanize(ctx.user.language)
-        delta = datetime.datetime.now(datetime.UTC) - ctx.message.timestamp
+        timestamp = ctx.message.timestamp if ctx.message else datetime.datetime.now(datetime.UTC)  # NOQA
+        delta = datetime.datetime.now(datetime.UTC) - (timestamp or datetime.datetime.now(datetime.UTC))
         tmi = f"{humanize.precisedelta(delta, suppress=['seconds'], minimum_unit='milliseconds').split(' ')[0]} ms"
         mem = humanize.naturalsize(psutil.Process(os.getpid()).memory_info()[0])
         started = humanize.precisedelta(ctx.bot.boot - datetime.datetime.now(datetime.UTC))

@@ -496,5 +496,8 @@
         "allow_thousands_lacking_digits": false,
         "allow_decimals_lacking_digits": true
     },
-    "extra_data": {}
+    "extra_data": {},
+    "date_settings": {
+        "default_order": "MD"
+    }
 }

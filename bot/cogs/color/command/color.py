@@ -4,11 +4,11 @@ import re
 from typing import TYPE_CHECKING
 
 from bot.apis import Color
-from bot.ext import Context, Response, commands
+from bot.ext import Context, Response, TranslationEntry, commands
 from bot.models import User
 from bot.utils import SessionsCaches, StringTools
 
-from .translations import TranslationEntry, Translations
+from .translations import Translations
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -20,19 +20,6 @@ class ColorCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.StringTools: StringTools = StringTools()
-
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
 
     @commands.command(name="color", aliases=["colour"])
     async def color(self, ctx: Context, name: str) -> Response:
@@ -54,16 +41,42 @@ class ColorCmd(commands.CustomComponent):
 
         if "#" not in name and (user := await ctx.bot.fetch_user(login=name)):  # NOQA: SIM102
             if tmi_color := (await ctx.bot.fetch_chatters_color([user.id]))[0].color:  # NOQA: SIM102
-                await get_color_info(tmi_color.hex_clean, translations.user_color(), name=name)
+                template = translations.user_color()
+                if template and isinstance(template, TranslationEntry):
+                    await get_color_info(tmi_color.hex_clean, template, name=name)
+                if not template:
+                    return self.translations.Exceptions.translation_error(
+                            "user_color",
+                            ctx.user.language,
+                            ctx.bot.dev_user.display_name or ""
+                    )
 
         if color_hex := re.match(r"^#?[0-9a-fA-F]{6}$", name):
             color_hex = color_hex[0].replace("#", "")
-            await get_color_info(color_hex, translations.hex_color())
+            template = translations.hex_color()
+            if template and isinstance(template, TranslationEntry):
+                await get_color_info(color_hex, template)
+            if not template:
+                return self.translations.Exceptions.translation_error(
+                        "hex_color",
+                        ctx.user.language,
+                        ctx.bot.dev_user.display_name or ""
+                )
 
         if user:
-            user_db = await User.get_user(ctx, translations=self.translations, user_id=user.id, is_none=True)
+            user_db = await User.get_user(ctx, translations=self.translations, user_id=int(user.id), is_none=True)
+            if isinstance(user_db, Response):
+                return user_db
             if user_db and user_db.saved_color:
-                await get_color_info(user_db.saved_color, translations.saved_color())
+                template = translations.saved_color()
+                if template and isinstance(template, TranslationEntry):
+                    await get_color_info(user_db.saved_color, template)
+                if not template:
+                    return self.translations.Exceptions.translation_error(
+                            "saved_color",
+                            ctx.user.language,
+                            ctx.bot.dev_user.display_name or ""
+                    )
 
         if not tmi_color and not color_hex:
             if not user:

@@ -15,21 +15,8 @@ class ReverseCmd(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="reverse", aliases=["invert"])
-    async def reverse(self, ctx: Context, *, content) -> Response:  # NOQA
+    async def reverse(self, ctx: Context, *, content: str) -> Response:  # NOQA
         return self.translations.Exceptions.echo(content[::-1])
 
 

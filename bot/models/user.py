@@ -1,9 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-from zoneinfo import ZoneInfo
+import contextlib
+from datetime import datetime, tzinfo
+from typing import TYPE_CHECKING, Literal, overload
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from async_lru import alru_cache
 from tortoise import fields
+from tzfpy import get_tz
 
 from bot.models.base import Base, ContentMixin, TimestampMixin
 from bot.models.user_extras import MessagesLog, NickHistory
@@ -11,7 +15,7 @@ from bot.utils.string_manipulation import StringTools
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-    from bot.ext import Response, TranslationBase
+    from bot.ext import Context, Response, TranslationBase
     from bot.models.user_extras import (
         Annotation,
         Bug,
@@ -30,9 +34,6 @@ if TYPE_CHECKING:
         Suggest,
     )
 
-    GetReturnT = "User" | Response | None
-    from bot.ext import Context
-
 
 def _get_context_type():
     from bot.ext import Context
@@ -40,20 +41,46 @@ def _get_context_type():
     return Context
 
 
+@alru_cache(maxsize=32)
+async def get_user_tz(city: str | None, timezone: str | None, bot: Gorenmu):
+    from bot.apis.weather import OpenMeteo
+    from bot.utils import SessionsCaches
+
+    sessions_caches: SessionsCaches = SessionsCaches(bot)
+    meteo = OpenMeteo(sessions_caches.Weather.session)
+    if city and not bot.mock:
+        async with meteo as open_meteo:
+            geocoding_result = await open_meteo.geocoding(name=city)
+
+            if geocoding_result and geocoding_result.results:
+                city_data = geocoding_result.results[0]
+                if city_data.latitude and city_data.longitude:
+                    tz = get_tz(lng=city_data.longitude, lat=city_data.latitude)
+                    return ZoneInfo(tz)
+
+    if timezone:
+        with contextlib.suppress(ZoneInfoNotFoundError):
+            return ZoneInfo(timezone)
+
+    return ZoneInfo("UTC")
+
+
+
 class User(Base, TimestampMixin, ContentMixin):
-    name: str = fields.CharField(unique=True, db_index=True, max_length=64, description="Twitch username")
-    channel = fields.CharField(max_length=64, null=True, description="Twitch channel")
-    saved_color = fields.CharField(max_length=8, null=True, description="Twitch color")
-    city = fields.CharField(max_length=100, null=True)
-    city_hidden = fields.BooleanField(default=True)
-    ping = fields.BooleanField(default=True)
-    mention = fields.BooleanField(default=True)
-    block = fields.BooleanField(default=False)
-    sponsor = fields.BooleanField(default=True)
-    nickname = fields.CharField(max_length=32, null=True)
-    timestamp = fields.DatetimeField(null=True)
-    language = fields.CharField(max_length=32, null=True)
-    timezone = fields.CharField(max_length=50, default="UTC")
+    # region Hide.
+    name: fields.Field[str] = fields.CharField(unique=True, db_index=True, max_length=64, description="Twitch username")
+    channel: fields.Field[str | None] = fields.CharField(max_length=64, null=True, description="Twitch channel")  # ty: ignore[invalid-assignment] # noqa: E501
+    saved_color: fields.Field[str | None] = fields.CharField(max_length=8, null=True, description="Twitch color")  # ty: ignore[invalid-assignment] # noqa: E501
+    city: fields.Field[str] | None = fields.CharField(max_length=100, null=True)  # ty: ignore[invalid-assignment]
+    city_hidden: fields.Field[bool] = fields.BooleanField(default=True)
+    ping: fields.Field[bool] = fields.BooleanField(default=True)
+    mention: fields.Field[bool] = fields.BooleanField(default=True)
+    block: fields.Field[bool] = fields.BooleanField(default=False)
+    sponsor: fields.Field[bool] = fields.BooleanField(default=True)
+    nickname: fields.Field[str | None] = fields.CharField(max_length=32, null=True)  # ty: ignore[invalid-assignment]
+    timestamp: fields.Field[datetime | None] = fields.DatetimeField(null=True)  # ty: ignore[invalid-assignment]
+    language: fields.Field[str | None] = fields.CharField(max_length=32, null=True)  # ty: ignore[invalid-assignment]
+    timezone: fields.Field[str] = fields.CharField(max_length=50, default="UTC")
     cookies: fields.ReverseRelation[Cookies]
     player: fields.ReverseRelation[Player]
     pets: fields.ReverseRelation[Pets]
@@ -76,7 +103,7 @@ class User(Base, TimestampMixin, ContentMixin):
     markov: fields.ReverseRelation[MarkovUsers]
     markov_channels: fields.ReverseRelation[MarkovUserChannel]
 
-    # translations: Translations = None
+    # endregion
     user_id: int
 
     class Meta:
@@ -85,12 +112,12 @@ class User(Base, TimestampMixin, ContentMixin):
     def __str__(self) -> str:
         return f"{self.nickname}" if self.sponsor and self.nickname else f"@{self.name}"
 
-    @property
-    def tz(self):
-        return ZoneInfo(self.timezone)
+    async def tz(self, bot: Gorenmu) -> tzinfo:
+        self._cached_tz = await get_user_tz(city=self.city, timezone=self.timezone, bot=bot)  # NOQA
+        return self._cached_tz
 
     @staticmethod
-    async def create_or_update(ctx: Context) -> User | None:
+    async def create_or_update(ctx: Context) -> User:
         user = await ctx.bot.memcache.User.get(user_id=int(ctx.author.id))
         if not user:
             if instance := await User.get_or_none(id=int(ctx.author.id)):
@@ -161,9 +188,21 @@ class User(Base, TimestampMixin, ContentMixin):
             return None
 
     @staticmethod
+    @overload
+    async def find_by_name(
+        name: str, ctx_bot: Context | Gorenmu, translations: TranslationBase | None, is_none: Literal[True]
+    ) -> User | Response | None: ...
+
+    @staticmethod
+    @overload
+    async def find_by_name(
+        name: str, ctx_bot: Context | Gorenmu, translations: TranslationBase | None, is_none: Literal[False] = False
+    ) -> User | Response: ...
+
+    @staticmethod
     async def find_by_name(
         name: str, ctx_bot: Context | Gorenmu, translations: TranslationBase | None, is_none: bool = False
-    ) -> GetReturnT:
+    ) -> User | Response | None:
         bot = ctx_bot.bot if isinstance(ctx_bot, _get_context_type()) else ctx_bot
         user = await bot.memcache.User.get_by_name(name=name)
         if not user:
@@ -176,9 +215,21 @@ class User(Base, TimestampMixin, ContentMixin):
         return user
 
     @staticmethod
+    @overload
+    async def find_by_id(
+        user_id: int, ctx_bot: Context, translations: TranslationBase | None, is_none: Literal[True]
+    ) -> User | Response | None: ...
+
+    @staticmethod
+    @overload
+    async def find_by_id(
+        user_id: int, ctx_bot: Context, translations: TranslationBase | None, is_none: Literal[False] = False
+    ) -> User | Response: ...
+
+    @staticmethod
     async def find_by_id(
         user_id: int, ctx_bot: Context, translations: TranslationBase | None, is_none: bool = False
-    ) -> GetReturnT:
+    ) -> User | Response | None:
         bot = ctx_bot.bot if isinstance(ctx_bot, _get_context_type()) else ctx_bot
         user = await bot.memcache.User.get(user_id=user_id)
         if not user:
@@ -191,13 +242,33 @@ class User(Base, TimestampMixin, ContentMixin):
         return user
 
     @staticmethod
+    @overload
+    async def get_user(
+        ctx_bot: Context | Gorenmu,
+        translations: TranslationBase | None,
+        name: str | None = None,
+        user_id: int | None = None,
+        is_none: Literal[True] = ...,
+    ) -> User | Response | None: ...
+
+    @staticmethod
+    @overload
+    async def get_user(
+        ctx_bot: Context | Gorenmu,
+        translations: TranslationBase | None,
+        name: str | None = None,
+        user_id: int | None = None,
+        is_none: Literal[False] = False,
+    ) -> User | Response: ...
+
+    @staticmethod
     async def get_user(
         ctx_bot: Context | Gorenmu,
         translations: TranslationBase | None,
         name: str | None = None,
         user_id: int | None = None,
         is_none: bool = False,
-    ) -> GetReturnT:
+    ) -> User | Response | None:
         if name:
             return await User.find_by_name(name=name, ctx_bot=ctx_bot, translations=translations, is_none=is_none)
         elif user_id:
@@ -213,17 +284,23 @@ class User(Base, TimestampMixin, ContentMixin):
         translations: TranslationBase | None,
         name: str | None = None,
         user_id: int | None = None,
-    ) -> GetReturnT:
+    ) -> User | None:
         return await User.get_user(ctx_bot, translations, name, user_id, is_none=True)
 
     def get_lang(self) -> str:
         return self.language.lower() if self.language else ""
 
+    def get_timezone(self):
+        if self.city:
+            ...
+        if self.timezone:
+            return self.timezone
+
 
 class TwitchTokens(Base, TimestampMixin):
     user = fields.ForeignKeyField("models.User", related_name="TwitchTokens", unique=True)
-    token = fields.CharField(max_length=255, null=True)
-    refresh = fields.CharField(max_length=255, null=True)
+    token: str | None = fields.CharField(max_length=255, null=True)
+    refresh: str | None = fields.CharField(max_length=255, null=True)
     removed = fields.BooleanField(default=False)
 
     class Meta:

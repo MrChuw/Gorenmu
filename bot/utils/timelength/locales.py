@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 from collections.abc import Callable
+from datetime import UTC, tzinfo
 from fractions import Fraction
 from importlib import util
 from typing import Any
@@ -16,7 +17,7 @@ from bot.utils.timelength.errors import (
     InvalidScaleError,
     NoValidScalesError,
 )
-from bot.utils.timelength.parsers.date_parser import DateParserConfig
+from bot.utils.timelength.parsers.date_parser import DateOrder, DateParserConfig
 
 
 class Locale:
@@ -24,11 +25,14 @@ class Locale:
     Represents a `Locale` context used for parsing lengths of time.
 
     #### Attributes
-    - config_location: `str | os.PathLike = "english.json"` — The path to the config file for this `Locale`.
+    - config_location: `str | os.PathLike[str] = "english.json"` — The path to the config file for this `Locale`.
     - flags: `FailureFlags | None = None` — The flags that will cause parsing to fail.
         - If passed, flags loaded from the config will be overwritten.
     - settings: `ParserSettings | None = None` — The settings for the parser.
         - If passed, settings loaded from the config will be overwritten.
+    - dateconfig: `DateParserConfig | None = None` — Configuration for date parsing.
+        - If passed, this is used as-is. Otherwise a `DateParserConfig` is built using the
+            `date_settings` block of the config (falling back to `default_order="DM"`, `timezone=UTC`).
 
     #### Properties
     - `parser` — Return the parser function attached to the Locale.
@@ -38,12 +42,12 @@ class Locale:
     - `hhmmss_delimiters` — Return the hhmmss delimiters if valid.
     - `decimal_delimiters` — Return the decimal delimiters if valid.
     - `thousand_delimiters` — Return the thousand delimiters if valid.
-    - `fraction_delimiters` — Return the fraction delimiters if valid.
     - `delimiters` — Return a list of all delimiters if valid.
     - `specials` — Return a list of all special characters.
     - `usable_scales` — Return a list of valid and enabled scales.
     - `usable_numerals` — Return a list of valid and enabled numerals.
     - `base_scale` — Return the base scale for the locale.
+    - `timezone` — Convenience get/set for `dateconfig.timezone`.
 
     #### Methods
     - `get_scale()` — Get the scale that contains a specific value in its terms list, if any.
@@ -75,15 +79,14 @@ class Locale:
     scales: list[Scale]
     numerals: list[Numeral]
     dateconfig: DateParserConfig
-
-    # Date Parsing configs
+    extra_data: dict[str, Any]
 
     def __init__(
         self,
         config_location: str | os.PathLike[str] = "english.json",
-        flags: FailureFlags | None = None,  # NOQA
+        flags: FailureFlags | None = None,
         settings: ParserSettings | None = None,
-        dateconfig: DateParserConfig = None,
+        dateconfig: DateParserConfig | None = None,
     ) -> None:
         self._config_location: str = (
             os.fspath(config_location) if isinstance(config_location, os.PathLike) else config_location
@@ -111,31 +114,35 @@ class Locale:
         self._date_delimiters: list[str] = self._get_config_or_raise("date_delimiters", list)
         self._validate_delimiters()
 
-        self._scales_json = self._get_config_or_raise("scales", dict)
+        self._scales_json: dict[str, Any] = self._get_config_or_raise("scales", dict)
 
-        self.dateconfig = dateconfig
+        self.dateconfig = dateconfig if dateconfig is not None else self._build_default_dateconfig()
 
-        self.raw: Scale
-        self.microsecond: Scale
-        self.millisecond: Scale
-        self.second: Scale
-        self.minute: Scale
-        self.hour: Scale
-        self.day: Scale
-        self.week: Scale
-        self.month: Scale
-        self.year: Scale
-        self.decade: Scale
-        self.century: Scale
-        self.scales: list[Scale] = []
+        self.scales = []
         self._load_scales(self._scales_json)
         self._validate_scales()
 
         self._numerals_json: dict[str, dict[str, Any]] = self._get_config_or_raise("numerals", dict)
-        self.numerals: list[Numeral] = []
+        self.numerals = []
         self._load_numerals(self._numerals_json)
 
-        self.extra_data: dict[str, Any] = self._get_config_or_raise("extra_data", dict)
+        self.extra_data = self._get_config_or_raise("extra_data", dict)
+
+    def _build_default_dateconfig(self) -> DateParserConfig:
+        """Build a `DateParserConfig` from the config's optional `date_settings` block."""
+        date_settings: dict[str, Any] = self._config.get("date_settings") or {}
+        raw_order: str = str(date_settings.get("default_order", "DM")).upper()
+        default_order: DateOrder = "MD" if raw_order == "MD" else "DM"
+        return DateParserConfig(default_order=default_order, timezone=UTC)
+
+    @property
+    def timezone(self) -> tzinfo:
+        """Convenience accessor for `self.dateconfig.timezone`."""
+        return self.dateconfig.timezone
+
+    @timezone.setter
+    def timezone(self, value: tzinfo) -> None:
+        self.dateconfig.timezone = value
 
     @property
     def parser(self) -> Callable[[str, Locale], ParsedTimeLength]:
@@ -224,14 +231,12 @@ class Locale:
 
     @property
     def date_operators(self) -> list[str]:
-        """Return the date delimiters if valid."""
-        self._validate_delimiters()
+        """Return the date operators."""
         return self._date_operators
 
     @date_operators.setter
     def date_operators(self, value: list[str]) -> None:
         self._date_operators = value
-        self._validate_delimiters()
 
     @property
     def delimiters(self) -> list[str]:
@@ -365,7 +370,7 @@ class Locale:
                 self, f"Parser function {module_name!r} not found in parser file: {self._parser_file!r}"
             ) from e
 
-    def _load_flags(self, flags: FailureFlags = None) -> FailureFlags:
+    def _load_flags(self, flags: FailureFlags | None = None) -> FailureFlags:
         """Load the flags from the config or the passed flags."""
 
         if flags is None:
@@ -395,10 +400,10 @@ class Locale:
                 raise InvalidLocaleError(self, f"Invalid setting provided in config: {key!r}") from e
         return settings
 
-    def _load_scales(self, scales_json: dict) -> None:
+    def _load_scales(self, scales_json: dict[str, Any]) -> None:
         """Load the scales from the config."""
 
-        def process_scale(_scale_json: dict, scale_name: str) -> None:
+        def process_scale(_scale_json: dict[str, Any], scale_name: str) -> None:
             if not scale_name:
                 raise InvalidScaleError(scale_name, "A scale key is empty.")
             elif any(key not in _scale_json for key in ["scale", "singular", "plural", "terms"]):
@@ -445,7 +450,7 @@ class Locale:
             if scale_name not in default_scales:
                 process_scale(scales_json[scale_name], scale_name)
 
-    def _load_numerals(self, numerals_json: dict) -> None:
+    def _load_numerals(self, numerals_json: dict[str, Any]) -> None:
         """Load the numerals from the config."""
 
         for numeral_name in numerals_json:
@@ -471,8 +476,7 @@ class Locale:
                 if isinstance(numerals_json[numeral_name]["value"], str)
                 else float(numerals_json[numeral_name]["value"])
             )
-            # terms: tuple[str, ...] = tuple(numerals_json[numeral_name]["terms"])
-            terms = numerals_json[numeral_name]["terms"]
+            terms: list[str] = numerals_json[numeral_name]["terms"]
             self.numerals.append(Numeral(numeral_name, numeral_type, value, terms))
 
     def _get_config_or_raise(self, key: str, target_type: type) -> Any:
@@ -538,44 +542,13 @@ class Locale:
 
 
 class English(Locale):
-    """---
-    Represents the `English` context used for parsing lengths of time.
-
-    #### Attributes
-    - flags: `FailureFlags | None = None` — The flags that will cause parsing to fail.
-        - If not `None`, flags loaded from the config will be overwritten.
-    - settings: `ParserSettings | None = None` — The settings for the parser.
-        - If not `None`, settings loaded from the config will be overwritten.
-
-    #### Properties
-    - `parser` — Return the parser function attached to the Locale.
-    - `connectors` — Return the connectors if valid.
-    - `segmenters` — Return the segmenters if valid.
-    - `allowed_terms` — Return the allowed terms.
-    - `hhmmss_delimiters` — Return the hhmmss delimiters if valid.
-    - `decimal_delimiters` — Return the decimal delimiters if valid.
-    - `thousand_delimiters` — Return the thousand delimiters if valid.
-    - `fraction_delimiters` — Return the fraction delimiters if valid.
-    - `delimiters` — Return a list of all delimiters if valid.
-    - `specials` — Return a list of all special characters.
-    - `usable_scales` — Return a list of valid and enabled scales.
-    - `usable_numerals` — Return a list of valid and enabled numerals.
-    - `base_scale` — Return the base scale for the locale.
-
-    #### Methods
-    - `get_scale()` — Get the scale that contains a specific value in its terms list, if any.
-    - `get_numeral()` — Get the numeral that contains a specific value in its terms list, if any.
-
-    #### Raises
-    - `InvalidLocaleError` when `english.json` does not exist or is malformed.
-    - `InvalidParserError` when `self.parser` is not callable.
-    - `NoValidScalesError` when no `Scale` is valid during validation.
-    - `InvalidScaleError` when a `Scale` is invalid during initialization.
-    - `InvalidNumeralError` when a `Numeral` is invalid during initialization.
-    """
+    """Represents the `English` context used for parsing lengths of time. See `Locale` for details."""
 
     def __init__(
-        self, flags: FailureFlags = None, settings: ParserSettings | None = None, dateconfig: DateParserConfig = None
+        self,
+        flags: FailureFlags | None = None,
+        settings: ParserSettings | None = None,
+        dateconfig: DateParserConfig | None = None,
     ) -> None:
         super().__init__("english.json", flags, settings, dateconfig)
 
@@ -585,44 +558,13 @@ class English(Locale):
 
 
 class Spanish(Locale):
-    """---
-    Represents the `Spanish` context used for parsing lengths of time.
-
-    #### Attributes
-    - flags: `FailureFlags | None = None` — The flags that will cause parsing to fail.
-        - If not `None`, flags loaded from the config will be overwritten.
-    - settings: `ParserSettings | None = None` — The settings for the parser.
-        - If not `None`, settings loaded from the config will be overwritten.
-
-    #### Properties
-    - `parser` — Return the parser function attached to the Locale.
-    - `connectors` — Return the connectors if valid.
-    - `segmenters` — Return the segmenters if valid.
-    - `allowed_terms` — Return the allowed terms.
-    - `hhmmss_delimiters` — Return the hhmmss delimiters if valid.
-    - `decimal_delimiters` — Return the decimal delimiters if valid.
-    - `thousand_delimiters` — Return the thousand delimiters if valid.
-    - `fraction_delimiters` — Return the fraction delimiters if valid.
-    - `delimiters` — Return a list of all delimiters if valid.
-    - `specials` — Return a list of all special characters.
-    - `usable_scales` — Return a list of valid and enabled scales.
-    - `usable_numerals` — Return a list of valid and enabled numerals.
-    - `base_scale` — Return the base scale for the locale.
-
-    #### Methods
-    - `get_scale()` — Get the scale that contains a specific value in its terms list, if any.
-    - `get_numeral()` — Get the numeral that contains a specific value in its terms list, if any.
-
-    #### Raises
-    - `InvalidLocaleError` when `spanish.json` does not exist or is malformed.
-    - `InvalidParserError` when `self.parser` is not callable.
-    - `NoValidScalesError` when no `Scale` is valid during validation.
-    - `InvalidScaleError` when a `Scale` is invalid during initialization.
-    - `InvalidNumeralError` when a `Numeral` is invalid during initialization.
-    """
+    """Represents the `Spanish` context used for parsing lengths of time. See `Locale` for details."""
 
     def __init__(
-        self, flags: FailureFlags = None, settings: ParserSettings | None = None, dateconfig: DateParserConfig = None
+        self,
+        flags: FailureFlags | None = None,
+        settings: ParserSettings | None = None,
+        dateconfig: DateParserConfig | None = None,
     ) -> None:
         super().__init__("spanish.json", flags, settings, dateconfig)
 
@@ -632,44 +574,13 @@ class Spanish(Locale):
 
 
 class Portuguese(Locale):
-    """---
-    Represents the `Portuguese` context used for parsing lengths of time.
-
-    #### Attributes
-    - flags: `FailureFlags | None = None` — The flags that will cause parsing to fail.
-        - If not `None`, flags loaded from the config will be overwritten.
-    - settings: `ParserSettings | None = None` — The settings for the parser.
-        - If not `None`, settings loaded from the config will be overwritten.
-
-    #### Properties
-    - `parser` — Return the parser function attached to the Locale.
-    - `connectors` — Return the connectors if valid.
-    - `segmenters` — Return the segmenters if valid.
-    - `allowed_terms` — Return the allowed terms.
-    - `hhmmss_delimiters` — Return the hhmmss delimiters if valid.
-    - `decimal_delimiters` — Return the decimal delimiters if valid.
-    - `thousand_delimiters` — Return the thousand delimiters if valid.
-    - `fraction_delimiters` — Return the fraction delimiters if valid.
-    - `delimiters` — Return a list of all delimiters if valid.
-    - `specials` — Return a list of all special characters.
-    - `usable_scales` — Return a list of valid and enabled scales.
-    - `usable_numerals` — Return a list of valid and enabled numerals.
-    - `base_scale` — Return the base scale for the locale.
-
-    #### Methods
-    - `get_scale()` — Get the scale that contains a specific value in its terms list, if any.
-    - `get_numeral()` — Get the numeral that contains a specific value in its terms list, if any.
-
-    #### Raises
-    - `InvalidLocaleError` when `spanish.json` does not exist or is malformed.
-    - `InvalidParserError` when `self.parser` is not callable.
-    - `NoValidScalesError` when no `Scale` is valid during validation.
-    - `InvalidScaleError` when a `Scale` is invalid during initialization.
-    - `InvalidNumeralError` when a `Numeral` is invalid during initialization.
-    """
+    """Represents the `Portuguese` context used for parsing lengths of time. See `Locale` for details."""
 
     def __init__(
-        self, flags: FailureFlags = None, settings: ParserSettings | None = None, dateconfig: DateParserConfig = None
+        self,
+        flags: FailureFlags | None = None,
+        settings: ParserSettings | None = None,
+        dateconfig: DateParserConfig | None = None,
     ) -> None:
         super().__init__("portuguese.json", flags, settings, dateconfig)
 
@@ -693,24 +604,19 @@ class Guess:
 
     #### Properties
     - flags: `FailureFlags | None = None` — The flags that will cause parsing to fail.
-        - If not `None`, flags loaded from the config will be overwritten.
-        - Will be passed to each `Locale` in `self.locales` during initialization.
-        - Access each `Locale` in `self.locales` to set individually customized flags,
-            or to update the flags post-initialization.
     - settings: `ParserSettings | None = None` — The settings for the parser.
-        - If not `None`, settings loaded from the config will be overwritten.
-        - Will be passed to each `Locale` in `self.locales` during initialization.
-        - Access each `Locale` in `self.locales` to set individually customized settings,
-            or to update the settings post-initialization.
 
     #### Raises
     - `InvalidLocaleError` if any of the `Locale` configs are malformed or missing.
     """
 
     def __init__(
-        self, flags: FailureFlags = None, settings: ParserSettings | None = None, dateconfig: DateParserConfig = None
+        self,
+        flags: FailureFlags | None = None,
+        settings: ParserSettings | None = None,
+        dateconfig: DateParserConfig | None = None,
     ) -> None:
-        self._flags: FailureFlags = flags
+        self._flags: FailureFlags | None = flags
         self._settings: ParserSettings | None = settings
         self.locales: list[Locale] = [
             English(flags=flags, settings=settings, dateconfig=dateconfig),
@@ -719,7 +625,7 @@ class Guess:
         ]
 
     @property
-    def flags(self) -> FailureFlags:
+    def flags(self) -> FailureFlags | None:
         """Return the flags for the Guess."""
         return self._flags
 

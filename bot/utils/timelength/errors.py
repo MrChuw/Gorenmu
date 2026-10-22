@@ -36,12 +36,11 @@ class PotentialTimeDeltaError(OverflowError):
 class InvalidScaleError(ValueError):
     """Exception for when a `Scale` is invalid."""
 
-    def __init__(self, scale_name: str = "", message="") -> None:
+    def __init__(self, scale_name: str = "", message: str = "") -> None:
         if scale_name and not message:
             message = f'"{scale_name}" is missing required attributes.'
         else:
             default_message = "A scale is missing required attributes."
-
             message = message or default_message
 
         super().__init__(message)
@@ -65,7 +64,6 @@ class InvalidNumeralError(ValueError):
             message = f'"{numeral_name}" is missing required attributes.'
         else:
             default_message = "A numeral is missing required attributes."
-
             message = message or default_message
 
         super().__init__(message)

@@ -5,6 +5,7 @@ from .dictionary import Dictionary
 from .discord_webhook.discord_webhook import DiscordEmbed, DiscordWebhook
 from .emotes import Emotes
 from .ivrfi import ApiIvrFi
+from .mathjs import FormatOptions, Mathjs, Notation
 from .translate import GoogleTranslator
 
 __all__ = [
@@ -17,4 +18,7 @@ __all__ = [
     GoogleTranslator,
     DiscordEmbed,
     DiscordWebhook,
+    Mathjs,
+    FormatOptions,
+    Notation,
 ]

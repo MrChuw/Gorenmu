@@ -23,19 +23,6 @@ class PetCmd(commands.CustomComponent):
         self.Emotes: Emotes = Emotes(bot, self.SessionsCaches.Emotes.session)
         self.prohibited_name = ["buy", "list", "name", "sell"]
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
     @commands.command(name="teste", aliases=[])
     async def teste(self, ctx: Context, *, name: str = "") -> Response:
         teste = self.translations.PetList.get_pet("troll")

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -7,27 +8,10 @@ from bot.ext import Context, Response, commands
 from bot.models import Status
 from bot.types.named_tuples import RAfkNamedTuple
 
-from .translations import Translations
+from .translations import Translations, afk_keys
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
-afk_alias = [
-    "read",
-    "brb",
-    "eat",
-    "food",
-    "play",
-    "game",
-    "sleep",
-    "night",
-    "study",
-    "art",
-    "watch",
-    "shower",
-    "code",
-    "work",
-]
 
 
 class AFKCmd(commands.CustomComponent):
@@ -35,24 +19,16 @@ class AFKCmd(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
 
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: Context) -> bool:  # NOQA
-        return True
-
-    @commands.command(name="afk", aliases=afk_alias)
+    @commands.command(name=afk_keys[0], aliases=afk_keys[1:])
     async def afk(self, ctx: Context, *, content: str = "") -> Response:
         if len(content) >= 450:
             return self.translations.Exceptions.too_much_characters(ctx)
         afk = self.translations.AFK.afks().get(ctx.invoke_by)
+        if not afk:
+            exception = Exception(f"Error in get status for {json.dumps(ctx.invoke_by, indent=2)}.")
+            await self.bot.CommandHandler.send_bug(ctx, exception)
+            return self.translations.Exceptions.error_not_registered(dev=self.bot.dev_user.display_name or "")
         await Status.go_afk(ctx=ctx, status=afk, content=content)
         if not content:
             return self.translations.AFK.afk(afk.leave, afk.emoji)
@@ -62,8 +38,8 @@ class AFKCmd(commands.CustomComponent):
     async def return_from_afk(self, ctx: Context) -> Response | bool:
         translations = self.translations
         if (
-            not ctx.bot.CommandHandler.is_enabled(ctx, "afk")
-            or not ctx.bot.channels[ctx.channel.name].online
+            not await ctx.bot.CommandHandler.is_enabled(ctx, "afk")
+            or not ctx.bot.channels.is_online(ctx)
             or (ctx.command is not None and ctx.command.name in ["afk", "rafk"])
         ):
             return False
@@ -71,8 +47,12 @@ class AFKCmd(commands.CustomComponent):
         if not ctx.user or user_status.online:
             return False
         status = translations.AFK.afks().get(user_status.alias)
+        if not status:
+            exception = Exception(f"Error in get status for {json.dumps(user_status, indent=2)}.")
+            await self.bot.CommandHandler.send_bug(ctx, exception)
+            return self.translations.Exceptions.error_not_registered(dev=self.bot.dev_user.display_name or "")
         humanize = translations.SupportTools.TimeTools.Humanize(ctx.user.language)
-        a_time = humanize.created_a_time(user_status.updated_at, ctx.user.tz)
+        a_time = humanize.created_a_time(user_status.updated_at, await ctx.user.tz(self.bot))
         clock_emojis = {
             0.0: "🕛",
             0.5: "🕧",
@@ -99,7 +79,9 @@ class AFKCmd(commands.CustomComponent):
             11.0: "🕚",
             11.5: "🕦",
         }
-        delta = datetime.now(ctx.user.tz) - user_status.updated_at.astimezone(ctx.user.tz)
+        delta = datetime.now(await ctx.user.tz(self.bot)) - user_status.updated_at.astimezone(
+            await ctx.user.tz(self.bot)
+        )
         rounded_hours = round(((delta.total_seconds() / 3600) % 12) * 2) / 2
         clock_emoji = clock_emojis.get(rounded_hours, "🕛")
 
@@ -117,7 +99,7 @@ class AFKCmd(commands.CustomComponent):
         user_status.online = True
         await user_status.save()
         afk_tuple = RAfkNamedTuple(
-            content=user_status.message,
+            content=user_status.message or "",
             updated_at=user_status.updated_at,
             alias=user_status.alias,
             afk=user_status,

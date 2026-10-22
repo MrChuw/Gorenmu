@@ -21,26 +21,13 @@ class CountCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="count", aliases=[])
     async def count(self, ctx: Context, *, content: str) -> Response:  # NOQA
         if (urls := URLExtract().find_urls(text=content)) and "type:url" in content:
             content = ""
             cache_session = self.SessionsCaches.Count
             for url in urls:
-                response = await cache_session.session.get(url)
+                response = await cache_session.session.get(str(url))
                 content += f"{await response.text()}"
         uppercase_count = len(re.findall(r"[A-Z]", content))
         punctuations_count = len(re.findall(f"[{re.escape(string.punctuation)}]", content))

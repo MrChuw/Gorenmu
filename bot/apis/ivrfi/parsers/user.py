@@ -222,7 +222,7 @@ class Game:
 class Stream:
     title: str | None = None
     id: str | None = None
-    created_at: datetime | None = None
+    created_at: datetime = None  # ty: ignore[invalid-assignment]
     type: str | None = None
     viewers_count: int | None = None
     game: Game | None = None

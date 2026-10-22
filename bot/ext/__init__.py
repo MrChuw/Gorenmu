@@ -1,7 +1,7 @@
 from .bot import TypesBot
 from .commands import ChatMessage, Command
 from .context import Context
-from .routines import Routine, routine
+from .routines import Day, Routine, routine
 from .translations import Admonitions, CommandExemples, Response, TBase, TranslationBase, TranslationEntry
 
 __all__ = [
@@ -11,6 +11,7 @@ __all__ = [
     Context,
     Routine,
     routine,
+    Day,
     Admonitions,
     CommandExemples,
     Response,

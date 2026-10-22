@@ -31,6 +31,9 @@ class RoutineHandler:
     async def add_routine(self, name: str, coro):
         await self.routine_queue.async_q.put((name, coro))
 
+    def add_routine_sync(self, name: str, coro):
+        self.routine_queue.sync_q.put((name, coro))
+
     async def stop_routine(self, name: str):
         task = self.running_tasks.get(name)
         if task and not task.done():

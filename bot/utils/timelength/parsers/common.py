@@ -38,11 +38,13 @@ def character_type(text: str) -> CharacterType:
         return CharacterType.SYMBOL
 
 
-def value_type(text: str, scale_terms: list, numeral_terms: list, symbol_terms: list) -> ValueType:
+def value_type(
+    text: str | float | datetime, scale_terms: list[str], numeral_terms: list[str], symbol_terms: list[str]
+) -> ValueType:
     """Check the type of string based on the `ValueType` enum."""
     if isinstance(text, datetime):
         return ValueType.DATE
-    elif is_number(text):
+    elif isinstance(text, str) and is_number(text):
         return ValueType.NUMBER
     elif text in scale_terms:
         return ValueType.SCALE
@@ -61,7 +63,7 @@ def remove_diacritics(text: str) -> str:
 
 
 class DetectNumberSegmentHelper:
-    def __init__(self, locale: Locale):
+    def __init__(self, locale: Locale) -> None:
         self.locale = locale
 
     def is_number_segment_char(self, char: str) -> bool:

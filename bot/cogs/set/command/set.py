@@ -19,19 +19,6 @@ class SetCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
     @commands.group(name="set", aliases=[], invoke_fallback=True)
     async def set(self, ctx: Context, *, args) -> Response:  # NOQA
         return self.translations.Exceptions.echo(args)
@@ -85,10 +72,10 @@ class SetCmd(commands.CustomComponent):
             await ctx.user.save()
             return translations.color_removed()
         match = re.match(r"^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", args)
-        color = f"#{match[1].lower()}" if match else ctx.author.color
+        color = f"#{match[1].lower()}" if match else ctx.author_colour_hex
         ctx.user.color = color
         await ctx.user.save()
-        return translations.color_changed(color)
+        return translations.color_changed(color or "")
 
     @set.command(name="reminder", aliases=[], pipeble=False)
     async def set_reminder(self, ctx: Context, *, args: str) -> Response:
@@ -111,11 +98,14 @@ class SetCmd(commands.CustomComponent):
         words = translations.add_remove_lang()
         _words = self.StringTools.extract_words_simple(args)
         add, remove, clean = words.get("add"), words.get("remove"), words.get("clean")
-        channel = self.bot.channels[ctx.channel.name.lower()]
+        channel = self.bot.channels[ctx.channel_name.lower()]
+        if not channel:
+            await self._send_bug(ctx, ctx.channel_name)
+            return self.translations.Exceptions.error_not_registered(ctx.bot.dev_user.name or "", ctx)
         if channel.removed:
             return translations.who()
         if action.lower() not in ["add", "remove", "clean", *clean, *add, *remove]:
-            await self._send_bug(ctx, ctx.channel.name)
+            await self._send_bug(ctx, ctx.channel_name)
             return translations.add_remove(action)
         if action.lower() in ["add", *add]:
             for world in _words:
@@ -137,8 +127,11 @@ class SetCmd(commands.CustomComponent):
     @set.command(name="enable", aliases=["disable"], pipeble=False)
     async def set_enable_disable(self, ctx: Context, arg: str) -> Response:
         translations = self.translations.Enable
-        channel = self.bot.channels[ctx.channel.name.lower()]
-        invoked = ctx.invoked_with.lower()
+        channel = self.bot.channels[ctx.channel_name.lower()]
+        if not channel:
+            await self._send_bug(ctx, ctx.channel_name)
+            return self.translations.Exceptions.error_not_registered(ctx.bot.dev_user.name or "", ctx)
+        invoked = (ctx.invoked_with or "").lower()
         protected_commands = {"set", "enable", "disable", "help", "start", "stop"}
         if arg.lower() in protected_commands:
             return translations.why(arg)
@@ -179,7 +172,10 @@ class SetCmd(commands.CustomComponent):
         prefix_size = 2
         if len(arg) >= prefix_size:
             return translations.too_long(arg, prefix_size)
-        channel = self.bot.channels[ctx.channel.name.lower()]
+        channel = self.bot.channels[ctx.channel_name.lower()]
+        if not channel:
+            await self._send_bug(ctx, ctx.channel_name)
+            return self.translations.Exceptions.error_not_registered(ctx.bot.dev_user.name or "", ctx)
         channel.prefix = arg
         await channel.save()
         return translations.prefix_changed(arg)
@@ -188,8 +184,11 @@ class SetCmd(commands.CustomComponent):
     @set.command(name="start", aliases=["on", "stop", "off"], pipeble=False, whispable=True)
     async def set_start_stop(self, ctx: Context) -> Response:
         translations = self.translations.StartStop
-        invoked = ctx.invoked_with.lower()
-        channel = self.bot.channels[ctx.channel.name.lower()]
+        invoked = (ctx.invoked_with or "").lower()
+        channel = self.bot.channels[ctx.channel_name.lower()]
+        if not channel:
+            await self._send_bug(ctx, ctx.channel_name)
+            return self.translations.Exceptions.error_not_registered(ctx.bot.dev_user.name or "", ctx)
         if invoked.lower() in ["set start", "set on"]:
             if channel.online:
                 return translations.already_on()

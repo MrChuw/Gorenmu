@@ -51,7 +51,7 @@ def main() -> None:
     # Diretórios de Destino
     cog_dir = root / f"bot/cogs/{command_name}"
     bot_dir = cog_dir / "command"
-    locales_dir = cog_dir / "locales"
+    locales_dir = bot_dir / "locales"
     tests_dir = root / f"tests/tests/cogs/{command_name}/{command_name}"
 
     # Lista de arquivos a criar

@@ -22,43 +22,32 @@ class UserIdCmd(commands.CustomComponent):
         self.StringTools: StringTools = StringTools()
         self.BestLogs: BestLogs = BestLogs(bot, self.SessionsCaches.UserId.session)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     # TODO: Make twitch gql shit later with invoke by u
     @commands.command(name='userid', aliases=["u"])
-    async def userid(self, ctx: Context, user: str | None = None) -> Response:
-        if isinstance(ctx.reply_to, ChatMessageReply):
-            user = ctx.message.reply.parent_user.name
-        user = user or ctx.author.name
-        user_name = user
+    async def userid(self, ctx: Context, user_input: str | None = None) -> Response:
+        reply = ctx.get_reply
+        if not user_input and not reply:
+            user_input = user_input or ctx.author_name
+        if reply:
+            user_input = reply.parent_user.name or ctx.author_name
+        user_input = user_input or ctx.author_name
         try:
-            if user.isdigit():
-                user = await ctx.bot.fetch_user(id=int(user))
+            if user_input.isdigit():
+                user = await ctx.bot.fetch_user(id=int(user_input))
                 if not user:
-                    return self.translations.Exceptions.user_not_found_id(user_name)
+                    return self.translations.Exceptions.user_not_found_id(str(user_input))
                 return self.translations.UserId.id_or_name(user.display_name)
             else:
-                user = await ctx.bot.fetch_user(login=user)
+                user = await ctx.bot.fetch_user(login=user_input)
                 if not user:
-                    return self.translations.Exceptions.user_not_found_name(user_name)
+                    return self.translations.Exceptions.user_not_found_name(str(user_input))
                 return self.translations.UserId.id_or_name(user.id)
         except Exception as e:
             await self.bot.CommandHandler.send_bug(ctx, e, ping=False)
-            if user.isdigit():
-                return self.translations.UserId.unknown_id(user)
+            if user_input.isdigit():
+                return self.translations.UserId.unknown_id(user_input)
             else:
-                return self.translations.UserId.unknown_name(user)
+                return self.translations.UserId.unknown_name(user_input)
 
 
 async def setup(bot: Gorenmu) -> None:

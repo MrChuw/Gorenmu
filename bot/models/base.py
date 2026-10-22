@@ -41,7 +41,7 @@ class TimestampMixin:
 
 
 class ContentMixin:
-    content: CharFieldStr = fields.CharField(max_length=1200, null=True, description="Twitch message content")
+    content: str | None = fields.CharField(max_length=1200, null=True, description="Twitch message content")
 
 
 CharFieldIntStr = int | fields.CharField

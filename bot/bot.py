@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from logging import Logger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import twitchio
 from twitchio.ext import commands
@@ -64,7 +64,8 @@ class Gorenmu(TypesBot):
     async def event_oauth_authorized(self, payload: twitchio.authentication.UserTokenPayload) -> None:
         await self.TokensHandler.event_oauth_authorized(payload)
 
-    async def close(self) -> None:
+    async def close(self, **options: Any) -> None:
+        await super().close(**options)
         await self.LifecycleHandler.close()
 
     async def event_ready(self) -> None:

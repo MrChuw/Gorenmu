@@ -27,11 +27,11 @@ class UploadThings(metaclass=Singleton):
             logger.exception(f"Error posting to {url}: {e}")
         return None
 
-    async def _bytes_post(self, session: CachedSession, url: str, **kwargs) -> str:
+    async def _bytes_post(self, session: CachedSession, url: str, **kwargs) -> str | None:
         response = await self._safe_post(session, url, **kwargs)
         return (await response.read()).decode("utf-8") if response else None
 
-    async def _json_post(self, session: CachedSession, url: str, **kwargs) -> dict:
+    async def _json_post(self, session: CachedSession, url: str, **kwargs) -> dict | None:
         response = await self._safe_post(session, url, **kwargs)
         return await response.json() if response else None
 
@@ -53,7 +53,7 @@ class UploadThings(metaclass=Singleton):
                 logger.error(f"Failed to parse Imgur response: {e}")
         return None
 
-    async def shortener(self, url: str | None, tags: list[str], session: CachedSession):
+    async def shortener(self, url: str | None, tags: list[str], session: CachedSession) -> str | None:
         if url is None:
             return None
         tags += ["Gorenmu"]
@@ -108,7 +108,7 @@ class UploadThings(metaclass=Singleton):
             return data["message"]
         return None
 
-    async def upload_alias(self, data: dict, session: CachedSession):
+    async def upload_alias(self, data: dict, session: CachedSession) -> str | None:
         url = self.bot.config.ApisConfig.alias_url
         response = await self._safe_post(session, url, data=data)
         return response.url.human_repr() if response else None

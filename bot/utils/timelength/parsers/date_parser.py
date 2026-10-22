@@ -1,43 +1,55 @@
+from __future__ import annotations
+
 import contextlib
 import re
-from dataclasses import dataclass
-from datetime import UTC, datetime
+from dataclasses import dataclass, field
+from datetime import UTC, datetime, tzinfo
+from typing import Literal
+
+DateOrder = Literal["DM", "MD"]
 
 
 class DateParse:
-    def __init__(self, text: str, span: tuple[int, int], date: datetime):
-        self.text = text
-        self.span = span
-        self.date = date
+    """Represents a single date/datetime found and parsed out of a piece of text."""
+
+    __slots__ = ("text", "span", "date")
+
+    def __init__(self, text: str, span: tuple[int, int], date: datetime) -> None:
+        self.text: str = text
+        self.span: tuple[int, int] = span
+        self.date: datetime = date
+
+    def __repr__(self) -> str:
+        return f"DateParse(text={self.text!r}, span={self.span!r}, date={self.date!r})"
 
 
-@dataclass(slots=True)
+@dataclass()
 class DateParserConfig:
+    """---
+    Configuration used to control how dates are located and interpreted inside a piece of text.
+
+    #### Attributes
+    - user_formats: `list[str] | None = None` — Optional `strptime`-compatible formats tried first, in order.
+    - default_order: `Literal["DM", "MD"] = "DM"` — How to disambiguate a fully numeric date (`D/M/Y` vs `M/D/Y`)
+        when the first token isn't unambiguously a 4 digit year.
+    - base_datetime: `datetime | None = None` — The datetime dates are considered relative to.
+        Defaults to `datetime.now(timezone)` when `None`.
+    - allow_past: `bool = False` — Allow dates that fall before `base_datetime`.
+    - rollover_future: `bool = True` — Allow a past date to be rolled forward a year when `allow_rollover` is set.
+    - allow_rollover: `bool = False` — Whether rollover is actually applied.
+    - strict: `bool = True` — Only accept clearly delimited dates (`DD/MM/YYYY`, `DD/MM`).
+        When `False`, both partial and full dates are attempted regardless of the number of `/` found.
+    - timezone: `tzinfo = timezone.utc` — The timezone assigned to any date that doesn't carry one of its own.
+    """
+
     user_formats: list[str] | None = None
-    default_order: str = "DM"  # "DM" or "MD"
+    default_order: DateOrder = "DM"
     base_datetime: datetime | None = None
     allow_past: bool = False
     rollover_future: bool = True
     allow_rollover: bool = False
     strict: bool = True
-
-    def __init__(
-        self,
-        user_formats: list[str] | None = None,
-        default_order: str = "DM",
-        base_datetime: datetime | None = None,
-        allow_past: bool = False,
-        rollover_future: bool = True,
-        allow_rollover: bool = False,
-        strict: bool = True,
-    ):
-        self.user_formats = user_formats
-        self.default_order = default_order
-        self.base_datetime = base_datetime
-        self.allow_past = allow_past
-        self.rollover_future = rollover_future
-        self.allow_rollover = allow_rollover
-        self.strict = strict
+    timezone: tzinfo = field(default=UTC)
 
 
 # ---------- regex ----------
@@ -55,7 +67,6 @@ _DOUBLE_RE = re.compile(r"\b\d{1,2}[/.\-]\d{1,2}\b")
 def _normalize_year(y_int: int, y_str: str) -> int:
     if len(y_str) == 4:
         return y_int
-
     elif len(y_str) == 2 and y_int < 100:
         return 2000 + y_int
     return y_int
@@ -77,25 +88,47 @@ def _try_user_formats(text: str, formats: list[str]) -> datetime | None:
     return None
 
 
-def _try_heuristic_triplet(text: str, tzdata) -> datetime | None:
+def _try_heuristic_triplet(text: str, tzdata: tzinfo | None, default_order: DateOrder) -> datetime | None:
+    """
+    Try to resolve a fully numeric `A/B/C` date.
+
+    - If the first token is unambiguously a 4 digit year, `Y/M/D` is assumed.
+    - Otherwise, the locale's `default_order` (`DM` or `MD`) decides which of `D/M/Y` or `M/D/Y`
+        is attempted first, falling back to the other, and finally to `Y/M/D` as a last resort.
+    """
+
     parts = re.split(r"[/.\-]", text)
     if len(parts) != 3:
         return None
-    # Required order:
-    # 1) Y/M/D
-    # 2) D/M/Y
-    # 3) M/D/Y
-    s1, _, s3 = parts
-    n1, n2, n3 = map(int, parts)
 
-    candidates = [
-        (_normalize_year(n1, s1), n2, n3),  # YMD
-        (_normalize_year(n3, s3), n2, n1),  # DMY
-        (_normalize_year(n3, s3), n1, n2),  # MDY
-    ]
-    for y, m, d in candidates:
+    s1, s2, s3 = parts
+    try:
+        n1, n2, n3 = int(s1), int(s2), int(s3)
+    except ValueError:
+        return None
+
+    year_first = len(s1) == 4
+    candidates: list[tuple[int, int, int]]
+
+    if year_first:
+        candidates = [(_normalize_year(n1, s1), n2, n3)]  # Y M D
+    elif default_order == "MD":
+        candidates = [
+            (_normalize_year(n3, s3), n1, n2),  # M D Y
+            (_normalize_year(n3, s3), n2, n1),  # D M Y
+            (_normalize_year(n1, s1), n2, n3),  # Y M D (fallback)
+        ]
+    else:
+        candidates = [
+            (_normalize_year(n3, s3), n2, n1),  # D M Y
+            (_normalize_year(n3, s3), n1, n2),  # M D Y
+            (_normalize_year(n1, s1), n2, n3),  # Y M D (fallback)
+        ]
+
+    for year, month, day in candidates:
         with contextlib.suppress(ValueError):
-            return datetime(y, m, d, tzinfo=tzdata)
+            return datetime(year, month, day, tzinfo=tzdata)
+
     return None
 
 
@@ -123,8 +156,8 @@ def preprocess_dates(text: str, config: DateParserConfig | None = None) -> tuple
 
     Priority:
         1) user-defined formats (strptime)
-        2) heuristic triplets (Y/M/D → D/M/Y → M/D/Y)
-        3) partial dates (DD/MM or MM/DD)
+        2) heuristic triplets (locale-aware D/M/Y or M/D/Y, falling back to Y/M/D)
+        3) partial dates (DD/MM or MM/DD, per `default_order`)
     """
 
     cfg = config or DateParserConfig()
@@ -136,7 +169,7 @@ def preprocess_dates(text: str, config: DateParserConfig | None = None) -> tuple
     allow_rollover = cfg.allow_rollover
     strict = cfg.strict
 
-    base = base_datetime or datetime.now(UTC)
+    base = base_datetime or datetime.now(cfg.timezone)
     year_default = base.year
 
     parsed: list[DateParse] = []
@@ -166,11 +199,11 @@ def preprocess_dates(text: str, config: DateParserConfig | None = None) -> tuple
 
         # ---- 2) heuristic triplet ----
         if (not dt and raw.count("/") + raw.count("-") + raw.count(".") == 2) and (
-            candidate := _try_heuristic_triplet(raw, tzdata=base.tzinfo)
+            candidate := _try_heuristic_triplet(raw, base.tzinfo, default_order)
         ):
             dt = _is_valid_or_adjust(candidate, base, allow_past, rollover_future, allow_rollover=allow_rollover)
 
-        # ---- 3) parcial (DD/MM ou MM/DD) ----
+        # ---- 3) partial (DD/MM or MM/DD) ----
         if not dt:
             parts = re.split(r"[/.\-]", raw)
             if len(parts) == 2:
@@ -178,7 +211,7 @@ def preprocess_dates(text: str, config: DateParserConfig | None = None) -> tuple
                 with contextlib.suppress(ValueError):
                     candidate = (
                         datetime(year_default, b, a, tzinfo=base.tzinfo)
-                        if default_order.upper() == "DM"
+                        if default_order == "DM"
                         else datetime(year_default, a, b, tzinfo=base.tzinfo)
                     )
                     dt = _is_valid_or_adjust(candidate, base, allow_past, rollover_future, allow_rollover=True)

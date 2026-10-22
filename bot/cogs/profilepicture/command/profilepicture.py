@@ -19,23 +19,10 @@ class ProfilePictureCmd(commands.CustomComponent):
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.UploadThings: UploadThings = UploadThings(bot)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="profilepicture", aliases=["pfp"])
     async def profilepicture(self, ctx: Context, name: str = "") -> Response:
         translations = self.translations
-        name = self.StringTools.str2name_or(name or ctx.author.name)
+        name = self.StringTools.str2name_or(name or ctx.author_name)
         user_tmi = await ctx.bot.fetch_user(login=name)
         if not user_tmi:
             return translations.Exceptions.user_not_found_name(name)
@@ -49,7 +36,7 @@ class ProfilePictureCmd(commands.CustomComponent):
             mime_type="image/png",
             filename="profile_pic.png",
             session=session,
-            url=self.bot.config.ApisConfig.feridinha_url,
+            url=self.bot.config.ApisConfig.feridinha_url.human_repr(),
             api_key={"token": self.bot.config.ApisConfig.feridinha_key},
         )
         uploaded_shorter = None

@@ -16,19 +16,6 @@ class LeaveCmd(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
     @commands.command(name="leave", aliases=[], whispable=True)
     async def leave(self, ctx: Context) -> Response:
         if not (channel := await Channel.get_or_none(user=ctx.user)):
@@ -48,7 +35,7 @@ class LeaveCmd(commands.CustomComponent):
         for sub in channel.event_subs:
             await self.bot.delete_eventsub_subscription(channel.event_subs[sub])
         await self.bot.ChannelHandler.load_channels()
-        return self.translations.Leave.channel_removed(ctx.author.name)
+        return self.translations.Leave.channel_removed(ctx.author_name)
 
 
 async def setup(bot: Gorenmu) -> None:

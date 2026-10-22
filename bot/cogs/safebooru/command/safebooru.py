@@ -93,7 +93,7 @@ async def choices(args: str, timeout: TimeTools.Timeout, ctx: Context, command: 
             except Exception as e:
                 ctx.bot.log.error(e)
     return (
-        command.translations.SupportTools.TimeTools.Humanize.precisedelta(round(timeout.duration(), 2)),
+        command.translations.SupportTools.TimeTools.Humanize.precisedelta(round(timeout.duration() or 0, 2)),
         "error",
     )
 

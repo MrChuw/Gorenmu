@@ -5,10 +5,11 @@ import logging
 import random
 import re
 import string
+from collections.abc import Iterable
 from datetime import datetime
 from functools import lru_cache
 from string import ascii_letters, digits
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Any, Literal, Never, TypeVar, overload
 
 from unidecode import unidecode
 from urlextract import URLExtract
@@ -22,6 +23,7 @@ if TYPE_CHECKING:
 letters_and_digits = ascii_letters + digits
 url_extractor: URLExtract | None = None
 T = TypeVar("T")
+D = TypeVar("D")
 type BoolResult = tuple[str, bool | None]
 
 
@@ -118,19 +120,19 @@ class StringTools(metaclass=Singleton):
         return match[0] if (match := re.match(r"#[0-9A-Fa-f]{6}$", target)) else None
 
     @staticmethod
-    def str2name(target: str, default: str | None = None) -> str | None:
+    def str2name(target: str, default: str = "") -> str:
         if not target:
-            return default or None
+            return default or ""
         if target[0] == "@":
             target = target[1:]
         if target[-1] == ",":
             target = target[:-1]
         if target.replace("_", "").isalnum() and unidecode(target) == target:
             return target.lower()
-        raise InvalidUsernameError
+        raise InvalidUsernameError("Invalid Username.", value=target)
 
     @staticmethod
-    def str2name_or(target: str) -> str | None:
+    def str2name_or(target: str) -> str:
         if target[0] == "@":
             target = target[1:]
         if target[-1] == ",":
@@ -199,15 +201,21 @@ class StringTools(metaclass=Singleton):
             text = text.replace(f"{prefix}{option}", "").replace("  ", " ")
         return text, option
 
+    @overload
     @staticmethod
-    def extract_and_remove_field(
-        text: str, field: str, default: str | float | bool | None = None
-    ) -> tuple[str, str | None]:
+    def extract_and_remove_field(text: str, field: str) -> tuple[str, str | None]: ...
+
+    @overload
+    @staticmethod
+    def extract_and_remove_field[T](text: str, field: str, default: T) -> tuple[str, str | T]: ...
+
+    @staticmethod
+    def extract_and_remove_field(text: str, field: str, default: object = None) -> tuple[str, Any]:
         pattern = rf'{field}:(?:"(.*?)"|(\S+))'
         if match := re.search(pattern, text):
             value = match[1] or match[2]
-            text = text.replace(match[0], "")
-            return text, value
+            cleaned_text = re.sub(pattern, "", text, count=1).strip()
+            return cleaned_text, value
         return text, default
 
     @staticmethod
@@ -219,6 +227,16 @@ class StringTools(metaclass=Singleton):
         values = [m[0] or m[1] for m in matches]
         cleaned_text = re.sub(pattern, "", text).strip()
         return cleaned_text, values or default
+
+    @staticmethod
+    def extract_quotation(text: str, field: str, default: list[str] | None = None) -> tuple[str, list[str]]:
+        if default is None:
+            default = []
+        pattern = rf'{field}:"(.*?)"'
+        matches = re.findall(pattern, text)
+        cleaned_text = re.sub(pattern, "", text)
+        cleaned_text = re.sub(r'\s+', ' ', cleaned_text).strip()
+        return cleaned_text, matches or default
 
     @staticmethod
     def is_int(text: str) -> bool:
@@ -288,7 +306,6 @@ class StringTools(metaclass=Singleton):
         return text.strip(), value
 
     @staticmethod
-    @lru_cache(maxsize=32)
     def _get_compiled_logic(field: str, pos: tuple, neg: tuple, nth: tuple):
         return _get_compiled(field, pos, neg, nth)
 
@@ -323,7 +340,65 @@ class StringTools(metaclass=Singleton):
         allowed_pattern = re.compile(r'^[a-zA-Z0-9\s.,!@#$%&?*()\-\U00010000-\U0010ffff]+$')
         return bool(allowed_pattern.match(text))
 
+    @staticmethod
+    def multi_split(text: str, delimiters: list[str]) -> list[str]:
+        if not delimiters:
+            return [text]
+        pattern = "|".join(re.escape(d) for d in delimiters)
+        return [part.strip() for part in re.split(pattern, text) if part.strip()]
 
+    @staticmethod
+    @overload
+    def unpack_dynamic(iterable: Iterable[T], n: Literal[1]) -> tuple[T | None, list[T]]: ...
+
+    @staticmethod
+    @overload
+    def unpack_dynamic(iterable: Iterable[T], n: Literal[2]) -> tuple[T | None, T | None, list[T]]: ...
+
+    @staticmethod
+    @overload
+    def unpack_dynamic(iterable: Iterable[T], n: Literal[3]) -> tuple[T | None, T | None, T | None, list[T]]: ...
+
+    @staticmethod
+    @overload
+    def unpack_dynamic(iterable: Iterable[T], n: Literal[1], default: D) -> tuple[T | D, list[T]]: ...
+    @staticmethod
+    @overload
+    def unpack_dynamic(iterable: Iterable[T], n: Literal[2], default: D) -> tuple[T | D, T | D, list[T]]: ...
+    @staticmethod
+    @overload
+    def unpack_dynamic(iterable: Iterable[T], n: Literal[3], default: D) -> tuple[T | D, T | D, T | D, list[T]]: ...
+
+    @staticmethod
+    @overload
+    def unpack_dynamic(iterable: Iterable[T], n: int, default: D | None = None) -> tuple[Any, ...]: ...
+
+    @staticmethod
+    def unpack_dynamic(iterable: Iterable[T], n: int, default: D | None = None) -> Any:
+        """
+        Unpacks the first `n` items from an iterable, filling missing values with `default`,
+        and returns any remaining items as the last element.
+
+        Examples:
+            unpack_dynamic(["João"], 2, default=False)
+            -> ("João", False, [])
+
+            unpack_dynamic(["Maria", "Silva", "extra"], 2, default="")
+            -> ("Maria", "Silva", ["extra"])
+
+            unpack_dynamic([1, 2, 3, 4, 5], 3, default=0)
+            -> (1, 2, 3, [4, 5])
+
+            unpack_dynamic([], 2)
+            -> (None, None, [])
+        """
+        it = iter(iterable)
+        head = [next(it, default) for _ in range(n)]
+        rest = list(it)
+        return *head, rest
+
+
+@lru_cache(maxsize=32)
 def _get_compiled(field: str, pos: tuple, neg: tuple, nth: tuple):
     mapping = {w.lower(): True for w in pos} | {w.lower(): False for w in neg} | {w.lower(): None for w in nth}
     pattern = "|".join(re.escape(opt) for opt in sorted(mapping.keys(), key=len, reverse=True))  # NOQA

@@ -2,28 +2,58 @@ from __future__ import annotations
 
 import asyncio
 import enum
-from datetime import UTC, datetime, timedelta
+import re
+from collections.abc import Callable
+from datetime import UTC, datetime, timedelta, tzinfo
 from types import TracebackType
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from bot.utils.singleton import Singleton
 
 from .timelength import English, Guess, Locale, Portuguese, Spanish, TimeLength
+from .timelength.dataclasses import Scale
 from .timelength.parsers.date_parser import DateParserConfig, preprocess_dates
 
 if TYPE_CHECKING:
     from bot.bot import Context
 
 __all__ = [
-    preprocess_dates,
-    DateParserConfig,
-    English,
-    Spanish,
-    Guess,
-    TimeLength,
-    Portuguese,
+    "preprocess_dates",
+    "DateParserConfig",
+    "English",
+    "Spanish",
+    "Guess",
+    "TimeLength",
+    "Portuguese",
     "TimeTools",
 ]
+
+TimeUnit = Literal[
+    "delta",
+    "microseconds",
+    "milliseconds",
+    "seconds",
+    "minutes",
+    "hours",
+    "days",
+    "weeks",
+    "months",
+    "years",
+    "decades",
+    "centuries",
+]
+
+# Every unit, in the order `_convert_dispatch`/`_suppress_dispatch` below reason about them.
+_ALL_UNITS: tuple[str, ...] = (
+    "years",
+    "months",
+    "days",
+    "hours",
+    "minutes",
+    "seconds",
+    "milliseconds",
+    "microseconds",
+)
 
 
 class _State(enum.Enum):
@@ -35,140 +65,266 @@ class _State(enum.Enum):
 
 
 class TimeTools(metaclass=Singleton):
-    def __init__(self):
-        self.TimeConvert = self.TimeConvert()
+    def __init__(self, default_timezone: tzinfo = UTC) -> None:
+        self.default_timezone: tzinfo = default_timezone
+        self.TimeConvert = self._TimeConvert(default_timezone)
 
-    def teste(self): ...
+    class _TimeConvert:
+        """
+        A thin, per-parse manager around `TimeLength`.
 
-    class TimeConvert:
-        def __init__(self):
+        `TimeTools` itself only owns configuration (the default timezone) and the `Timeout`
+        helper below; all of the actual duration/date parsing is delegated to `timelength`.
+        """
+
+        def __init__(self, default_timezone: tzinfo = UTC) -> None:
+            self.default_timezone: tzinfo = default_timezone
             self.tl: TimeLength | None = None
 
-        def convert_text(self, text: str, locale: Locale) -> TimeLength:
-            tl = TimeLength(text, locale=locale)
-            self.tl: TimeLength = tl
+        def convert_text(self, text: str, locale: Locale | Guess, timezone: tzinfo | None = None) -> TimeLength:
+            """---
+            Parse `text` using `locale`.
+
+            #### Arguments
+            - text: `str` — The text to parse. Only pass the portion that actually represents a
+                length of time or a date/time — see `TimeTools.split_time_text()` to separate that
+                portion out of a larger free-form message first.
+            - locale: `Locale | Guess` — The locale context to parse with.
+            - timezone: `tzinfo | None = None` — Overrides `self.default_timezone` for this parse only.
+                Useful for a user with their own configured timezone, without having to touch
+                `self.default_timezone` for everyone else.
+
+            #### Returns
+            - The resulting `TimeLength`, also stored on `self.tl` for the other methods below.
+            """
+
+            tl = TimeLength(text, locale=locale, timezone=timezone or self.default_timezone)
+            self.tl = tl
             return tl
 
-        def to_time(self, what: str | None, ctx: Context) -> tuple[datetime, str] | tuple[timedelta, str]:
-            mode = None
-            if what is None:
-                for invalid in self.tl.result.invalid:
-                    mode = invalid[0]
-                    break
-            else:
-                mode = what
+        @staticmethod
+        def split_time_text(text: str, locale: Locale | Guess, timezone: tzinfo | None = None) -> tuple[str, str]:
+            """---
+            Convenience helper for commands like `+remindme <when> about <what>`.
 
-            dt = self.tl.result.date
-            now = datetime.now(ctx.user.tz or UTC)
+            Parses all of `text` as a `TimeLength` and returns `result.remaining_text`
+            (whatever wasn't consumed by the found date/duration) split off from it.
+
+            #### Arguments
+            - text: `str` — The full text to parse, e.g. everything after stripping the command name.
+            - locale: `Locale | Guess` — The locale context to parse with.
+            - timezone: `tzinfo | None = None` — Overrides the timezone used to interpret any date found.
+
+            #### Returns
+            - A tuple of `(remaining_text, matched_text)`.
+                - `remaining_text` is `text` with the recognized date/duration span(s) removed
+                    (see `ParsedTimeLength.remaining_text` for exactly what counts as recognized).
+                - `matched_text` is the exact complement: just the recognized span(s), concatenated
+                    in their original order. Mainly useful for logging/debugging.
+
+            #### Example
+            ```python
+            remaining, matched = TimeTools().TimeConvert.split_time_text(
+                "as 19:22:22 do dia 12/02/2029 sobre o blablabla", Portuguese()
+            )
+            # remaining == "as do dia sobre o blablabla"  (the found date's own span is removed;
+            #                                               "as"/"do"/"dia" are leftover filler
+            #                                               words the parser didn't recognize)
+            # matched   == "19:22:2212/02/2029"
+            ```
+            """
+
+            tl = TimeLength(text, locale=locale, timezone=timezone)
+            return tl.result.remaining_text, tl.result.matched_text
+
+        @staticmethod
+        def _time_of_day(text: str, now: datetime) -> datetime | None:
+            """Interpreta 'HH:MM' ou 'HH:MM:SS' como hoje (ou amanhã, se já passou)."""
+            match = re.fullmatch(r"\s*(\d{1,2}):(\d{2})(?::(\d{2}))?\s*", text or "")
+            if not match:
+                return None
+
+            hour = int(match.group(1))
+            minute = int(match.group(2))
+            second = int(match.group(3)) if match.group(3) is not None else 0
+
+            if not (0 <= hour < 24 and 0 <= minute < 60 and 0 <= second < 60):
+                return None
+
+            target = now.replace(hour=hour, minute=minute, second=second, microsecond=0)
+            if target <= now:
+                target += timedelta(days=1)
+            return target
+
+        def to_time(
+            self, what: str | None, timezone: tzinfo | None = None
+        ) -> tuple[datetime | timedelta | None, str | float | None]:
+            if self.tl is None:
+                raise RuntimeError("convert_text() must be called before to_time().")
+
+            result = self.tl.result
+            locale = self.tl.locale
+            effective_timezone = timezone or self.tl.timezone
+
+            mode = what
+            if mode is None and result.invalid:
+                mode = result.invalid[0][0]
+
+            dt = result.date.astimezone(effective_timezone) if result.date else None
+            now = datetime.now(effective_timezone)
             base = dt or now
 
-            if dt and dt + self.tl.result.delta >= now.replace(microsecond=0):
-                mode = self.tl.locale.now.singular
-            elif dt and dt + self.tl.result.delta <= now.replace(microsecond=0):
-                mode = self.tl.locale.past.singular
+            # 1) 'HH:MM' / 'HH:MM:SS' puros → hoje nesse horário, ou amanhã se já passou.
+            if dt is None and result.delta is not None:
+                tod = self._time_of_day(self.tl.content, now)
+                if tod is not None:
+                    if mode in locale.past.terms:
+                        return self.tl.ago(base=now), mode
+                    return tod, mode
 
-            if mode in self.tl.locale.past.terms:
+            # 2) Se uma data foi encontrada, resolve como instante absoluto: data + delta.
+            if dt is not None:
+                target = dt + (result.delta or timedelta(0))
+                if mode in locale.past.terms:
+                    return self.tl.ago(base=dt), mode
+                return target, mode
+
+            # 3) Sem data: comportamento baseado em delta.
+            if mode in locale.past.terms:
                 return self.tl.ago(base=base), mode
-            elif mode in self.tl.locale.now.terms or mode in self.tl.locale.future.terms:
+            if mode in locale.now.terms or mode in locale.future.terms:
                 return self.tl.hence(base=base), mode
-            elif mode == 'delta':
-                return self.tl.result.delta, mode
+
+            return result.delta, mode
+
+        def _first_invalid_or(self, what: str | None) -> str | float | None:
+            if what is not None:
+                return what
+            if self.tl is None:
+                return None
+            for invalid_value, _flag in self.tl.result.invalid:
+                return invalid_value
+            return None
+
+        def to_delta(self, what: str | None) -> tuple[timedelta | None, str | float | None]:
+            if self.tl is None:
+                raise RuntimeError("convert_text() must be called before to_delta().")
+            return self.tl.result.delta, self._first_invalid_or(what)
+
+        def to_hence(
+            self, what: str | None, base: datetime | timedelta | None, timezone: tzinfo | None = None
+        ) -> tuple[datetime, str | float | None]:
+            if self.tl is None:
+                raise RuntimeError("convert_text() must be called before to_hence().")
+
+            mode = self._first_invalid_or(what)
+            effective_timezone = timezone or self.tl.timezone
+            dt = self.tl.result.date
+            now = datetime.now(effective_timezone)
+
+            if isinstance(base, datetime):
+                resolved_base = base.astimezone(effective_timezone)
+            elif isinstance(base, timedelta):
+                resolved_base = base + now
             else:
-                return self.tl.result.delta, mode
+                resolved_base = dt or now
+
+            return self.tl.hence(base=resolved_base), mode
 
         @staticmethod
-        def get_unit(term: str, lang: Locale):
+        def get_unit(term: str, lang: Locale) -> str:
             scale = lang.get_scale(term)
-            return scale.singular
+            return scale.singular if scale else term
 
         @staticmethod
-        def get_units(term: str, lang: Locale):
+        def get_units(term: str, lang: Locale) -> str:
             scale = lang.get_scale(term)
-            return scale.plural
+            return scale.plural if scale else term
 
         @staticmethod
-        def get_key(term: str, lang: Locale):
+        def get_key(term: str, lang: Locale) -> str:
             scale = lang.get_scale(term)
             return scale.key if scale else "minute"
 
-        def get_real_unit(self, term: str, lang: Locale):
-            key = self.get_key(term=term, lang=lang)
-            times = {
-                "past": "past",
-                "now": "now",
-                "future": "future",
-                "raw": "time",
-                "microsecond": "microseconds",
-                "millisecond": "milliseconds",
-                "second": "seconds",
-                "minute": "minutes",
-                "hour": "hours",
-                "day": "days",
-                "week": "weeks",
-                "month": "months",
-                "year": "years",
-                "decade": "decades",
-                "century": "centuries",
-                "default": "now",
-            }
-            return times.get(key, times["default"])
+        _REAL_UNIT_BY_KEY: dict[str, str] = {
+            "past": "past",
+            "now": "now",
+            "future": "future",
+            "raw": "time",
+            "microsecond": "microseconds",
+            "millisecond": "milliseconds",
+            "second": "seconds",
+            "minute": "minutes",
+            "hour": "hours",
+            "day": "days",
+            "week": "weeks",
+            "month": "months",
+            "year": "years",
+            "decade": "decades",
+            "century": "centuries",
+        }
 
-        def to_any(self, asked: str):
-            time = 0
-            if asked == "delta":
-                time = self.tl.to_timedelta()
-            elif asked == "microseconds":
-                time = self.tl.to_microseconds()
-            elif asked == "milliseconds":
-                time = self.tl.to_milliseconds()
-            elif asked == "seconds":
-                time = self.tl.to_seconds()
-            elif asked == "minutes":
-                time = self.tl.to_minutes()
-            elif asked == "hours":
-                time = self.tl.to_hours()
-            elif asked == "days":
-                time = self.tl.to_days()
-            elif asked == "weeks":
-                time = self.tl.to_weeks()
-            elif asked == "months":
-                time = self.tl.to_months()
-            elif asked == "years":
-                time = self.tl.to_years()
-            elif asked == "decades":
-                time = self.tl.to_decades()
-            elif asked == "centuries":
-                time = self.tl.to_centuries()
-            return time
+        def get_real_unit(self, term: str, lang: Locale | Guess) -> str:
+            key = self.get_key(term=term, lang=lang)  # ty: ignore[invalid-argument-type] # noqa
+            return self._REAL_UNIT_BY_KEY.get(key, "now")
+
+        def _convert_dispatch(self) -> dict[str, Callable[[], float | timedelta | None]]:
+            """Build the `asked -> callable` table used by `to_any()`, bound to the current `self.tl`."""
+            if self.tl is None:
+                raise RuntimeError("convert_text() must be called before to_any().")
+
+            tl = self.tl
+            return {
+                "delta": tl.to_timedelta,
+                "microseconds": tl.to_microseconds,
+                "milliseconds": tl.to_milliseconds,
+                "seconds": tl.to_seconds,
+                "minutes": tl.to_minutes,
+                "hours": tl.to_hours,
+                "days": tl.to_days,
+                "weeks": tl.to_weeks,
+                "months": tl.to_months,
+                "years": tl.to_years,
+                "decades": tl.to_decades,
+                "centuries": tl.to_centuries,
+            }
+
+        def to_any(self, asked: TimeUnit | str) -> float | timedelta | None:
+            dispatch = self._convert_dispatch()
+            convert = dispatch.get(asked)
+            return convert() if convert else 0.0
+
+        # For a given display unit, which of `_ALL_UNITS` should be kept (i.e. NOT suppressed).
+        # "weeks" piggybacks on "days", and "decades"/"centuries" keep "months"/"years" respectively
+        # since those pair naturally with them (e.g. "1 decade, 3 months").
+        _KEEP_UNIT: dict[str, str] = {
+            "microseconds": "microseconds",
+            "milliseconds": "milliseconds",
+            "seconds": "seconds",
+            "minutes": "minutes",
+            "hours": "hours",
+            "days": "days",
+            "weeks": "days",
+            "months": "months",
+            "years": "years",
+            "decades": "months",
+            "centuries": "years",
+        }
 
         @staticmethod
-        def to_supress(unit: str):
+        def to_supress(unit: str) -> list[str]:
+            """Return every unit that should be suppressed when displaying a duration in `unit`."""
             if unit in {"raw", "time"}:
                 return []
-            elif unit == "microseconds":
-                return ["years", "months", "days", "hours", "minutes", "seconds", "milliseconds"]
-            elif unit == "milliseconds":
-                return ["years", "months", "days", "hours", "minutes", "seconds", "microseconds"]
-            elif unit == "seconds":
-                return ["years", "months", "days", "hours", "minutes", "milliseconds", "microseconds"]
-            elif unit == "minutes":
-                return ["years", "months", "days", "hours", "seconds", "milliseconds", "microseconds"]
-            elif unit == "hours":
-                return ["years", "months", "days", "minutes", "seconds", "milliseconds", "microseconds"]
-            elif unit in {"days", "weeks"}:
-                return ["years", "months", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
-            elif unit == "months":
-                return ["years", "days", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
-            elif unit == "years":
-                return ["months", "days", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
-            elif unit == "decades":
-                return ["years", "days", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
-            elif unit == "centuries":
-                return ["months", "days", "hours", "minutes", "seconds", "milliseconds", "microseconds"]
-            else:
+
+            keep = TimeTools._TimeConvert._KEEP_UNIT.get(unit)
+            if keep is None:
                 return []
 
-    TimeConvert: TimeConvert
+            return [u for u in _ALL_UNITS if u != keep]
+
+    _TimeConvert: _TimeConvert
+    TimeConvert: _TimeConvert  # NOQA
 
     class Timeout:
         """Asynchronous context manager for cancelling overdue coroutines.
@@ -203,9 +359,7 @@ class TimeTools(metaclass=Singleton):
             if self._state is not _State.ENTERED:
                 if self._state is _State.CREATED:
                     raise RuntimeError("Timeout has not been entered")
-                raise RuntimeError(
-                    f"Cannot change state of {self._state.value} Timeout",
-                )
+                raise RuntimeError(f"Cannot change state of {self._state.value} Timeout")
 
             self._when = when
 
@@ -226,11 +380,11 @@ class TimeTools(metaclass=Singleton):
             return self._state in (_State.EXPIRING, _State.EXPIRED)
 
         def __repr__(self) -> str:
-            info = ['']
+            info = [""]
             if self._state is _State.ENTERED:
                 when = round(self._when, 3) if self._when is not None else None
                 info.append(f"when={when}")
-            info_str = ' '.join(info)
+            info_str = " ".join(info)
             return f"<Timeout [{self._state.value}]{info_str}>"
 
         async def __aenter__(self) -> TimeTools.Timeout:
@@ -247,10 +401,7 @@ class TimeTools(metaclass=Singleton):
             return self
 
         async def __aexit__(
-            self,
-            exc_type: type[BaseException] | None,
-            exc_val: BaseException | None,
-            exc_tb: TracebackType | None,
+            self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
         ) -> bool | None:
             assert self._state in (_State.ENTERED, _State.EXPIRING)
 
@@ -324,7 +475,7 @@ class TimeTools(metaclass=Singleton):
 
             self._on_timeout()
 
-        def duration(self) -> float | None:
+        def duration(self) -> float | int | None:
             """Returns the actual elapsed time in seconds (float)."""
             if self._start_time is None:
                 return None

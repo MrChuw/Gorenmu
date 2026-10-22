@@ -6,13 +6,14 @@ from bot.apis import Emotes
 from bot.ext import ChatMessage, Context, Response, commands
 from bot.utils import RandomUtils, SessionsCaches, StringTools
 
-from .translations import Translations
+from .translations import Translations, TranslationTyping
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
 
 
 # TODO: Change to random utils
+# TODO: If the user has location set, check the temps and change the penis comand.
 
 
 class InteractiveCmd(commands.CustomComponent):
@@ -23,19 +24,6 @@ class InteractiveCmd(commands.CustomComponent):
         self.RandomUtils: RandomUtils = RandomUtils()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.Emotes: Emotes = Emotes(bot, self.SessionsCaches.Emotes.session)
-
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
 
     # @commands.command(name="interactive", aliases=[])
     # async def interactive(self, ctx: Context, arg: str) -> Response:
@@ -55,17 +43,23 @@ class InteractiveCmd(commands.CustomComponent):
         translations = self.translations.Fight
         name = await self.generic_prepare(ctx, arg, "fight", translations)
         if type(name) is tuple:
-            return Response(ctx, success=False, response_string=name)
+            return Response(ctx, success=False, response=name[0])
+        if isinstance(name, Response):
+            return name
         try:
             await self.bot.cache.set(name, ctx.author.name, namespace="fight", ttl=11)
             await ctx.simple_response(ctx, translations.start(name))
             message = await self.bot.CommandHandler.wait_for_message(
-                predicate=self.generic_wait, timeout=10, ctx=ctx, target_name=name
+                predicate=self.bot.CommandHandler.generic_wait,
+                timeout=10,
+                ctx=ctx,
+                target_name=name,
+                generic_wait=self.translations.GenericWait
             )
             if message.text.lower() in self.translations.GenericWait.accept():
-                response = translations.options(name, ctx.author.name)
+                response = translations.options(name, ctx.author.name or "")
             elif message.text.lower() in self.translations.GenericWait.reject():
-                response = translations.refused(ctx.author.name, name)
+                response = translations.refused(ctx.author.name or "", name)
             else:
                 response = translations.timeout(name)
         except TimeoutError:
@@ -102,6 +96,10 @@ class InteractiveCmd(commands.CustomComponent):
             return name1
         if name1 == name2:
             return translations.yourself()
+        if not name1:
+            return translations.forgot_option1()
+        if not name2:
+            return translations.forgot_option2()
 
         percentage = self.RandomUtils.get_seeded_percentage(
             name1.lower(), name2.lower(), time_basis=self.RandomUtils.TimeBasis.WEEKLY
@@ -126,7 +124,7 @@ class InteractiveCmd(commands.CustomComponent):
     async def penis(self, ctx: Context, *, arg: str | None = None) -> Response:
         translations = self.translations.Penis
         if not arg:
-            arg = ctx.author.name
+            arg = ctx.author.name or ""
         name = await self.generic_prepare(ctx, arg, "penis", translations)
         if isinstance(name, Response):
             return name
@@ -175,33 +173,35 @@ class InteractiveCmd(commands.CustomComponent):
 
     async def generic_wait(self, payload: ChatMessage, ctx: Context, target_name: str) -> bool:
         # return True
-        if payload.chatter.id == str(self.bot.bot_id) or payload.source_broadcaster is not None:
+        if payload.chatter.id == self.bot.bot_id or payload.source_broadcaster is not None:
             return False
-        if payload.chatter.name.lower() != target_name:
+        if (payload.chatter.name or "").lower() != target_name:
             return False
-        if payload.broadcaster.name.lower() != ctx.broadcaster.name.lower():
+        if (payload.broadcaster.name or "").lower() != (ctx.broadcaster.name or "").lower():
             return False
         return payload.text.lower() in self.translations.GenericWait.accept() + self.translations.GenericWait.reject()
 
-    async def generic_prepare(self, ctx: Context, arg: str, action: str, translation):
+    async def generic_prepare(
+        self, ctx: Context, arg: str, action: str, translation
+    ) -> str | Response:
         name = self.StringTools.str2name_or(arg)
-        quick_responses = {
-            ctx.bot.bot_user.name.lower(): translation.bot_nick(),
-            ctx.author.name.lower(): translation.yourself(action),
+        quick_responses: dict[str, Response] = {
+            (ctx.bot.bot_user.name or "").lower(): translation.bot_nick(),
+            (ctx.author.name or "").lower(): translation.yourself(action),
         }
         if name in quick_responses:
-            return quick_responses.get(name)
+            return quick_responses[name]
         if await self.bot.cache.get(name, namespace=action):
-            return self.translations.GenericWait.already_in_action(action, name, ctx.author.name), None
+            return self.translations.GenericWait.already_in_action(action, name, ctx.author.name or "")
         return name
 
     async def generic_prepare_2_names(
         self, ctx: Context, arg: str, translation
     ) -> tuple[str | None, None] | tuple[str | None, str | None]:
         name1, name2, _ = self.StringTools.safe_split(arg, 3)
-        name1 = self.StringTools.str2name_or(name1)
-        name2 = self.StringTools.str2name_or(name2)
-        quick_responses = {ctx.bot.bot_user.name.lower(): translation.bot_nick()}
+        name1 = self.StringTools.str2name_or(name1 or "")
+        name2 = self.StringTools.str2name_or(name2 or "")
+        quick_responses = {(ctx.bot.bot_user.name or "").lower(): translation.bot_nick()}
         if name1 in quick_responses:
             return quick_responses.get(name1), None
         elif name2 in quick_responses:

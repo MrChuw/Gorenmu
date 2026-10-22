@@ -20,31 +20,20 @@ class IsAfkCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.StringTools = StringTools()
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: Context) -> bool:  # NOQA
-        return True
 
     @commands.command(name="isafk", aliases=[])
-    async def isafk(self, ctx: Context, *, content: str) -> Response:
-        name = self.StringTools.str2name(content.split()[0])
+    async def isafk(self, ctx: Context, name: str) -> Response:
+        author_name = ctx.author.name or ""
+        name = self.StringTools.str2name(name or author_name)
         actions = {
-            ctx.bot.bot_user.display_name.lower(): self.translations.IsAFK.bot(),
-            ctx.author.name.lower(): self.translations.IsAFK.author(),
+                str(ctx.bot.bot_user.display_name or "").lower(): self.translations.IsAFK.bot(),
+                author_name.lower(): self.translations.IsAFK.author(),
         }
         if name.lower() in actions:
             return actions[name.lower()]
         user = (
-            await User.get_user(ctx_bot=ctx, translations=self.translations, name=name, is_none=True)
-            if name != ctx.author.name.lower()
+            await User.get_user_or_none(ctx_bot=ctx, translations=self.translations, name=name)
+            if name != author_name.lower()
             else ctx.user
         )
         if not user:

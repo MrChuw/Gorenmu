@@ -1,24 +1,24 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import importlib.util
+import inspect
 import os
+import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
+
+import debugpy
 
 from bot.ext import Context, Response, commands
 from bot.utils import Role, SessionsCaches, StringTools
 from bot.utils.singleton import Singleton
 
 from .translations import Translations
-
-# from bot.models import User as UserBot
-# import asyncio
-# import asyncmy
-# from asyncmy.cursors import DictCursor
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
@@ -27,42 +27,81 @@ if TYPE_CHECKING:
 class AdminSmallCmds(commands.CustomComponent):
     def __init__(self, bot: Gorenmu) -> None:
         self.bot = bot
-        self.translations: Translations = Translations(bot)
+        self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.StringTools: StringTools = StringTools()
-
-    name = "Admin Commands"
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
+        self._debugger_active = False
 
     @commands.Component.guard()
     def is_dev(self, ctx: Context) -> bool:
         return Role.dev(ctx)
 
+    @commands.command(name="debugger")
+    async def debugger(self, ctx: Context, options: str | None = None):
+        try:
+            import debugpy
+
+            if options and options.lower() == "off":
+                if not debugpy.is_client_connected():
+                    return self.translations.Exceptions.echo("::: Debugger is already offline :::")
+                return self.translations.Exceptions.echo("::: Para desconectar, pare a sessão pelo próprio VS Code :::")
+
+            if not debugpy.is_client_connected():
+                try:
+                    debugpy.listen(("127.0.0.1", 5678))
+                except RuntimeError:
+                    pass  # Já está escutando na porta
+                return self.translations.Exceptions.echo(
+                    "::: Debugger ready on `127.0.0.1:5678` (Waiting for IDE to attach) :::"
+                )
+
+            return self.translations.Exceptions.echo("::: VS Code is currently attached to `127.0.0.1:5678` :::")
+
+        except Exception as e:
+            self.bot.log.error(e)
+            return self.translations.Exceptions.echo(f"Debugger command error: `{e}`")
+
+    # @commands.command(name="debugger")
+    # async def debugger(self, ctx: Context, options: str | None = None):
+    #     try:
+    #         import pydevd
+    #         from _pydevd_bundle.pydevd_constants import get_global_debugger
+    #         pydb = get_global_debugger()
+    #         if options and options.lower() == "off":
+    #             if pydb is None:
+    #                 return self.translations.Exceptions.echo("::: Debugger is already offline :::")
+    #             pydevd.stoptrace()
+    #             if hasattr(pydb, "has_plugin_line_breaks"):
+    #                 pydb.dispose_and_kill()
+    #             elif hasattr(pydb, "writer") and pydb.writer:
+    #                 pydb.writer.empty()
+    #             return self.translations.Exceptions.echo("::: Debugger has been turned off and detached :::")
+    #         if pydb is None:
+    #             # protocol="dap" é essencial para o VS Code entender o pydevd
+    #             pydevd.settrace(
+    #                 host="127.0.0.1",
+    #                 port=5678,
+    #                 protocol="dap",
+    #                 suspend=False,
+    #                 trace_only_current_thread=False,
+    #                 patch_multiprocessing=False,
+    #                 wait_for_ready_to_run=False,
+    #                 block_until_connected=False,
+    #             )
+    #             return self.translations.Exceptions.echo(
+    #                 "::: Debugger attached to VS Code on `127.0.0.1:5678` :::"
+    #             )
+    #         if pydevd._is_attached():
+    #             return self.translations.Exceptions.echo("::: Debugger is currently attached to `127.0.0.1:5678` :::")
+    #         return self.translations.Exceptions.echo(
+    #             "::: Debugger ready on `127.0.0.1:5678` :::"
+    #         )
+    #     except Exception as e:
+    #         self.bot.log.error(e)
+    #         return self.translations.Exceptions.echo(f"Debugger command error: `{e}`")
+
     @commands.command(name="nada", aliases=[])
     async def nada(self, ctx: Context, *, args: str = "") -> Response:  # NOQA
-        # if " " in args:
-        #     command, subcommand = args.split()
-        #     command = ctx.bot.get_command(command)
-        #     try:
-        #         command = command.get_command(subcommand)
-        #     except Exception as e:
-        #         print(e)
-        #
-        #     teste = command.component.translations.get_decorator(ctx=command)
-        #     teste2 = teste.deco_usage(ctx, prefix=ctx.prefix)
-        #     await ctx.reply(teste2)
-        # channel = self.bot.channels[ctx.channel.name.lower()]
-        # channel = await ChannelBot.get(user_id=192923262)
-        # markov = await self.bot.MarkovProcessor.generate(args, channel=channel, max_length=25)
-        # await self.bot.ContextHandler.simple_response(ctx, str(self.bot.MarkovProcessor.queue.async_q.qsize()))
-
         return self.translations.Nada.nada(args + self.StringTools.inv_char())
         # return self.translations.Exceptions.echo(ctx, markov)
 
@@ -94,6 +133,7 @@ class AdminSmallCmds(commands.CustomComponent):
 
     @commands.command(name="restart", aliases=[])
     async def restart(self, ctx: Context) -> Response:  # NOQA
+        await self.bot.CommandHandler.teardown_all_commands()
         if venv_python := os.getenv("VIRTUAL_ENV"):
             python_executable = os.path.join(venv_python, "bin", "python")
         else:
@@ -105,7 +145,7 @@ class AdminSmallCmds(commands.CustomComponent):
             return self.translations.Restart.unexpected_error(e)
 
     @commands.command(name="reload", aliases=[])
-    async def reload(self, ctx: Context, command: str, *, extras=False) -> Response:
+    async def reload(self, ctx: Context, command: str, *, extras="") -> Response:
         translations = self.translations.Reload
 
         reloader_map = {
@@ -156,11 +196,11 @@ class AdminSmallCmds(commands.CustomComponent):
             results = []
             for key in ["translations", "commands", *reloader_map]:
                 fake_ctx = await self.reload._callback(self, ctx, command=key)  # NOQA
-                results.append(fake_ctx.response_string)
+                results.append(fake_ctx.response)
             return self.translations.Exceptions.echo(" ".join(results))
 
         if command in reloader_map:
-            config = reloader_map[command]
+            config: dict[str, Any] = reloader_map[command]
             try:
                 await reload_component(
                     self.bot,
@@ -175,17 +215,8 @@ class AdminSmallCmds(commands.CustomComponent):
                 return translations.module_reloaded_error(config["attr"], e)
 
         if command == "translations":
-            from bot.utils.reload_util import (
-                reload_all_translations,
-                reload_and_get_authorized,
-            )
-
-            force = bool(extras)
             try:
-                new_base = await reload_and_get_authorized("bot.ext.translations", "TranslationBase", force)
-                new_cls = await reload_all_translations("Translations", force)
-                for cls in new_cls:
-                    cls.__bases__ = (new_base,)
+                await self.bot.CommandHandler.lang_dict.reload(extras or 'all')
                 await ctx.bot.CommandHandler.reload_cogs()
                 return translations.module_reloaded("Translations")
             except Exception as e:
@@ -198,6 +229,8 @@ class AdminSmallCmds(commands.CustomComponent):
 
         try:
             spec = importlib.util.find_spec(command_to_reload.module)
+            if not spec or not spec.origin:
+                return translations.command_error(command_to_reload.module)
             await ctx.bot.CommandHandler.load_command_module(Path(spec.origin).parent)
             return translations.command_reloaded(command)
         except Exception as e:
@@ -241,7 +274,7 @@ async def reload_component(bot_obj, attr_name: str, module_name: str, class_name
         instance = new_class(*args) if args else new_class()
         old_instance = getattr(bot_obj, attr_name)
         if close_attr := getattr(old_instance, "close", None):
-            if asyncio.iscoroutinefunction(close_attr):
+            if inspect.iscoroutinefunction(close_attr):
                 if old_instance.__class__.__name__ != "LifecycleHandler":
                     await close_attr()
             else:

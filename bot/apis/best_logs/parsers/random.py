@@ -1,3 +1,4 @@
+import random
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, TypeVar
@@ -198,6 +199,12 @@ class Random:
                 self.messages,
             )
         return result
+
+    def get_random(self) -> Message:
+        if not self.messages or len(self.messages) == 0:
+            return Message()
+        return random.choice(self.messages)
+
 
 
 def random_from_dict(s: Any) -> Random:

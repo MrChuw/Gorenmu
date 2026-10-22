@@ -12,7 +12,7 @@
     ],
     "allowed_terms": [
         "!",
-        "\u00bf",
+        "¿",
         "?",
         "'",
         ".",
@@ -43,7 +43,13 @@
     "date_operators": [
         "en",
         "En",
-        "EN"
+        "EN",
+        "del",
+        "Del",
+        "DEL",
+        "de",
+        "De",
+        "DE"
     ],
     "parser_file": "parser_one.py",
     "scales": {
@@ -629,5 +635,8 @@
         "allow_thousands_lacking_digits": false,
         "allow_decimals_lacking_digits": true
     },
-    "extra_data": {}
+    "extra_data": {},
+    "date_settings": {
+        "default_order": "DM"
+    }
 }

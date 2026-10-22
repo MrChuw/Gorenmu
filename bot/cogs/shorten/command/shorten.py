@@ -20,26 +20,16 @@ class ShortenCmd(commands.CustomComponent):
         self.UploadThings: UploadThings = UploadThings(bot)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
     # TODO: Fix crash on no-https on url(s)
     @commands.command(name="shorten", aliases=["short"])
     async def shorten(self, ctx: Context, *, content) -> Response:
-        links = URLExtract().find_urls(text=content)
-        if not links:
-            ...
+        raw_links = URLExtract().find_urls(text=content)
+        if not raw_links:
+            return self.translations.Shorten.no_urls()
+
+        links: list[str] = [link[0] if isinstance(link, tuple) else link for link in raw_links]
         session = self.SessionsCaches.Shorten.session
+
         if len(links) > 1:
             link = ""
             for url in links:

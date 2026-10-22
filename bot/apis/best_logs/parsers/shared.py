@@ -1,3 +1,4 @@
+import contextlib
 from collections.abc import Callable
 from datetime import datetime
 from enum import Enum
@@ -21,10 +22,8 @@ def from_none(x: Any) -> Any:
 
 def from_union(fs, x):
     for f in fs:
-        try:
+        with contextlib.suppress(Exception):
             return f(x)
-        except Exception as e:
-            print(e)
     raise AssertionError
 
 

@@ -19,31 +19,44 @@ class NicksCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
-        self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.BestLogs: BestLogs = BestLogs(bot, self.SessionsCaches.RandomLine.session)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="nicks", aliases=["nickhistory", "namehistory"])
-    async def nicks(self, ctx: Context, name: str) -> Response:
+    async def nicks(self, ctx: Context, name: str, *args: str) -> Response:
         name = self.StringTools.str2name(name)
+        time, _ = self.StringTools.unpack_dynamic(args, 1)
         nicks = await self.BestLogs.ZonianLogs.name_history(ctx, user=name)
+
         if not nicks:
             return self.translations.Nicks.not_seen(name)
+        if isinstance(nicks, str):
+            return self.translations.Exceptions.echo(nicks)
+
         ordered = [h for h in nicks if h.first_timestamp is not None]
         ordered.sort(key=lambda h: (h.first_timestamp, h.last_timestamp or datetime.max))
-        sequence = [h.user_login for h in ordered]
+        if len(ordered) == 1 and time:
+            h = ordered[0]
+            if h.user_login:
+                date_fmt = "%Y-%m-%d %H:%M"
+                first_str = h.first_timestamp.astimezone(await ctx.user.tz(self.bot)).strftime(date_fmt)
+                last_str = (
+                    h.last_timestamp.astimezone(await ctx.user.tz(self.bot)).strftime(date_fmt)
+                    if h.last_timestamp
+                    else "presente"
+                )
+                return self.translations.Exceptions.echo(f"{h.user_login} ({first_str} → {last_str})")
+
+        sequence = []
+        for h in ordered:
+            if not h.user_login:
+                continue
+
+            if time and h.last_timestamp:
+                formatted_date = h.last_timestamp.astimezone(await ctx.user.tz(self.bot)).strftime("%Y-%m-%d %H:%M")
+                sequence.append(f"{h.user_login} ({formatted_date})")
+            else:
+                sequence.append(h.user_login)
+
         return self.translations.Exceptions.echo(" → ".join(sequence))
 
 

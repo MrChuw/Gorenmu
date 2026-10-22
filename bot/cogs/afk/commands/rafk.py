@@ -5,30 +5,10 @@ from typing import TYPE_CHECKING
 from bot.ext import Context, Response, commands
 from bot.models import Status
 
-from .translations import Translations
+from .translations import Translations, rafk_alias
 
 if TYPE_CHECKING:
     from bot.bot import Gorenmu
-
-rafk_alias = [
-    f"r{s}"
-    for s in [
-        "read",
-        "brb",
-        "eat",
-        "food",
-        "play",
-        "game",
-        "sleep",
-        "night",
-        "study",
-        "art",
-        "watch",
-        "shower",
-        "code",
-        "work",
-    ]
-]
 
 
 class RAfkCmd(commands.CustomComponent):
@@ -36,20 +16,7 @@ class RAfkCmd(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: Context) -> bool:  # NOQA
-        return True
-
-    @commands.command(name="rafk", aliases=rafk_alias, pipeble=False)
+    @commands.command(name=rafk_alias[0], aliases=rafk_alias[1:], pipeble=False)
     async def rafk(self, ctx: Context, *, content: str = "") -> Response:
         rafk = await self.bot.memcache.RAfk.get(user_id=ctx.author.id)
         if rafk is None:

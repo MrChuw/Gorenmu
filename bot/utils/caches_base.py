@@ -22,17 +22,15 @@ class MemoryCacheCore:
     def __init__(self, ttl: timedelta = timedelta(hours=12)):
         from aiocache import Cache as aioCache
 
-        self.cache: SimpleMemoryCache = aioCache(aioCache.MEMORY)
+        self.cache: SimpleMemoryCache = aioCache(aioCache.MEMORY)  # ty:ignore[invalid-assignment]
         self.name_to_user_id: dict[str, int] = {}
         self.key_index: dict[str, set[str]] = {}
-        self.ttl: float = ttl.total_seconds()
+        self.ttl: float | int = ttl.total_seconds()
         self._scheduler = ExpiryScheduler(self._expire_callback)
 
     def _expire_callback(self, key: str, namespace: str):
-        # remove do key index
         if namespace in self.key_index:
             self.key_index[namespace].discard(key)
-        # remove de name_to_user_id se for um user_id
         try:
             uid = int(key)
         except ValueError:
@@ -41,19 +39,19 @@ class MemoryCacheCore:
             if mapped == uid:
                 del self.name_to_user_id[name]
 
-    async def _set(self, key: str, value, ttl: float | None = None, namespace: str | int = "") -> None:
+    async def _set(self, key: str, value, ttl: float | int | None = None, namespace: str | int = "") -> None:
         ns = str(namespace)
-        lifespan = ttl or self.ttl
+        lifespan: int | float = ttl or self.ttl  # NOQA
         await self.cache.set(key=key, value=value, ttl=lifespan, namespace=ns)
         if ns:
             self.key_index.setdefault(ns, set()).add(key)
         self._scheduler.schedule(key, ns, lifespan)
 
     async def _multi_set(
-        self, items: Iterable[tuple[str, Any]], ttl: float | None = None, namespace: str | int = ""
+        self, items: Iterable[tuple[str, Any]], ttl: float | int | None = None, namespace: str | int = ""
     ) -> None:
         ns = str(namespace)
-        lifespan = ttl or self.ttl
+        lifespan: int | float = ttl or self.ttl  # NOQA
         await self.cache.multi_set(pairs=items, ttl=lifespan, namespace=ns)
         if ns:
             self.key_index.setdefault(ns, set()).update(k for k, _ in items)
@@ -103,7 +101,8 @@ class MemoryCacheCore:
 
 
 class BaseCachedSession(ABC):
-    session = None
+    session: CachedSession
+    extra_headers: dict[str, str]
 
     def __init__(self, bot, useragent: str, cache_name: str | None = None, headers: dict[str, str] | None = None):
         self.bot = bot
@@ -193,7 +192,7 @@ class BaseCachedSession(ABC):
         async with session.disabled():
             await asyncio.sleep(0.2)
             response = await session.get(url, allow_redirects=True)
-        return response  # NOQA
+        return response  # NOQA # ty:ignore[invalid-return-type]
 
 
 class ExpiryScheduler:
@@ -203,7 +202,7 @@ class ExpiryScheduler:
         self._on_expire = on_expire
         self._task = asyncio.create_task(self._loop())
 
-    def schedule(self, key: str, namespace: str, ttl: float):
+    def schedule(self, key: str, namespace: str, ttl: float | int):
         expire_at = time.monotonic() + ttl
         heapq.heappush(self._heap, (expire_at, namespace, key))
         if self._heap[0][0] == expire_at:

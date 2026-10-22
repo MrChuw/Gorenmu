@@ -27,7 +27,7 @@ def expand_env_vars(config: dict[str, Any]) -> dict[str, Any]:
     return {k: expand_value(v) for k, v in config.items()}
 
 
-def load_config(config_path: str) -> dict[str, dict]:
+def load_config(config_path: str) -> dict[str, Any]:
     with open(config_path) as f:
         config = toml.load(f)
     config = expand_env_vars(config)
@@ -69,13 +69,13 @@ class LoggingType(Enum):
 
 
 class DevelopmentConfig:
-    def __init__(self, data: dict[str, dict]) -> None:
+    def __init__(self, data: dict[str, Any]) -> None:
         self.development: bool = data.get("development", False)
         self.test: bool = data.get("test", False)
 
 
 class BotConfig:
-    def __init__(self, data: dict[str, dict]) -> None:
+    def __init__(self, data: dict[str, Any]) -> None:
         self.bot_id: int = data.get("bot_id", 0000000)
         self.color: str = data.get("color", "#000000")
         self.dev_userid: str = data.get("dev_userid", "Exemple")
@@ -88,7 +88,7 @@ class BotConfig:
 
 
 class ApisConfig:
-    def __init__(self, data: dict[str, dict]) -> None:
+    def __init__(self, data: dict[str, Any]) -> None:
         self.color_site_url: URL = URL(data.get("color_site_url", "https://color.exemple.org"))
         self.site_api_key: str = data.get("site_api_key", "api_exemple")
         self.shlink_url: URL = URL(data.get("shlink_url", "https://shlink.exemple.org/rest/v3/short-urls"))
@@ -121,8 +121,8 @@ class ApisConfig:
 
 
 class DatabaseConfig:
-    def __init__(self, data: dict[str, dict], mock: bool) -> None:
-        db_type = data.get("type", "sqlite")
+    def __init__(self, data: dict[str, Any], mock: bool) -> None:
+        db_type: str = data.get("type", "sqlite")
 
         try:
             self.type: DatabaseType = DatabaseType(db_type)
@@ -130,11 +130,11 @@ class DatabaseConfig:
             print(f"Unknown database type: {db_type}, defaulting to sqlite")
             self.type = DatabaseType.SQLITE
 
-        self.login = data.get("login", "root")
-        self.password = data.get("password", "root")
-        self.host = data.get("host", "localhost")
-        self.port = data.get("port", 3306)
-        self.name = data.get("name", "gorenmu")
+        self.login: str = data.get("login", "root")
+        self.password: str = data.get("password", "root")
+        self.host: str = data.get("host", "localhost")
+        self.port: int = data.get("port", 3306)
+        self.name: str = data.get("name", "gorenmu")
 
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
         sqlite_file = os.path.join(base_dir, "db.sqlite3")
@@ -144,7 +144,7 @@ class DatabaseConfig:
         elif self.type in [DatabaseType.MARIA_DB, DatabaseType.MYSQL]:
             self.database_uri = f"mysql://{self.login}:{self.password}@{self.host}:{self.port}/{self.name}"
         elif self.type == DatabaseType.POSTGRESQL:
-            self.database_uri = f"asyncpg://{self.login}:{self.password}@{self.host}:{self.port}/{self.name}"
+            self.database_uri = f"asyncpg://{self.login}:{self.password}@{self.host}:{self.port}/{self.name}?schema={self.name}"
         else:
             self.database_uri = f"sqlite://{sqlite_file}"
 
@@ -158,7 +158,7 @@ class DatabaseConfig:
 
 
 class CacheConfig:
-    def __init__(self, data: dict[str, dict]) -> None:
+    def __init__(self, data: dict[str, Any]) -> None:
         cache_type = data.get("type", "memory")
         try:
             self.type: CacheType = CacheType(cache_type)
@@ -172,19 +172,19 @@ class CacheConfig:
 
 
 class DiscordConfig:
-    def __init__(self, data: dict[str, dict]) -> None:
-        self.webhook_avatar = data.get("webhook_avatar")
-        self.to_mark = data.get("users_to_mark")
-        self.bug_webhook = data.get("bug_webhook")
-        self.suggest_webhook = data.get("suggest_webhook")
-        self.log_webhook = data.get("log_webhook")
-        self.ping_webhook = data.get("ping_webhook")
+    def __init__(self, data: dict[str, Any]) -> None:
+        self.webhook_avatar: str | None = data.get("webhook_avatar")
+        self.to_mark: str | None = data.get("users_to_mark")
+        self.bug_webhook: str = data.get("bug_webhook", "None")
+        self.suggest_webhook: str | None = data.get("suggest_webhook")
+        self.log_webhook: str | None = data.get("log_webhook")
+        self.ping_webhook: str | None = data.get("ping_webhook")
 
 
 class Config:
     def __init__(self, config, mock: bool = False) -> None:
         config = load_config(config)
-        self.version = config.get("version", "1.0.0")
+        self.version: str = config.get("version", "1.0.0")
         self.BotConfig = BotConfig(config["bot"])
         self.DatabaseConfig = DatabaseConfig(config["database"], mock)
         self.ApisConfig = ApisConfig(config["apis"])

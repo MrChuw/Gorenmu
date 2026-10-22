@@ -9,9 +9,9 @@ T = TypeVar("T")
 
 @dataclass
 class NameHistory:
-    user_login: str | None = None
-    last_timestamp: datetime | None = None
-    first_timestamp: datetime | None = None
+    user_login: str = None  # ty: ignore[invalid-assignment]
+    last_timestamp: datetime = None  # ty: ignore[invalid-assignment]
+    first_timestamp: datetime = None  # ty: ignore[invalid-assignment]
 
     @staticmethod
     def from_dict(obj: Any) -> "NameHistory":

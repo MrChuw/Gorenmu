@@ -21,23 +21,10 @@ class WeatherCmd(commands.CustomComponent):
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.StringTools: StringTools = StringTools()
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name='weather', aliases=['wt'])
     async def weather(self, ctx: Context, *, location: str = "") -> Response:
         from_chat = True
-        location, from_user = self.StringTools.extract_and_remove_field(location, "user", False)
+        location, from_user = self.StringTools.extract_and_remove_field(location, "user", None)
         user = None
         if from_user:
             user = await User.get_user_or_none(ctx, self.translations, name=from_user)
@@ -48,7 +35,7 @@ class WeatherCmd(commands.CustomComponent):
             from_chat = False
             location = user.city
         if ctx.user.city and not location:
-            location = ctx.user.city
+            location = ctx.user.city or ""
             from_chat = False
 
         is_private = not from_chat and (user or ctx.user).city_hidden
@@ -70,8 +57,8 @@ class WeatherCmd(commands.CustomComponent):
 
         async with meteo as open_meteo:
             weather_obj = await open_meteo.forecast(
-                latitude=city.latitude,
-                longitude=city.longitude,
+                latitude=city.latitude or 0.0,
+                longitude=city.longitude or 0.0,
                 current_weather=True,
                 daily=[
                     DailyParameters.SUNRISE,

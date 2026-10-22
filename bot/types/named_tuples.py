@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 class AliasCached(NamedTuple):
     alias: Alias
     invocation: str
-    arguments: list[str]
+    arguments: list[str] | None
     parent: Alias | None = None
 
 

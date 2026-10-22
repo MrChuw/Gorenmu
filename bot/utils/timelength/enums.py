@@ -26,6 +26,7 @@ class ValueType(Enum):
     - `SCALE` — Represents scale strings (ex: minutes).
     - `SYMBOL` — Represents symbol strings (ex: !$^).
     - `MIXED` — Represents mixed strings.
+    - `DATE` — Represents a parsed date/datetime.
     """
 
     NUMBER = "NUMBER"
@@ -126,7 +127,7 @@ class FailureFlags(IntFlag):
         | AMBIGUOUS_MULTIPLIER
     )
 
-    def _get_flags(self) -> list:
+    def _get_flags(self) -> list[str]:
         return [f"FailureFlags.{flag._name_}" for flag in FailureFlags if flag and flag in self]
 
     def __str__(self) -> str:

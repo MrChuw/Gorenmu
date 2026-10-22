@@ -18,19 +18,6 @@ class HelpCmd(commands.CustomComponent):
         self.bot = bot
         self.translations: Translations = Translations(bot, self)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="help", aliases=[])
     async def help(self, ctx: Context, *, content: str = "") -> Response:
         translations = self.translations.Help
@@ -52,8 +39,9 @@ class HelpCmd(commands.CustomComponent):
         aliases = ", ".join(command.aliases) if command.aliases else ""
         decorator = command.component.translations.get_decorator(command)
         url = site_url / "commands" / command.qualified_name  # TODO: Change.
+        # TODO: change this cooldown message thing.
         if hasattr(command, "per"):
-            cooldown = self.translations.SupportTools.TimeTools.Humanize(ctx.user.language).naturaldelta(
+            cooldown = self.translations.SupportTools.TimeTools.Humanize().naturaldelta(
                 command.per / command.rate
             )
         else:

@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 from copy import deepcopy
-from datetime import UTC, datetime, timedelta
+from dataclasses import replace
+from datetime import UTC, datetime, timedelta, tzinfo
 
 from bot.utils.timelength.locales import English, Guess, Locale
 from bot.utils.timelength.parsers.date_parser import DateParserConfig
@@ -25,9 +26,16 @@ class TimeLength:
     - content: `str` — The string to be parsed.
     - locale: `Locale | Guess = English()` — The context used for parsing.
         - Will be set to the guessed locale if `Guess()` is passed.
+    - dateconfig: `DateParserConfig | None = None` — Overrides the date parsing configuration for
+        this instance only. The passed `Locale`/`Guess` is never mutated.
+    - timezone: `tzinfo | None = None` — Overrides the timezone assumed for any date found within
+        `content`, and used as the default base for `ago()`/`hence()`. Defaults to whatever the
+        locale's own `dateconfig.timezone` is (UTC unless configured otherwise).
+        - If both `dateconfig` and `timezone` are passed, `timezone` wins.
 
     #### Properties
     - result: `ParsedTimeLength` — The result of parsing.
+    - timezone: `tzinfo` — The effective timezone used for this instance.
 
     #### Methods
     - `parse()` — Parse `self.content` based on `self.locale`.
@@ -52,18 +60,41 @@ class TimeLength:
     ```
     """
 
-    def __init__(self, content: str, locale: Locale | Guess | None = None, dateconfig: DateParserConfig = None) -> None:
+    def __init__(
+        self,
+        content: str,
+        locale: Locale | Guess | None = None,
+        dateconfig: DateParserConfig | None = None,
+        timezone: tzinfo | None = None,
+    ) -> None:
         self.content: str = content
 
         # self.locale must always be a Locale, so if Guess is passed, temporarily set it to the first
         # locale in Guess().locales to prevent a wasted initialization while the best locale is found.
-        self.locale: Locale = locale.locales[0] if isinstance(locale, Guess) else (locale or English(dateconfig))
+        self.locale: Locale = locale.locales[0] if isinstance(locale, Guess) else (locale or English())
 
         if not isinstance(self.locale, Locale):
             raise NotALocaleError(locale)
 
+        # These are applied per-candidate-locale inside `_parse_locale`, never mutating the
+        # Locale/Guess the caller passed in (which may be reused across other TimeLength instances).
+        # `_explicit_dateconfig`, if set, is used as-is for every candidate. Otherwise, if only
+        # `timezone` is set, each candidate's OWN dateconfig is used as the base (so e.g. Guess()
+        # still lets English default to "MD" and Portuguese/Spanish default to "DM" while sharing
+        # the same timezone override).
+        self._explicit_dateconfig: DateParserConfig | None = dateconfig
+        self._timezone_override: tzinfo | None = timezone
+
         self._result: ParsedTimeLength | None = None
         self.parse(guess_locale=locale if isinstance(locale, Guess) else False)
+
+        # Resolved now that `self.locale` is final (guessing may have replaced it above).
+        if timezone is not None:
+            self.timezone: tzinfo = timezone
+        elif dateconfig is not None:
+            self.timezone = dateconfig.timezone
+        else:
+            self.timezone = self.locale.dateconfig.timezone
 
     @property
     def result(self) -> ParsedTimeLength:
@@ -71,7 +102,26 @@ class TimeLength:
         return self._result
 
     def _parse_locale(self, locale: Locale) -> ParsedTimeLength:
-        return locale.parser(self.content.strip(), locale)
+        if self._explicit_dateconfig is None and self._timezone_override is None:
+            return locale.parser(self.content.strip(), locale)
+
+        if self._explicit_dateconfig is not None:
+            override = self._explicit_dateconfig
+            if self._timezone_override is not None:
+                override = replace(override, timezone=self._timezone_override)
+        else:
+            # Base the override on THIS locale's own dateconfig, so each candidate keeps its own
+            # default_order (relevant when guessing across multiple locales at once).
+            override = replace(locale.dateconfig, timezone=self._timezone_override)
+
+        # Temporarily apply the per-instance override, then restore, so the shared Locale/Guess
+        # passed in by the caller is left untouched for any other TimeLength that reuses it.
+        original_dateconfig = locale.dateconfig
+        locale.dateconfig = override
+        try:
+            return locale.parser(self.content.strip(), locale)
+        finally:
+            locale.dateconfig = original_dateconfig
 
     def parse(self, guess_locale: bool | Guess = False) -> None:
         """---
@@ -107,14 +157,15 @@ class TimeLength:
         if use_date and self.result.date is not None:
             return self.result.date
 
-        return base if base is not None else datetime.now(UTC)
+        return base if base is not None else datetime.now(self.timezone)
 
     def ago(self, base: datetime | None = None, use_date: bool = False) -> datetime:
         """---
         Get a `datetime` from the past.
 
         #### Arguments
-        - base: `datetime = datetime.now(timezone.utc)` — The relative time to subtract from.
+        - base: `datetime = datetime.now(self.timezone)` — The relative time to subtract from.
+        - use_date: `bool = False` — Use the date found within `content`, if any, as `base` instead.
 
         #### Returns
         - A `datetime` representing `base` minus `self.result.delta`.
@@ -138,7 +189,8 @@ class TimeLength:
         Get a `datetime` from the future.
 
         #### Arguments
-        - base: `datetime = datetime.now(timezone.utc)` — The relative time to add to.
+        - base: `datetime = datetime.now(self.timezone)` — The relative time to add to.
+        - use_date: `bool = False` — Use the date found within `content`, if any, as `base` instead.
 
         #### Returns
         - A `datetime` representing `base` plus `self.result.delta`.
@@ -161,21 +213,21 @@ class TimeLength:
     def to_date(self, base: datetime | None = None, use_date: bool = False) -> datetime:
         return self.hence(base=base, use_date=use_date)
 
-    def to_timedelta(self):
+    def to_timedelta(self) -> timedelta | None:
         return self.result.delta
 
     def to_microseconds(self, max_precision: int | None = None) -> float:
         """---
-        Return `self.result.seconds` converted to milliseconds.
+        Return `self.result.seconds` converted to microseconds.
 
         #### Arguments
         - max_precision: `int | None = None` — The maximum number of decimal places to include.
 
         #### Returns
-        - A `float` representing `self.result.seconds` as milliseconds.
+        - A `float` representing `self.result.seconds` as microseconds.
 
         #### Raises
-        - `InvalidScaleError` when `self.locale.millisecond` is invalid.
+        - `InvalidScaleError` when `self.locale.microsecond` is invalid.
         """
 
         return self._round(self.locale.microsecond, max_precision)
@@ -198,16 +250,16 @@ class TimeLength:
 
     def to_seconds(self, max_precision: int | None = None) -> float:
         """---
-        Return `self.result.seconds` converted to minutes.
+        Return `self.result.seconds` converted to seconds.
 
         #### Arguments
         - max_precision: `int | None = None` — The maximum number of decimal places to include.
 
         #### Returns
-        - A `float` representing `self.result.seconds` as minutes.
+        - A `float` representing `self.result.seconds` as seconds.
 
         #### Raises
-        - `InvalidScaleError` when `self.locale.minute` is invalid.
+        - `InvalidScaleError` when `self.locale.second` is invalid.
         """
 
         return self._round(self.locale.second, max_precision)
@@ -410,6 +462,14 @@ class TimeLength:
         """Return a string representation of the TimeLength with attributes included."""
         return f"TimeLength(content={json.dumps(self.content)}, locale={self.locale!r})"
 
+    def _derive(self, seconds: float) -> TimeLength:
+        """Build a new `TimeLength` from a raw seconds value, in the base scale, carrying over
+        this instance's locale and timezone."""
+        base = self.locale.base_scale
+        return TimeLength(
+            content=f"{seconds / base.scale} {base.terms[0]}", locale=deepcopy(self.locale), timezone=self.timezone
+        )
+
     def __add__(self, other: TimeLength | timedelta | float | int) -> TimeLength:
         """---
         Get the absolute sum of `self` and a `TimeLength`, a `timedelta`, or a number.
@@ -424,22 +484,12 @@ class TimeLength:
         - `NoValidScalesError` when no valid and enabled scales are found to perform the action.
         """
 
-        base = self.locale.base_scale
-
         if isinstance(other, TimeLength):
-            return TimeLength(
-                content=f"{abs(self.result.seconds + other.result.seconds) / base.scale} {base.terms[0]}",
-                locale=deepcopy(self.locale),
-            )
+            return self._derive(abs(self.result.seconds + other.result.seconds))
         elif isinstance(other, timedelta):
-            return TimeLength(
-                content=f"{abs(self.result.seconds + other.total_seconds()) / base.scale} {base.terms[0]}",
-                locale=deepcopy(self.locale),
-            )
+            return self._derive(abs(self.result.seconds + other.total_seconds()))
         elif isinstance(other, (float, int)):
-            return TimeLength(
-                content=f"{abs(self.result.seconds + other) / base.scale} {base.terms[0]}", locale=deepcopy(self.locale)
-            )
+            return self._derive(abs(self.result.seconds + other))
         else:
             return NotImplemented
 
@@ -486,22 +536,12 @@ class TimeLength:
         - `NoValidScalesError` when no valid and enabled scales are found to perform the action.
         """
 
-        base = self.locale.base_scale
-
         if isinstance(other, TimeLength):
-            return TimeLength(
-                content=f"{abs(self.result.seconds - other.result.seconds) / base.scale} {base.terms[0]}",
-                locale=deepcopy(self.locale),
-            )
+            return self._derive(abs(self.result.seconds - other.result.seconds))
         elif isinstance(other, timedelta):
-            return TimeLength(
-                content=f"{abs(self.result.seconds - other.total_seconds()) / base.scale} {base.terms[0]}",
-                locale=deepcopy(self.locale),
-            )
+            return self._derive(abs(self.result.seconds - other.total_seconds()))
         elif isinstance(other, (float, int)):
-            return TimeLength(
-                content=f"{abs(self.result.seconds - other) / base.scale} {base.terms[0]}", locale=deepcopy(self.locale)
-            )
+            return self._derive(abs(self.result.seconds - other))
         else:
             return NotImplemented
 
@@ -551,11 +591,7 @@ class TimeLength:
         if not isinstance(other, (float, int)):
             return NotImplemented
 
-        base = self.locale.base_scale
-
-        return TimeLength(
-            content=f"{abs(self.result.seconds * other) / base.scale} {base.terms[0]}", locale=deepcopy(self.locale)
-        )
+        return self._derive(abs(self.result.seconds * other))
 
     __rmul__ = __mul__
 
@@ -579,11 +615,7 @@ class TimeLength:
         elif isinstance(other, timedelta):
             return self.result.seconds / other.total_seconds()
         elif isinstance(other, (float, int)):
-            base = self.locale.base_scale
-
-            return TimeLength(
-                content=f"{abs(self.result.seconds / other) / base.scale} {base.terms[0]}", locale=deepcopy(self.locale)
-            )
+            return self._derive(abs(self.result.seconds / other))
         else:
             return NotImplemented
 
@@ -623,12 +655,7 @@ class TimeLength:
         elif isinstance(other, timedelta):
             return int(self.result.seconds // other.total_seconds())
         elif isinstance(other, (float, int)):
-            base = self.locale.base_scale
-
-            return TimeLength(
-                content=f"{abs(self.result.seconds // other) / base.scale} {base.terms[0]}",
-                locale=deepcopy(self.locale),
-            )
+            return self._derive(abs(self.result.seconds // other))
         else:
             return NotImplemented
 
@@ -662,22 +689,12 @@ class TimeLength:
         - `NoValidScalesError` when no valid and enabled scales are found to perform the action.
         """
 
-        base = self.locale.base_scale
-
         if isinstance(other, TimeLength):
-            return TimeLength(
-                content=f"{abs(self.result.seconds % other.result.seconds) / base.scale} {base.terms[0]}",
-                locale=deepcopy(self.locale),
-            )
+            return self._derive(abs(self.result.seconds % other.result.seconds))
         elif isinstance(other, timedelta):
-            return TimeLength(
-                content=f"{abs(self.result.seconds % other.total_seconds()) / base.scale} {base.terms[0]}",
-                locale=deepcopy(self.locale),
-            )
+            return self._derive(abs(self.result.seconds % other.total_seconds()))
         elif isinstance(other, (float, int)):
-            return TimeLength(
-                content=f"{abs(self.result.seconds % other) / base.scale} {base.terms[0]}", locale=deepcopy(self.locale)
-            )
+            return self._derive(abs(self.result.seconds % other))
         else:
             return NotImplemented
 
@@ -768,11 +785,9 @@ class TimeLength:
                 if isinstance(mod, timedelta)
                 else mod
             )
-            result: float = abs(self.result.seconds**other) % mod_seconds
+            result = abs(self.result.seconds**other) % mod_seconds
 
-        base = self.locale.base_scale
-
-        return TimeLength(content=f"{result / base.scale} {base.terms[0]}", locale=deepcopy(self.locale))
+        return self._derive(result)
 
     def __bool__(self) -> bool:
         """Return if the parsing succeeded."""

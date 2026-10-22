@@ -23,27 +23,16 @@ class HyperTranslateCmd(commands.CustomComponent):
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
         self.StringTools: StringTools = StringTools()
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="hypertranslate", aliases=["ht"])  # TODO: add reply_to
-    async def hypertranslate(self, ctx: Context, quantity: str, *, text: str = "") -> Response:
+    async def hypertranslate(self, ctx: Context, quantity_in: str, *, text_in: str = "") -> Response:
         translations = self.translations.HyperTranslate
         session = self.SessionsCaches.Translate.session
-        if not quantity.isdigit():
-            text = f"{quantity} {text}".replace("  ", " ")
+        if not quantity_in.isdigit():
+            text = f"{quantity_in} {text_in}".replace("  ", " ")
             quantity = 10
-        quantity = int(quantity)
+        else:
+            text = text_in
+            quantity = int(quantity_in)
         text, output_lang = self.StringTools.remove_prefixed_option(text, "lang:")
         sleep = 0 if quantity > 500 else 0.5
         await ctx.simple_response(ctx, translations.starter_string())

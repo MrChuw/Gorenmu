@@ -17,14 +17,6 @@ class ChannelsCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.StringTools: StringTools = StringTools()
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
 
     @commands.Component.guard()
     def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
@@ -36,10 +28,10 @@ class ChannelsCmd(commands.CustomComponent):
         if extras == "quantity":
             return translations.quantity(len(ctx.bot.channels))
         if extras == "ping":
-            channels = ", ".join(f"@{channel}" for channel in ctx.bot.channels)
+            channels = ", ".join(f"@{channel}" for channel in ctx.bot.channels.all())
             return translations.names(channels)
         inv = self.StringTools.inv_char()
-        channels = ", ".join(f"@{channel}{inv}" for channel in ctx.bot.channels)
+        channels = ", ".join(f"@{channel}{inv}" for channel in ctx.bot.channels.all())
         return translations.names(channels)
 
 

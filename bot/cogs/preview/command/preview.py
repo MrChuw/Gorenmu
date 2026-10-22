@@ -25,19 +25,6 @@ class PreviewCmd(commands.CustomComponent):
         self.ApiIvrFi = ApiIvrFi(bot, self.SessionsCaches.IvrFi.session)
         self.UploadThings: UploadThings = UploadThings(bot)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="preview", aliases=[])
     async def preview(self, ctx: Context, name: str) -> Response:
         translations = self.translations
@@ -62,9 +49,11 @@ class PreviewCmd(commands.CustomComponent):
         vod_offset = max(0, int(vod_offset))
         vod_url = (twitch_url / "videos" / stream2.id).update_query(t=f"{vod_offset}s")
         preview_img = await self.get_preview(name)
+        if not preview_img:
+            return self.translations.Preview.vod(vod_url)
         return self.translations.Preview.preview(preview_img, vod_url)
 
-    async def get_preview(self, name: str, tries=0) -> str:
+    async def get_preview(self, name: str, tries=0) -> str | None:
         preview_url = self.bot.config.ApisConfig.clips_url / "preview" / name
         session = self.SessionsCaches.Clips.session
 
@@ -82,7 +71,7 @@ class PreviewCmd(commands.CustomComponent):
             preview_img.content_type,
             filename=f"preview_{name}_{int(datetime.datetime.now().timestamp())}.jpg",
             session=session,
-            url=self.bot.config.ApisConfig.feridinha_url,
+            url=self.bot.config.ApisConfig.feridinha_url.human_repr(),
             api_key={"token": self.bot.config.ApisConfig.feridinha_key},
         )
         return await self.UploadThings.shortener(image, ["preview"], session)

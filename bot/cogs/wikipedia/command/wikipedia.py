@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from logging import Logger
 from typing import TYPE_CHECKING
 
 from bot.ext import Context, Response, commands
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
 
 
 # TODO: add Special:RandomInCategory/CategoryName
+"https://pt.wikipedia.org/api/rest_v1/page/random/summary"
 
 
 class WikipediaCmd(commands.CustomComponent):
@@ -54,7 +56,7 @@ class WikipediaCmd(commands.CustomComponent):
         except Exception as e:
             ctx.bot.log.warning(e, exc_info=e)
             await ctx.bot.CommandHandler.send_bug(ctx, e, ping=False)
-            return self.translations.Exceptions.error(ctx)
+            return self.translations.Exceptions.error()
 
 
 async def setup(bot: Gorenmu) -> None:

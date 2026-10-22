@@ -20,19 +20,6 @@ class RandomColorCmd(commands.CustomComponent):
         self.translations: Translations = Translations(bot, self)
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="randomcolor", aliases=["rc"])
     async def randomcolor(self, ctx: Context, tipo: str | None = None) -> Response:
         translations = self.translations.RandomColor

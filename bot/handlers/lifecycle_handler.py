@@ -9,10 +9,9 @@ from typing import TYPE_CHECKING
 import humanize
 import janus
 import twitchio
-from twitchio.ext import routines
 
 from bot.exceptions import InvalidArgument
-from bot.ext import ChatMessage, Context
+from bot.ext import ChatMessage, Context, routine
 from bot.ext.commands import Group
 from bot.models import User as UserModel
 from bot.models.user_extras import BotsIgnore
@@ -41,7 +40,9 @@ class LifecycleHandler:
         self.bot.MarkovProcessor = MarkovProcessor(self.bot)
         await self.bot.ChannelHandler.load_channels()
         self.bot.MarkovTask = asyncio.create_task(self.bot.MarkovProcessor.markov_worker(), name="markov_worker")
-        await asyncio.create_task(self.bot.CommandHandler.load_cogs())
+        if not self.config.mock:
+            await asyncio.create_task(self.bot.CommandHandler.load_cogs())
+        ...
         # if self.config.ApisConfig.enable_site_endpoints:
         #     asyncio.create_task(self.bot.api_start(self.bot))
 
@@ -68,7 +69,7 @@ class LifecycleHandler:
             f"{len(self.bot._get_prefix)} prefix's, {len(self.bot.commands)} commands."  # NOQA
         )
         self.bot.bot_user = await self.bot.fetch_user(id=self.bot.bot_id)
-        await UserModel.get_or_create(id=self.bot.bot_id, name=self.bot.bot_user.display_name)
+        await UserModel.get_or_create(id=self.bot.bot_id, name=self.bot.bot_user.name)
         await self.bot.bot_user.send_message("Stare SteerR Bot online.", self.bot.bot_user)
 
     async def event_message(self, payload: ChatMessage):
@@ -203,9 +204,13 @@ class LifecycleHandler:
     async def get_prefix(self, message: ChatMessage):
         if message.subscription_type == "user.whisper.message":
             return "+"
-        return self.bot.channels[message.broadcaster.name].prefix
+        return self.bot.channels.prefix(message)
 
-    async def get_context(self, payload: ChatMessage | twitchio.Whisper) -> Context:
+    async def get_context(self, target: ChatMessage | twitchio.Whisper) -> Context:
+        if isinstance(target, Context):
+            return target
+        else:
+            payload = target
         if "\x01ACTION " in payload.text:
             payload.text = payload.text.replace("\x01ACTION ", "").replace("\x01", "")
         invoke_by = None
@@ -223,21 +228,23 @@ class LifecycleHandler:
         ctx.get_command()
         return ctx
 
-    @routines.routine(delta=datetime.timedelta(minutes=15), wait_first=True)
+    @routine(
+        delta=datetime.timedelta(hours=1),
+        wait_first=True,
+        wait_remainder=True,
+    )
     async def health_ping(self):
         if self.config.DevelopmentConfig.development:
             return None
-        now = datetime.datetime.now(datetime.UTC)
-        uptime_seconds = (now - self.bot.boot).total_seconds()
-        remainder = uptime_seconds % 3600
-        time_to_wait = 3600 - remainder
-        await asyncio.sleep(time_to_wait)
-        current_uptime = datetime.datetime.now(datetime.UTC) - self.bot.boot
-        if not self.bot_user and not self.bot.bot_user:
-            self.bot.bot_user = await self.bot.fetch_user(id=self.bot.bot_id)
+
+        if not self.bot_user:
             self.bot_user = self.bot.bot_user
-        await self.bot_user.send_message(f"Online for: {humanize.precisedelta(current_uptime)}", self.bot_user)
-        return None
+
+        current_uptime = datetime.datetime.now(datetime.UTC) - self.bot.boot
+        await self.bot_user.send_message(
+            f"Online for: {humanize.precisedelta(current_uptime)}",
+            self.bot_user,
+        )
 
     async def setup(self):
         if not self.bot.mock:

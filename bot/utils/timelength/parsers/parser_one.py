@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from copy import copy
 from datetime import datetime, timedelta
 from typing import cast
@@ -15,6 +16,9 @@ from bot.utils.timelength.parsers.common import (
     value_type,
 )
 from bot.utils.timelength.parsers.date_parser import preprocess_dates
+
+Span = tuple[int, int]
+PotentialValue = str | float | datetime | list[tuple[float, Scale, str]]
 
 
 # Private methods could be moved to common.py if they become used in multiple parsers.
@@ -70,7 +74,7 @@ def _detect_number_segment(content: str, locale: Locale) -> str:
     return segment_str[:-trailing_connectors] if trailing_connectors else segment_str
 
 
-def _is_malformed_thousand(content: str, index: int, *, min_thousand_digits: int, locale) -> bool:
+def _is_malformed_thousand(content: str, index: int, *, min_thousand_digits: int, locale: Locale) -> bool:
     if not index:
         return True
 
@@ -104,12 +108,10 @@ def _parse_number(content: str, locale: Locale) -> float | tuple[str, FailureFla
             num += char
         elif char in locale.decimal_delimiters:
             # Prevent double decimals and decimals with no following number.
+            more_characters = (index + 1) < len(content)
             if (
                 decimal_locked
-                or (
-                    (more_characters := (index + 1) < len(content))
-                    and character_type(content[index + 1]) is not CharacterType.NUMBER
-                )
+                or (more_characters and character_type(content[index + 1]) is not CharacterType.NUMBER)
                 or (not more_characters and not locale.settings.allow_decimals_lacking_digits)
             ):
                 return content, FailureFlags.MALFORMED_DECIMAL
@@ -155,16 +157,16 @@ def _parse_hhmmss(content: str, locale: Locale) -> list[float] | list[tuple[str,
             else:
                 break
 
+        value: float | None
         if any(item in hhmmss_segment for item in locale.date_delimiters):
             value = None
-            # value = _parse_fraction(hhmmss_segment, locale)
-            # if isinstance(value, list):
-            #     for val, flag in value:
-            #         failures.append((val, flag))
         else:
-            value = _parse_number(hhmmss_segment, locale)
-            if isinstance(value, tuple):
-                failures.append(value)
+            parsed = _parse_number(hhmmss_segment, locale)
+            if isinstance(parsed, tuple):
+                failures.append(parsed)
+                value = None
+            else:
+                value = parsed
 
         if not isinstance(value, float):
             failures.append((hhmmss_segment, FailureFlags.MALFORMED_HHMMSS))
@@ -190,12 +192,51 @@ def _get_unique_scale(encountered_scales: dict[Scale, Scale], scale: Scale) -> S
     return encountered_scales[scale]
 
 
+def _build_remaining_and_matched_text(content: str, consumed_spans: list[Span]) -> tuple[str, str]:
+    """---
+    Split `content` into `(remaining_text, matched_text)` based on `consumed_spans`.
+
+    - `remaining_text` is `content` with every span in `consumed_spans` removed.
+    - `matched_text` is the concatenation of exactly those spans, in their original order.
+
+    Both have whitespace collapsed. Computing `matched_text` this way (rather than trying to
+    recover it from `remaining_text` after the fact) keeps it exact even when the recognized
+    spans aren't contiguous in `content`.
+    """
+
+    if not consumed_spans:
+        return re.sub(r"\s{2,}", " ", content).strip(), ""
+
+    remaining_pieces: list[str] = []
+    matched_pieces: list[str] = []
+    cursor = 0
+    for start, end in sorted(consumed_spans):
+        start = max(start, cursor)
+        end = max(end, start)
+        if start > cursor:
+            remaining_pieces.append(content[cursor:start])
+        if end > start:
+            matched_pieces.append(content[start:end])
+        cursor = max(cursor, end)
+
+    remaining_pieces.append(content[cursor:])
+    remaining_text = re.sub(r"\s{2,}", " ", "".join(remaining_pieces)).strip()
+    matched_text = re.sub(r"\s{2,}", " ", " ".join(matched_pieces)).strip()
+    return remaining_text, matched_text
+
+
 def _segment_content(
     content: str, locale: Locale, invalid: list[tuple[float | str, FailureFlags]]
-) -> list[tuple[str | float | list[tuple[float, Scale, str]], ValueType]]:
-    """Segment the content into potential values based on the locale settings."""
+) -> tuple[list[tuple[PotentialValue, ValueType]], list[Span]]:
+    """Segment the content into potential values based on the locale settings.
+
+    Returns the potential values alongside a parallel list of `(start, end)` spans into `content`
+    marking where each potential value originated, so callers can later determine which parts of
+    the original text contributed to the final result.
+    """
 
     buffer: Buffer = Buffer()
+    buffer_start: int | None = None
     previous_char_type: CharacterType | None = None
     skip_iterations: int = 0
     skip_save: bool = False
@@ -203,26 +244,38 @@ def _segment_content(
     usable_numerals: list[Numeral] = locale.usable_numerals
     scale_terms: list[str] = [term for scale in usable_scales for term in scale.terms]
     numeral_terms: list[str] = [term for numeral in usable_numerals for term in numeral.terms]
-    potential_values: list[tuple[str | float | list[tuple[float, Scale, str]], ValueType]] = []
+    potential_values: list[tuple[PotentialValue, ValueType]] = []
+    spans: list[Span] = []
 
-    def save_buffer() -> None:
+    def append_to_buffer(text: str, index: int) -> None:
+        nonlocal buffer_start
+        if not buffer.value:
+            buffer_start = index
+        buffer.value = cast(str, buffer.value) + text
+
+    def save_buffer(end_index: int) -> None:
+        nonlocal buffer_start
         buffer_value_type: ValueType = value_type(buffer.value, scale_terms, numeral_terms, locale.specials)
+        start_index = buffer_start if buffer_start is not None else end_index
 
         if buffer_value_type == ValueType.MIXED and buffer.value in locale.date_operators:
             buffer.value = ""
+            buffer_start = None
             return
 
         potential_values.append(
             (float(buffer.value) if buffer_value_type is ValueType.NUMBER else buffer.value, buffer_value_type)
         )
+        spans.append((start_index, end_index))
 
         buffer.value = ""
+        buffer_start = None
 
     def handle_number(_content: str) -> float | None:
         value = _parse_number(_content, locale)
         if isinstance(value, tuple):
             invalid.append((value[0], value[1]))
-            value = None
+            return None
         return value
 
     def handle_dates(_content: str) -> datetime | None:
@@ -231,12 +284,10 @@ def _segment_content(
 
     def handle_hhmmss(_content: str) -> list[float] | None:
         value = _parse_hhmmss(_content, locale)
-        if isinstance(value[0], float):
-            value = cast(list[float], value)
-            return value
+        if value and isinstance(value[0], float):
+            return cast(list[float], value)
         else:
-            value = cast(list[tuple[str, FailureFlags]], value)
-            for _val, flag in value:
+            for _val, flag in cast(list[tuple[str, FailureFlags]], value):
                 invalid.append((_val, flag))
             return None
 
@@ -249,7 +300,7 @@ def _segment_content(
 
         current_char_type = character_type(char)
         if not skip_save and buffer.value and current_char_type != previous_char_type:
-            save_buffer()
+            save_buffer(index)
 
         skip_save = False
 
@@ -259,14 +310,17 @@ def _segment_content(
 
         if decimal_delimiter and previous_special and next_number:
             # Required conditions for decimal numbers with no leading zero.
-            buffer.value += f"0{char}"
+            append_to_buffer(f"0{char}", index)
             skip_save = True
             continue
 
         if current_char_type is CharacterType.NUMBER:
             detected_number_segment: str = _detect_number_segment(content[index:], locale)
-            number_segment: str = buffer.value + detected_number_segment
+            number_segment: str = cast(str, buffer.value) + detected_number_segment
+            token_start = buffer_start if buffer_start is not None else index
+            token_end = index + len(detected_number_segment)
             buffer.value = ""
+            buffer_start = None
             skip_iterations = len(detected_number_segment) - 1
 
             if any(item in number_segment for item in locale.hhmmss_delimiters):
@@ -294,40 +348,43 @@ def _segment_content(
                 # from the center of a hhmmss segment while the rest of the hhmmss segment is valid. If any
                 # part of the hhmmss is invalid, the entire segment should be invalid as well.
                 potential_values.append((list(reversed(hhmmss_buffer_segments)), ValueType.MIXED))
+                spans.append((token_start, token_end))
             elif any(item in number_segment for item in locale.date_delimiters):
                 for delimiter in locale.date_delimiters:
                     number_segment = number_segment.replace(delimiter, locale.date_delimiters[0])
 
-                val: float | None = handle_dates(number_segment)
+                val: datetime | None = handle_dates(number_segment)
                 buffer.value = val if val is not None else ""
+                buffer_start = token_start if val is not None else None
             else:
-                val: float | None = handle_number(number_segment)
-                buffer.value = str(val) if val is not None else ""
+                num_val: float | None = handle_number(number_segment)
+                buffer.value = str(num_val) if num_val is not None else ""
+                buffer_start = token_start if num_val is not None else None
         elif current_char_type is CharacterType.ALPHABET or (
             current_char_type is CharacterType.SYMBOL and char not in locale.specials
         ):
             # Allow any alphabet characters or unknown characters not defined in the config to be grouped together.
-            buffer.value += char
+            append_to_buffer(char, index)
         else:
             # Do not allow special characters defined in the config to be grouped.
-            buffer.value += char
-            save_buffer()
+            append_to_buffer(char, index)
+            save_buffer(index + 1)
 
         previous_char_type = current_char_type
 
     if buffer.value:
-        save_buffer()
+        save_buffer(len(content))
 
-    return potential_values
+    return potential_values, spans
 
 
 def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
     """---
-    Parser for the English and Spanish locales.
+    Parser for the English, Spanish, and Portuguese locales.
 
     #### Arguments
     - content: `str` — The length of time to be parsed.
-    - locale: `English | Spanish` — The locale content used for parsing the content.
+    - locale: `English | Spanish | Portuguese` — The locale context used for parsing the content.
 
     #### Returns
     - A `ParsedTimeLength` with the outcome of parsing.
@@ -357,9 +414,13 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
     encountered_hundred_thousand: bool = False
     highest_numeral_value: float = 0.0
 
-    potential_values: list[tuple[str | datetime | float | list[tuple[float, Scale, str]], ValueType]] = (
-        _segment_content(content, locale, invalid)
-    )
+    # Tracks which parts of `content` ended up contributing to a `valid` entry or the found date,
+    # so they can be stripped out to produce `ParsedTimeLength.remaining_text`.
+    consumed_spans: list[Span] = []
+    segment_span_start: int | None = None
+    segment_span_end: int | None = None
+
+    potential_values, potential_spans = _segment_content(content, locale, invalid)
 
     # Enumerate over each potential value and parse them into valid or invalid segments.
     for index, value in enumerate(potential_values):
@@ -369,6 +430,7 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
             continue
 
         current_value, current_value_type = value
+        current_span: Span = potential_spans[index]
         current_numeral = locale.get_numeral(str(current_value)) if current_value_type is ValueType.NUMERAL else None
         current_numeral_type = current_numeral.type if current_numeral else None
         # Numerals become converted to numbers further down. This is to allow for usage with actual numbers.
@@ -376,7 +438,9 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
 
         if current_value_type is ValueType.DATE and not found_date:
             found_date = True
-            date: datetime = value[0]
+            date = cast(datetime, current_value)
+            # A found date is unconditionally reported on the result, so its span is unconditionally consumed.
+            consumed_spans.append(current_span)
         elif current_value_type is ValueType.MIXED:
             if segment_value:
                 invalid.append((segment_value, FailureFlags.LONELY_VALUE))
@@ -401,6 +465,7 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
                         seconds += val * scale.scale  # NOQA
                         valid.append((val, _get_unique_scale(encountered_scales, scale)))
                         parsed_scales.append(scale)
+                    consumed_spans.append(current_span)
                 continue  # Skip the rest of the loop as the HHMMSS has been fully handled.
             else:
                 invalid.append((current_value, FailureFlags.UNKNOWN_TERM))
@@ -479,7 +544,7 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
                     reset_segment_progress = True
                     if segment_progress.strip():
                         to_abandon: str = segment_progress + current_value
-                        next_index: int = index + 1
+                        next_index = index + 1
                         while (
                             next_index < len(potential_values)
                             and potential_values[next_index][0] in locale.allowed_terms
@@ -509,7 +574,7 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
                 ValueType.NUMBER if current_numeral_type is not NumeralType.OPERATOR else current_value_type_converted
             )
 
-            next_index: int = index + 1
+            next_index = index + 1
             connectors_before_segmentor: int = 0
             if encountered_hundred_thousand:
                 while next_index < len(potential_values) and potential_values[next_index][1] is ValueType.SYMBOL:
@@ -518,7 +583,7 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
                         break
                     if potential_values[next_index][0] in locale.segmenters:
                         skip_iterations += 1 + (connectors_before_segmentor - 2)
-                        has_another_index: bool = next_index + 1 < len(potential_values)
+                        has_another_index = next_index + 1 < len(potential_values)
                         if has_another_index and potential_values[next_index + 1][0] in locale.connectors:
                             skip_iterations += 1
 
@@ -602,9 +667,7 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
                 encountered_hundred_thousand = True
                 next_numeral_type: NumeralType | None = None
                 next_value_type: ValueType | None = None
-                trimmed_potential_values: list[tuple[str | float | list[tuple[float, Scale, str]], ValueType]] = (
-                    potential_values[index + 1 :]
-                )
+                trimmed_potential_values: list[tuple[PotentialValue, ValueType]] = potential_values[index + 1 :]
 
                 for item in trimmed_potential_values:
                     item_value_type = item[1]
@@ -726,6 +789,10 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
                 if isinstance(current_value, datetime) or (current_value_type.value == "DATE")
                 else str(int(current_value) if is_int(current_value) else current_value)
             )
+            if segment_span_start is None:
+                segment_span_start = current_span[0]
+            segment_span_end = current_span[1]
+
             # Only clear the segmenters list if a valid non-connector is encountered. Check against
             # reset_segment_progress as that is True when an invalid value is encountered.
             if current_value not in locale.connectors and not reset_segment_progress:
@@ -734,6 +801,10 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
             if skip_iterations:
                 for num in range(skip_iterations):
                     num += 1
+                    lookahead_span = potential_spans[index + num]
+                    if segment_span_start is None:
+                        segment_span_start = lookahead_span[0]
+                    segment_span_end = lookahead_span[1]
                     segment_progress += str(
                         int(potential_values[index + num][0])
                         if is_int(str(potential_values[index + num][0]))
@@ -766,6 +837,8 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
                     segment_total *= segment_date
                 seconds += segment_total * parsed_scale.scale  # NOQA
                 valid.append((segment_total, _get_unique_scale(encountered_scales, parsed_scale)))
+                if segment_span_start is not None and segment_span_end is not None:
+                    consumed_spans.append((segment_span_start, segment_span_end))
 
             parsed_scales.append(parsed_scale)
             reset_segment_progress = True
@@ -781,6 +854,8 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
             parsed_scale = None
             parsed_value = None
             segment_date = None
+            segment_span_start = None
+            segment_span_end = None
 
     # Account for tailing values with no accompanying scale.
     if parsed_value is not None or segment_value is not None or segment_date is not None:
@@ -800,11 +875,13 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
             locale.settings.assume_scale == "SINGLE"
             and (len(potential_values) == 1 or (len(valid) == 0 and len(invalid) == 0))
         ):
-            segment_total: float = parsed_value + segment_value
+            segment_total = parsed_value + segment_value
             if segment_date:
                 segment_total *= segment_date
             valid.append((segment_total, _get_unique_scale(encountered_scales, base)))
             seconds += segment_total * base.scale  # NOQA
+            if segment_span_start is not None and segment_span_end is not None:
+                consumed_spans.append((segment_span_start, segment_span_end))
         else:
             invalid.append((parsed_value + segment_value, FailureFlags.LONELY_VALUE))
 
@@ -813,8 +890,12 @@ def parser_one(content: str, locale: Locale) -> ParsedTimeLength:
     success: bool = all(not (invalid_flag & locale.flags) for _, invalid_flag in invalid) if valid else False
 
     try:
-        delta = timedelta(seconds=seconds)
+        delta: timedelta | None = timedelta(seconds=seconds)
     except OverflowError:
         delta = None
 
-    return ParsedTimeLength(success, seconds, delta, tuple(invalid), tuple(valid), found_date, date)
+    remaining_text, matched_text = _build_remaining_and_matched_text(content, consumed_spans)
+
+    return ParsedTimeLength(
+        success, seconds, delta, tuple(invalid), tuple(valid), found_date, date, remaining_text, matched_text
+    )

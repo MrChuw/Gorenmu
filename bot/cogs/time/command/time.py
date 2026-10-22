@@ -20,19 +20,6 @@ class TimeCmd(commands.CustomComponent):
         self.StringTools: StringTools = StringTools()
         self.TimeTools: TimeTools = TimeTools()
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="time", aliases=[])
     async def time(self, ctx: Context, unit: str, *, args: str) -> Response:
         if not args.isascii() or not unit.isascii():
@@ -44,7 +31,7 @@ class TimeCmd(commands.CustomComponent):
         lang = self.translations.Time.get_lang(
             lang[0].lower() != "guess", lang[0].lower() != "guess", ctx.user.language
         )
-        dateconfig = DateParserConfig(allow_past=any(past in rest for past in lang().past.terms))
+        dateconfig = DateParserConfig(allow_past=any(past in rest for past in lang().past.terms))  # noqa
         lang = lang(dateconfig=dateconfig)
         rest = self.StringTools.remove_numeric_underscores(rest)
         tl = self.TimeTools.TimeConvert.convert_text(rest, lang)
@@ -52,14 +39,16 @@ class TimeCmd(commands.CustomComponent):
         supress = self.TimeTools.TimeConvert.to_supress(unit)
         minimum = "seconds" if unit in {"raw", "time"} else unit
         tipo = tipos[0]
-        if tl.result.invalid or tipo:
-            time, mode = self.TimeTools.TimeConvert.to_time(tipo if tipo != "delta" else None, ctx)
+        if tl.result.invalid or tipo or tl.result.delta is None:
+            time, mode = self.TimeTools.TimeConvert.to_time(
+                tipo if tipo != "delta" else None, await ctx.user.tz(self.bot)
+            )
         else:
-            time, mode = tl.result.delta
+            time, mode = tl.result.delta, None
         if isinstance(time, datetime):
             time = time.replace(tzinfo=None)
 
-        if not tl.result.delta and not tl.result.date:
+        if (not tipo and not tl.result.delta and not tl.result.date) or time is None:
             return self.translations.Time.overflow()
 
         try:

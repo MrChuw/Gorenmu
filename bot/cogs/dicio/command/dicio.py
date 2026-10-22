@@ -18,34 +18,19 @@ class DicioCmd(commands.CustomComponent):
         self.StringTools: StringTools = StringTools()
         self.SessionsCaches: SessionsCaches = SessionsCaches(bot)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: commands.Context) -> bool:  # NOQA
-        return True
-
     @commands.command(name="dicio", aliases=[])
     async def dicio(self, ctx: Context, *, content) -> Response:
         translations = self.translations.Dicio
-        word, lang = self.StringTools.extract_and_remove_field(content, "lang", ctx.user.language or "en")
+        word, lang = self.StringTools.extract_and_remove_field(content, "lang", default=ctx.user.language or "en")
         word, lang = word.lower(), lang.lower()
         if lang == "languages":
             return translations.all_languages(translations.languages("languages"))
-
         json_response = await self.get_word(word, lang)  # NOQA
         if "error" in json_response:
             return translations.error(
                 self.bot.config.ApisConfig.dicio_url / "languages",
                 self.bot.dev_user.display_name,
             )
-
         if json_response["exist"]:
             exist = translations.check_exist(True)
             url = translations.url(lang, word)

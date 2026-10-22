@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Literal
@@ -9,12 +10,24 @@ from bot.utils.timelength.enums import FailureFlags, NumeralType
 from bot.utils.timelength.parsers.common import remove_diacritics
 
 
-@dataclass
+def _expand_terms(terms: Sequence[str]) -> tuple[str, ...]:
+    """Expand a list of terms into lower/title/upper case variants, with diacritics stripped."""
+    expanded: tuple[str, ...] = ()
+    for term in terms:
+        term = remove_diacritics(term)
+        if len(term) == 1:
+            expanded += (term.lower(), term.upper())
+        else:
+            expanded += (term.lower(), term.title(), term.upper())
+    return expanded
+
+
 class Scale:
     """---
     Represents a timescale.
 
     #### Attributes
+    - key: `str` — The internal identifier of the scale (ex: "minute").
     - scale: `float = 0.0` — The number of seconds in the scale.
     - singular: `str = ""` — The singular form of the scale.
     - plural: `str = ""` — The plural form of the scale.
@@ -25,19 +38,12 @@ class Scale:
     - valid: `bool` — Return whether the scale is valid or not based on all attributes being set.
     """
 
-    def __init__(self, key: str, **kwargs):
+    def __init__(self, key: str, scale: float, singular: str, plural: str, terms: Sequence[str]) -> None:
         self.key: str = key
-        self.scale: float = kwargs.get("scale")
-        self.singular: str = kwargs.get("singular")
-        self.plural: str = kwargs.get("plural")
-        terms = ()
-        for term in kwargs.get("terms"):
-            term = remove_diacritics(term)
-            if len(term) == 1:
-                terms += (term.lower(), term.upper())
-            else:
-                terms += (term.lower(), term.title(), term.upper())
-        self.terms: tuple[str, ...] = terms
+        self.scale: float = scale
+        self.singular: str = singular
+        self.plural: str = plural
+        self.terms: tuple[str, ...] = _expand_terms(terms)
         self.enabled: bool = True
 
     @property
@@ -52,7 +58,7 @@ class Scale:
     def __repr__(self) -> str:
         """Return a string representation of the scale with attributes included."""
 
-        def tuple_to_str(tup: tuple) -> str:
+        def tuple_to_str(tup: tuple[str, ...]) -> str:
             return "(" + ", ".join([json.dumps(term) for term in tup]) + ")"
 
         terms_str = tuple_to_str(self.terms)
@@ -70,7 +76,6 @@ class Scale:
         return hash((self.key, self.scale, self.singular, self.plural, self.terms, self.enabled))
 
 
-@dataclass
 class Numeral:
     """---
     Represents a number related word.
@@ -79,24 +84,17 @@ class Numeral:
     - name: `str = ""` — The name of the numeral.
     - type: `NumeralType = NumeralType.NONE` — The type of numeral.
     - value: `float = 0.0` — The value of the numeral.
-    - terms: `tuple[str, ...] = []` — A list of terms associated with the numeral.
+    - terms: `tuple[str, ...] = ()` — A tuple of terms associated with the numeral.
 
     #### Properties
     - valid: `bool` — Return whether the numeral is valid or not based on all attributes being set.
     """
 
-    def __init__(self, name: str, type: NumeralType, value: float, terms: list[str]):
+    def __init__(self, name: str, type: NumeralType, value: float, terms: Sequence[str]) -> None:
         self.name: str = name
         self.type: NumeralType = type
         self.value: float = value
-        _terms = ()
-        for term in terms:
-            term = remove_diacritics(term)
-            if len(term) == 1:
-                _terms += (term.lower(), term.upper())
-            else:
-                _terms += (term.lower(), term.title(), term.upper())
-        self.terms: tuple[str, ...] = _terms
+        self.terms: tuple[str, ...] = _expand_terms(terms)
         self.enabled: bool = True
 
     @property
@@ -113,7 +111,7 @@ class Numeral:
     def __repr__(self) -> str:
         """Return a string representation of the numeral with attributes included."""
 
-        def tuple_to_str(tup: tuple) -> str:
+        def tuple_to_str(tup: tuple[str, ...]) -> str:
             return "(" + ", ".join([json.dumps(term) for term in tup]) + ")"
 
         terms_str = tuple_to_str(self.terms)
@@ -136,11 +134,18 @@ class ParsedTimeLength:
     Represents the outcome of parsing a TimeLength.
 
     #### Properties
-    - success: `str` — Indicates if the parsing was successful.
+    - success: `bool` — Indicates if the parsing was successful.
     - seconds: `float` — The total length of time parsed, in seconds.
     - delta: `timedelta | None` — The parsed time as a `timedelta`, or `None` if out of range.
     - invalid: `tuple` — The parts of the input string that could not be parsed as valid time.
     - valid: `tuple` — The parts of the input string that were successfully parsed as valid time.
+    - found_date: `bool` — Whether a date was found within the input.
+    - date: `datetime | None` — The date found within the input, if any.
+    - remaining_text: `str` — `content` with every span that contributed to `valid` or `date`
+        stripped out. Spans that ended up in `invalid` are intentionally left untouched, since they
+        may still be meaningful words the parser simply didn't recognize.
+    - matched_text: `str` — The exact complement of `remaining_text`: just the span(s) that
+        contributed to `valid` or `date`, concatenated in their original order.
     """
 
     def __init__(
@@ -152,6 +157,8 @@ class ParsedTimeLength:
         valid: tuple[tuple[float, Scale], ...] = (),
         found_date: bool = False,
         date: datetime | None = None,
+        remaining_text: str = "",
+        matched_text: str = "",
     ) -> None:
         self._success: bool = success
         self._seconds: float = seconds
@@ -160,6 +167,8 @@ class ParsedTimeLength:
         self._valid: tuple[tuple[float, Scale], ...] = valid
         self.found_date: bool = found_date
         self.date: datetime | None = date
+        self._remaining_text: str = remaining_text
+        self._matched_text: str = matched_text
 
     @property
     def success(self) -> bool:
@@ -185,6 +194,26 @@ class ParsedTimeLength:
     def valid(self) -> tuple[tuple[float, Scale], ...]:
         """Return a tuple of parts of the input string that were successfully parsed as valid time."""
         return self._valid
+
+    @property
+    def remaining_text(self) -> str:
+        """---
+        Return `content` with every span that contributed to `valid` or `date` stripped out.
+
+        Useful to separate a recognized time expression from the rest of a free-form message.
+
+        #### Example
+        ```python
+        tl = TimeLength("as 19:22:22 do dia 12/02/2029 sobre o blablabla", locale=Portuguese())
+        print(tl.result.remaining_text)  # "sobre o blablabla" (plus any invalid leftover words)
+        ```
+        """
+        return self._remaining_text
+
+    @property
+    def matched_text(self) -> str:
+        """The exact complement of `remaining_text` — just the recognized date/duration span(s)."""
+        return self._matched_text
 
     def __str__(self) -> str:
         """Return a string indicating the success or failure of the parsing."""
@@ -215,31 +244,34 @@ class ParsedTimeLength:
         invalid_str = tuple_to_str(self.invalid)
         return (
             f"ParsedTimeLength(success={self.success}, seconds={self.seconds}, "
-            f"invalid={invalid_str}, valid={valid_str})"
+            f"invalid={invalid_str}, valid={valid_str}, found_date={self.found_date}, "
+            f"remaining_text={json.dumps(self.remaining_text)})"
         )
 
 
-@dataclass
+@dataclass()
 class Buffer:
     """---
     Represents the state of the buffer during parsing.
 
     #### Attributes
-    - value: `str = ""` — The current value of the buffer.
+    - value: `str | float | datetime = ""` — The current value of the buffer.
+        - While usually a `str` being built character by character, it may temporarily hold an
+            already-resolved `float` (parsed number) or `datetime` (parsed date) pending flush.
     """
 
-    value: str = ""
+    value: str | float | datetime = ""
 
     def __str__(self) -> str:
         """Return the current value of the buffer."""
-        return self.value
+        return str(self.value)
 
     def __repr__(self) -> str:
         """Return a string representation of the buffer with attributes included."""
-        return f"Buffer(value={json.dumps(self.value)})"
+        return f"Buffer(value={json.dumps(self.value) if isinstance(self.value, str) else self.value!r})"
 
 
-@dataclass
+@dataclass()
 class ParserSettings:
     """---
     Represents the settings for the parser.

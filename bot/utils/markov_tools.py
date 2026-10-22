@@ -223,18 +223,18 @@ class MarkovProcessor:
         self.queue = Queue()
         self.orm = MarkovORM(self.bot)
         # await self.orm.setup_database()
-
-        while True:
-            try:
-                message, channel, user = await self.queue.async_q.get()
-                try:
-                    await self.train_message(message=message, channel=channel, user=user)
-                except Exception as e:
-                    logger.exception(f"Erro ao processar mensagem Markov no worker: {e}")
-                finally:
-                    self.queue.async_q.task_done()
-            except asyncio.CancelledError:
-                break
+        #
+        # while True:
+        #     try:
+        #         message, channel, user = await self.queue.async_q.get()
+        #         try:
+        #             await self.train_message(message=message, channel=channel, user=user)
+        #         except Exception as e:
+        #             logger.exception(f"Erro ao processar mensagem Markov no worker: {e}")
+        #         finally:
+        #             self.queue.async_q.task_done()
+        #     except asyncio.CancelledError:
+        #         break
 
     async def setup(self):
         if not self.bot.mock:

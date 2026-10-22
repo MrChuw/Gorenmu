@@ -21,21 +21,9 @@ class AnnotationsCmd(commands.CustomComponent):
         self.StringTools: StringTools = StringTools()
         self.translations: Translations = Translations(bot, self)
 
-    cooldown_rate = 3
-    cooldown_per = 10
-    cooldown_key = commands.BucketType.user
-
-    async def component_command_error(self, payload: commands.CommandErrorPayload) -> bool | None: ...
-
-    async def component_before_invoke(self, ctx: Context) -> None:
-        self.translations.ctx_set(ctx)
-
-    @commands.Component.guard()
-    def guards_component(self, ctx: Context) -> bool:  # NOQA
-        return True
 
     @commands.group(name="annotations", aliases=["note", "annotation"])
-    async def annotations(self, ctx: Context) -> Response:  # NOQA
+    async def annotations(self, ctx: Context) -> Response:
         await ctx.simple_response(ctx, "Shush")
         return self.translations.Exceptions.empty(ctx)
 
@@ -46,7 +34,7 @@ class AnnotationsCmd(commands.CustomComponent):
             return self.translations.Exceptions.no_content_provided()
         content, title = self.StringTools.extract_and_remove_field(content, "title")
         if title and len(title) > 32:
-            return translations.title_too_long(ctx)
+            return translations.title_too_long()
         if len(content) > 450:
             return self.translations.Exceptions.too_much_characters()
         annotation = await Annotation.create(content=content, user=ctx.user, title=title)
