@@ -52,11 +52,11 @@ ping_webhook="${DISCORD_PING_WEBHOOK}"
 enable_site_endpoints = false
 
 [database]
-type = "mariadb"
+type = "postgresql"
 login = "${DB_LOGIN}"
 password = "${DB_PASSWORD}"
 host = "127.0.0.1"
-port = 3307
+port = 5432
 name = "${DB_NAME}"
 
 [cache]

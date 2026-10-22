@@ -36,6 +36,30 @@ services:
       - "3307:3306"
     restart: unless-stopped
 
+  Gorenmu_db_p:
+    image: postgres:17-alpine
+    container_name: Postgres
+    tty: true
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_LOGIN}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./.data/databasep:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  # pgloader_migration:
+  #   image: dimitri/pgloader:latest
+  #   container_name: Pgloader_Migrate
+  #   depends_on:
+  #     - Gorenmu_db
+  #     - Gorenmu_db_p
+  #   volumes:
+  #     - ./migration.load:/migration.load:ro
+  #   entrypoint: ["sh", "-c", "sleep 3 && pgloader /migration.load"]
+
   Gorenmu_cache:
     image: valkey/valkey:unstable
     container_name: Valkey
