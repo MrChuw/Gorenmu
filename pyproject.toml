@@ -7,21 +7,28 @@ requires-python = "==3.13.1"
 
 dependencies = [
     "aiocache[memcached,redis]==0.12.3",
-    "aiofile>=3.9.0",
+    "aiofile==3.9.0",
     "aiohttp==3.12.15",
     "aiohttp-client-cache[all]==0.13.0",
+    "async-lru==2.3.0",
     "beautifulsoup4==4.13.4",
-    "clickhouse-connect>=0.10.0",
+    "clickhouse-connect==0.10.0",
+    "deep-translator>=1.11.4",
     "emoji==2.14.1",
     "fastapi==0.116.1",
-    "fluent-runtime>=0.4.0",
+    "fluent-runtime==0.4.0",
     "humanize==4.12.3",
+    "imageio[ffmpeg]==2.37.3",
     "janus==2.0.0",
     "loguru==0.7.3",
-    "msgspec>=0.20.0",
+    "msgspec==0.20.0",
     "nltk==3.9.1",
+    "numba==0.65.0",
+    "opencv-python==4.13.0.92",
     "pillow==11.3.0",
     "psutil==7.0.0",
+    "pudb==2025.1.5",
+    "pyrefly>=0.60.0",
     "python-dateutil==2.9.0.post0",
     "python-dotenv==1.1.1",
     "pytz==2025.2",
@@ -30,10 +37,11 @@ dependencies = [
     "toml==0.10.2",
     "tortoise-orm[asyncmy,asyncpg]==0.25.3",
     "twitchio[starlette]==3.1.0",
+    "tzfpy==1.1.3",
     "unidecode==1.4.0",
     "urlextract==1.9.0",
     "uvicorn==0.35.0",
-    "uvloop>=0.22.1",
+    "uvloop==0.22.1",
     "watchdog==6.0.0",
     "yarl==1.20.1",
 ]
@@ -41,16 +49,22 @@ dependencies = [
 [dependency-groups]
 dev = [
     "aioresponses==0.7.8",
+    "debugpy==1.8.21",
     "deptry==0.24.0",
     "freezegun==1.5.5",
+    "manim==0.20.1",
     "pre-commit==4.3.0",
+    "py-spy>=0.4.2",
+    "pydevd>=3.5.0",
+    "pyrefly==1.1.1",
     "pytest==8.4.1",
     "pytest-asyncio==1.1.0",
-    "pytest-timeout>=2.4.0",
+    "pytest-timeout==2.4.0",
     "pytest-xdist==3.8.0",
-    "ruff==0.14.6",
+    "ruff==0.16.7",
     "snakeviz==2.2.2",
     "tuna==0.5.11",
+    "ty==0.0.80",
 ]
 
 
@@ -85,6 +99,10 @@ quote-style = "preserve"
 convention = "google"
 
 [tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning:twitchio.*:",
+    "ignore::DeprecationWarning:starlette.*:",
+]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
@@ -97,3 +115,5 @@ addopts = "-m 'not network and not disabled'"
 
 [tool.uv.sources]
 twitchio = { git = "https://github.com/PythonistaGuild/TwitchIO.git" }
+
+
