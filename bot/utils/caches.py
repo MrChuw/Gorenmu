@@ -3,11 +3,11 @@ from __future__ import annotations
 import builtins
 from collections.abc import Iterable
 from datetime import timedelta
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
 from twitchio import ChannelInfo as ChannelTmi
 from twitchio import User as UserTmi
-from typing import Generic, TypeVar
+
 from bot.types.named_tuples import AliasCached, RAfkNamedTuple
 from bot.utils.caches_base import MemoryCacheCore
 from bot.utils.config import CacheType
@@ -74,6 +74,7 @@ class MemCache:
         self.Cookie: Cookie = Cookie()
         self.Afk: Afk = Afk()
         self.RAfk: RAfk = RAfk()
+        self.Reminder: ReminderCache = ReminderCache()
         self.UserTmi: UserTmiCache = UserTmiCache()
         self.ChannelTmi: ChannelTmiCache = ChannelTmiCache()
 
@@ -185,6 +186,24 @@ class RAfk(MemoryCacheCore):
         self.name_to_user_id.pop(str(user_id), None)
 
 
+class ReminderCache(MemoryCacheCore):
+    def __init__(self):
+        super().__init__(ttl=timedelta(days=30))
+
+    async def set(self, user: UserDB) -> None:
+        await self._set_map(key=str(user.id), value=True, name=user.name, user_id=user.id)
+
+    async def get(self, user_id: int) -> bool | None:
+        return await self._get(str(user_id))
+
+    async def get_by_name(self, name: str) -> bool | None:
+        return await self._get_by_name(name)
+
+    async def delete(self, user: UserDB) -> None:
+        await self._delete(key=str(user.id))
+        self.name_to_user_id.pop(user.name, None)
+
+
 class UserTmiCache(MemoryCacheCore):
     def __init__(self):
         super().__init__(ttl=timedelta(minutes=5))
@@ -225,23 +244,3 @@ class ChannelTmiCache(MemoryCacheCore):
             return None
         await self.set(user_id=user_id, to_cache=channel_tmi)
         return channel_tmi
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

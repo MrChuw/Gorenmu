@@ -14,7 +14,8 @@ class Reminder(Base, TimestampMixin):
     from_user: User = fields.ForeignKeyField("models.User", related_name="reminder")
     to_user: User = fields.ForeignKeyField("models.User", related_name="reminder_to")
     content = fields.TextField(default=None)
-    scheduled_for = fields.DateField(default=None, null=True)
+    scheduled_for = fields.DatetimeField(default=None, null=True)
+    for_after = fields.DatetimeField(default=None, null=True)
     sent = fields.BooleanField(default=False)
 
     class Meta:
